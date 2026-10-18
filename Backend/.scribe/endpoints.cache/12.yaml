@@ -489,7 +489,7 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"data":[{"id":161,"name":"role_ng775","guard_name":"web","organization_id":null,"created_at":"14:13:21 01\/05\/2026","updated_at":"14:13:21 01\/05\/2026"},{"id":162,"name":"role_mi365","guard_name":"web","organization_id":null,"created_at":"14:13:21 01\/05\/2026","updated_at":"14:13:21 01\/05\/2026"}],"links":{"first":"\/?page=1","last":"\/?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo; Previous","page":null,"active":false},{"url":"\/?page=1","label":"1","page":1,"active":true},{"url":null,"label":"Next &raquo;","page":null,"active":false}],"path":"\/","per_page":10,"to":2,"total":2},"success":"true"}'
+        content: '{"data":[{"id":1,"name":"role_ng775","guard_name":"web","organization_id":null,"created_at":"11:07:54 18\/10\/2026","updated_at":"11:07:54 18\/10\/2026"},{"id":2,"name":"role_mi365","guard_name":"web","organization_id":null,"created_at":"11:07:54 18\/10\/2026","updated_at":"11:07:54 18\/10\/2026"}],"links":{"first":"\/?page=1","last":"\/?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo; Previous","page":null,"active":false},{"url":"\/?page=1","label":"1","page":1,"active":true},{"url":null,"label":"Next &raquo;","page":null,"active":false}],"path":"\/","per_page":10,"to":2,"total":2},"success":"true"}'
         headers: []
         description: ''
     responseFields: []
@@ -526,7 +526,7 @@ endpoints:
         name: role_id
         description: 'The ID of the role.'
         required: true
-        example: 1
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -544,7 +544,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      role_id: 1
+      role_id: 16
       role: 1
     queryParameters: []
     cleanQueryParameters: []
@@ -555,7 +555,7 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"data":{"id":163,"name":"role_wp680","guard_name":"web","organization_id":560,"organization":{"id":560,"name":"Dare Group"},"permissions":["organizations.index.7602"],"created_at":"14:13:21 01\/05\/2026","updated_at":"14:13:21 01\/05\/2026"},"success":"true"}'
+        content: '{"data":{"id":3,"name":"role_wp680","guard_name":"web","organization_id":5,"organization":{"id":5,"name":"Dare Group"},"permissions":["organizations.index.7602"],"created_at":"11:07:54 18\/10\/2026","updated_at":"11:07:54 18\/10\/2026"},"success":"true"}'
         headers: []
         description: ''
     responseFields: []
@@ -639,7 +639,7 @@ endpoints:
       -
         custom: []
         status: 201
-        content: '{"data":{"id":164,"name":"role_zm806","guard_name":"web","organization_id":null,"permissions":["documents.index.6955"],"created_at":"14:13:21 01\/05\/2026","updated_at":"14:13:21 01\/05\/2026"},"success":"true","message":"Vai tr\u00f2 \u0111\u00e3 \u0111\u01b0\u1ee3c t\u1ea1o th\u00e0nh c\u00f4ng!"}'
+        content: '{"data":{"id":4,"name":"role_zm806","guard_name":"web","organization_id":null,"permissions":["documents.index.5606"],"created_at":"11:07:54 18\/10\/2026","updated_at":"11:07:54 18\/10\/2026"},"success":"true","message":"Vai tr\u00f2 \u0111\u00e3 \u0111\u01b0\u1ee3c t\u1ea1o th\u00e0nh c\u00f4ng!"}'
         headers: []
         description: ''
     responseFields: []
@@ -676,7 +676,7 @@ endpoints:
         name: role_id
         description: 'The ID of the role.'
         required: true
-        example: 1
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -694,7 +694,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      role_id: 1
+      role_id: 16
       role: 1
     queryParameters: []
     cleanQueryParameters: []
@@ -745,7 +745,7 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"data":{"id":165,"name":"role_yv564","guard_name":"web","organization_id":null,"permissions":["users.update.3433"],"created_at":"14:13:21 01\/05\/2026","updated_at":"14:13:21 01\/05\/2026"},"success":"true","message":"Vai tr\u00f2 \u0111\u00e3 \u0111\u01b0\u1ee3c c\u1eadp nh\u1eadt!"}'
+        content: '{"data":{"id":5,"name":"role_yv564","guard_name":"web","organization_id":null,"permissions":["users.update.3433"],"created_at":"11:07:54 18\/10\/2026","updated_at":"11:07:54 18\/10\/2026"},"success":"true","message":"Vai tr\u00f2 \u0111\u00e3 \u0111\u01b0\u1ee3c c\u1eadp nh\u1eadt!"}'
         headers: []
         description: ''
     responseFields: []
@@ -782,7 +782,7 @@ endpoints:
         name: role_id
         description: 'The ID of the role.'
         required: true
-        example: 1
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -800,7 +800,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      role_id: 1
+      role_id: 16
       role: 1
     queryParameters: []
     cleanQueryParameters: []
@@ -851,7 +851,7 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"data":{"id":166,"name":"role_lj575","guard_name":"web","organization_id":null,"permissions":["roles.destroy.6854"],"created_at":"14:13:21 01\/05\/2026","updated_at":"14:13:21 01\/05\/2026"},"success":"true","message":"Vai tr\u00f2 \u0111\u00e3 \u0111\u01b0\u1ee3c c\u1eadp nh\u1eadt!"}'
+        content: '{"data":{"id":6,"name":"role_lj575","guard_name":"web","organization_id":null,"permissions":["roles.destroy.6854"],"created_at":"11:07:54 18\/10\/2026","updated_at":"11:07:54 18\/10\/2026"},"success":"true","message":"Vai tr\u00f2 \u0111\u00e3 \u0111\u01b0\u1ee3c c\u1eadp nh\u1eadt!"}'
         headers: []
         description: ''
     responseFields: []
@@ -888,7 +888,7 @@ endpoints:
         name: role_id
         description: 'The ID of the role.'
         required: true
-        example: 1
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -906,7 +906,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      role_id: 1
+      role_id: 16
       role: 1
     queryParameters: []
     cleanQueryParameters: []

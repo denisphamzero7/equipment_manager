@@ -363,7 +363,7 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"data":[{"id":166,"title":"Eius et animi.","status":"active","description":"Et fugiat sunt nihil accusantium. Mollitia modi deserunt aut ab provident perspiciatis quo. Nostrum aut adipisci quidem nostrum.","created_at":"01\/05\/2026 14:13:22","updated_at":"01\/05\/2026 14:13:22","created_by":null,"updated_by":null},{"id":167,"title":"Commodi incidunt.","status":"active","description":"Et et modi ipsum nostrum. Autem et consequatur aut dolores enim non facere tempora.","created_at":"01\/05\/2026 14:13:22","updated_at":"01\/05\/2026 14:13:22","created_by":null,"updated_by":null}],"links":{"first":"\/?page=1","last":"\/?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo; Previous","page":null,"active":false},{"url":"\/?page=1","label":"1","page":1,"active":true},{"url":null,"label":"Next &raquo;","page":null,"active":false}],"path":"\/","per_page":15,"to":2,"total":2},"success":"true"}'
+        content: '{"data":[{"id":null,"title":"Commodi incidunt.","status":"active","description":"Et et modi ipsum nostrum. Autem et consequatur aut dolores enim non facere tempora.","created_at":null,"updated_at":null,"created_by":null,"updated_by":null},{"id":null,"title":"Alias tenetur ratione nemo.","status":"active","description":"Ut et recusandae modi rerum ex repellendus. Et tenetur ab reiciendis quia perspiciatis deserunt ducimus.","created_at":null,"updated_at":null,"created_by":null,"updated_by":null}],"links":{"first":"\/?page=1","last":"\/?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo; Previous","page":null,"active":false},{"url":"\/?page=1","label":"1","page":1,"active":true},{"url":null,"label":"Next &raquo;","page":null,"active":false}],"path":"\/","per_page":15,"to":2,"total":2},"success":"true"}'
         headers: []
         description: ''
     responseFields: []
@@ -400,7 +400,7 @@ endpoints:
         name: category_id
         description: 'The ID of the category.'
         required: true
-        example: 2
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -418,7 +418,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      category_id: 2
+      category_id: 16
       category: 1
     queryParameters: []
     cleanQueryParameters: []
@@ -429,7 +429,7 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"data":{"id":169,"title":"Adipisci quidem nostrum qui.","status":"active","description":"Iure odit et et modi ipsum nostrum omnis. Et consequatur aut dolores enim. Facere tempora ex voluptatem laboriosam. Quis adipisci molestias fugit deleniti distinctio eum.","created_at":"01\/05\/2026 14:13:22","updated_at":"01\/05\/2026 14:13:22","created_by":null,"updated_by":null},"success":"true"}'
+        content: '{"data":{"id":null,"title":null,"status":null,"description":null,"created_at":null,"updated_at":null,"created_by":null,"updated_by":null},"success":"true"}'
         headers: []
         description: ''
     responseFields: []
@@ -531,7 +531,7 @@ endpoints:
       -
         custom: []
         status: 201
-        content: '{"data":{"id":170,"title":"Eius et animi.","status":"active","description":"Et fugiat sunt nihil accusantium. Mollitia modi deserunt aut ab provident perspiciatis quo. Nostrum aut adipisci quidem nostrum.","created_at":"01\/05\/2026 14:13:22","updated_at":"01\/05\/2026 14:13:22","created_by":null,"updated_by":null},"success":"true","message":"Danh m\u1ee5c \u0111\u00e3 \u0111\u01b0\u1ee3c t\u1ea1o th\u00e0nh c\u00f4ng!"}'
+        content: '{"data":{"id":null,"title":"Commodi incidunt.","status":"active","description":"Et et modi ipsum nostrum. Autem et consequatur aut dolores enim non facere tempora.","created_at":null,"updated_at":null,"created_by":null,"updated_by":null},"success":"true","message":"Danh m\u1ee5c \u0111\u00e3 \u0111\u01b0\u1ee3c t\u1ea1o th\u00e0nh c\u00f4ng!"}'
         headers: []
         description: ''
     responseFields: []
@@ -568,7 +568,7 @@ endpoints:
         name: category_id
         description: 'The ID of the category.'
         required: true
-        example: 2
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -586,7 +586,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      category_id: 2
+      category_id: 16
       category: 1
     queryParameters: []
     cleanQueryParameters: []
@@ -657,7 +657,7 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"data":{"id":171,"title":"Et animi quos.","status":"active","description":"Fugiat sunt nihil accusantium harum mollitia. Deserunt aut ab provident perspiciatis quo omnis nostrum. Adipisci quidem nostrum qui commodi incidunt iure.","created_at":"01\/05\/2026 14:13:22","updated_at":"01\/05\/2026 14:13:22","created_by":null,"updated_by":null},"success":"true","message":"Danh m\u1ee5c \u0111\u00e3 \u0111\u01b0\u1ee3c c\u1eadp nh\u1eadt!"}'
+        content: '{"data":{"id":null,"title":"Et et modi.","status":"active","description":"Omnis autem et consequatur. Dolores enim non facere tempora. Voluptatem laboriosam praesentium quis adipisci.","created_at":null,"updated_at":null,"created_by":null,"updated_by":null},"success":"true","message":"Danh m\u1ee5c \u0111\u00e3 \u0111\u01b0\u1ee3c c\u1eadp nh\u1eadt!"}'
         headers: []
         description: ''
     responseFields: []
@@ -694,7 +694,7 @@ endpoints:
         name: category_id
         description: 'The ID of the category.'
         required: true
-        example: 2
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -712,7 +712,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      category_id: 2
+      category_id: 16
       category: 1
     queryParameters: []
     cleanQueryParameters: []

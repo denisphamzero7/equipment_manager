@@ -559,7 +559,7 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"data":[{"id":248,"name":"Ms. Elisabeth Okuneva","email":"gulgowski.asia@example.com","user_name":"idickens","status":"inactive","created_by":"N\/A","updated_by":"N\/A","assignments":[],"created_at":"01\/05\/2026 14:13:19","updated_at":"01\/05\/2026 14:13:19"},{"id":249,"name":"Mya DuBuque","email":"breitenberg.gilbert@example.com","user_name":"price.amber","status":"inactive","created_by":"N\/A","updated_by":"N\/A","assignments":[],"created_at":"01\/05\/2026 14:13:19","updated_at":"01\/05\/2026 14:13:19"}],"links":{"first":"\/?page=1","last":"\/?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo; Previous","page":null,"active":false},{"url":"\/?page=1","label":"1","page":1,"active":true},{"url":null,"label":"Next &raquo;","page":null,"active":false}],"path":"\/","per_page":10,"to":2,"total":2},"success":"true"}'
+        content: '{"data":[{"id":1,"name":"Ms. Elisabeth Okuneva","email":"gulgowski.asia@example.com","user_name":"idickens","status":"inactive","created_by":"N\/A","updated_by":"N\/A","assignments":[],"created_at":"18\/10\/2026 11:07:50","updated_at":"18\/10\/2026 11:07:50"},{"id":2,"name":"Mya DuBuque","email":"breitenberg.gilbert@example.com","user_name":"price.amber","status":"inactive","created_by":"N\/A","updated_by":"N\/A","assignments":[],"created_at":"18\/10\/2026 11:07:50","updated_at":"18\/10\/2026 11:07:50"}],"links":{"first":"\/?page=1","last":"\/?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo; Previous","page":null,"active":false},{"url":"\/?page=1","label":"1","page":1,"active":true},{"url":null,"label":"Next &raquo;","page":null,"active":false}],"path":"\/","per_page":10,"to":2,"total":2},"success":"true"}'
         headers: []
         description: ''
     responseFields: []
@@ -596,7 +596,7 @@ endpoints:
         name: user_id
         description: 'The ID of the user.'
         required: true
-        example: 1
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -614,7 +614,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      user_id: 1
+      user_id: 16
       user: 1
     queryParameters: []
     cleanQueryParameters: []
@@ -625,7 +625,7 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"data":{"id":250,"name":"Morgan Hirthe","email":"dare.emelie@example.com","user_name":"imclaughlin","status":"inactive","created_by":"N\/A","updated_by":"N\/A","assignments":[],"created_at":"01\/05\/2026 14:13:19","updated_at":"01\/05\/2026 14:13:19"},"success":"true"}'
+        content: '{"data":{"id":3,"name":"Morgan Hirthe","email":"dare.emelie@example.com","user_name":"imclaughlin","status":"inactive","created_by":"N\/A","updated_by":"N\/A","assignments":[],"created_at":"18\/10\/2026 11:07:50","updated_at":"18\/10\/2026 11:07:50"},"success":"true"}'
         headers: []
         description: ''
     responseFields: []
@@ -776,7 +776,7 @@ endpoints:
       -
         custom: []
         status: 201
-        content: '{"data":{"id":251,"name":"Ms. Elisabeth Okuneva","email":"idickens@example.org","user_name":"aschuster","status":"active","created_by":"N\/A","updated_by":"N\/A","assignments":[],"created_at":"01\/05\/2026 14:13:19","updated_at":"01\/05\/2026 14:13:19"},"success":"true","message":"T\u00e0i kho\u1ea3n \u0111\u00e3 \u0111\u01b0\u1ee3c t\u1ea1o th\u00e0nh c\u00f4ng!"}'
+        content: '{"data":{"id":4,"name":"Ms. Elisabeth Okuneva","email":"idickens@example.org","user_name":"aschuster","status":"active","created_by":"N\/A","updated_by":"N\/A","assignments":[],"created_at":"18\/10\/2026 11:07:50","updated_at":"18\/10\/2026 11:07:50"},"success":"true","message":"T\u00e0i kho\u1ea3n \u0111\u00e3 \u0111\u01b0\u1ee3c t\u1ea1o th\u00e0nh c\u00f4ng!"}'
         headers: []
         description: ''
     responseFields: []
@@ -813,7 +813,7 @@ endpoints:
         name: user_id
         description: 'The ID of the user.'
         required: true
-        example: 1
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -831,7 +831,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      user_id: 1
+      user_id: 16
       user: 1
     queryParameters: []
     cleanQueryParameters: []
@@ -951,7 +951,7 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"data":{"id":252,"name":"Ms. Elisabeth Okuneva","email":"aschuster@example.com","user_name":"gilbert32","status":"active","created_by":"N\/A","updated_by":"N\/A","assignments":[],"created_at":"01\/05\/2026 14:13:19","updated_at":"01\/05\/2026 14:13:19"},"success":"true","message":"T\u00e0i kho\u1ea3n \u0111\u00e3 \u0111\u01b0\u1ee3c c\u1eadp nh\u1eadt!"}'
+        content: '{"data":{"id":5,"name":"Ms. Elisabeth Okuneva","email":"aschuster@example.com","user_name":"gilbert32","status":"active","created_by":"N\/A","updated_by":"N\/A","assignments":[],"created_at":"18\/10\/2026 11:07:50","updated_at":"18\/10\/2026 11:07:50"},"success":"true","message":"T\u00e0i kho\u1ea3n \u0111\u00e3 \u0111\u01b0\u1ee3c c\u1eadp nh\u1eadt!"}'
         headers: []
         description: ''
     responseFields: []
@@ -988,7 +988,7 @@ endpoints:
         name: user_id
         description: 'The ID of the user.'
         required: true
-        example: 1
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -1006,7 +1006,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      user_id: 1
+      user_id: 16
       user: 1
     queryParameters: []
     cleanQueryParameters: []
@@ -1126,7 +1126,7 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"data":{"id":253,"name":"Ms. Elisabeth Okuneva","email":"gilbert32@example.com","user_name":"hirthe.theo","status":"active","created_by":"N\/A","updated_by":"N\/A","assignments":[],"created_at":"01\/05\/2026 14:13:19","updated_at":"01\/05\/2026 14:13:19"},"success":"true","message":"T\u00e0i kho\u1ea3n \u0111\u00e3 \u0111\u01b0\u1ee3c c\u1eadp nh\u1eadt!"}'
+        content: '{"data":{"id":6,"name":"Ms. Elisabeth Okuneva","email":"gilbert32@example.com","user_name":"hirthe.theo","status":"active","created_by":"N\/A","updated_by":"N\/A","assignments":[],"created_at":"18\/10\/2026 11:07:50","updated_at":"18\/10\/2026 11:07:50"},"success":"true","message":"T\u00e0i kho\u1ea3n \u0111\u00e3 \u0111\u01b0\u1ee3c c\u1eadp nh\u1eadt!"}'
         headers: []
         description: ''
     responseFields: []
@@ -1163,7 +1163,7 @@ endpoints:
         name: user_id
         description: 'The ID of the user.'
         required: true
-        example: 1
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -1181,7 +1181,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      user_id: 1
+      user_id: 16
       user: 1
     queryParameters: []
     cleanQueryParameters: []
@@ -1229,7 +1229,7 @@ endpoints:
         name: user_id
         description: 'The ID of the user.'
         required: true
-        example: 1
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -1247,7 +1247,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      user_id: 1
+      user_id: 16
       user: 1
     queryParameters: []
     cleanQueryParameters: []
@@ -1270,7 +1270,7 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"data":{"id":254,"name":"Morgan Hirthe","email":"imclaughlin@example.org","user_name":"okeefe.isidro","status":"inactive","created_by":"N\/A","updated_by":"N\/A","assignments":[],"created_at":"01\/05\/2026 14:13:20","updated_at":"01\/05\/2026 14:13:20"},"success":"true","message":"C\u1eadp nh\u1eadt tr\u1ea1ng th\u00e1i th\u00e0nh c\u00f4ng!"}'
+        content: '{"data":{"id":7,"name":"Morgan Hirthe","email":"imclaughlin@example.org","user_name":"okeefe.isidro","status":"inactive","created_by":"N\/A","updated_by":"N\/A","assignments":[],"created_at":"18\/10\/2026 11:07:50","updated_at":"18\/10\/2026 11:07:50"},"success":"true","message":"C\u1eadp nh\u1eadt tr\u1ea1ng th\u00e1i th\u00e0nh c\u00f4ng!"}'
         headers: []
         description: ''
     responseFields: []

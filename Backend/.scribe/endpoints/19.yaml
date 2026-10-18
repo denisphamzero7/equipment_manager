@@ -1,0 +1,1029 @@
+name: 'Quản lý Trang thiết bị Khách sạn'
+description: |-
+
+  API quản lý cá thể thiết bị, điều chuyển kho - phòng, báo hỏng, kiểm kê và xuất nhập Excel.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/equipments/stats
+    metadata:
+      custom: []
+      groupName: 'Quản lý Trang thiết bị Khách sạn'
+      groupDescription: |-
+
+        API quản lý cá thể thiết bị, điều chuyển kho - phòng, báo hỏng, kiểm kê và xuất nhập Excel.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Báo cáo thống kê toàn khách sạn'
+      description: 'Thống kê tổng số lượng TV, Remote, Box, Wifi...; phân loại theo tốt, hỏng, trong kho, bảo trì.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_ACCESS_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 404
+        content: |-
+          {
+              "message": "The route laravel_hq/quandh-core/public/api/equipments/stats could not be found."
+          }
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/equipments/export
+    metadata:
+      custom: []
+      groupName: 'Quản lý Trang thiết bị Khách sạn'
+      groupDescription: |-
+
+        API quản lý cá thể thiết bị, điều chuyển kho - phòng, báo hỏng, kiểm kê và xuất nhập Excel.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Xuất danh sách thiết bị ra Excel'
+      description: 'Xuất ra các trường: ID, Mã Serial, Danh mục, Mẫu thiết bị, Thương hiệu, Phòng đặt, Vị trí trong phòng, Trạng thái, Ghi chú tình trạng, Ngày lắp đặt, Ngày tạo.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_ACCESS_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 404
+        content: |-
+          {
+              "message": "The route laravel_hq/quandh-core/public/api/equipments/export could not be found."
+          }
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/equipments/import
+    metadata:
+      custom: []
+      groupName: 'Quản lý Trang thiết bị Khách sạn'
+      groupDescription: |-
+
+        API quản lý cá thể thiết bị, điều chuyển kho - phòng, báo hỏng, kiểm kê và xuất nhập Excel.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Nhập danh sách thiết bị từ Excel'
+      description: 'Cột bắt buộc: mau_thiet_bi (hoặc model_name). Cột không bắt buộc: ma_serial, so_phong, trang_thai (mặc định good), vi_tri_trong_phong, ghi_chu.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_ACCESS_TOKEN}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      file:
+        custom: []
+        name: file
+        description: 'Must be a file. Must not be greater than 10240 kilobytes.'
+        required: true
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters: []
+    fileParameters:
+      file: null
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/equipments/assign-to-room
+    metadata:
+      custom: []
+      groupName: 'Quản lý Trang thiết bị Khách sạn'
+      groupDescription: |-
+
+        API quản lý cá thể thiết bị, điều chuyển kho - phòng, báo hỏng, kiểm kê và xuất nhập Excel.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Điều chuyển thiết bị (Gán phòng hoặc thu hồi về kho)'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_ACCESS_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      equipment_id:
+        custom: []
+        name: equipment_id
+        description: 'The <code>id</code> of an existing record in the room_equipments table.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      room_id:
+        custom: []
+        name: room_id
+        description: 'The <code>id</code> of an existing record in the rooms table.'
+        required: false
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      position_note:
+        custom: []
+        name: position_note
+        description: 'Must not be greater than 255 characters.'
+        required: false
+        example: 'n'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      equipment_id: 16
+      room_id: 16
+      position_note: 'n'
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/equipments/{id}/report-broken'
+    metadata:
+      custom: []
+      groupName: 'Quản lý Trang thiết bị Khách sạn'
+      groupDescription: |-
+
+        API quản lý cá thể thiết bị, điều chuyển kho - phòng, báo hỏng, kiểm kê và xuất nhập Excel.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Báo hỏng thiết bị (Kèm ảnh hiện trường)'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_ACCESS_TOKEN}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the equipment.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      issue_description:
+        custom: []
+        name: issue_description
+        description: 'Must not be greater than 1000 characters.'
+        required: true
+        example: b
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      broken_photo:
+        custom: []
+        name: broken_photo
+        description: 'Must be an image. Must not be greater than 10240 kilobytes.'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      issue_description: b
+    fileParameters:
+      broken_photo: null
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/equipments/{id}/upload-photo'
+    metadata:
+      custom: []
+      groupName: 'Quản lý Trang thiết bị Khách sạn'
+      groupDescription: |-
+
+        API quản lý cá thể thiết bị, điều chuyển kho - phòng, báo hỏng, kiểm kê và xuất nhập Excel.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Tải ảnh cho thiết bị'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_ACCESS_TOKEN}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the equipment.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      file:
+        custom: []
+        name: file
+        description: 'Must be an image. Must not be greater than 10240 kilobytes.'
+        required: true
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      collection:
+        custom: []
+        name: collection
+        description: ''
+        required: false
+        example: broken_photos
+        type: string
+        enumValues:
+          - equipment_photos
+          - broken_photos
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      collection: broken_photos
+    fileParameters:
+      file: null
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PATCH
+    uri: 'api/equipments/{id}/status'
+    metadata:
+      custom: []
+      groupName: 'Quản lý Trang thiết bị Khách sạn'
+      groupDescription: |-
+
+        API quản lý cá thể thiết bị, điều chuyển kho - phòng, báo hỏng, kiểm kê và xuất nhập Excel.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Đổi trạng thái thiết bị nhanh'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_ACCESS_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the equipment.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      status:
+        custom: []
+        name: status
+        description: ''
+        required: true
+        example: in_stock
+        type: string
+        enumValues:
+          - good
+          - broken
+          - maintenance
+          - lost
+          - in_stock
+          - disposed
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      note:
+        custom: []
+        name: note
+        description: 'Must not be greater than 1000 characters.'
+        required: false
+        example: b
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      status: in_stock
+      note: b
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PATCH
+    uri: api/equipments/bulk/status
+    metadata:
+      custom: []
+      groupName: 'Quản lý Trang thiết bị Khách sạn'
+      groupDescription: |-
+
+        API quản lý cá thể thiết bị, điều chuyển kho - phòng, báo hỏng, kiểm kê và xuất nhập Excel.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Cập nhật trạng thái hàng loạt'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_ACCESS_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      ids:
+        custom: []
+        name: ids
+        description: 'The <code>id</code> of an existing record in the room_equipments table.'
+        required: true
+        example:
+          - 16
+        type: 'integer[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      status:
+        custom: []
+        name: status
+        description: ''
+        required: true
+        example: lost
+        type: string
+        enumValues:
+          - good
+          - broken
+          - maintenance
+          - lost
+          - in_stock
+          - disposed
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      note:
+        custom: []
+        name: note
+        description: 'Must not be greater than 1000 characters.'
+        required: false
+        example: 'n'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      ids:
+        - 16
+      status: lost
+      note: 'n'
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/equipments/bulk/destroy
+    metadata:
+      custom: []
+      groupName: 'Quản lý Trang thiết bị Khách sạn'
+      groupDescription: |-
+
+        API quản lý cá thể thiết bị, điều chuyển kho - phòng, báo hỏng, kiểm kê và xuất nhập Excel.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Xóa hàng loạt'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_ACCESS_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      ids:
+        custom: []
+        name: ids
+        description: 'The <code>id</code> of an existing record in the room_equipments table.'
+        required: true
+        example:
+          - 16
+        type: 'integer[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      ids:
+        - 16
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/equipments
+    metadata:
+      custom: []
+      groupName: 'Quản lý Trang thiết bị Khách sạn'
+      groupDescription: |-
+
+        API quản lý cá thể thiết bị, điều chuyển kho - phòng, báo hỏng, kiểm kê và xuất nhập Excel.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Danh sách thiết bị'
+      description: 'Lấy danh sách thiết bị có phân trang, lọc theo trạng thái, phòng, danh mục.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_ACCESS_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 404
+        content: |-
+          {
+              "message": "The route laravel_hq/quandh-core/public/api/equipments could not be found."
+          }
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/equipments/{id}'
+    metadata:
+      custom: []
+      groupName: 'Quản lý Trang thiết bị Khách sạn'
+      groupDescription: |-
+
+        API quản lý cá thể thiết bị, điều chuyển kho - phòng, báo hỏng, kiểm kê và xuất nhập Excel.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Chi tiết thiết bị'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_ACCESS_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the equipment.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 404
+        content: |-
+          {
+              "message": "The route laravel_hq/quandh-core/public/api/equipments/architecto could not be found."
+          }
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/equipments
+    metadata:
+      custom: []
+      groupName: 'Quản lý Trang thiết bị Khách sạn'
+      groupDescription: |-
+
+        API quản lý cá thể thiết bị, điều chuyển kho - phòng, báo hỏng, kiểm kê và xuất nhập Excel.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Thêm mới thiết bị'
+      description: 'Tạo mới thiết bị kèm số serial, vị trí và ảnh chụp nếu có.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_ACCESS_TOKEN}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      equipment_model_id:
+        custom: []
+        name: equipment_model_id
+        description: 'The <code>id</code> of an existing record in the equipment_models table.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      serial_number:
+        custom: []
+        name: serial_number
+        description: 'Must not be greater than 100 characters.'
+        required: false
+        example: 'n'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      room_id:
+        custom: []
+        name: room_id
+        description: 'The <code>id</code> of an existing record in the rooms table.'
+        required: false
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      status:
+        custom: []
+        name: status
+        description: ''
+        required: false
+        example: in_stock
+        type: string
+        enumValues:
+          - good
+          - broken
+          - maintenance
+          - lost
+          - in_stock
+          - disposed
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      position_note:
+        custom: []
+        name: position_note
+        description: 'Must not be greater than 255 characters.'
+        required: false
+        example: 'n'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      note:
+        custom: []
+        name: note
+        description: 'Must not be greater than 1000 characters.'
+        required: false
+        example: g
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      installed_at:
+        custom: []
+        name: installed_at
+        description: 'Must be a valid date.'
+        required: false
+        example: '2026-10-18T11:08:00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      photo:
+        custom: []
+        name: photo
+        description: 'Must be an image. Must not be greater than 10240 kilobytes.'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      equipment_model_id: 16
+      serial_number: 'n'
+      room_id: 16
+      status: in_stock
+      position_note: 'n'
+      note: g
+      installed_at: '2026-10-18T11:08:00'
+    fileParameters:
+      photo: null
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+    uri: 'api/equipments/{id}'
+    metadata:
+      custom: []
+      groupName: 'Quản lý Trang thiết bị Khách sạn'
+      groupDescription: |-
+
+        API quản lý cá thể thiết bị, điều chuyển kho - phòng, báo hỏng, kiểm kê và xuất nhập Excel.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Cập nhật thông tin thiết bị'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_ACCESS_TOKEN}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the equipment.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      equipment_model_id:
+        custom: []
+        name: equipment_model_id
+        description: 'The <code>id</code> of an existing record in the equipment_models table.'
+        required: false
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      serial_number:
+        custom: []
+        name: serial_number
+        description: 'Must not be greater than 100 characters.'
+        required: false
+        example: 'n'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      room_id:
+        custom: []
+        name: room_id
+        description: 'The <code>id</code> of an existing record in the rooms table.'
+        required: false
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      status:
+        custom: []
+        name: status
+        description: ''
+        required: false
+        example: good
+        type: string
+        enumValues:
+          - good
+          - broken
+          - maintenance
+          - lost
+          - in_stock
+          - disposed
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      position_note:
+        custom: []
+        name: position_note
+        description: 'Must not be greater than 255 characters.'
+        required: false
+        example: 'n'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      note:
+        custom: []
+        name: note
+        description: 'Must not be greater than 1000 characters.'
+        required: false
+        example: g
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      installed_at:
+        custom: []
+        name: installed_at
+        description: 'Must be a valid date.'
+        required: false
+        example: '2026-10-18T11:08:00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      photo:
+        custom: []
+        name: photo
+        description: 'Must be an image. Must not be greater than 10240 kilobytes.'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      equipment_model_id: 16
+      serial_number: 'n'
+      room_id: 16
+      status: good
+      position_note: 'n'
+      note: g
+      installed_at: '2026-10-18T11:08:00'
+    fileParameters:
+      photo: null
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/equipments/{id}'
+    metadata:
+      custom: []
+      groupName: 'Quản lý Trang thiết bị Khách sạn'
+      groupDescription: |-
+
+        API quản lý cá thể thiết bị, điều chuyển kho - phòng, báo hỏng, kiểm kê và xuất nhập Excel.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Xóa thiết bị'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_ACCESS_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the equipment.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Laravel API Documentation</title>
+    <title>equipment_manager API Documentation</title>
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
 
@@ -121,6 +121,16 @@
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="category-danh-muc-DELETEapi-category--category_id-">
                                 <a href="#category-danh-muc-DELETEapi-category--category_id-">Xóa danh mục</a>
+                            </li>
+                                                                        </ul>
+                            </ul>
+                    <ul id="tocify-header-chi-tiet-thiet-bi-phong" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="chi-tiet-thiet-bi-phong">
+                    <a href="#chi-tiet-thiet-bi-phong">Chi tiết Thiết bị Phòng</a>
+                </li>
+                                    <ul id="tocify-subheader-chi-tiet-thiet-bi-phong" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="chi-tiet-thiet-bi-phong-GETapi-equipments-rooms--roomId-">
+                                <a href="#chi-tiet-thiet-bi-phong-GETapi-equipments-rooms--roomId-">Chi tiết thiết bị của một phòng</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -634,6 +644,76 @@
                             </li>
                                                                         </ul>
                             </ul>
+                    <ul id="tocify-header-endpoints" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="endpoints">
+                    <a href="#endpoints">Endpoints</a>
+                </li>
+                                    <ul id="tocify-subheader-endpoints" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="endpoints-GETapi-job-stats">
+                                <a href="#endpoints-GETapi-job-stats">Thống kê công việc</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-job-export">
+                                <a href="#endpoints-GETapi-job-export">Xuất danh sách công việc (Excel)</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTapi-job-import">
+                                <a href="#endpoints-POSTapi-job-import">Nhập danh sách công việc</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTapi-job-bulk-delete">
+                                <a href="#endpoints-POSTapi-job-bulk-delete">Xóa hàng loạt công việc</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTapi-job-bulk-update-status">
+                                <a href="#endpoints-POSTapi-job-bulk-update-status">Cập nhật trạng thái hàng loạt</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-job">
+                                <a href="#endpoints-GETapi-job">Danh sách công việc</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-job--job_id-">
+                                <a href="#endpoints-GETapi-job--job_id-">Chi tiết công việc</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTapi-job">
+                                <a href="#endpoints-POSTapi-job">Tạo công việc mới</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-PUTapi-job--job_id-">
+                                <a href="#endpoints-PUTapi-job--job_id-">Cập nhật công việc</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-DELETEapi-job--job_id-">
+                                <a href="#endpoints-DELETEapi-job--job_id-">Xóa công việc</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-PATCHapi-job--job_id--status">
+                                <a href="#endpoints-PATCHapi-job--job_id--status">Thay đổi trạng thái công việc</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-motel-export">
+                                <a href="#endpoints-GETapi-motel-export">GET api/motel/export</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTapi-motel-import">
+                                <a href="#endpoints-POSTapi-motel-import">POST api/motel/import</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTapi-motel-bulk-delete">
+                                <a href="#endpoints-POSTapi-motel-bulk-delete">POST api/motel/bulk-delete</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-motel">
+                                <a href="#endpoints-GETapi-motel">GET api/motel</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-motel--room-">
+                                <a href="#endpoints-GETapi-motel--room-">GET api/motel/{room}</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTapi-motel">
+                                <a href="#endpoints-POSTapi-motel">POST api/motel</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-PUTapi-motel--room-">
+                                <a href="#endpoints-PUTapi-motel--room-">PUT api/motel/{room}</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-PATCHapi-motel--room-">
+                                <a href="#endpoints-PATCHapi-motel--room-">PATCH api/motel/{room}</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-DELETEapi-motel--room-">
+                                <a href="#endpoints-DELETEapi-motel--room-">DELETE api/motel/{room}</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-PATCHapi-motel--room--status">
+                                <a href="#endpoints-PATCHapi-motel--room--status">PATCH api/motel/{room}/status</a>
+                            </li>
+                                                                        </ul>
+                            </ul>
                     <ul id="tocify-header-post-category" class="tocify-header">
                 <li class="tocify-item level-1" data-unique="post-category">
                     <a href="#post-category">Post - Category</a>
@@ -732,6 +812,68 @@
                             </li>
                                                                         </ul>
                             </ul>
+                    <ul id="tocify-header-quan-ly-trang-thiet-bi-khach-san" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="quan-ly-trang-thiet-bi-khach-san">
+                    <a href="#quan-ly-trang-thiet-bi-khach-san">Quản lý Trang thiết bị Khách sạn</a>
+                </li>
+                                    <ul id="tocify-subheader-quan-ly-trang-thiet-bi-khach-san" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="quan-ly-trang-thiet-bi-khach-san-GETapi-equipments-stats">
+                                <a href="#quan-ly-trang-thiet-bi-khach-san-GETapi-equipments-stats">Báo cáo thống kê toàn khách sạn</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="quan-ly-trang-thiet-bi-khach-san-GETapi-equipments-export">
+                                <a href="#quan-ly-trang-thiet-bi-khach-san-GETapi-equipments-export">Xuất danh sách thiết bị ra Excel</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="quan-ly-trang-thiet-bi-khach-san-POSTapi-equipments-import">
+                                <a href="#quan-ly-trang-thiet-bi-khach-san-POSTapi-equipments-import">Nhập danh sách thiết bị từ Excel</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="quan-ly-trang-thiet-bi-khach-san-POSTapi-equipments-assign-to-room">
+                                <a href="#quan-ly-trang-thiet-bi-khach-san-POSTapi-equipments-assign-to-room">Điều chuyển thiết bị (Gán phòng hoặc thu hồi về kho)</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="quan-ly-trang-thiet-bi-khach-san-POSTapi-equipments--id--report-broken">
+                                <a href="#quan-ly-trang-thiet-bi-khach-san-POSTapi-equipments--id--report-broken">Báo hỏng thiết bị (Kèm ảnh hiện trường)</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="quan-ly-trang-thiet-bi-khach-san-POSTapi-equipments--id--upload-photo">
+                                <a href="#quan-ly-trang-thiet-bi-khach-san-POSTapi-equipments--id--upload-photo">Tải ảnh cho thiết bị</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="quan-ly-trang-thiet-bi-khach-san-PATCHapi-equipments--id--status">
+                                <a href="#quan-ly-trang-thiet-bi-khach-san-PATCHapi-equipments--id--status">Đổi trạng thái thiết bị nhanh</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="quan-ly-trang-thiet-bi-khach-san-PATCHapi-equipments-bulk-status">
+                                <a href="#quan-ly-trang-thiet-bi-khach-san-PATCHapi-equipments-bulk-status">Cập nhật trạng thái hàng loạt</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="quan-ly-trang-thiet-bi-khach-san-POSTapi-equipments-bulk-destroy">
+                                <a href="#quan-ly-trang-thiet-bi-khach-san-POSTapi-equipments-bulk-destroy">Xóa hàng loạt</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="quan-ly-trang-thiet-bi-khach-san-GETapi-equipments">
+                                <a href="#quan-ly-trang-thiet-bi-khach-san-GETapi-equipments">Danh sách thiết bị</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="quan-ly-trang-thiet-bi-khach-san-GETapi-equipments--id-">
+                                <a href="#quan-ly-trang-thiet-bi-khach-san-GETapi-equipments--id-">Chi tiết thiết bị</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="quan-ly-trang-thiet-bi-khach-san-POSTapi-equipments">
+                                <a href="#quan-ly-trang-thiet-bi-khach-san-POSTapi-equipments">Thêm mới thiết bị</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="quan-ly-trang-thiet-bi-khach-san-PUTapi-equipments--id-">
+                                <a href="#quan-ly-trang-thiet-bi-khach-san-PUTapi-equipments--id-">Cập nhật thông tin thiết bị</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="quan-ly-trang-thiet-bi-khach-san-DELETEapi-equipments--id-">
+                                <a href="#quan-ly-trang-thiet-bi-khach-san-DELETEapi-equipments--id-">Xóa thiết bị</a>
+                            </li>
+                                                                        </ul>
+                            </ul>
+                    <ul id="tocify-header-so-do-khach-san-thiet-bi-hotel-map-view" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="so-do-khach-san-thiet-bi-hotel-map-view">
+                    <a href="#so-do-khach-san-thiet-bi-hotel-map-view">Sơ đồ Khách sạn & Thiết bị (Hotel Map View)</a>
+                </li>
+                                    <ul id="tocify-subheader-so-do-khach-san-thiet-bi-hotel-map-view" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="so-do-khach-san-thiet-bi-hotel-map-view-GETapi-equipments-map-view-blocks">
+                                <a href="#so-do-khach-san-thiet-bi-hotel-map-view-GETapi-equipments-map-view-blocks">Danh sách Block / Khu vực của khách sạn</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="so-do-khach-san-thiet-bi-hotel-map-view-GETapi-equipments-map-view">
+                                <a href="#so-do-khach-san-thiet-bi-hotel-map-view-GETapi-equipments-map-view">Dữ liệu sơ đồ mặt bằng phòng (Map View)</a>
+                            </li>
+                                                                        </ul>
+                            </ul>
             </div>
 
     <ul class="toc-footer" id="toc-footer">
@@ -741,7 +883,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: May 1, 2026</li>
+        <li>Last updated: October 18, 2026</li>
     </ul>
 </div>
 
@@ -2190,7 +2332,7 @@ Must be one of:
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "file=@C:\Users\Admin\AppData\Local\Temp\php6C67.tmp" </code></pre></div>
+    --form "file=@/tmp/php8u4ftft8ulrm4kVgphE" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -2230,7 +2372,7 @@ $response = $client-&gt;post(
         'multipart' =&gt; [
             [
                 'name' =&gt; 'file',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php6C67.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/php8u4ftft8ulrm4kVgphE', 'r')
             ],
         ],
     ]
@@ -2358,7 +2500,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>File Excel (.xlsx, .xls, .csv). Example: <code>C:\Users\Admin\AppData\Local\Temp\php6C67.tmp</code></p>
+<p>File Excel (.xlsx, .xls, .csv). Example: <code>/tmp/php8u4ftft8ulrm4kVgphE</code></p>
         </div>
         </form>
 
@@ -2657,22 +2799,22 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 166,
-            &quot;title&quot;: &quot;Eius et animi.&quot;,
+            &quot;id&quot;: null,
+            &quot;title&quot;: &quot;Commodi incidunt.&quot;,
             &quot;status&quot;: &quot;active&quot;,
-            &quot;description&quot;: &quot;Et fugiat sunt nihil accusantium. Mollitia modi deserunt aut ab provident perspiciatis quo. Nostrum aut adipisci quidem nostrum.&quot;,
-            &quot;created_at&quot;: &quot;01/05/2026 14:13:22&quot;,
-            &quot;updated_at&quot;: &quot;01/05/2026 14:13:22&quot;,
+            &quot;description&quot;: &quot;Et et modi ipsum nostrum. Autem et consequatur aut dolores enim non facere tempora.&quot;,
+            &quot;created_at&quot;: null,
+            &quot;updated_at&quot;: null,
             &quot;created_by&quot;: null,
             &quot;updated_by&quot;: null
         },
         {
-            &quot;id&quot;: 167,
-            &quot;title&quot;: &quot;Commodi incidunt.&quot;,
+            &quot;id&quot;: null,
+            &quot;title&quot;: &quot;Alias tenetur ratione nemo.&quot;,
             &quot;status&quot;: &quot;active&quot;,
-            &quot;description&quot;: &quot;Et et modi ipsum nostrum. Autem et consequatur aut dolores enim non facere tempora.&quot;,
-            &quot;created_at&quot;: &quot;01/05/2026 14:13:22&quot;,
-            &quot;updated_at&quot;: &quot;01/05/2026 14:13:22&quot;,
+            &quot;description&quot;: &quot;Ut et recusandae modi rerum ex repellendus. Et tenetur ab reiciendis quia perspiciatis deserunt ducimus.&quot;,
+            &quot;created_at&quot;: null,
+            &quot;updated_at&quot;: null,
             &quot;created_by&quot;: null,
             &quot;updated_by&quot;: null
         }
@@ -2912,7 +3054,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/laravel_hq/quandh-core/public/api/category/2" \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/category/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -2921,7 +3063,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/category/2"
+    "http://localhost/laravel_hq/quandh-core/public/api/category/16"
 );
 
 const headers = {
@@ -2940,7 +3082,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/category/2';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/category/16';
 $response = $client-&gt;get(
     $url,
     [
@@ -2965,12 +3107,12 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 169,
-        &quot;title&quot;: &quot;Adipisci quidem nostrum qui.&quot;,
-        &quot;status&quot;: &quot;active&quot;,
-        &quot;description&quot;: &quot;Iure odit et et modi ipsum nostrum omnis. Et consequatur aut dolores enim. Facere tempora ex voluptatem laboriosam. Quis adipisci molestias fugit deleniti distinctio eum.&quot;,
-        &quot;created_at&quot;: &quot;01/05/2026 14:13:22&quot;,
-        &quot;updated_at&quot;: &quot;01/05/2026 14:13:22&quot;,
+        &quot;id&quot;: null,
+        &quot;title&quot;: null,
+        &quot;status&quot;: null,
+        &quot;description&quot;: null,
+        &quot;created_at&quot;: null,
+        &quot;updated_at&quot;: null,
         &quot;created_by&quot;: null,
         &quot;updated_by&quot;: null
     },
@@ -3081,10 +3223,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="category_id"                data-endpoint="GETapi-category--category_id-"
-               value="2"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the category. Example: <code>2</code></p>
+<p>The ID of the category. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>category</code></b>&nbsp;&nbsp;
@@ -3190,12 +3332,12 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 170,
-        &quot;title&quot;: &quot;Eius et animi.&quot;,
+        &quot;id&quot;: null,
+        &quot;title&quot;: &quot;Commodi incidunt.&quot;,
         &quot;status&quot;: &quot;active&quot;,
-        &quot;description&quot;: &quot;Et fugiat sunt nihil accusantium. Mollitia modi deserunt aut ab provident perspiciatis quo. Nostrum aut adipisci quidem nostrum.&quot;,
-        &quot;created_at&quot;: &quot;01/05/2026 14:13:22&quot;,
-        &quot;updated_at&quot;: &quot;01/05/2026 14:13:22&quot;,
+        &quot;description&quot;: &quot;Et et modi ipsum nostrum. Autem et consequatur aut dolores enim non facere tempora.&quot;,
+        &quot;created_at&quot;: null,
+        &quot;updated_at&quot;: null,
         &quot;created_by&quot;: null,
         &quot;updated_by&quot;: null
     },
@@ -3376,7 +3518,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/laravel_hq/quandh-core/public/api/category/2" \
+    "http://localhost/laravel_hq/quandh-core/public/api/category/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -3393,7 +3535,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/category/2"
+    "http://localhost/laravel_hq/quandh-core/public/api/category/16"
 );
 
 const headers = {
@@ -3420,7 +3562,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/category/2';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/category/16';
 $response = $client-&gt;put(
     $url,
     [
@@ -3452,12 +3594,12 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 171,
-        &quot;title&quot;: &quot;Et animi quos.&quot;,
+        &quot;id&quot;: null,
+        &quot;title&quot;: &quot;Et et modi.&quot;,
         &quot;status&quot;: &quot;active&quot;,
-        &quot;description&quot;: &quot;Fugiat sunt nihil accusantium harum mollitia. Deserunt aut ab provident perspiciatis quo omnis nostrum. Adipisci quidem nostrum qui commodi incidunt iure.&quot;,
-        &quot;created_at&quot;: &quot;01/05/2026 14:13:22&quot;,
-        &quot;updated_at&quot;: &quot;01/05/2026 14:13:22&quot;,
+        &quot;description&quot;: &quot;Omnis autem et consequatur. Dolores enim non facere tempora. Voluptatem laboriosam praesentium quis adipisci.&quot;,
+        &quot;created_at&quot;: null,
+        &quot;updated_at&quot;: null,
         &quot;created_by&quot;: null,
         &quot;updated_by&quot;: null
     },
@@ -3569,10 +3711,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="category_id"                data-endpoint="PUTapi-category--category_id-"
-               value="2"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the category. Example: <code>2</code></p>
+<p>The ID of the category. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>category</code></b>&nbsp;&nbsp;
@@ -3663,7 +3805,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/laravel_hq/quandh-core/public/api/category/2" \
+    "http://localhost/laravel_hq/quandh-core/public/api/category/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -3672,7 +3814,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/category/2"
+    "http://localhost/laravel_hq/quandh-core/public/api/category/16"
 );
 
 const headers = {
@@ -3691,7 +3833,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/category/2';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/category/16';
 $response = $client-&gt;delete(
     $url,
     [
@@ -3823,10 +3965,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="category_id"                data-endpoint="DELETEapi-category--category_id-"
-               value="2"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the category. Example: <code>2</code></p>
+<p>The ID of the category. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>category</code></b>&nbsp;&nbsp;
@@ -3839,6 +3981,181 @@ You can check the Dev Tools console for debugging information.</code></pre>
                data-component="url">
     <br>
 <p>ID danh mục cần xóa. Example: <code>1</code></p>
+            </div>
+                    </form>
+
+                <h1 id="chi-tiet-thiet-bi-phong">Chi tiết Thiết bị Phòng</h1>
+
+    <p>API hiển thị chi tiết thiết bị khi người dùng nhấp chọn 1 phòng trên sơ đồ khách sạn.</p>
+
+                                <h2 id="chi-tiet-thiet-bi-phong-GETapi-equipments-rooms--roomId-">Chi tiết thiết bị của một phòng</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Hiển thị toàn bộ TV, Remote, Box, Wifi của phòng; phân loại theo quy cách (32", 40"), tình trạng tốt/hỏng và đối soát thiết bị thiếu.</p>
+
+<span id="example-requests-GETapi-equipments-rooms--roomId-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/equipments/rooms/architecto" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/rooms/architecto"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/equipments/rooms/architecto';
+$response = $client-&gt;get(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-equipments-rooms--roomId-">
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;The route laravel_hq/quandh-core/public/api/equipments/rooms/architecto could not be found.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-equipments-rooms--roomId-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-equipments-rooms--roomId-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-equipments-rooms--roomId-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-equipments-rooms--roomId-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-equipments-rooms--roomId-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-equipments-rooms--roomId-" data-method="GET"
+      data-path="api/equipments/rooms/{roomId}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-equipments-rooms--roomId-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-equipments-rooms--roomId-"
+                    onclick="tryItOut('GETapi-equipments-rooms--roomId-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-equipments-rooms--roomId-"
+                    onclick="cancelTryOut('GETapi-equipments-rooms--roomId-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-equipments-rooms--roomId-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/equipments/rooms/{roomId}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-equipments-rooms--roomId-"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-equipments-rooms--roomId-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-equipments-rooms--roomId-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>roomId</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="roomId"                data-endpoint="GETapi-equipments-rooms--roomId-"
+               value="architecto"
+               data-component="url">
+    <br>
+<p>Example: <code>architecto</code></p>
             </div>
                     </form>
 
@@ -5138,7 +5455,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 99,
+            &quot;id&quot;: 1,
             &quot;description&quot;: &quot;Et animi quos velit et fugiat.&quot;,
             &quot;user_type&quot;: &quot;User&quot;,
             &quot;user_id&quot;: null,
@@ -5149,15 +5466,15 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;status_code&quot;: 404,
             &quot;ip_address&quot;: &quot;125.161.29.220&quot;,
             &quot;country&quot;: &quot;Pakistan&quot;,
-            &quot;user_agent&quot;: &quot;Mozilla/5.0 (Windows NT 5.0; en-US; rv:1.9.2.20) Gecko/20250507 Firefox/35.0&quot;,
+            &quot;user_agent&quot;: &quot;Mozilla/5.0 (Windows NT 5.0; en-US; rv:1.9.2.20) Gecko/20230109 Firefox/35.0&quot;,
             &quot;request_data&quot;: {
                 &quot;sample&quot;: &quot;et&quot;
             },
-            &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:55 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:55 18/10/2026&quot;
         },
         {
-            &quot;id&quot;: 100,
+            &quot;id&quot;: 2,
             &quot;description&quot;: &quot;Aut dolores enim non facere tempora ex voluptatem.&quot;,
             &quot;user_type&quot;: &quot;User&quot;,
             &quot;user_id&quot;: null,
@@ -5172,8 +5489,8 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;request_data&quot;: {
                 &quot;sample&quot;: &quot;accusamus&quot;
             },
-            &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:55 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:55 18/10/2026&quot;
         }
     ],
     &quot;links&quot;: {
@@ -5435,7 +5752,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/laravel_hq/quandh-core/public/api/log-activities/4" \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/log-activities/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -5444,7 +5761,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/log-activities/4"
+    "http://localhost/laravel_hq/quandh-core/public/api/log-activities/16"
 );
 
 const headers = {
@@ -5463,7 +5780,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/log-activities/4';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/log-activities/16';
 $response = $client-&gt;get(
     $url,
     [
@@ -5488,12 +5805,12 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 101,
+        &quot;id&quot;: 3,
         &quot;description&quot;: &quot;Adipisci quidem nostrum qui commodi incidunt iure.&quot;,
         &quot;user_type&quot;: &quot;User&quot;,
-        &quot;user_id&quot;: 255,
+        &quot;user_id&quot;: 8,
         &quot;user_name&quot;: &quot;Bridget Schaden&quot;,
-        &quot;organization_id&quot;: 576,
+        &quot;organization_id&quot;: 21,
         &quot;route&quot;: &quot;https://mclaughlin.com/ipsum-nostrum-omnis-autem-et-consequatur-aut-dolores-enim.html&quot;,
         &quot;method_type&quot;: &quot;POST&quot;,
         &quot;status_code&quot;: 401,
@@ -5503,8 +5820,8 @@ print_r(json_decode((string) $body));</code></pre></div>
         &quot;request_data&quot;: {
             &quot;sample&quot;: &quot;veniam&quot;
         },
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:55 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:55 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;
 }</code>
@@ -5613,10 +5930,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="logActivity_id"                data-endpoint="GETapi-log-activities--logActivity_id-"
-               value="4"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the logActivity. Example: <code>4</code></p>
+<p>The ID of the logActivity. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>logActivity</code></b>&nbsp;&nbsp;
@@ -5646,7 +5963,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/laravel_hq/quandh-core/public/api/log-activities/4" \
+    "http://localhost/laravel_hq/quandh-core/public/api/log-activities/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -5655,7 +5972,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/log-activities/4"
+    "http://localhost/laravel_hq/quandh-core/public/api/log-activities/16"
 );
 
 const headers = {
@@ -5674,7 +5991,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/log-activities/4';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/log-activities/16';
 $response = $client-&gt;delete(
     $url,
     [
@@ -5806,10 +6123,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="logActivity_id"                data-endpoint="DELETEapi-log-activities--logActivity_id-"
-               value="4"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the logActivity. Example: <code>4</code></p>
+<p>The ID of the logActivity. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>logActivity</code></b>&nbsp;&nbsp;
@@ -5914,7 +6231,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 556,
+            &quot;id&quot;: 1,
             &quot;name&quot;: &quot;Bailey Inc&quot;,
             &quot;slug&quot;: &quot;quos-velit-et-fugiat-sunt-nihil-accusantium-harum&quot;,
             &quot;description&quot;: null,
@@ -5924,11 +6241,11 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;depth&quot;: 0,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:19 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:19 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:48 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:48 18/10/2026&quot;
         },
         {
-            &quot;id&quot;: 557,
+            &quot;id&quot;: 2,
             &quot;name&quot;: &quot;DuBuque Inc&quot;,
             &quot;slug&quot;: &quot;quo-omnis-nostrum-aut-adipisci&quot;,
             &quot;description&quot;: &quot;Qui commodi incidunt iure odit.&quot;,
@@ -5938,8 +6255,8 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;depth&quot;: 0,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:19 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:19 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:48 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:48 18/10/2026&quot;
         }
     ],
     &quot;success&quot;: &quot;true&quot;
@@ -6203,12 +6520,12 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 558,
+            &quot;id&quot;: 3,
             &quot;name&quot;: &quot;Okuneva, Rempel and Gulgowski&quot;,
             &quot;description&quot;: null
         },
         {
-            &quot;id&quot;: 559,
+            &quot;id&quot;: 4,
             &quot;name&quot;: &quot;Cormier Inc&quot;,
             &quot;description&quot;: &quot;Odit et et modi.&quot;
         }
@@ -6687,7 +7004,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "file=@C:\Users\Admin\AppData\Local\Temp\php67B0.tmp" </code></pre></div>
+    --form "file=@/tmp/phpesreia5bscot4IvNCbC" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -6727,7 +7044,7 @@ $response = $client-&gt;post(
         'multipart' =&gt; [
             [
                 'name' =&gt; 'file',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php67B0.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/phpesreia5bscot4IvNCbC', 'r')
             ],
         ],
     ]
@@ -6855,7 +7172,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>C:\Users\Admin\AppData\Local\Temp\php67B0.tmp</code></p>
+<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>/tmp/phpesreia5bscot4IvNCbC</code></p>
         </div>
         </form>
 
@@ -7852,7 +8169,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 561,
+            &quot;id&quot;: 6,
             &quot;name&quot;: &quot;Bailey Ltd&quot;,
             &quot;slug&quot;: &quot;velit-et-fugiat-sunt-nihil-accusantium&quot;,
             &quot;description&quot;: &quot;Modi deserunt aut ab provident perspiciatis.&quot;,
@@ -7862,11 +8179,11 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;depth&quot;: 0,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;
         },
         {
-            &quot;id&quot;: 562,
+            &quot;id&quot;: 7,
             &quot;name&quot;: &quot;Marquardt Inc&quot;,
             &quot;slug&quot;: &quot;nostrum-qui-commodi-incidunt-iure&quot;,
             &quot;description&quot;: null,
@@ -7876,8 +8193,8 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;depth&quot;: 0,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;
         }
     ],
     &quot;links&quot;: {
@@ -8115,7 +8432,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/laravel_hq/quandh-core/public/api/organizations/1" \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/organizations/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -8124,7 +8441,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/organizations/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/organizations/16"
 );
 
 const headers = {
@@ -8143,7 +8460,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/organizations/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/organizations/16';
 $response = $client-&gt;get(
     $url,
     [
@@ -8168,20 +8485,20 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 564,
+        &quot;id&quot;: 9,
         &quot;name&quot;: &quot;Price Ltd&quot;,
         &quot;slug&quot;: &quot;qui-commodi-incidunt-iure-odit&quot;,
         &quot;description&quot;: &quot;Modi ipsum nostrum omnis autem et.&quot;,
         &quot;status&quot;: &quot;inactive&quot;,
-        &quot;parent_id&quot;: 563,
+        &quot;parent_id&quot;: 8,
         &quot;sort_order&quot;: 84,
         &quot;depth&quot;: 1,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;,
+        &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;,
         &quot;parent&quot;: {
-            &quot;id&quot;: 563,
+            &quot;id&quot;: 8,
             &quot;name&quot;: &quot;Stokes and Sons&quot;,
             &quot;slug&quot;: &quot;tempora-ex-voluptatem-laboriosam-praesentium-quis&quot;,
             &quot;description&quot;: &quot;Fugit deleniti distinctio eum doloremque id aut libero.&quot;,
@@ -8191,23 +8508,23 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;depth&quot;: 0,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;
         },
         &quot;children&quot;: [
             {
-                &quot;id&quot;: 565,
+                &quot;id&quot;: 10,
                 &quot;name&quot;: &quot;Kutch and Sons&quot;,
                 &quot;slug&quot;: &quot;nemo-odit-quia-officia-est-dignissimos&quot;,
                 &quot;description&quot;: null,
                 &quot;status&quot;: &quot;inactive&quot;,
-                &quot;parent_id&quot;: 564,
+                &quot;parent_id&quot;: 9,
                 &quot;sort_order&quot;: 6,
                 &quot;depth&quot;: 2,
                 &quot;created_by&quot;: &quot;N/A&quot;,
                 &quot;updated_by&quot;: &quot;N/A&quot;,
-                &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-                &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+                &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+                &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;
             }
         ]
     },
@@ -8318,10 +8635,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="organization_id"                data-endpoint="GETapi-organizations--organization_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the organization. Example: <code>1</code></p>
+<p>The ID of the organization. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>organization</code></b>&nbsp;&nbsp;
@@ -8430,7 +8747,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 566,
+        &quot;id&quot;: 11,
         &quot;name&quot;: &quot;Dach-Gaylord&quot;,
         &quot;slug&quot;: &quot;mollitia-modi-deserunt-aut-ab-provident-perspiciatis-quo&quot;,
         &quot;description&quot;: null,
@@ -8440,8 +8757,8 @@ print_r(json_decode((string) $body));</code></pre></div>
         &quot;depth&quot;: 0,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Organization đ&atilde; được tạo th&agrave;nh c&ocirc;ng!&quot;
@@ -8632,7 +8949,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/laravel_hq/quandh-core/public/api/organizations/1" \
+    "http://localhost/laravel_hq/quandh-core/public/api/organizations/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -8650,7 +8967,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/organizations/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/organizations/16"
 );
 
 const headers = {
@@ -8678,7 +8995,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/organizations/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/organizations/16';
 $response = $client-&gt;put(
     $url,
     [
@@ -8711,20 +9028,20 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 568,
+        &quot;id&quot;: 13,
         &quot;name&quot;: &quot;Tillman-Runte&quot;,
         &quot;slug&quot;: &quot;aut-ab-provident-perspiciatis-quo-omnis-nostrum-aut&quot;,
         &quot;description&quot;: &quot;Nostrum qui commodi incidunt iure.&quot;,
         &quot;status&quot;: &quot;inactive&quot;,
-        &quot;parent_id&quot;: 567,
+        &quot;parent_id&quot;: 12,
         &quot;sort_order&quot;: 45,
         &quot;depth&quot;: 1,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;,
+        &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;,
         &quot;parent&quot;: {
-            &quot;id&quot;: 567,
+            &quot;id&quot;: 12,
             &quot;name&quot;: &quot;Bauch, Fritsch and O&#039;Keefe&quot;,
             &quot;slug&quot;: &quot;autem-et-consequatur-aut-dolores-enim-non-facere-tempora&quot;,
             &quot;description&quot;: &quot;Laboriosam praesentium quis adipisci molestias fugit deleniti distinctio.&quot;,
@@ -8734,23 +9051,23 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;depth&quot;: 0,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;
         },
         &quot;children&quot;: [
             {
-                &quot;id&quot;: 569,
+                &quot;id&quot;: 14,
                 &quot;name&quot;: &quot;Ankunding PLC&quot;,
                 &quot;slug&quot;: &quot;veniam-corporis-dolorem-mollitia&quot;,
                 &quot;description&quot;: &quot;Odit quia officia est dignissimos neque blanditiis odio.&quot;,
                 &quot;status&quot;: &quot;inactive&quot;,
-                &quot;parent_id&quot;: 568,
+                &quot;parent_id&quot;: 13,
                 &quot;sort_order&quot;: 16,
                 &quot;depth&quot;: 2,
                 &quot;created_by&quot;: &quot;N/A&quot;,
                 &quot;updated_by&quot;: &quot;N/A&quot;,
-                &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-                &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+                &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+                &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;
             }
         ]
     },
@@ -8862,10 +9179,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="organization_id"                data-endpoint="PUTapi-organizations--organization_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the organization. Example: <code>1</code></p>
+<p>The ID of the organization. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>organization</code></b>&nbsp;&nbsp;
@@ -8968,7 +9285,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PATCH \
-    "http://localhost/laravel_hq/quandh-core/public/api/organizations/1" \
+    "http://localhost/laravel_hq/quandh-core/public/api/organizations/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -8986,7 +9303,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/organizations/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/organizations/16"
 );
 
 const headers = {
@@ -9014,7 +9331,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/organizations/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/organizations/16';
 $response = $client-&gt;patch(
     $url,
     [
@@ -9047,20 +9364,20 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 571,
+        &quot;id&quot;: 16,
         &quot;name&quot;: &quot;Schuster Inc&quot;,
         &quot;slug&quot;: &quot;perspiciatis-quo-omnis-nostrum-aut-adipisci-quidem-nostrum-qui&quot;,
         &quot;description&quot;: &quot;Iure odit et et modi ipsum nostrum omnis.&quot;,
         &quot;status&quot;: &quot;active&quot;,
-        &quot;parent_id&quot;: 570,
+        &quot;parent_id&quot;: 15,
         &quot;sort_order&quot;: 54,
         &quot;depth&quot;: 1,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;,
+        &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;,
         &quot;parent&quot;: {
-            &quot;id&quot;: 570,
+            &quot;id&quot;: 15,
             &quot;name&quot;: &quot;Tromp-Leffler&quot;,
             &quot;slug&quot;: &quot;non-facere-tempora-ex-voluptatem-laboriosam-praesentium&quot;,
             &quot;description&quot;: &quot;Molestias fugit deleniti distinctio eum doloremque id.&quot;,
@@ -9070,23 +9387,23 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;depth&quot;: 0,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;
         },
         &quot;children&quot;: [
             {
-                &quot;id&quot;: 572,
+                &quot;id&quot;: 17,
                 &quot;name&quot;: &quot;Batz Inc&quot;,
                 &quot;slug&quot;: &quot;mollitia-deleniti-nemo-odit-quia-officia&quot;,
                 &quot;description&quot;: &quot;Neque blanditiis odio veritatis excepturi doloribus delectus.&quot;,
                 &quot;status&quot;: &quot;inactive&quot;,
-                &quot;parent_id&quot;: 571,
+                &quot;parent_id&quot;: 16,
                 &quot;sort_order&quot;: 22,
                 &quot;depth&quot;: 2,
                 &quot;created_by&quot;: &quot;N/A&quot;,
                 &quot;updated_by&quot;: &quot;N/A&quot;,
-                &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-                &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+                &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+                &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;
             }
         ]
     },
@@ -9198,10 +9515,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="organization_id"                data-endpoint="PATCHapi-organizations--organization_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the organization. Example: <code>1</code></p>
+<p>The ID of the organization. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>organization</code></b>&nbsp;&nbsp;
@@ -9304,7 +9621,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/laravel_hq/quandh-core/public/api/organizations/1" \
+    "http://localhost/laravel_hq/quandh-core/public/api/organizations/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -9313,7 +9630,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/organizations/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/organizations/16"
 );
 
 const headers = {
@@ -9332,7 +9649,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/organizations/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/organizations/16';
 $response = $client-&gt;delete(
     $url,
     [
@@ -9464,10 +9781,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="organization_id"                data-endpoint="DELETEapi-organizations--organization_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the organization. Example: <code>1</code></p>
+<p>The ID of the organization. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>organization</code></b>&nbsp;&nbsp;
@@ -9497,7 +9814,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PATCH \
-    "http://localhost/laravel_hq/quandh-core/public/api/organizations/1/status" \
+    "http://localhost/laravel_hq/quandh-core/public/api/organizations/16/status" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -9510,7 +9827,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/organizations/1/status"
+    "http://localhost/laravel_hq/quandh-core/public/api/organizations/16/status"
 );
 
 const headers = {
@@ -9533,7 +9850,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/organizations/1/status';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/organizations/16/status';
 $response = $client-&gt;patch(
     $url,
     [
@@ -9561,20 +9878,20 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 574,
+        &quot;id&quot;: 19,
         &quot;name&quot;: &quot;Baumbach Ltd&quot;,
         &quot;slug&quot;: &quot;et-modi-ipsum-nostrum-omnis-autem-et-consequatur&quot;,
         &quot;description&quot;: null,
         &quot;status&quot;: &quot;inactive&quot;,
-        &quot;parent_id&quot;: 573,
+        &quot;parent_id&quot;: 18,
         &quot;sort_order&quot;: 62,
         &quot;depth&quot;: 1,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;,
+        &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;,
         &quot;parent&quot;: {
-            &quot;id&quot;: 573,
+            &quot;id&quot;: 18,
             &quot;name&quot;: &quot;VonRueden-Leuschke&quot;,
             &quot;slug&quot;: &quot;voluptatem-laboriosam-praesentium-quis-adipisci&quot;,
             &quot;description&quot;: null,
@@ -9584,23 +9901,23 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;depth&quot;: 0,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;
         },
         &quot;children&quot;: [
             {
-                &quot;id&quot;: 575,
+                &quot;id&quot;: 20,
                 &quot;name&quot;: &quot;Gaylord, Hettinger and Nitzsche&quot;,
                 &quot;slug&quot;: &quot;libero-aliquam-veniam-corporis-dolorem-mollitia-deleniti&quot;,
                 &quot;description&quot;: &quot;Quia officia est dignissimos neque.&quot;,
                 &quot;status&quot;: &quot;inactive&quot;,
-                &quot;parent_id&quot;: 574,
+                &quot;parent_id&quot;: 19,
                 &quot;sort_order&quot;: 6,
                 &quot;depth&quot;: 2,
                 &quot;created_by&quot;: &quot;N/A&quot;,
                 &quot;updated_by&quot;: &quot;N/A&quot;,
-                &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-                &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+                &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+                &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;
             }
         ]
     },
@@ -9712,10 +10029,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="organization_id"                data-endpoint="PATCHapi-organizations--organization_id--status"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the organization. Example: <code>1</code></p>
+<p>The ID of the organization. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>organization</code></b>&nbsp;&nbsp;
@@ -10046,7 +10363,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "file=@C:\Users\Admin\AppData\Local\Temp\php6674.tmp" </code></pre></div>
+    --form "file=@/tmp/phpjqrsbbv8qisj3f7JFXP" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -10086,7 +10403,7 @@ $response = $client-&gt;post(
         'multipart' =&gt; [
             [
                 'name' =&gt; 'file',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php6674.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/phpjqrsbbv8qisj3f7JFXP', 'r')
             ],
         ],
     ]
@@ -10214,7 +10531,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>C:\Users\Admin\AppData\Local\Temp\php6674.tmp</code></p>
+<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>/tmp/phpjqrsbbv8qisj3f7JFXP</code></p>
         </div>
         </form>
 
@@ -10989,24 +11306,24 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 482,
+            &quot;id&quot;: 1,
             &quot;name&quot;: &quot;users.update.4027&quot;,
             &quot;guard_name&quot;: &quot;web&quot;,
             &quot;description&quot;: null,
             &quot;sort_order&quot;: 95,
             &quot;parent_id&quot;: null,
-            &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:52 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:52 18/10/2026&quot;
         },
         {
-            &quot;id&quot;: 483,
-            &quot;name&quot;: &quot;users.update.265&quot;,
+            &quot;id&quot;: 2,
+            &quot;name&quot;: &quot;documents.index.6955&quot;,
             &quot;guard_name&quot;: &quot;web&quot;,
-            &quot;description&quot;: &quot;Officia quia quos impedit consequatur sit.&quot;,
-            &quot;sort_order&quot;: 27,
+            &quot;description&quot;: null,
+            &quot;sort_order&quot;: 39,
             &quot;parent_id&quot;: null,
-            &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:53 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:53 18/10/2026&quot;
         }
     ],
     &quot;links&quot;: {
@@ -11244,7 +11561,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/laravel_hq/quandh-core/public/api/permissions/1" \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/permissions/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -11253,7 +11570,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/permissions/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/permissions/16"
 );
 
 const headers = {
@@ -11272,7 +11589,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/permissions/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/permissions/16';
 $response = $client-&gt;get(
     $url,
     [
@@ -11297,30 +11614,30 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 485,
+        &quot;id&quot;: 4,
         &quot;name&quot;: &quot;users.index.4524&quot;,
         &quot;guard_name&quot;: &quot;web&quot;,
         &quot;description&quot;: &quot;Commodi incidunt iure odit.&quot;,
         &quot;sort_order&quot;: 45,
-        &quot;parent_id&quot;: 484,
+        &quot;parent_id&quot;: 3,
         &quot;parent&quot;: {
-            &quot;id&quot;: 484,
+            &quot;id&quot;: 3,
             &quot;name&quot;: &quot;documents.show.967&quot;
         },
         &quot;children&quot;: [
             {
-                &quot;id&quot;: 486,
+                &quot;id&quot;: 5,
                 &quot;name&quot;: &quot;roles.destroy.1904&quot;,
                 &quot;guard_name&quot;: &quot;web&quot;,
                 &quot;description&quot;: null,
                 &quot;sort_order&quot;: 93,
-                &quot;parent_id&quot;: 485,
-                &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-                &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+                &quot;parent_id&quot;: 4,
+                &quot;created_at&quot;: &quot;11:07:53 18/10/2026&quot;,
+                &quot;updated_at&quot;: &quot;11:07:53 18/10/2026&quot;
             }
         ],
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:53 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:53 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;
 }</code>
@@ -11429,10 +11746,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="permission_id"                data-endpoint="GETapi-permissions--permission_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the permission. Example: <code>1</code></p>
+<p>The ID of the permission. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>permission</code></b>&nbsp;&nbsp;
@@ -11538,14 +11855,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 487,
+        &quot;id&quot;: 6,
         &quot;name&quot;: &quot;roles.index.660&quot;,
         &quot;guard_name&quot;: &quot;web&quot;,
         &quot;description&quot;: &quot;Et fugiat sunt nihil accusantium.&quot;,
         &quot;sort_order&quot;: 91,
         &quot;parent_id&quot;: null,
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:53 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:53 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Quyền đ&atilde; được tạo th&agrave;nh c&ocirc;ng!&quot;
@@ -11724,7 +12041,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/laravel_hq/quandh-core/public/api/permissions/1" \
+    "http://localhost/laravel_hq/quandh-core/public/api/permissions/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -11741,7 +12058,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/permissions/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/permissions/16"
 );
 
 const headers = {
@@ -11768,7 +12085,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/permissions/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/permissions/16';
 $response = $client-&gt;put(
     $url,
     [
@@ -11800,14 +12117,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 488,
+        &quot;id&quot;: 7,
         &quot;name&quot;: &quot;roles.index.4338&quot;,
         &quot;guard_name&quot;: &quot;web&quot;,
         &quot;description&quot;: null,
         &quot;sort_order&quot;: 7,
         &quot;parent_id&quot;: null,
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:53 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:53 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Quyền đ&atilde; được cập nhật!&quot;
@@ -11917,10 +12234,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="permission_id"                data-endpoint="PUTapi-permissions--permission_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the permission. Example: <code>1</code></p>
+<p>The ID of the permission. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>permission</code></b>&nbsp;&nbsp;
@@ -12011,7 +12328,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PATCH \
-    "http://localhost/laravel_hq/quandh-core/public/api/permissions/1" \
+    "http://localhost/laravel_hq/quandh-core/public/api/permissions/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -12028,7 +12345,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/permissions/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/permissions/16"
 );
 
 const headers = {
@@ -12055,7 +12372,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/permissions/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/permissions/16';
 $response = $client-&gt;patch(
     $url,
     [
@@ -12087,14 +12404,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 489,
+        &quot;id&quot;: 8,
         &quot;name&quot;: &quot;roles.index.3491&quot;,
         &quot;guard_name&quot;: &quot;web&quot;,
         &quot;description&quot;: &quot;Sunt nihil accusantium harum mollitia.&quot;,
         &quot;sort_order&quot;: 86,
         &quot;parent_id&quot;: null,
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:53 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:53 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Quyền đ&atilde; được cập nhật!&quot;
@@ -12204,10 +12521,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="permission_id"                data-endpoint="PATCHapi-permissions--permission_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the permission. Example: <code>1</code></p>
+<p>The ID of the permission. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>permission</code></b>&nbsp;&nbsp;
@@ -12298,7 +12615,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/laravel_hq/quandh-core/public/api/permissions/1" \
+    "http://localhost/laravel_hq/quandh-core/public/api/permissions/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -12307,7 +12624,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/permissions/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/permissions/16"
 );
 
 const headers = {
@@ -12326,7 +12643,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/permissions/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/permissions/16';
 $response = $client-&gt;delete(
     $url,
     [
@@ -12458,10 +12775,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="permission_id"                data-endpoint="DELETEapi-permissions--permission_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the permission. Example: <code>1</code></p>
+<p>The ID of the permission. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>permission</code></b>&nbsp;&nbsp;
@@ -12779,7 +13096,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "file=@C:\Users\Admin\AppData\Local\Temp\php6722.tmp" </code></pre></div>
+    --form "file=@/tmp/phpdltbomfqtf786nZsmqn" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -12819,7 +13136,7 @@ $response = $client-&gt;post(
         'multipart' =&gt; [
             [
                 'name' =&gt; 'file',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php6722.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/phpdltbomfqtf786nZsmqn', 'r')
             ],
         ],
     ]
@@ -12947,7 +13264,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>C:\Users\Admin\AppData\Local\Temp\php6722.tmp</code></p>
+<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>/tmp/phpdltbomfqtf786nZsmqn</code></p>
         </div>
         </form>
 
@@ -13522,20 +13839,20 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 161,
+            &quot;id&quot;: 1,
             &quot;name&quot;: &quot;role_ng775&quot;,
             &quot;guard_name&quot;: &quot;web&quot;,
             &quot;organization_id&quot;: null,
-            &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;
         },
         {
-            &quot;id&quot;: 162,
+            &quot;id&quot;: 2,
             &quot;name&quot;: &quot;role_mi365&quot;,
             &quot;guard_name&quot;: &quot;web&quot;,
             &quot;organization_id&quot;: null,
-            &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;
         }
     ],
     &quot;links&quot;: {
@@ -13773,7 +14090,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/laravel_hq/quandh-core/public/api/roles/1" \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/roles/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -13782,7 +14099,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/roles/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/roles/16"
 );
 
 const headers = {
@@ -13801,7 +14118,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/roles/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/roles/16';
 $response = $client-&gt;get(
     $url,
     [
@@ -13826,19 +14143,19 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 163,
+        &quot;id&quot;: 3,
         &quot;name&quot;: &quot;role_wp680&quot;,
         &quot;guard_name&quot;: &quot;web&quot;,
-        &quot;organization_id&quot;: 560,
+        &quot;organization_id&quot;: 5,
         &quot;organization&quot;: {
-            &quot;id&quot;: 560,
+            &quot;id&quot;: 5,
             &quot;name&quot;: &quot;Dare Group&quot;
         },
         &quot;permissions&quot;: [
             &quot;organizations.index.7602&quot;
         ],
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;
 }</code>
@@ -13947,10 +14264,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="role_id"                data-endpoint="GETapi-roles--role_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the role. Example: <code>1</code></p>
+<p>The ID of the role. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>role</code></b>&nbsp;&nbsp;
@@ -14062,15 +14379,15 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 164,
+        &quot;id&quot;: 4,
         &quot;name&quot;: &quot;role_zm806&quot;,
         &quot;guard_name&quot;: &quot;web&quot;,
         &quot;organization_id&quot;: null,
         &quot;permissions&quot;: [
-            &quot;documents.index.6955&quot;
+            &quot;documents.index.5606&quot;
         ],
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Vai tr&ograve; đ&atilde; được tạo th&agrave;nh c&ocirc;ng!&quot;
@@ -14227,7 +14544,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/laravel_hq/quandh-core/public/api/roles/1" \
+    "http://localhost/laravel_hq/quandh-core/public/api/roles/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -14245,7 +14562,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/roles/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/roles/16"
 );
 
 const headers = {
@@ -14273,7 +14590,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/roles/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/roles/16';
 $response = $client-&gt;put(
     $url,
     [
@@ -14306,15 +14623,15 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 165,
+        &quot;id&quot;: 5,
         &quot;name&quot;: &quot;role_yv564&quot;,
         &quot;guard_name&quot;: &quot;web&quot;,
         &quot;organization_id&quot;: null,
         &quot;permissions&quot;: [
             &quot;users.update.3433&quot;
         ],
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Vai tr&ograve; đ&atilde; được cập nhật!&quot;
@@ -14424,10 +14741,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="role_id"                data-endpoint="PUTapi-roles--role_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the role. Example: <code>1</code></p>
+<p>The ID of the role. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>role</code></b>&nbsp;&nbsp;
@@ -14496,7 +14813,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PATCH \
-    "http://localhost/laravel_hq/quandh-core/public/api/roles/1" \
+    "http://localhost/laravel_hq/quandh-core/public/api/roles/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -14514,7 +14831,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/roles/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/roles/16"
 );
 
 const headers = {
@@ -14542,7 +14859,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/roles/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/roles/16';
 $response = $client-&gt;patch(
     $url,
     [
@@ -14575,15 +14892,15 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 166,
+        &quot;id&quot;: 6,
         &quot;name&quot;: &quot;role_lj575&quot;,
         &quot;guard_name&quot;: &quot;web&quot;,
         &quot;organization_id&quot;: null,
         &quot;permissions&quot;: [
             &quot;roles.destroy.6854&quot;
         ],
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:54 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:54 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Vai tr&ograve; đ&atilde; được cập nhật!&quot;
@@ -14693,10 +15010,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="role_id"                data-endpoint="PATCHapi-roles--role_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the role. Example: <code>1</code></p>
+<p>The ID of the role. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>role</code></b>&nbsp;&nbsp;
@@ -14765,7 +15082,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/laravel_hq/quandh-core/public/api/roles/1" \
+    "http://localhost/laravel_hq/quandh-core/public/api/roles/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -14774,7 +15091,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/roles/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/roles/16"
 );
 
 const headers = {
@@ -14793,7 +15110,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/roles/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/roles/16';
 $response = $client-&gt;delete(
     $url,
     [
@@ -14925,10 +15242,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="role_id"                data-endpoint="DELETEapi-roles--role_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the role. Example: <code>1</code></p>
+<p>The ID of the role. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>role</code></b>&nbsp;&nbsp;
@@ -15972,7 +16289,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "file=@C:\Users\Admin\AppData\Local\Temp\php6010.tmp" </code></pre></div>
+    --form "file=@/tmp/phphciaio870dovcSpAn7Y" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -16012,7 +16329,7 @@ $response = $client-&gt;post(
         'multipart' =&gt; [
             [
                 'name' =&gt; 'file',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php6010.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/phphciaio870dovcSpAn7Y', 'r')
             ],
         ],
     ]
@@ -16140,7 +16457,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>C:\Users\Admin\AppData\Local\Temp\php6010.tmp</code></p>
+<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>/tmp/phphciaio870dovcSpAn7Y</code></p>
         </div>
         </form>
 
@@ -16938,7 +17255,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 248,
+            &quot;id&quot;: 1,
             &quot;name&quot;: &quot;Ms. Elisabeth Okuneva&quot;,
             &quot;email&quot;: &quot;gulgowski.asia@example.com&quot;,
             &quot;user_name&quot;: &quot;idickens&quot;,
@@ -16946,11 +17263,11 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
             &quot;assignments&quot;: [],
-            &quot;created_at&quot;: &quot;01/05/2026 14:13:19&quot;,
-            &quot;updated_at&quot;: &quot;01/05/2026 14:13:19&quot;
+            &quot;created_at&quot;: &quot;18/10/2026 11:07:50&quot;,
+            &quot;updated_at&quot;: &quot;18/10/2026 11:07:50&quot;
         },
         {
-            &quot;id&quot;: 249,
+            &quot;id&quot;: 2,
             &quot;name&quot;: &quot;Mya DuBuque&quot;,
             &quot;email&quot;: &quot;breitenberg.gilbert@example.com&quot;,
             &quot;user_name&quot;: &quot;price.amber&quot;,
@@ -16958,8 +17275,8 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
             &quot;assignments&quot;: [],
-            &quot;created_at&quot;: &quot;01/05/2026 14:13:19&quot;,
-            &quot;updated_at&quot;: &quot;01/05/2026 14:13:19&quot;
+            &quot;created_at&quot;: &quot;18/10/2026 11:07:50&quot;,
+            &quot;updated_at&quot;: &quot;18/10/2026 11:07:50&quot;
         }
     ],
     &quot;links&quot;: {
@@ -17197,7 +17514,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/laravel_hq/quandh-core/public/api/users/1" \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/users/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -17206,7 +17523,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/users/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/users/16"
 );
 
 const headers = {
@@ -17225,7 +17542,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/users/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/users/16';
 $response = $client-&gt;get(
     $url,
     [
@@ -17250,7 +17567,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 250,
+        &quot;id&quot;: 3,
         &quot;name&quot;: &quot;Morgan Hirthe&quot;,
         &quot;email&quot;: &quot;dare.emelie@example.com&quot;,
         &quot;user_name&quot;: &quot;imclaughlin&quot;,
@@ -17258,8 +17575,8 @@ print_r(json_decode((string) $body));</code></pre></div>
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
         &quot;assignments&quot;: [],
-        &quot;created_at&quot;: &quot;01/05/2026 14:13:19&quot;,
-        &quot;updated_at&quot;: &quot;01/05/2026 14:13:19&quot;
+        &quot;created_at&quot;: &quot;18/10/2026 11:07:50&quot;,
+        &quot;updated_at&quot;: &quot;18/10/2026 11:07:50&quot;
     },
     &quot;success&quot;: &quot;true&quot;
 }</code>
@@ -17368,10 +17685,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="user_id"                data-endpoint="GETapi-users--user_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the user. Example: <code>1</code></p>
+<p>The ID of the user. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>user</code></b>&nbsp;&nbsp;
@@ -17489,7 +17806,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 251,
+        &quot;id&quot;: 4,
         &quot;name&quot;: &quot;Ms. Elisabeth Okuneva&quot;,
         &quot;email&quot;: &quot;idickens@example.org&quot;,
         &quot;user_name&quot;: &quot;aschuster&quot;,
@@ -17497,8 +17814,8 @@ print_r(json_decode((string) $body));</code></pre></div>
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
         &quot;assignments&quot;: [],
-        &quot;created_at&quot;: &quot;01/05/2026 14:13:19&quot;,
-        &quot;updated_at&quot;: &quot;01/05/2026 14:13:19&quot;
+        &quot;created_at&quot;: &quot;18/10/2026 11:07:50&quot;,
+        &quot;updated_at&quot;: &quot;18/10/2026 11:07:50&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;T&agrave;i khoản đ&atilde; được tạo th&agrave;nh c&ocirc;ng!&quot;
@@ -17727,7 +18044,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/laravel_hq/quandh-core/public/api/users/1" \
+    "http://localhost/laravel_hq/quandh-core/public/api/users/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -17748,7 +18065,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/users/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/users/16"
 );
 
 const headers = {
@@ -17779,7 +18096,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/users/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/users/16';
 $response = $client-&gt;put(
     $url,
     [
@@ -17815,7 +18132,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 252,
+        &quot;id&quot;: 5,
         &quot;name&quot;: &quot;Ms. Elisabeth Okuneva&quot;,
         &quot;email&quot;: &quot;aschuster@example.com&quot;,
         &quot;user_name&quot;: &quot;gilbert32&quot;,
@@ -17823,8 +18140,8 @@ print_r(json_decode((string) $body));</code></pre></div>
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
         &quot;assignments&quot;: [],
-        &quot;created_at&quot;: &quot;01/05/2026 14:13:19&quot;,
-        &quot;updated_at&quot;: &quot;01/05/2026 14:13:19&quot;
+        &quot;created_at&quot;: &quot;18/10/2026 11:07:50&quot;,
+        &quot;updated_at&quot;: &quot;18/10/2026 11:07:50&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;T&agrave;i khoản đ&atilde; được cập nhật!&quot;
@@ -17934,10 +18251,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="user_id"                data-endpoint="PUTapi-users--user_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the user. Example: <code>1</code></p>
+<p>The ID of the user. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>user</code></b>&nbsp;&nbsp;
@@ -18078,7 +18395,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PATCH \
-    "http://localhost/laravel_hq/quandh-core/public/api/users/1" \
+    "http://localhost/laravel_hq/quandh-core/public/api/users/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -18099,7 +18416,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/users/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/users/16"
 );
 
 const headers = {
@@ -18130,7 +18447,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/users/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/users/16';
 $response = $client-&gt;patch(
     $url,
     [
@@ -18166,7 +18483,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 253,
+        &quot;id&quot;: 6,
         &quot;name&quot;: &quot;Ms. Elisabeth Okuneva&quot;,
         &quot;email&quot;: &quot;gilbert32@example.com&quot;,
         &quot;user_name&quot;: &quot;hirthe.theo&quot;,
@@ -18174,8 +18491,8 @@ print_r(json_decode((string) $body));</code></pre></div>
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
         &quot;assignments&quot;: [],
-        &quot;created_at&quot;: &quot;01/05/2026 14:13:19&quot;,
-        &quot;updated_at&quot;: &quot;01/05/2026 14:13:19&quot;
+        &quot;created_at&quot;: &quot;18/10/2026 11:07:50&quot;,
+        &quot;updated_at&quot;: &quot;18/10/2026 11:07:50&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;T&agrave;i khoản đ&atilde; được cập nhật!&quot;
@@ -18285,10 +18602,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="user_id"                data-endpoint="PATCHapi-users--user_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the user. Example: <code>1</code></p>
+<p>The ID of the user. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>user</code></b>&nbsp;&nbsp;
@@ -18429,7 +18746,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/laravel_hq/quandh-core/public/api/users/1" \
+    "http://localhost/laravel_hq/quandh-core/public/api/users/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -18438,7 +18755,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/users/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/users/16"
 );
 
 const headers = {
@@ -18457,7 +18774,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/users/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/users/16';
 $response = $client-&gt;delete(
     $url,
     [
@@ -18589,10 +18906,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="user_id"                data-endpoint="DELETEapi-users--user_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the user. Example: <code>1</code></p>
+<p>The ID of the user. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>user</code></b>&nbsp;&nbsp;
@@ -18622,7 +18939,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PATCH \
-    "http://localhost/laravel_hq/quandh-core/public/api/users/1/status" \
+    "http://localhost/laravel_hq/quandh-core/public/api/users/16/status" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -18635,7 +18952,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/users/1/status"
+    "http://localhost/laravel_hq/quandh-core/public/api/users/16/status"
 );
 
 const headers = {
@@ -18658,7 +18975,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/users/1/status';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/users/16/status';
 $response = $client-&gt;patch(
     $url,
     [
@@ -18686,7 +19003,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 254,
+        &quot;id&quot;: 7,
         &quot;name&quot;: &quot;Morgan Hirthe&quot;,
         &quot;email&quot;: &quot;imclaughlin@example.org&quot;,
         &quot;user_name&quot;: &quot;okeefe.isidro&quot;,
@@ -18694,8 +19011,8 @@ print_r(json_decode((string) $body));</code></pre></div>
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
         &quot;assignments&quot;: [],
-        &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-        &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+        &quot;created_at&quot;: &quot;18/10/2026 11:07:50&quot;,
+        &quot;updated_at&quot;: &quot;18/10/2026 11:07:50&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Cập nhật trạng th&aacute;i th&agrave;nh c&ocirc;ng!&quot;
@@ -18805,10 +19122,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="user_id"                data-endpoint="PATCHapi-users--user_id--status"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the user. Example: <code>1</code></p>
+<p>The ID of the user. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>user</code></b>&nbsp;&nbsp;
@@ -18926,24 +19243,24 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 417,
+            &quot;id&quot;: 1,
             &quot;name&quot;: &quot;Bailey Ltd&quot;,
             &quot;description&quot;: &quot;Et fugiat sunt nihil accusantium.&quot;,
             &quot;status&quot;: &quot;inactive&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:19 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:19 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:47 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:47 18/10/2026&quot;
         },
         {
-            &quot;id&quot;: 418,
+            &quot;id&quot;: 2,
             &quot;name&quot;: &quot;Runte-Considine&quot;,
             &quot;description&quot;: &quot;Provident perspiciatis quo omnis nostrum aut adipisci quidem.&quot;,
             &quot;status&quot;: &quot;active&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:19 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:19 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:47 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:47 18/10/2026&quot;
         }
     ],
     &quot;success&quot;: &quot;true&quot;
@@ -19205,12 +19522,12 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 419,
+            &quot;id&quot;: 3,
             &quot;name&quot;: &quot;Bailey Ltd&quot;,
             &quot;description&quot;: &quot;Et fugiat sunt nihil accusantium.&quot;
         },
         {
-            &quot;id&quot;: 420,
+            &quot;id&quot;: 4,
             &quot;name&quot;: &quot;Runte-Considine&quot;,
             &quot;description&quot;: &quot;Provident perspiciatis quo omnis nostrum aut adipisci quidem.&quot;
         }
@@ -19689,7 +20006,7 @@ Must be one of:
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "file=@C:\Users\Admin\AppData\Local\Temp\php6A6C.tmp" </code></pre></div>
+    --form "file=@/tmp/php8inori9urj3u0SOUU6H" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -19729,7 +20046,7 @@ $response = $client-&gt;post(
         'multipart' =&gt; [
             [
                 'name' =&gt; 'file',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php6A6C.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/php8inori9urj3u0SOUU6H', 'r')
             ],
         ],
     ]
@@ -19857,7 +20174,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>C:\Users\Admin\AppData\Local\Temp\php6A6C.tmp</code></p>
+<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>/tmp/php8inori9urj3u0SOUU6H</code></p>
         </div>
         </form>
 
@@ -20655,24 +20972,24 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 426,
+            &quot;id&quot;: 10,
             &quot;name&quot;: &quot;Bailey Ltd&quot;,
             &quot;description&quot;: &quot;Et fugiat sunt nihil accusantium.&quot;,
             &quot;status&quot;: &quot;inactive&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:56 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:56 18/10/2026&quot;
         },
         {
-            &quot;id&quot;: 427,
+            &quot;id&quot;: 11,
             &quot;name&quot;: &quot;Runte-Considine&quot;,
             &quot;description&quot;: &quot;Provident perspiciatis quo omnis nostrum aut adipisci quidem.&quot;,
             &quot;status&quot;: &quot;active&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:56 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:56 18/10/2026&quot;
         }
     ],
     &quot;links&quot;: {
@@ -20963,14 +21280,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 428,
-        &quot;name&quot;: &quot;Hane-Robel&quot;,
-        &quot;description&quot;: null,
-        &quot;status&quot;: &quot;inactive&quot;,
+        &quot;id&quot;: 12,
+        &quot;name&quot;: &quot;Price Ltd&quot;,
+        &quot;description&quot;: &quot;Commodi incidunt iure odit.&quot;,
+        &quot;status&quot;: &quot;active&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:56 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:56 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;
 }</code>
@@ -21182,14 +21499,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 429,
+        &quot;id&quot;: 13,
         &quot;name&quot;: &quot;Ernser Group&quot;,
         &quot;description&quot;: &quot;Mollitia modi deserunt aut ab provident perspiciatis quo.&quot;,
         &quot;status&quot;: &quot;active&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:56 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:56 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Tạo cơ quan ban h&agrave;nh th&agrave;nh c&ocirc;ng!&quot;
@@ -21414,14 +21731,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 430,
+        &quot;id&quot;: 14,
         &quot;name&quot;: &quot;Bailey Ltd&quot;,
         &quot;description&quot;: &quot;Et fugiat sunt nihil accusantium.&quot;,
         &quot;status&quot;: &quot;inactive&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:56 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:56 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Cập nhật cơ quan ban h&agrave;nh th&agrave;nh c&ocirc;ng!&quot;
@@ -21671,14 +21988,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 431,
+        &quot;id&quot;: 15,
         &quot;name&quot;: &quot;Bailey Ltd&quot;,
         &quot;description&quot;: &quot;Et fugiat sunt nihil accusantium.&quot;,
         &quot;status&quot;: &quot;inactive&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:56 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:56 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Cập nhật cơ quan ban h&agrave;nh th&agrave;nh c&ocirc;ng!&quot;
@@ -22115,14 +22432,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 432,
+        &quot;id&quot;: 16,
         &quot;name&quot;: &quot;Price Ltd&quot;,
         &quot;description&quot;: &quot;Commodi incidunt iure odit.&quot;,
         &quot;status&quot;: &quot;active&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:56 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:56 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Đổi trạng th&aacute;i th&agrave;nh c&ocirc;ng!&quot;
@@ -22353,24 +22670,24 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 417,
+            &quot;id&quot;: 1,
             &quot;name&quot;: &quot;modi deserunt&quot;,
             &quot;description&quot;: &quot;Provident perspiciatis quo omnis nostrum aut adipisci quidem.&quot;,
             &quot;status&quot;: &quot;active&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:19 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:19 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:47 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:47 18/10/2026&quot;
         },
         {
-            &quot;id&quot;: 418,
+            &quot;id&quot;: 2,
             &quot;name&quot;: &quot;qui commodi&quot;,
             &quot;description&quot;: &quot;Odit et et modi.&quot;,
             &quot;status&quot;: &quot;active&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:19 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:19 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:47 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:47 18/10/2026&quot;
         }
     ],
     &quot;success&quot;: &quot;true&quot;
@@ -22632,12 +22949,12 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 419,
+            &quot;id&quot;: 3,
             &quot;name&quot;: &quot;provident perspiciatis&quot;,
             &quot;description&quot;: null
         },
         {
-            &quot;id&quot;: 420,
+            &quot;id&quot;: 4,
             &quot;name&quot;: &quot;nostrum aut&quot;,
             &quot;description&quot;: &quot;Nostrum qui commodi incidunt iure.&quot;
         }
@@ -23116,7 +23433,7 @@ Must be one of:
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "file=@C:\Users\Admin\AppData\Local\Temp\php6AEB.tmp" </code></pre></div>
+    --form "file=@/tmp/phpohefv4vu1aaqe8Vir5C" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -23156,7 +23473,7 @@ $response = $client-&gt;post(
         'multipart' =&gt; [
             [
                 'name' =&gt; 'file',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php6AEB.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/phpohefv4vu1aaqe8Vir5C', 'r')
             ],
         ],
     ]
@@ -23284,7 +23601,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>C:\Users\Admin\AppData\Local\Temp\php6AEB.tmp</code></p>
+<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>/tmp/phpohefv4vu1aaqe8Vir5C</code></p>
         </div>
         </form>
 
@@ -24082,24 +24399,24 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 426,
+            &quot;id&quot;: 10,
             &quot;name&quot;: &quot;doloremque id&quot;,
             &quot;description&quot;: null,
             &quot;status&quot;: &quot;active&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:57 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:57 18/10/2026&quot;
         },
         {
-            &quot;id&quot;: 427,
+            &quot;id&quot;: 11,
             &quot;name&quot;: &quot;aliquam veniam&quot;,
             &quot;description&quot;: &quot;Mollitia deleniti nemo odit quia officia.&quot;,
             &quot;status&quot;: &quot;inactive&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:57 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:57 18/10/2026&quot;
         }
     ],
     &quot;links&quot;: {
@@ -24390,14 +24707,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 428,
+        &quot;id&quot;: 12,
         &quot;name&quot;: &quot;et modi&quot;,
         &quot;description&quot;: null,
         &quot;status&quot;: &quot;inactive&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:57 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:57 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;
 }</code>
@@ -24609,14 +24926,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 429,
+        &quot;id&quot;: 13,
         &quot;name&quot;: &quot;aut libero&quot;,
         &quot;description&quot;: &quot;Corporis dolorem mollitia deleniti nemo odit quia officia.&quot;,
         &quot;status&quot;: &quot;inactive&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:57 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:57 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Tạo cấp ban h&agrave;nh th&agrave;nh c&ocirc;ng!&quot;
@@ -24841,14 +25158,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 430,
+        &quot;id&quot;: 14,
         &quot;name&quot;: &quot;corporis dolorem&quot;,
         &quot;description&quot;: null,
         &quot;status&quot;: &quot;inactive&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:57 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:57 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Cập nhật cấp ban h&agrave;nh th&agrave;nh c&ocirc;ng!&quot;
@@ -25098,14 +25415,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 431,
+        &quot;id&quot;: 15,
         &quot;name&quot;: &quot;mollitia deleniti&quot;,
         &quot;description&quot;: &quot;Quia officia est dignissimos neque.&quot;,
         &quot;status&quot;: &quot;inactive&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:57 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:57 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Cập nhật cấp ban h&agrave;nh th&agrave;nh c&ocirc;ng!&quot;
@@ -25542,14 +25859,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 432,
+        &quot;id&quot;: 16,
         &quot;name&quot;: &quot;ipsum nostrum&quot;,
         &quot;description&quot;: null,
         &quot;status&quot;: &quot;active&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:57 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:57 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Đổi trạng th&aacute;i th&agrave;nh c&ocirc;ng!&quot;
@@ -25780,24 +26097,24 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 417,
+            &quot;id&quot;: 1,
             &quot;name&quot;: &quot;nihil accusantium&quot;,
             &quot;description&quot;: &quot;Modi deserunt aut ab provident perspiciatis.&quot;,
             &quot;status&quot;: &quot;active&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:19 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:19 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:47 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:47 18/10/2026&quot;
         },
         {
-            &quot;id&quot;: 418,
+            &quot;id&quot;: 2,
             &quot;name&quot;: &quot;omnis nostrum&quot;,
             &quot;description&quot;: null,
             &quot;status&quot;: &quot;active&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:19 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:19 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:47 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:47 18/10/2026&quot;
         }
     ],
     &quot;success&quot;: &quot;true&quot;
@@ -26059,12 +26376,12 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 419,
+            &quot;id&quot;: 3,
             &quot;name&quot;: &quot;harum mollitia&quot;,
             &quot;description&quot;: null
         },
         {
-            &quot;id&quot;: 420,
+            &quot;id&quot;: 4,
             &quot;name&quot;: &quot;aut ab&quot;,
             &quot;description&quot;: &quot;Quo omnis nostrum aut adipisci.&quot;
         }
@@ -26543,7 +26860,7 @@ Must be one of:
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "file=@C:\Users\Admin\AppData\Local\Temp\php69ED.tmp" </code></pre></div>
+    --form "file=@/tmp/php6kkn96bis0qs6IZ1gDE" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -26583,7 +26900,7 @@ $response = $client-&gt;post(
         'multipart' =&gt; [
             [
                 'name' =&gt; 'file',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php69ED.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/php6kkn96bis0qs6IZ1gDE', 'r')
             ],
         ],
     ]
@@ -26711,7 +27028,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>C:\Users\Admin\AppData\Local\Temp\php69ED.tmp</code></p>
+<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>/tmp/php6kkn96bis0qs6IZ1gDE</code></p>
         </div>
         </form>
 
@@ -27509,24 +27826,24 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 426,
+            &quot;id&quot;: 10,
             &quot;name&quot;: &quot;autem et&quot;,
             &quot;description&quot;: null,
             &quot;status&quot;: &quot;inactive&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:56 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:56 18/10/2026&quot;
         },
         {
-            &quot;id&quot;: 427,
+            &quot;id&quot;: 11,
             &quot;name&quot;: &quot;tempora ex&quot;,
             &quot;description&quot;: null,
             &quot;status&quot;: &quot;inactive&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:56 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:56 18/10/2026&quot;
         }
     ],
     &quot;links&quot;: {
@@ -27817,14 +28134,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 428,
+        &quot;id&quot;: 12,
         &quot;name&quot;: &quot;incidunt iure&quot;,
         &quot;description&quot;: null,
         &quot;status&quot;: &quot;active&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:56 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:56 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;
 }</code>
@@ -28036,14 +28353,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 429,
+        &quot;id&quot;: 13,
         &quot;name&quot;: &quot;consequatur aut&quot;,
         &quot;description&quot;: &quot;Non facere tempora ex voluptatem laboriosam praesentium.&quot;,
         &quot;status&quot;: &quot;inactive&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:56 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:56 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Tạo loại văn bản th&agrave;nh c&ocirc;ng!&quot;
@@ -28268,14 +28585,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 430,
+        &quot;id&quot;: 14,
         &quot;name&quot;: &quot;voluptatem laboriosam&quot;,
         &quot;description&quot;: &quot;Adipisci molestias fugit deleniti distinctio eum doloremque id.&quot;,
         &quot;status&quot;: &quot;active&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:56 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:56 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Cập nhật loại văn bản th&agrave;nh c&ocirc;ng!&quot;
@@ -28525,14 +28842,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 431,
+        &quot;id&quot;: 15,
         &quot;name&quot;: &quot;praesentium quis&quot;,
         &quot;description&quot;: &quot;Fugit deleniti distinctio eum doloremque id aut libero.&quot;,
         &quot;status&quot;: &quot;inactive&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:56 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:56 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Cập nhật loại văn bản th&agrave;nh c&ocirc;ng!&quot;
@@ -28969,14 +29286,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 432,
+        &quot;id&quot;: 16,
         &quot;name&quot;: &quot;odit et&quot;,
         &quot;description&quot;: &quot;Ipsum nostrum omnis autem et consequatur aut dolores enim.&quot;,
         &quot;status&quot;: &quot;inactive&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:56 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:56 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Đổi trạng th&aacute;i th&agrave;nh c&ocirc;ng!&quot;
@@ -29207,24 +29524,24 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 417,
+            &quot;id&quot;: 1,
             &quot;name&quot;: &quot;eius et&quot;,
             &quot;description&quot;: null,
             &quot;status&quot;: &quot;active&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:19 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:19 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:47 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:47 18/10/2026&quot;
         },
         {
-            &quot;id&quot;: 418,
+            &quot;id&quot;: 2,
             &quot;name&quot;: &quot;velit et&quot;,
             &quot;description&quot;: &quot;Nihil accusantium harum mollitia modi deserunt.&quot;,
             &quot;status&quot;: &quot;active&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:19 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:19 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:47 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:47 18/10/2026&quot;
         }
     ],
     &quot;success&quot;: &quot;true&quot;
@@ -29486,12 +29803,12 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 419,
+            &quot;id&quot;: 3,
             &quot;name&quot;: &quot;animi quos&quot;,
             &quot;description&quot;: null
         },
         {
-            &quot;id&quot;: 420,
+            &quot;id&quot;: 4,
             &quot;name&quot;: &quot;fugiat sunt&quot;,
             &quot;description&quot;: &quot;Harum mollitia modi deserunt aut ab provident perspiciatis quo.&quot;
         }
@@ -29970,7 +30287,7 @@ Must be one of:
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "file=@C:\Users\Admin\AppData\Local\Temp\php6BD9.tmp" </code></pre></div>
+    --form "file=@/tmp/phppt4b14vul76lckk9ELu" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -30010,7 +30327,7 @@ $response = $client-&gt;post(
         'multipart' =&gt; [
             [
                 'name' =&gt; 'file',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php6BD9.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/phppt4b14vul76lckk9ELu', 'r')
             ],
         ],
     ]
@@ -30138,7 +30455,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>C:\Users\Admin\AppData\Local\Temp\php6BD9.tmp</code></p>
+<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>/tmp/phppt4b14vul76lckk9ELu</code></p>
         </div>
         </form>
 
@@ -30936,24 +31253,24 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 426,
+            &quot;id&quot;: 10,
             &quot;name&quot;: &quot;nemo odit&quot;,
             &quot;description&quot;: null,
             &quot;status&quot;: &quot;inactive&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:57 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:57 18/10/2026&quot;
         },
         {
-            &quot;id&quot;: 427,
+            &quot;id&quot;: 11,
             &quot;name&quot;: &quot;est dignissimos&quot;,
             &quot;description&quot;: null,
             &quot;status&quot;: &quot;inactive&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:57 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:57 18/10/2026&quot;
         }
     ],
     &quot;links&quot;: {
@@ -31244,14 +31561,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 428,
+        &quot;id&quot;: 12,
         &quot;name&quot;: &quot;omnis autem&quot;,
         &quot;description&quot;: null,
         &quot;status&quot;: &quot;inactive&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:57 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:57 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;
 }</code>
@@ -31463,14 +31780,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 429,
+        &quot;id&quot;: 13,
         &quot;name&quot;: &quot;quia officia&quot;,
         &quot;description&quot;: &quot;Neque blanditiis odio veritatis excepturi doloribus delectus.&quot;,
         &quot;status&quot;: &quot;inactive&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:57 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:57 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Tạo lĩnh vực th&agrave;nh c&ocirc;ng!&quot;
@@ -31695,14 +32012,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 430,
+        &quot;id&quot;: 14,
         &quot;name&quot;: &quot;neque blanditiis&quot;,
         &quot;description&quot;: null,
         &quot;status&quot;: &quot;inactive&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:58 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:58 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Cập nhật lĩnh vực th&agrave;nh c&ocirc;ng!&quot;
@@ -31952,14 +32269,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 431,
+        &quot;id&quot;: 15,
         &quot;name&quot;: &quot;odio veritatis&quot;,
         &quot;description&quot;: null,
         &quot;status&quot;: &quot;inactive&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:58 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:58 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Cập nhật lĩnh vực th&agrave;nh c&ocirc;ng!&quot;
@@ -32396,14 +32713,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 432,
+        &quot;id&quot;: 16,
         &quot;name&quot;: &quot;aut dolores&quot;,
         &quot;description&quot;: &quot;Facere tempora ex voluptatem laboriosam.&quot;,
         &quot;status&quot;: &quot;active&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:58 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:58 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Đổi trạng th&aacute;i th&agrave;nh c&ocirc;ng!&quot;
@@ -32634,24 +32951,24 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 417,
+            &quot;id&quot;: 1,
             &quot;name&quot;: &quot;Ms. Elisabeth Okuneva&quot;,
             &quot;description&quot;: null,
             &quot;status&quot;: &quot;active&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:18 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:18 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:46 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:46 18/10/2026&quot;
         },
         {
-            &quot;id&quot;: 418,
+            &quot;id&quot;: 2,
             &quot;name&quot;: &quot;Mrs. Justina Gaylord&quot;,
             &quot;description&quot;: &quot;Modi deserunt aut ab provident perspiciatis.&quot;,
             &quot;status&quot;: &quot;active&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:18 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:18 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:46 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:46 18/10/2026&quot;
         }
     ],
     &quot;success&quot;: &quot;true&quot;
@@ -32913,12 +33230,12 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 419,
+            &quot;id&quot;: 3,
             &quot;name&quot;: &quot;Ms. Elisabeth Okuneva&quot;,
             &quot;description&quot;: null
         },
         {
-            &quot;id&quot;: 420,
+            &quot;id&quot;: 4,
             &quot;name&quot;: &quot;Mrs. Justina Gaylord&quot;,
             &quot;description&quot;: &quot;Modi deserunt aut ab provident perspiciatis.&quot;
         }
@@ -33397,7 +33714,7 @@ Must be one of:
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "file=@C:\Users\Admin\AppData\Local\Temp\php6B6A.tmp" </code></pre></div>
+    --form "file=@/tmp/php846rf1qpu6boarBiWRQ" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -33437,7 +33754,7 @@ $response = $client-&gt;post(
         'multipart' =&gt; [
             [
                 'name' =&gt; 'file',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php6B6A.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/php846rf1qpu6boarBiWRQ', 'r')
             ],
         ],
     ]
@@ -33565,7 +33882,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>C:\Users\Admin\AppData\Local\Temp\php6B6A.tmp</code></p>
+<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>/tmp/php846rf1qpu6boarBiWRQ</code></p>
         </div>
         </form>
 
@@ -34363,24 +34680,24 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 426,
+            &quot;id&quot;: 10,
             &quot;name&quot;: &quot;Ms. Elisabeth Okuneva&quot;,
             &quot;description&quot;: null,
             &quot;status&quot;: &quot;active&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:57 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:57 18/10/2026&quot;
         },
         {
-            &quot;id&quot;: 427,
+            &quot;id&quot;: 11,
             &quot;name&quot;: &quot;Mrs. Justina Gaylord&quot;,
             &quot;description&quot;: &quot;Modi deserunt aut ab provident perspiciatis.&quot;,
             &quot;status&quot;: &quot;active&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:57 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:57 18/10/2026&quot;
         }
     ],
     &quot;links&quot;: {
@@ -34671,14 +34988,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 428,
+        &quot;id&quot;: 12,
         &quot;name&quot;: &quot;Morgan Hirthe&quot;,
         &quot;description&quot;: &quot;Commodi incidunt iure odit.&quot;,
         &quot;status&quot;: &quot;active&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:57 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:57 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;
 }</code>
@@ -34890,14 +35207,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 429,
+        &quot;id&quot;: 13,
         &quot;name&quot;: &quot;Mrs. Justina Gaylord&quot;,
         &quot;description&quot;: &quot;Modi deserunt aut ab provident perspiciatis.&quot;,
         &quot;status&quot;: &quot;active&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:57 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:57 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Tạo người k&yacute; th&agrave;nh c&ocirc;ng!&quot;
@@ -35122,14 +35439,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 430,
+        &quot;id&quot;: 14,
         &quot;name&quot;: &quot;Ms. Elisabeth Okuneva&quot;,
         &quot;description&quot;: null,
         &quot;status&quot;: &quot;active&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:57 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:57 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Cập nhật người k&yacute; th&agrave;nh c&ocirc;ng!&quot;
@@ -35379,14 +35696,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 431,
+        &quot;id&quot;: 15,
         &quot;name&quot;: &quot;Ms. Elisabeth Okuneva&quot;,
         &quot;description&quot;: null,
         &quot;status&quot;: &quot;active&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:57 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:57 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Cập nhật người k&yacute; th&agrave;nh c&ocirc;ng!&quot;
@@ -35823,14 +36140,14 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 432,
-        &quot;name&quot;: &quot;Torrey Kihn&quot;,
-        &quot;description&quot;: &quot;Qui aut voluptas ratione cupiditate.&quot;,
+        &quot;id&quot;: 16,
+        &quot;name&quot;: &quot;Morgan Hirthe&quot;,
+        &quot;description&quot;: &quot;Commodi incidunt iure odit.&quot;,
         &quot;status&quot;: &quot;active&quot;,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:22 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:22 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:57 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:57 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Đổi trạng th&aacute;i th&agrave;nh c&ocirc;ng!&quot;
@@ -36346,7 +36663,7 @@ Must be one of:
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "file=@C:\Users\Admin\AppData\Local\Temp\php68BC.tmp" </code></pre></div>
+    --form "file=@/tmp/phpurfoectobeqgbi6EBRo" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -36386,7 +36703,7 @@ $response = $client-&gt;post(
         'multipart' =&gt; [
             [
                 'name' =&gt; 'file',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php68BC.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/phpurfoectobeqgbi6EBRo', 'r')
             ],
         ],
     ]
@@ -36514,7 +36831,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>C:\Users\Admin\AppData\Local\Temp\php68BC.tmp</code></p>
+<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>/tmp/phpurfoectobeqgbi6EBRo</code></p>
         </div>
         </form>
 
@@ -37394,7 +37711,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 183,
+            &quot;id&quot;: 1,
             &quot;so_ky_hieu&quot;: &quot;VB-9171/GZ&quot;,
             &quot;ten_van_ban&quot;: &quot;Velit et fugiat sunt.&quot;,
             &quot;noi_dung&quot;: &quot;Mollitia modi deserunt aut ab provident perspiciatis quo. Nostrum aut adipisci quidem nostrum. Commodi incidunt iure odit. Et modi ipsum nostrum omnis autem et consequatur. Dolores enim non facere tempora.\n\nLaboriosam praesentium quis adipisci molestias fugit deleniti distinctio. Doloremque id aut libero aliquam veniam corporis. Mollitia deleniti nemo odit quia officia.&quot;,
@@ -37405,11 +37722,11 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;ngay_het_hieu_luc&quot;: null,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:55 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:55 18/10/2026&quot;
         },
         {
-            &quot;id&quot;: 184,
+            &quot;id&quot;: 2,
             &quot;so_ky_hieu&quot;: &quot;VB-1084/VI&quot;,
             &quot;ten_van_ban&quot;: &quot;Qui repudiandae laboriosam est.&quot;,
             &quot;noi_dung&quot;: null,
@@ -37417,11 +37734,11 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;ngay_ban_hanh&quot;: null,
             &quot;ngay_xuat_ban&quot;: null,
             &quot;ngay_hieu_luc&quot;: null,
-            &quot;ngay_het_hieu_luc&quot;: &quot;03/04/1986&quot;,
+            &quot;ngay_het_hieu_luc&quot;: &quot;15/10/1985&quot;,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-            &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+            &quot;created_at&quot;: &quot;11:07:55 18/10/2026&quot;,
+            &quot;updated_at&quot;: &quot;11:07:55 18/10/2026&quot;
         }
     ],
     &quot;links&quot;: {
@@ -37772,43 +38089,43 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 185,
+        &quot;id&quot;: 3,
         &quot;so_ky_hieu&quot;: &quot;VB-7680/WP&quot;,
         &quot;ten_van_ban&quot;: &quot;Qui commodi incidunt iure.&quot;,
         &quot;noi_dung&quot;: null,
         &quot;status&quot;: &quot;active&quot;,
-        &quot;ngay_ban_hanh&quot;: &quot;20/02/1982&quot;,
+        &quot;ngay_ban_hanh&quot;: &quot;03/09/1981&quot;,
         &quot;ngay_xuat_ban&quot;: &quot;16/11/1971&quot;,
         &quot;ngay_hieu_luc&quot;: null,
         &quot;ngay_het_hieu_luc&quot;: null,
         &quot;issuing_agency&quot;: {
-            &quot;id&quot;: 421,
+            &quot;id&quot;: 5,
             &quot;name&quot;: &quot;Smitham-Tromp&quot;
         },
         &quot;issuing_level&quot;: {
-            &quot;id&quot;: 421,
+            &quot;id&quot;: 5,
             &quot;name&quot;: &quot;adipisci molestias&quot;
         },
         &quot;signer&quot;: {
-            &quot;id&quot;: 421,
+            &quot;id&quot;: 5,
             &quot;name&quot;: &quot;Cynthia Fahey&quot;
         },
         &quot;types&quot;: [
             {
-                &quot;id&quot;: 421,
+                &quot;id&quot;: 5,
                 &quot;name&quot;: &quot;delectus fugit&quot;
             }
         ],
         &quot;fields&quot;: [
             {
-                &quot;id&quot;: 421,
+                &quot;id&quot;: 5,
                 &quot;name&quot;: &quot;voluptate accusamus&quot;
             }
         ],
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:55 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:55 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;
 }</code>
@@ -37968,8 +38285,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "ngay_hieu_luc=architecto"\
     --form "ngay_het_hieu_luc=architecto"\
     --form "status=architecto"\
-    --form "attachments[]=@C:\Users\Admin\AppData\Local\Temp\php693A.tmp" \
-    --form "attachments[]=@C:\Users\Admin\AppData\Local\Temp\php693B.tmp" </code></pre></div>
+    --form "attachments[]=@/tmp/phpoijm3dac1k0j583AeUS" \
+    --form "attachments[]=@/tmp/phpavvl8bq1pdkr0vBvM9W" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -38075,11 +38392,11 @@ $response = $client-&gt;post(
             ],
             [
                 'name' =&gt; 'attachments[]',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php693A.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/phpoijm3dac1k0j583AeUS', 'r')
             ],
             [
                 'name' =&gt; 'attachments[]',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php693B.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/phpavvl8bq1pdkr0vBvM9W', 'r')
             ],
         ],
     ]
@@ -38097,43 +38414,43 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 186,
-        &quot;so_ky_hieu&quot;: &quot;VB-9775/NG&quot;,
-        &quot;ten_van_ban&quot;: &quot;Quos velit et fugiat sunt nihil.&quot;,
-        &quot;noi_dung&quot;: &quot;Modi deserunt aut ab provident perspiciatis. Omnis nostrum aut adipisci quidem nostrum qui commodi. Iure odit et et modi ipsum nostrum omnis. Et consequatur aut dolores enim.\n\nTempora ex voluptatem laboriosam praesentium quis. Molestias fugit deleniti distinctio eum doloremque id. Libero aliquam veniam corporis dolorem mollitia deleniti.&quot;,
-        &quot;status&quot;: &quot;inactive&quot;,
-        &quot;ngay_ban_hanh&quot;: &quot;09/07/2009&quot;,
-        &quot;ngay_xuat_ban&quot;: null,
+        &quot;id&quot;: 4,
+        &quot;so_ky_hieu&quot;: &quot;VB-9072/NB&quot;,
+        &quot;ten_van_ban&quot;: &quot;Iure officia sunt.&quot;,
+        &quot;noi_dung&quot;: null,
+        &quot;status&quot;: &quot;active&quot;,
+        &quot;ngay_ban_hanh&quot;: &quot;04/02/2022&quot;,
+        &quot;ngay_xuat_ban&quot;: &quot;17/12/1971&quot;,
         &quot;ngay_hieu_luc&quot;: null,
-        &quot;ngay_het_hieu_luc&quot;: &quot;12/10/1999&quot;,
+        &quot;ngay_het_hieu_luc&quot;: &quot;04/07/2014&quot;,
         &quot;issuing_agency&quot;: {
-            &quot;id&quot;: 422,
-            &quot;name&quot;: &quot;O&#039;Connell, Beier and Bradtke&quot;
+            &quot;id&quot;: 6,
+            &quot;name&quot;: &quot;Roberts-Kub&quot;
         },
         &quot;issuing_level&quot;: {
-            &quot;id&quot;: 422,
-            &quot;name&quot;: &quot;ratione nemo&quot;
+            &quot;id&quot;: 6,
+            &quot;name&quot;: &quot;ea ducimus&quot;
         },
         &quot;signer&quot;: {
-            &quot;id&quot;: 422,
-            &quot;name&quot;: &quot;Michelle Cassin&quot;
+            &quot;id&quot;: 6,
+            &quot;name&quot;: &quot;Marjolaine Carter&quot;
         },
         &quot;types&quot;: [
             {
-                &quot;id&quot;: 422,
-                &quot;name&quot;: &quot;ducimus corrupti&quot;
+                &quot;id&quot;: 6,
+                &quot;name&quot;: &quot;quis provident&quot;
             }
         ],
         &quot;fields&quot;: [
             {
-                &quot;id&quot;: 422,
-                &quot;name&quot;: &quot;quia maiores&quot;
+                &quot;id&quot;: 6,
+                &quot;name&quot;: &quot;maiores unde&quot;
             }
         ],
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:55 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:55 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Tạo văn bản th&agrave;nh c&ocirc;ng!&quot;
@@ -38420,7 +38737,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>Nhiều file đính kèm. Example: <code>C:\Users\Admin\AppData\Local\Temp\php693B.tmp</code></p>
+<p>Nhiều file đính kèm. Example: <code>/tmp/phpavvl8bq1pdkr0vBvM9W</code></p>
         </div>
         </form>
 
@@ -38457,8 +38774,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "ngay_het_hieu_luc=architecto"\
     --form "status=architecto"\
     --form "remove_attachment_ids[]=architecto"\
-    --form "attachments[]=@C:\Users\Admin\AppData\Local\Temp\php696B.tmp" \
-    --form "attachments[]=@C:\Users\Admin\AppData\Local\Temp\php697C.tmp" </code></pre></div>
+    --form "attachments[]=@/tmp/phpjvm037soee1c4Vwr0ks" \
+    --form "attachments[]=@/tmp/phpggfignm3cekl14hIJn2" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -38569,11 +38886,11 @@ $response = $client-&gt;put(
             ],
             [
                 'name' =&gt; 'attachments[]',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php696B.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/phpjvm037soee1c4Vwr0ks', 'r')
             ],
             [
                 'name' =&gt; 'attachments[]',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php697C.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/phpggfignm3cekl14hIJn2', 'r')
             ],
         ],
     ]
@@ -38591,7 +38908,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 187,
+        &quot;id&quot;: 5,
         &quot;so_ky_hieu&quot;: &quot;VB-9171/GZ&quot;,
         &quot;ten_van_ban&quot;: &quot;Velit et fugiat sunt.&quot;,
         &quot;noi_dung&quot;: &quot;Mollitia modi deserunt aut ab provident perspiciatis quo. Nostrum aut adipisci quidem nostrum. Commodi incidunt iure odit. Et modi ipsum nostrum omnis autem et consequatur. Dolores enim non facere tempora.\n\nLaboriosam praesentium quis adipisci molestias fugit deleniti distinctio. Doloremque id aut libero aliquam veniam corporis. Mollitia deleniti nemo odit quia officia.&quot;,
@@ -38601,33 +38918,33 @@ print_r(json_decode((string) $body));</code></pre></div>
         &quot;ngay_hieu_luc&quot;: null,
         &quot;ngay_het_hieu_luc&quot;: null,
         &quot;issuing_agency&quot;: {
-            &quot;id&quot;: 423,
+            &quot;id&quot;: 7,
             &quot;name&quot;: &quot;Pagac-Emmerich&quot;
         },
         &quot;issuing_level&quot;: {
-            &quot;id&quot;: 423,
+            &quot;id&quot;: 7,
             &quot;name&quot;: &quot;ut et&quot;
         },
         &quot;signer&quot;: {
-            &quot;id&quot;: 423,
+            &quot;id&quot;: 7,
             &quot;name&quot;: &quot;Graham Crist V&quot;
         },
         &quot;types&quot;: [
             {
-                &quot;id&quot;: 423,
+                &quot;id&quot;: 7,
                 &quot;name&quot;: &quot;dolores quia&quot;
             }
         ],
         &quot;fields&quot;: [
             {
-                &quot;id&quot;: 423,
+                &quot;id&quot;: 7,
                 &quot;name&quot;: &quot;odit doloribus&quot;
             }
         ],
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:55 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:55 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Cập nhật văn bản th&agrave;nh c&ocirc;ng!&quot;
@@ -38953,7 +39270,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>Nhiều file đính kèm (append). Example: <code>C:\Users\Admin\AppData\Local\Temp\php697C.tmp</code></p>
+<p>Nhiều file đính kèm (append). Example: <code>/tmp/phpggfignm3cekl14hIJn2</code></p>
         </div>
         </form>
 
@@ -38990,8 +39307,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "ngay_het_hieu_luc=architecto"\
     --form "status=architecto"\
     --form "remove_attachment_ids[]=architecto"\
-    --form "attachments[]=@C:\Users\Admin\AppData\Local\Temp\php699C.tmp" \
-    --form "attachments[]=@C:\Users\Admin\AppData\Local\Temp\php699D.tmp" </code></pre></div>
+    --form "attachments[]=@/tmp/phpb20veisb9dpt2LPddDj" \
+    --form "attachments[]=@/tmp/php0bbk8ptun9n3670IDHH" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -39102,11 +39419,11 @@ $response = $client-&gt;patch(
             ],
             [
                 'name' =&gt; 'attachments[]',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php699C.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/phpb20veisb9dpt2LPddDj', 'r')
             ],
             [
                 'name' =&gt; 'attachments[]',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php699D.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/php0bbk8ptun9n3670IDHH', 'r')
             ],
         ],
     ]
@@ -39124,7 +39441,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 188,
+        &quot;id&quot;: 6,
         &quot;so_ky_hieu&quot;: &quot;VB-9171/GZ&quot;,
         &quot;ten_van_ban&quot;: &quot;Velit et fugiat sunt.&quot;,
         &quot;noi_dung&quot;: &quot;Mollitia modi deserunt aut ab provident perspiciatis quo. Nostrum aut adipisci quidem nostrum. Commodi incidunt iure odit. Et modi ipsum nostrum omnis autem et consequatur. Dolores enim non facere tempora.\n\nLaboriosam praesentium quis adipisci molestias fugit deleniti distinctio. Doloremque id aut libero aliquam veniam corporis. Mollitia deleniti nemo odit quia officia.&quot;,
@@ -39134,33 +39451,33 @@ print_r(json_decode((string) $body));</code></pre></div>
         &quot;ngay_hieu_luc&quot;: null,
         &quot;ngay_het_hieu_luc&quot;: null,
         &quot;issuing_agency&quot;: {
-            &quot;id&quot;: 424,
+            &quot;id&quot;: 8,
             &quot;name&quot;: &quot;Pagac-Emmerich&quot;
         },
         &quot;issuing_level&quot;: {
-            &quot;id&quot;: 424,
+            &quot;id&quot;: 8,
             &quot;name&quot;: &quot;recusandae modi&quot;
         },
         &quot;signer&quot;: {
-            &quot;id&quot;: 424,
+            &quot;id&quot;: 8,
             &quot;name&quot;: &quot;Mona Lemke&quot;
         },
         &quot;types&quot;: [
             {
-                &quot;id&quot;: 424,
+                &quot;id&quot;: 8,
                 &quot;name&quot;: &quot;maiores assumenda&quot;
             }
         ],
         &quot;fields&quot;: [
             {
-                &quot;id&quot;: 424,
+                &quot;id&quot;: 8,
                 &quot;name&quot;: &quot;iure impedit&quot;
             }
         ],
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:56 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:56 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Cập nhật văn bản th&agrave;nh c&ocirc;ng!&quot;
@@ -39486,7 +39803,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>Nhiều file đính kèm (append). Example: <code>C:\Users\Admin\AppData\Local\Temp\php699D.tmp</code></p>
+<p>Nhiều file đính kèm (append). Example: <code>/tmp/php0bbk8ptun9n3670IDHH</code></p>
         </div>
         </form>
 
@@ -39761,43 +40078,43 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 189,
+        &quot;id&quot;: 7,
         &quot;so_ky_hieu&quot;: &quot;VB-7680/WP&quot;,
         &quot;ten_van_ban&quot;: &quot;Qui commodi incidunt iure.&quot;,
         &quot;noi_dung&quot;: null,
         &quot;status&quot;: &quot;active&quot;,
-        &quot;ngay_ban_hanh&quot;: &quot;20/02/1982&quot;,
+        &quot;ngay_ban_hanh&quot;: &quot;03/09/1981&quot;,
         &quot;ngay_xuat_ban&quot;: &quot;16/11/1971&quot;,
         &quot;ngay_hieu_luc&quot;: null,
         &quot;ngay_het_hieu_luc&quot;: null,
         &quot;issuing_agency&quot;: {
-            &quot;id&quot;: 425,
+            &quot;id&quot;: 9,
             &quot;name&quot;: &quot;Smitham-Tromp&quot;
         },
         &quot;issuing_level&quot;: {
-            &quot;id&quot;: 425,
+            &quot;id&quot;: 9,
             &quot;name&quot;: &quot;distinctio eum&quot;
         },
         &quot;signer&quot;: {
-            &quot;id&quot;: 425,
+            &quot;id&quot;: 9,
             &quot;name&quot;: &quot;Mathew Klocko&quot;
         },
         &quot;types&quot;: [
             {
-                &quot;id&quot;: 425,
+                &quot;id&quot;: 9,
                 &quot;name&quot;: &quot;dolorem mollitia&quot;
             }
         ],
         &quot;fields&quot;: [
             {
-                &quot;id&quot;: 425,
+                &quot;id&quot;: 9,
                 &quot;name&quot;: &quot;excepturi doloribus&quot;
             }
         ],
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;14:13:21 01/05/2026&quot;,
-        &quot;updated_at&quot;: &quot;14:13:21 01/05/2026&quot;
+        &quot;created_at&quot;: &quot;11:07:56 18/10/2026&quot;,
+        &quot;updated_at&quot;: &quot;11:07:56 18/10/2026&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Đổi trạng th&aacute;i văn bản th&agrave;nh c&ocirc;ng!&quot;
@@ -39939,6 +40256,3881 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </div>
         </form>
 
+                <h1 id="endpoints">Endpoints</h1>
+
+    
+
+                                <h2 id="endpoints-GETapi-job-stats">Thống kê công việc</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-job-stats">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/job/stats?search=van-ban&amp;status=active&amp;from_date=2026-01-01&amp;to_date=2026-12-31&amp;sort_by=created_at&amp;sort_order=desc&amp;limit=10" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/job/stats"
+);
+
+const params = {
+    "search": "van-ban",
+    "status": "active",
+    "from_date": "2026-01-01",
+    "to_date": "2026-12-31",
+    "sort_by": "created_at",
+    "sort_order": "desc",
+    "limit": "10",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/job/stats';
+$response = $client-&gt;get(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+        'query' =&gt; [
+            'search' =&gt; 'van-ban',
+            'status' =&gt; 'active',
+            'from_date' =&gt; '2026-01-01',
+            'to_date' =&gt; '2026-12-31',
+            'sort_by' =&gt; 'created_at',
+            'sort_order' =&gt; 'desc',
+            'limit' =&gt; '10',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-job-stats">
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;The route laravel_hq/quandh-core/public/api/job/stats could not be found.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-job-stats" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-job-stats"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-job-stats"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-job-stats" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-job-stats">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-job-stats" data-method="GET"
+      data-path="api/job/stats"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-job-stats', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-job-stats"
+                    onclick="tryItOut('GETapi-job-stats');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-job-stats"
+                    onclick="cancelTryOut('GETapi-job-stats');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-job-stats"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/job/stats</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-job-stats"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-job-stats"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-job-stats"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>search</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="search"                data-endpoint="GETapi-job-stats"
+               value="van-ban"
+               data-component="query">
+    <br>
+<p>Từ khóa tìm kiếm theo tên hoặc trường chính. Must not be greater than 100 characters. Example: <code>van-ban</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="status"                data-endpoint="GETapi-job-stats"
+               value="active"
+               data-component="query">
+    <br>
+<p>Lọc theo trạng thái. Example: <code>active</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>from_date</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="from_date"                data-endpoint="GETapi-job-stats"
+               value="2026-01-01"
+               data-component="query">
+    <br>
+<p>Lọc từ ngày tạo (Y-m-d). Must be a valid date. Example: <code>2026-01-01</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>to_date</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="to_date"                data-endpoint="GETapi-job-stats"
+               value="2026-12-31"
+               data-component="query">
+    <br>
+<p>Lọc đến ngày tạo (Y-m-d). Must be a valid date. Must be a date after or equal to <code>from_date</code>. Example: <code>2026-12-31</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>sort_by</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="sort_by"                data-endpoint="GETapi-job-stats"
+               value="created_at"
+               data-component="query">
+    <br>
+<p>Trường dùng để sắp xếp. Must not be greater than 50 characters. Example: <code>created_at</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>sort_order</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="sort_order"                data-endpoint="GETapi-job-stats"
+               value="desc"
+               data-component="query">
+    <br>
+<p>Thứ tự sắp xếp. Example: <code>desc</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>asc</code></li> <li><code>desc</code></li></ul>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>limit</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="limit"                data-endpoint="GETapi-job-stats"
+               value="10"
+               data-component="query">
+    <br>
+<p>Số bản ghi mỗi trang (1-100). Must be at least 1. Must not be greater than 100. Example: <code>10</code></p>
+            </div>
+                </form>
+
+                    <h2 id="endpoints-GETapi-job-export">Xuất danh sách công việc (Excel)</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-job-export">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/job/export?search=van-ban&amp;status=active&amp;from_date=2026-01-01&amp;to_date=2026-12-31&amp;sort_by=created_at&amp;sort_order=desc&amp;limit=10" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/job/export"
+);
+
+const params = {
+    "search": "van-ban",
+    "status": "active",
+    "from_date": "2026-01-01",
+    "to_date": "2026-12-31",
+    "sort_by": "created_at",
+    "sort_order": "desc",
+    "limit": "10",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/job/export';
+$response = $client-&gt;get(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+        'query' =&gt; [
+            'search' =&gt; 'van-ban',
+            'status' =&gt; 'active',
+            'from_date' =&gt; '2026-01-01',
+            'to_date' =&gt; '2026-12-31',
+            'sort_by' =&gt; 'created_at',
+            'sort_order' =&gt; 'desc',
+            'limit' =&gt; '10',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-job-export">
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;The route laravel_hq/quandh-core/public/api/job/export could not be found.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-job-export" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-job-export"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-job-export"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-job-export" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-job-export">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-job-export" data-method="GET"
+      data-path="api/job/export"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-job-export', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-job-export"
+                    onclick="tryItOut('GETapi-job-export');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-job-export"
+                    onclick="cancelTryOut('GETapi-job-export');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-job-export"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/job/export</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-job-export"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-job-export"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-job-export"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>search</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="search"                data-endpoint="GETapi-job-export"
+               value="van-ban"
+               data-component="query">
+    <br>
+<p>Từ khóa tìm kiếm theo tên hoặc trường chính. Must not be greater than 100 characters. Example: <code>van-ban</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="status"                data-endpoint="GETapi-job-export"
+               value="active"
+               data-component="query">
+    <br>
+<p>Lọc theo trạng thái. Example: <code>active</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>from_date</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="from_date"                data-endpoint="GETapi-job-export"
+               value="2026-01-01"
+               data-component="query">
+    <br>
+<p>Lọc từ ngày tạo (Y-m-d). Must be a valid date. Example: <code>2026-01-01</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>to_date</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="to_date"                data-endpoint="GETapi-job-export"
+               value="2026-12-31"
+               data-component="query">
+    <br>
+<p>Lọc đến ngày tạo (Y-m-d). Must be a valid date. Must be a date after or equal to <code>from_date</code>. Example: <code>2026-12-31</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>sort_by</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="sort_by"                data-endpoint="GETapi-job-export"
+               value="created_at"
+               data-component="query">
+    <br>
+<p>Trường dùng để sắp xếp. Must not be greater than 50 characters. Example: <code>created_at</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>sort_order</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="sort_order"                data-endpoint="GETapi-job-export"
+               value="desc"
+               data-component="query">
+    <br>
+<p>Thứ tự sắp xếp. Example: <code>desc</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>asc</code></li> <li><code>desc</code></li></ul>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>limit</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="limit"                data-endpoint="GETapi-job-export"
+               value="10"
+               data-component="query">
+    <br>
+<p>Số bản ghi mỗi trang (1-100). Must be at least 1. Must not be greater than 100. Example: <code>10</code></p>
+            </div>
+                </form>
+
+                    <h2 id="endpoints-POSTapi-job-import">Nhập danh sách công việc</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-job-import">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/laravel_hq/quandh-core/public/api/job/import" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "file=@/tmp/phpa4tai6lpidmuaxz5gYS" </code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/job/import"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "multipart/form-data",
+    "Accept": "application/json",
+};
+
+const body = new FormData();
+body.append('file', document.querySelector('input[name="file"]').files[0]);
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/job/import';
+$response = $client-&gt;post(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'multipart/form-data',
+            'Accept' =&gt; 'application/json',
+        ],
+        'multipart' =&gt; [
+            [
+                'name' =&gt; 'file',
+                'contents' =&gt; fopen('/tmp/phpa4tai6lpidmuaxz5gYS', 'r')
+            ],
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-job-import">
+</span>
+<span id="execution-results-POSTapi-job-import" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-job-import"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-job-import"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-job-import" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-job-import">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-job-import" data-method="POST"
+      data-path="api/job/import"
+      data-authed="1"
+      data-hasfiles="1"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-job-import', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-job-import"
+                    onclick="tryItOut('POSTapi-job-import');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-job-import"
+                    onclick="cancelTryOut('POSTapi-job-import');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-job-import"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/job/import</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-job-import"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-job-import"
+               value="multipart/form-data"
+               data-component="header">
+    <br>
+<p>Example: <code>multipart/form-data</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-job-import"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>file</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="file"                data-endpoint="POSTapi-job-import"
+               value=""
+               data-component="body">
+    <br>
+<p>Must be a file. Example: <code>/tmp/phpa4tai6lpidmuaxz5gYS</code></p>
+        </div>
+        </form>
+
+                    <h2 id="endpoints-POSTapi-job-bulk-delete">Xóa hàng loạt công việc</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-job-bulk-delete">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/laravel_hq/quandh-core/public/api/job/bulk-delete" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"ids\": [
+        16
+    ]
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/job/bulk-delete"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "ids": [
+        16
+    ]
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/job/bulk-delete';
+$response = $client-&gt;post(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'ids' =&gt; [
+                16,
+            ],
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-job-bulk-delete">
+</span>
+<span id="execution-results-POSTapi-job-bulk-delete" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-job-bulk-delete"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-job-bulk-delete"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-job-bulk-delete" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-job-bulk-delete">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-job-bulk-delete" data-method="POST"
+      data-path="api/job/bulk-delete"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-job-bulk-delete', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-job-bulk-delete"
+                    onclick="tryItOut('POSTapi-job-bulk-delete');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-job-bulk-delete"
+                    onclick="cancelTryOut('POSTapi-job-bulk-delete');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-job-bulk-delete"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/job/bulk-delete</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-job-bulk-delete"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-job-bulk-delete"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-job-bulk-delete"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>ids</code></b>&nbsp;&nbsp;
+<small>integer[]</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="ids[0]"                data-endpoint="POSTapi-job-bulk-delete"
+               data-component="body">
+        <input type="number" style="display: none"
+               name="ids[1]"                data-endpoint="POSTapi-job-bulk-delete"
+               data-component="body">
+    <br>
+<p>The <code>id</code> of an existing record in the itjobs table.</p>
+        </div>
+        </form>
+
+                    <h2 id="endpoints-POSTapi-job-bulk-update-status">Cập nhật trạng thái hàng loạt</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-job-bulk-update-status">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/laravel_hq/quandh-core/public/api/job/bulk-update-status" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"ids\": [
+        16
+    ],
+    \"status\": \"architecto\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/job/bulk-update-status"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "ids": [
+        16
+    ],
+    "status": "architecto"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/job/bulk-update-status';
+$response = $client-&gt;post(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'ids' =&gt; [
+                16,
+            ],
+            'status' =&gt; 'architecto',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-job-bulk-update-status">
+</span>
+<span id="execution-results-POSTapi-job-bulk-update-status" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-job-bulk-update-status"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-job-bulk-update-status"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-job-bulk-update-status" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-job-bulk-update-status">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-job-bulk-update-status" data-method="POST"
+      data-path="api/job/bulk-update-status"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-job-bulk-update-status', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-job-bulk-update-status"
+                    onclick="tryItOut('POSTapi-job-bulk-update-status');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-job-bulk-update-status"
+                    onclick="cancelTryOut('POSTapi-job-bulk-update-status');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-job-bulk-update-status"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/job/bulk-update-status</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-job-bulk-update-status"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-job-bulk-update-status"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-job-bulk-update-status"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>ids</code></b>&nbsp;&nbsp;
+<small>integer[]</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="ids[0]"                data-endpoint="POSTapi-job-bulk-update-status"
+               data-component="body">
+        <input type="number" style="display: none"
+               name="ids[1]"                data-endpoint="POSTapi-job-bulk-update-status"
+               data-component="body">
+    <br>
+<p>The <code>id</code> of an existing record in the itjobs table.</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="status"                data-endpoint="POSTapi-job-bulk-update-status"
+               value="architecto"
+               data-component="body">
+    <br>
+<p>Example: <code>architecto</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>draft</code></li> <li><code>published</code></li> <li><code>archived</code></li> <li><code>completed</code></li></ul>
+        </div>
+        </form>
+
+                    <h2 id="endpoints-GETapi-job">Danh sách công việc</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-job">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/job?search=van-ban&amp;status=active&amp;from_date=2026-01-01&amp;to_date=2026-12-31&amp;sort_by=created_at&amp;sort_order=desc&amp;limit=10" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/job"
+);
+
+const params = {
+    "search": "van-ban",
+    "status": "active",
+    "from_date": "2026-01-01",
+    "to_date": "2026-12-31",
+    "sort_by": "created_at",
+    "sort_order": "desc",
+    "limit": "10",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/job';
+$response = $client-&gt;get(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+        'query' =&gt; [
+            'search' =&gt; 'van-ban',
+            'status' =&gt; 'active',
+            'from_date' =&gt; '2026-01-01',
+            'to_date' =&gt; '2026-12-31',
+            'sort_by' =&gt; 'created_at',
+            'sort_order' =&gt; 'desc',
+            'limit' =&gt; '10',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-job">
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;The route laravel_hq/quandh-core/public/api/job could not be found.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-job" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-job"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-job"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-job" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-job">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-job" data-method="GET"
+      data-path="api/job"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-job', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-job"
+                    onclick="tryItOut('GETapi-job');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-job"
+                    onclick="cancelTryOut('GETapi-job');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-job"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/job</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-job"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-job"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-job"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>search</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="search"                data-endpoint="GETapi-job"
+               value="van-ban"
+               data-component="query">
+    <br>
+<p>Từ khóa tìm kiếm theo tên hoặc trường chính. Must not be greater than 100 characters. Example: <code>van-ban</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="status"                data-endpoint="GETapi-job"
+               value="active"
+               data-component="query">
+    <br>
+<p>Lọc theo trạng thái. Example: <code>active</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>from_date</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="from_date"                data-endpoint="GETapi-job"
+               value="2026-01-01"
+               data-component="query">
+    <br>
+<p>Lọc từ ngày tạo (Y-m-d). Must be a valid date. Example: <code>2026-01-01</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>to_date</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="to_date"                data-endpoint="GETapi-job"
+               value="2026-12-31"
+               data-component="query">
+    <br>
+<p>Lọc đến ngày tạo (Y-m-d). Must be a valid date. Must be a date after or equal to <code>from_date</code>. Example: <code>2026-12-31</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>sort_by</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="sort_by"                data-endpoint="GETapi-job"
+               value="created_at"
+               data-component="query">
+    <br>
+<p>Trường dùng để sắp xếp. Must not be greater than 50 characters. Example: <code>created_at</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>sort_order</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="sort_order"                data-endpoint="GETapi-job"
+               value="desc"
+               data-component="query">
+    <br>
+<p>Thứ tự sắp xếp. Example: <code>desc</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>asc</code></li> <li><code>desc</code></li></ul>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>limit</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="limit"                data-endpoint="GETapi-job"
+               value="10"
+               data-component="query">
+    <br>
+<p>Số bản ghi mỗi trang (1-100). Must be at least 1. Must not be greater than 100. Example: <code>10</code></p>
+            </div>
+                </form>
+
+                    <h2 id="endpoints-GETapi-job--job_id-">Chi tiết công việc</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-job--job_id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/job/16" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/job/16"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/job/16';
+$response = $client-&gt;get(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-job--job_id-">
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;The route laravel_hq/quandh-core/public/api/job/16 could not be found.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-job--job_id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-job--job_id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-job--job_id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-job--job_id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-job--job_id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-job--job_id-" data-method="GET"
+      data-path="api/job/{job_id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-job--job_id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-job--job_id-"
+                    onclick="tryItOut('GETapi-job--job_id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-job--job_id-"
+                    onclick="cancelTryOut('GETapi-job--job_id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-job--job_id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/job/{job_id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-job--job_id-"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-job--job_id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-job--job_id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>job_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="job_id"                data-endpoint="GETapi-job--job_id-"
+               value="16"
+               data-component="url">
+    <br>
+<p>The ID of the job. Example: <code>16</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="endpoints-POSTapi-job">Tạo công việc mới</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-job">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/laravel_hq/quandh-core/public/api/job" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"title\": \"b\",
+    \"description\": \"Eius et animi quos velit et.\",
+    \"status\": \"architecto\",
+    \"due_at\": \"2026-10-18 11:07:59\",
+    \"is_notified\": true
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/job"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "title": "b",
+    "description": "Eius et animi quos velit et.",
+    "status": "architecto",
+    "due_at": "2026-10-18 11:07:59",
+    "is_notified": true
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/job';
+$response = $client-&gt;post(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'title' =&gt; 'b',
+            'description' =&gt; 'Eius et animi quos velit et.',
+            'status' =&gt; 'architecto',
+            'due_at' =&gt; '2026-10-18 11:07:59',
+            'is_notified' =&gt; true,
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-job">
+</span>
+<span id="execution-results-POSTapi-job" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-job"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-job"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-job" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-job">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-job" data-method="POST"
+      data-path="api/job"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-job', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-job"
+                    onclick="tryItOut('POSTapi-job');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-job"
+                    onclick="cancelTryOut('POSTapi-job');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-job"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/job</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-job"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-job"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-job"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>title</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="title"                data-endpoint="POSTapi-job"
+               value="b"
+               data-component="body">
+    <br>
+<p>Must not be greater than 255 characters. Example: <code>b</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="description"                data-endpoint="POSTapi-job"
+               value="Eius et animi quos velit et."
+               data-component="body">
+    <br>
+<p>Example: <code>Eius et animi quos velit et.</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="status"                data-endpoint="POSTapi-job"
+               value="architecto"
+               data-component="body">
+    <br>
+<p>Example: <code>architecto</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>draft</code></li> <li><code>published</code></li> <li><code>archived</code></li> <li><code>completed</code></li></ul>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>due_at</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="due_at"                data-endpoint="POSTapi-job"
+               value="2026-10-18 11:07:59"
+               data-component="body">
+    <br>
+<p>Must be a valid date in the format <code>Y-m-d H:i:s</code>. Example: <code>2026-10-18 11:07:59</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>is_notified</code></b>&nbsp;&nbsp;
+<small>boolean</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <label data-endpoint="POSTapi-job" style="display: none">
+            <input type="radio" name="is_notified"
+                   value="true"
+                   data-endpoint="POSTapi-job"
+                   data-component="body"             >
+            <code>true</code>
+        </label>
+        <label data-endpoint="POSTapi-job" style="display: none">
+            <input type="radio" name="is_notified"
+                   value="false"
+                   data-endpoint="POSTapi-job"
+                   data-component="body"             >
+            <code>false</code>
+        </label>
+    <br>
+<p>Example: <code>true</code></p>
+        </div>
+        </form>
+
+                    <h2 id="endpoints-PUTapi-job--job_id-">Cập nhật công việc</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-PUTapi-job--job_id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request PUT \
+    "http://localhost/laravel_hq/quandh-core/public/api/job/16" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"title\": \"b\",
+    \"description\": \"Eius et animi quos velit et.\",
+    \"status\": \"architecto\",
+    \"due_at\": \"2026-10-18 11:07:59\",
+    \"is_notified\": true
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/job/16"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "title": "b",
+    "description": "Eius et animi quos velit et.",
+    "status": "architecto",
+    "due_at": "2026-10-18 11:07:59",
+    "is_notified": true
+};
+
+fetch(url, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/job/16';
+$response = $client-&gt;put(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'title' =&gt; 'b',
+            'description' =&gt; 'Eius et animi quos velit et.',
+            'status' =&gt; 'architecto',
+            'due_at' =&gt; '2026-10-18 11:07:59',
+            'is_notified' =&gt; true,
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-PUTapi-job--job_id-">
+</span>
+<span id="execution-results-PUTapi-job--job_id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PUTapi-job--job_id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PUTapi-job--job_id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-PUTapi-job--job_id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PUTapi-job--job_id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-PUTapi-job--job_id-" data-method="PUT"
+      data-path="api/job/{job_id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PUTapi-job--job_id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PUTapi-job--job_id-"
+                    onclick="tryItOut('PUTapi-job--job_id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PUTapi-job--job_id-"
+                    onclick="cancelTryOut('PUTapi-job--job_id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PUTapi-job--job_id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-darkblue">PUT</small>
+            <b><code>api/job/{job_id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="PUTapi-job--job_id-"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="PUTapi-job--job_id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="PUTapi-job--job_id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>job_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="job_id"                data-endpoint="PUTapi-job--job_id-"
+               value="16"
+               data-component="url">
+    <br>
+<p>The ID of the job. Example: <code>16</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>title</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="title"                data-endpoint="PUTapi-job--job_id-"
+               value="b"
+               data-component="body">
+    <br>
+<p>Must not be greater than 255 characters. Example: <code>b</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="description"                data-endpoint="PUTapi-job--job_id-"
+               value="Eius et animi quos velit et."
+               data-component="body">
+    <br>
+<p>Example: <code>Eius et animi quos velit et.</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="status"                data-endpoint="PUTapi-job--job_id-"
+               value="architecto"
+               data-component="body">
+    <br>
+<p>Example: <code>architecto</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>draft</code></li> <li><code>published</code></li> <li><code>archived</code></li> <li><code>completed</code></li></ul>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>due_at</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="due_at"                data-endpoint="PUTapi-job--job_id-"
+               value="2026-10-18 11:07:59"
+               data-component="body">
+    <br>
+<p>Must be a valid date in the format <code>Y-m-d H:i:s</code>. Example: <code>2026-10-18 11:07:59</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>is_notified</code></b>&nbsp;&nbsp;
+<small>boolean</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <label data-endpoint="PUTapi-job--job_id-" style="display: none">
+            <input type="radio" name="is_notified"
+                   value="true"
+                   data-endpoint="PUTapi-job--job_id-"
+                   data-component="body"             >
+            <code>true</code>
+        </label>
+        <label data-endpoint="PUTapi-job--job_id-" style="display: none">
+            <input type="radio" name="is_notified"
+                   value="false"
+                   data-endpoint="PUTapi-job--job_id-"
+                   data-component="body"             >
+            <code>false</code>
+        </label>
+    <br>
+<p>Example: <code>true</code></p>
+        </div>
+        </form>
+
+                    <h2 id="endpoints-DELETEapi-job--job_id-">Xóa công việc</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-DELETEapi-job--job_id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request DELETE \
+    "http://localhost/laravel_hq/quandh-core/public/api/job/16" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/job/16"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "DELETE",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/job/16';
+$response = $client-&gt;delete(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-DELETEapi-job--job_id-">
+</span>
+<span id="execution-results-DELETEapi-job--job_id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-DELETEapi-job--job_id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-DELETEapi-job--job_id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-DELETEapi-job--job_id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-DELETEapi-job--job_id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-DELETEapi-job--job_id-" data-method="DELETE"
+      data-path="api/job/{job_id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('DELETEapi-job--job_id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-DELETEapi-job--job_id-"
+                    onclick="tryItOut('DELETEapi-job--job_id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-DELETEapi-job--job_id-"
+                    onclick="cancelTryOut('DELETEapi-job--job_id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-DELETEapi-job--job_id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-red">DELETE</small>
+            <b><code>api/job/{job_id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="DELETEapi-job--job_id-"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="DELETEapi-job--job_id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="DELETEapi-job--job_id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>job_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="job_id"                data-endpoint="DELETEapi-job--job_id-"
+               value="16"
+               data-component="url">
+    <br>
+<p>The ID of the job. Example: <code>16</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="endpoints-PATCHapi-job--job_id--status">Thay đổi trạng thái công việc</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-PATCHapi-job--job_id--status">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request PATCH \
+    "http://localhost/laravel_hq/quandh-core/public/api/job/16/status" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"status\": \"architecto\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/job/16/status"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "status": "architecto"
+};
+
+fetch(url, {
+    method: "PATCH",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/job/16/status';
+$response = $client-&gt;patch(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'status' =&gt; 'architecto',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-PATCHapi-job--job_id--status">
+</span>
+<span id="execution-results-PATCHapi-job--job_id--status" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PATCHapi-job--job_id--status"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PATCHapi-job--job_id--status"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-PATCHapi-job--job_id--status" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PATCHapi-job--job_id--status">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-PATCHapi-job--job_id--status" data-method="PATCH"
+      data-path="api/job/{job_id}/status"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PATCHapi-job--job_id--status', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PATCHapi-job--job_id--status"
+                    onclick="tryItOut('PATCHapi-job--job_id--status');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PATCHapi-job--job_id--status"
+                    onclick="cancelTryOut('PATCHapi-job--job_id--status');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PATCHapi-job--job_id--status"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-purple">PATCH</small>
+            <b><code>api/job/{job_id}/status</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="PATCHapi-job--job_id--status"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="PATCHapi-job--job_id--status"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="PATCHapi-job--job_id--status"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>job_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="job_id"                data-endpoint="PATCHapi-job--job_id--status"
+               value="16"
+               data-component="url">
+    <br>
+<p>The ID of the job. Example: <code>16</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="status"                data-endpoint="PATCHapi-job--job_id--status"
+               value="architecto"
+               data-component="body">
+    <br>
+<p>Example: <code>architecto</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>draft</code></li> <li><code>published</code></li> <li><code>archived</code></li> <li><code>completed</code></li></ul>
+        </div>
+        </form>
+
+                    <h2 id="endpoints-GETapi-motel-export">GET api/motel/export</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-motel-export">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/motel/export" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/motel/export"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/motel/export';
+$response = $client-&gt;get(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-motel-export">
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;The route laravel_hq/quandh-core/public/api/motel/export could not be found.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-motel-export" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-motel-export"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-motel-export"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-motel-export" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-motel-export">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-motel-export" data-method="GET"
+      data-path="api/motel/export"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-motel-export', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-motel-export"
+                    onclick="tryItOut('GETapi-motel-export');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-motel-export"
+                    onclick="cancelTryOut('GETapi-motel-export');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-motel-export"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/motel/export</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-motel-export"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-motel-export"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-motel-export"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="endpoints-POSTapi-motel-import">POST api/motel/import</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-motel-import">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/laravel_hq/quandh-core/public/api/motel/import" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/motel/import"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/motel/import';
+$response = $client-&gt;post(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-motel-import">
+</span>
+<span id="execution-results-POSTapi-motel-import" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-motel-import"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-motel-import"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-motel-import" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-motel-import">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-motel-import" data-method="POST"
+      data-path="api/motel/import"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-motel-import', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-motel-import"
+                    onclick="tryItOut('POSTapi-motel-import');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-motel-import"
+                    onclick="cancelTryOut('POSTapi-motel-import');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-motel-import"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/motel/import</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-motel-import"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-motel-import"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-motel-import"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="endpoints-POSTapi-motel-bulk-delete">POST api/motel/bulk-delete</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-motel-bulk-delete">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/laravel_hq/quandh-core/public/api/motel/bulk-delete" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/motel/bulk-delete"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/motel/bulk-delete';
+$response = $client-&gt;post(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-motel-bulk-delete">
+</span>
+<span id="execution-results-POSTapi-motel-bulk-delete" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-motel-bulk-delete"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-motel-bulk-delete"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-motel-bulk-delete" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-motel-bulk-delete">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-motel-bulk-delete" data-method="POST"
+      data-path="api/motel/bulk-delete"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-motel-bulk-delete', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-motel-bulk-delete"
+                    onclick="tryItOut('POSTapi-motel-bulk-delete');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-motel-bulk-delete"
+                    onclick="cancelTryOut('POSTapi-motel-bulk-delete');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-motel-bulk-delete"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/motel/bulk-delete</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-motel-bulk-delete"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-motel-bulk-delete"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-motel-bulk-delete"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="endpoints-GETapi-motel">GET api/motel</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-motel">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/motel" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/motel"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/motel';
+$response = $client-&gt;get(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-motel">
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;The route laravel_hq/quandh-core/public/api/motel could not be found.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-motel" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-motel"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-motel"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-motel" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-motel">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-motel" data-method="GET"
+      data-path="api/motel"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-motel', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-motel"
+                    onclick="tryItOut('GETapi-motel');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-motel"
+                    onclick="cancelTryOut('GETapi-motel');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-motel"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/motel</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-motel"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-motel"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-motel"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="endpoints-GETapi-motel--room-">GET api/motel/{room}</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-motel--room-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/motel/architecto" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/motel/architecto"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/motel/architecto';
+$response = $client-&gt;get(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-motel--room-">
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;The route laravel_hq/quandh-core/public/api/motel/architecto could not be found.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-motel--room-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-motel--room-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-motel--room-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-motel--room-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-motel--room-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-motel--room-" data-method="GET"
+      data-path="api/motel/{room}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-motel--room-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-motel--room-"
+                    onclick="tryItOut('GETapi-motel--room-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-motel--room-"
+                    onclick="cancelTryOut('GETapi-motel--room-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-motel--room-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/motel/{room}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-motel--room-"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-motel--room-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-motel--room-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>room</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="room"                data-endpoint="GETapi-motel--room-"
+               value="architecto"
+               data-component="url">
+    <br>
+<p>Example: <code>architecto</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="endpoints-POSTapi-motel">POST api/motel</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-motel">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/laravel_hq/quandh-core/public/api/motel" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/motel"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/motel';
+$response = $client-&gt;post(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-motel">
+</span>
+<span id="execution-results-POSTapi-motel" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-motel"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-motel"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-motel" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-motel">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-motel" data-method="POST"
+      data-path="api/motel"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-motel', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-motel"
+                    onclick="tryItOut('POSTapi-motel');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-motel"
+                    onclick="cancelTryOut('POSTapi-motel');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-motel"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/motel</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-motel"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-motel"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-motel"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="endpoints-PUTapi-motel--room-">PUT api/motel/{room}</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-PUTapi-motel--room-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request PUT \
+    "http://localhost/laravel_hq/quandh-core/public/api/motel/architecto" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/motel/architecto"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "PUT",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/motel/architecto';
+$response = $client-&gt;put(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-PUTapi-motel--room-">
+</span>
+<span id="execution-results-PUTapi-motel--room-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PUTapi-motel--room-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PUTapi-motel--room-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-PUTapi-motel--room-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PUTapi-motel--room-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-PUTapi-motel--room-" data-method="PUT"
+      data-path="api/motel/{room}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PUTapi-motel--room-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PUTapi-motel--room-"
+                    onclick="tryItOut('PUTapi-motel--room-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PUTapi-motel--room-"
+                    onclick="cancelTryOut('PUTapi-motel--room-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PUTapi-motel--room-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-darkblue">PUT</small>
+            <b><code>api/motel/{room}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="PUTapi-motel--room-"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="PUTapi-motel--room-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="PUTapi-motel--room-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>room</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="room"                data-endpoint="PUTapi-motel--room-"
+               value="architecto"
+               data-component="url">
+    <br>
+<p>Example: <code>architecto</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="endpoints-PATCHapi-motel--room-">PATCH api/motel/{room}</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-PATCHapi-motel--room-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request PATCH \
+    "http://localhost/laravel_hq/quandh-core/public/api/motel/architecto" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/motel/architecto"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "PATCH",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/motel/architecto';
+$response = $client-&gt;patch(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-PATCHapi-motel--room-">
+</span>
+<span id="execution-results-PATCHapi-motel--room-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PATCHapi-motel--room-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PATCHapi-motel--room-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-PATCHapi-motel--room-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PATCHapi-motel--room-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-PATCHapi-motel--room-" data-method="PATCH"
+      data-path="api/motel/{room}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PATCHapi-motel--room-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PATCHapi-motel--room-"
+                    onclick="tryItOut('PATCHapi-motel--room-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PATCHapi-motel--room-"
+                    onclick="cancelTryOut('PATCHapi-motel--room-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PATCHapi-motel--room-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-purple">PATCH</small>
+            <b><code>api/motel/{room}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="PATCHapi-motel--room-"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="PATCHapi-motel--room-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="PATCHapi-motel--room-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>room</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="room"                data-endpoint="PATCHapi-motel--room-"
+               value="architecto"
+               data-component="url">
+    <br>
+<p>Example: <code>architecto</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="endpoints-DELETEapi-motel--room-">DELETE api/motel/{room}</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-DELETEapi-motel--room-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request DELETE \
+    "http://localhost/laravel_hq/quandh-core/public/api/motel/architecto" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/motel/architecto"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "DELETE",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/motel/architecto';
+$response = $client-&gt;delete(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-DELETEapi-motel--room-">
+</span>
+<span id="execution-results-DELETEapi-motel--room-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-DELETEapi-motel--room-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-DELETEapi-motel--room-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-DELETEapi-motel--room-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-DELETEapi-motel--room-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-DELETEapi-motel--room-" data-method="DELETE"
+      data-path="api/motel/{room}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('DELETEapi-motel--room-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-DELETEapi-motel--room-"
+                    onclick="tryItOut('DELETEapi-motel--room-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-DELETEapi-motel--room-"
+                    onclick="cancelTryOut('DELETEapi-motel--room-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-DELETEapi-motel--room-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-red">DELETE</small>
+            <b><code>api/motel/{room}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="DELETEapi-motel--room-"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="DELETEapi-motel--room-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="DELETEapi-motel--room-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>room</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="room"                data-endpoint="DELETEapi-motel--room-"
+               value="architecto"
+               data-component="url">
+    <br>
+<p>Example: <code>architecto</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="endpoints-PATCHapi-motel--room--status">PATCH api/motel/{room}/status</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-PATCHapi-motel--room--status">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request PATCH \
+    "http://localhost/laravel_hq/quandh-core/public/api/motel/architecto/status" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/motel/architecto/status"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "PATCH",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/motel/architecto/status';
+$response = $client-&gt;patch(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-PATCHapi-motel--room--status">
+</span>
+<span id="execution-results-PATCHapi-motel--room--status" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PATCHapi-motel--room--status"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PATCHapi-motel--room--status"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-PATCHapi-motel--room--status" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PATCHapi-motel--room--status">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-PATCHapi-motel--room--status" data-method="PATCH"
+      data-path="api/motel/{room}/status"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PATCHapi-motel--room--status', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PATCHapi-motel--room--status"
+                    onclick="tryItOut('PATCHapi-motel--room--status');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PATCHapi-motel--room--status"
+                    onclick="cancelTryOut('PATCHapi-motel--room--status');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PATCHapi-motel--room--status"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-purple">PATCH</small>
+            <b><code>api/motel/{room}/status</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="PATCHapi-motel--room--status"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="PATCHapi-motel--room--status"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="PATCHapi-motel--room--status"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>room</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="room"                data-endpoint="PATCHapi-motel--room--status"
+               value="architecto"
+               data-component="url">
+    <br>
+<p>Example: <code>architecto</code></p>
+            </div>
+                    </form>
+
                 <h1 id="post-category">Post - Category</h1>
 
     
@@ -40028,7 +44220,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 641,
+            &quot;id&quot;: 1,
             &quot;name&quot;: &quot;Architecto Eius&quot;,
             &quot;slug&quot;: &quot;architecto-eius&quot;,
             &quot;description&quot;: &quot;Quos velit et fugiat sunt nihil accusantium harum.&quot;,
@@ -40038,11 +44230,11 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;depth&quot;: 0,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;01/05/2026 14:13:19&quot;,
-            &quot;updated_at&quot;: &quot;01/05/2026 14:13:19&quot;
+            &quot;created_at&quot;: &quot;18/10/2026 11:07:48&quot;,
+            &quot;updated_at&quot;: &quot;18/10/2026 11:07:48&quot;
         },
         {
-            &quot;id&quot;: 642,
+            &quot;id&quot;: 2,
             &quot;name&quot;: &quot;Deserunt Aut&quot;,
             &quot;slug&quot;: &quot;deserunt-aut&quot;,
             &quot;description&quot;: null,
@@ -40052,8 +44244,8 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;depth&quot;: 0,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;01/05/2026 14:13:19&quot;,
-            &quot;updated_at&quot;: &quot;01/05/2026 14:13:19&quot;
+            &quot;created_at&quot;: &quot;18/10/2026 11:07:48&quot;,
+            &quot;updated_at&quot;: &quot;18/10/2026 11:07:48&quot;
         }
     ],
     &quot;success&quot;: &quot;true&quot;
@@ -40317,12 +44509,12 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 643,
+            &quot;id&quot;: 3,
             &quot;name&quot;: &quot;Et Animi&quot;,
             &quot;description&quot;: &quot;Et fugiat sunt nihil accusantium.&quot;
         },
         {
-            &quot;id&quot;: 644,
+            &quot;id&quot;: 4,
             &quot;name&quot;: &quot;Quo Omnis&quot;,
             &quot;description&quot;: &quot;Adipisci quidem nostrum qui commodi incidunt iure.&quot;
         }
@@ -40801,7 +44993,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "file=@C:\Users\Admin\AppData\Local\Temp\php65A7.tmp" </code></pre></div>
+    --form "file=@/tmp/php84jpcrli96vhdeElusy" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -40841,7 +45033,7 @@ $response = $client-&gt;post(
         'multipart' =&gt; [
             [
                 'name' =&gt; 'file',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php65A7.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/php84jpcrli96vhdeElusy', 'r')
             ],
         ],
     ]
@@ -40969,7 +45161,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>C:\Users\Admin\AppData\Local\Temp\php65A7.tmp</code></p>
+<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>/tmp/php84jpcrli96vhdeElusy</code></p>
         </div>
         </form>
 
@@ -41968,7 +46160,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 650,
+            &quot;id&quot;: 10,
             &quot;name&quot;: &quot;Adipisci Quidem&quot;,
             &quot;slug&quot;: &quot;adipisci-quidem&quot;,
             &quot;description&quot;: &quot;Commodi incidunt iure odit.&quot;,
@@ -41978,11 +46170,11 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;depth&quot;: 0,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-            &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+            &quot;created_at&quot;: &quot;18/10/2026 11:07:51&quot;,
+            &quot;updated_at&quot;: &quot;18/10/2026 11:07:51&quot;
         },
         {
-            &quot;id&quot;: 651,
+            &quot;id&quot;: 11,
             &quot;name&quot;: &quot;Modi Ipsum&quot;,
             &quot;slug&quot;: &quot;modi-ipsum&quot;,
             &quot;description&quot;: &quot;Autem et consequatur aut dolores enim non facere tempora.&quot;,
@@ -41992,8 +46184,8 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;depth&quot;: 0,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-            &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+            &quot;created_at&quot;: &quot;18/10/2026 11:07:51&quot;,
+            &quot;updated_at&quot;: &quot;18/10/2026 11:07:51&quot;
         }
     ],
     &quot;links&quot;: {
@@ -42231,7 +46423,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/laravel_hq/quandh-core/public/api/post-categories/1" \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/post-categories/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -42240,7 +46432,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/post-categories/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/post-categories/16"
 );
 
 const headers = {
@@ -42259,7 +46451,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/post-categories/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/post-categories/16';
 $response = $client-&gt;get(
     $url,
     [
@@ -42284,20 +46476,20 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 653,
+        &quot;id&quot;: 13,
         &quot;name&quot;: &quot;Aut Adipisci&quot;,
         &quot;slug&quot;: &quot;aut-adipisci&quot;,
         &quot;description&quot;: &quot;Qui commodi incidunt iure odit.&quot;,
         &quot;status&quot;: &quot;active&quot;,
         &quot;sort_order&quot;: 20,
-        &quot;parent_id&quot;: 652,
+        &quot;parent_id&quot;: 12,
         &quot;depth&quot;: 1,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-        &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;,
+        &quot;created_at&quot;: &quot;18/10/2026 11:07:51&quot;,
+        &quot;updated_at&quot;: &quot;18/10/2026 11:07:51&quot;,
         &quot;parent&quot;: {
-            &quot;id&quot;: 652,
+            &quot;id&quot;: 12,
             &quot;name&quot;: &quot;Nostrum Omnis&quot;,
             &quot;slug&quot;: &quot;nostrum-omnis&quot;,
             &quot;description&quot;: &quot;Consequatur aut dolores enim non facere tempora.&quot;,
@@ -42307,23 +46499,23 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;depth&quot;: 0,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-            &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+            &quot;created_at&quot;: &quot;18/10/2026 11:07:51&quot;,
+            &quot;updated_at&quot;: &quot;18/10/2026 11:07:51&quot;
         },
         &quot;children&quot;: [
             {
-                &quot;id&quot;: 654,
+                &quot;id&quot;: 14,
                 &quot;name&quot;: &quot;Laboriosam Praesentium&quot;,
                 &quot;slug&quot;: &quot;laboriosam-praesentium&quot;,
                 &quot;description&quot;: &quot;Molestias fugit deleniti distinctio eum doloremque id.&quot;,
                 &quot;status&quot;: &quot;active&quot;,
                 &quot;sort_order&quot;: 61,
-                &quot;parent_id&quot;: 653,
+                &quot;parent_id&quot;: 13,
                 &quot;depth&quot;: 2,
                 &quot;created_by&quot;: &quot;N/A&quot;,
                 &quot;updated_by&quot;: &quot;N/A&quot;,
-                &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-                &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+                &quot;created_at&quot;: &quot;18/10/2026 11:07:51&quot;,
+                &quot;updated_at&quot;: &quot;18/10/2026 11:07:51&quot;
             }
         ]
     },
@@ -42434,10 +46626,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="category_id"                data-endpoint="GETapi-post-categories--category_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the category. Example: <code>1</code></p>
+<p>The ID of the category. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>category</code></b>&nbsp;&nbsp;
@@ -42546,7 +46738,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 655,
+        &quot;id&quot;: 15,
         &quot;name&quot;: &quot;Nostrum Qui&quot;,
         &quot;slug&quot;: &quot;nostrum-qui&quot;,
         &quot;description&quot;: &quot;Iure odit et et modi ipsum nostrum omnis.&quot;,
@@ -42556,8 +46748,8 @@ print_r(json_decode((string) $body));</code></pre></div>
         &quot;depth&quot;: 0,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-        &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+        &quot;created_at&quot;: &quot;18/10/2026 11:07:51&quot;,
+        &quot;updated_at&quot;: &quot;18/10/2026 11:07:51&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Danh mục đ&atilde; được tạo th&agrave;nh c&ocirc;ng!&quot;
@@ -42748,7 +46940,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/laravel_hq/quandh-core/public/api/post-categories/1" \
+    "http://localhost/laravel_hq/quandh-core/public/api/post-categories/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -42766,7 +46958,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/post-categories/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/post-categories/16"
 );
 
 const headers = {
@@ -42794,7 +46986,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/post-categories/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/post-categories/16';
 $response = $client-&gt;put(
     $url,
     [
@@ -42827,20 +47019,20 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 657,
+        &quot;id&quot;: 17,
         &quot;name&quot;: &quot;Commodi Incidunt&quot;,
         &quot;slug&quot;: &quot;commodi-incidunt&quot;,
         &quot;description&quot;: &quot;Et et modi ipsum nostrum.&quot;,
         &quot;status&quot;: &quot;active&quot;,
         &quot;sort_order&quot;: 41,
-        &quot;parent_id&quot;: 656,
+        &quot;parent_id&quot;: 16,
         &quot;depth&quot;: 1,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-        &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;,
+        &quot;created_at&quot;: &quot;18/10/2026 11:07:52&quot;,
+        &quot;updated_at&quot;: &quot;18/10/2026 11:07:52&quot;,
         &quot;parent&quot;: {
-            &quot;id&quot;: 656,
+            &quot;id&quot;: 16,
             &quot;name&quot;: &quot;Et Consequatur&quot;,
             &quot;slug&quot;: &quot;et-consequatur&quot;,
             &quot;description&quot;: &quot;Enim non facere tempora ex voluptatem laboriosam praesentium.&quot;,
@@ -42850,23 +47042,23 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;depth&quot;: 0,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-            &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+            &quot;created_at&quot;: &quot;18/10/2026 11:07:52&quot;,
+            &quot;updated_at&quot;: &quot;18/10/2026 11:07:52&quot;
         },
         &quot;children&quot;: [
             {
-                &quot;id&quot;: 658,
+                &quot;id&quot;: 18,
                 &quot;name&quot;: &quot;Molestias Fugit&quot;,
                 &quot;slug&quot;: &quot;molestias-fugit&quot;,
                 &quot;description&quot;: null,
                 &quot;status&quot;: &quot;inactive&quot;,
                 &quot;sort_order&quot;: 7,
-                &quot;parent_id&quot;: 657,
+                &quot;parent_id&quot;: 17,
                 &quot;depth&quot;: 2,
                 &quot;created_by&quot;: &quot;N/A&quot;,
                 &quot;updated_by&quot;: &quot;N/A&quot;,
-                &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-                &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+                &quot;created_at&quot;: &quot;18/10/2026 11:07:52&quot;,
+                &quot;updated_at&quot;: &quot;18/10/2026 11:07:52&quot;
             }
         ]
     },
@@ -42978,10 +47170,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="category_id"                data-endpoint="PUTapi-post-categories--category_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the category. Example: <code>1</code></p>
+<p>The ID of the category. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>category</code></b>&nbsp;&nbsp;
@@ -43084,7 +47276,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PATCH \
-    "http://localhost/laravel_hq/quandh-core/public/api/post-categories/1" \
+    "http://localhost/laravel_hq/quandh-core/public/api/post-categories/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -43102,7 +47294,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/post-categories/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/post-categories/16"
 );
 
 const headers = {
@@ -43130,7 +47322,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/post-categories/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/post-categories/16';
 $response = $client-&gt;patch(
     $url,
     [
@@ -43163,20 +47355,20 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 660,
+        &quot;id&quot;: 20,
         &quot;name&quot;: &quot;Iure Odit&quot;,
         &quot;slug&quot;: &quot;iure-odit&quot;,
         &quot;description&quot;: &quot;Modi ipsum nostrum omnis autem et.&quot;,
         &quot;status&quot;: &quot;inactive&quot;,
         &quot;sort_order&quot;: 84,
-        &quot;parent_id&quot;: 659,
+        &quot;parent_id&quot;: 19,
         &quot;depth&quot;: 1,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-        &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;,
+        &quot;created_at&quot;: &quot;18/10/2026 11:07:52&quot;,
+        &quot;updated_at&quot;: &quot;18/10/2026 11:07:52&quot;,
         &quot;parent&quot;: {
-            &quot;id&quot;: 659,
+            &quot;id&quot;: 19,
             &quot;name&quot;: &quot;Dolores Enim&quot;,
             &quot;slug&quot;: &quot;dolores-enim&quot;,
             &quot;description&quot;: &quot;Tempora ex voluptatem laboriosam praesentium quis.&quot;,
@@ -43186,23 +47378,23 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;depth&quot;: 0,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-            &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+            &quot;created_at&quot;: &quot;18/10/2026 11:07:52&quot;,
+            &quot;updated_at&quot;: &quot;18/10/2026 11:07:52&quot;
         },
         &quot;children&quot;: [
             {
-                &quot;id&quot;: 661,
+                &quot;id&quot;: 21,
                 &quot;name&quot;: &quot;Fugit Deleniti&quot;,
                 &quot;slug&quot;: &quot;fugit-deleniti&quot;,
                 &quot;description&quot;: null,
                 &quot;status&quot;: &quot;active&quot;,
                 &quot;sort_order&quot;: 35,
-                &quot;parent_id&quot;: 660,
+                &quot;parent_id&quot;: 20,
                 &quot;depth&quot;: 2,
                 &quot;created_by&quot;: &quot;N/A&quot;,
                 &quot;updated_by&quot;: &quot;N/A&quot;,
-                &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-                &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+                &quot;created_at&quot;: &quot;18/10/2026 11:07:52&quot;,
+                &quot;updated_at&quot;: &quot;18/10/2026 11:07:52&quot;
             }
         ]
     },
@@ -43314,10 +47506,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="category_id"                data-endpoint="PATCHapi-post-categories--category_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the category. Example: <code>1</code></p>
+<p>The ID of the category. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>category</code></b>&nbsp;&nbsp;
@@ -43420,7 +47612,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/laravel_hq/quandh-core/public/api/post-categories/1" \
+    "http://localhost/laravel_hq/quandh-core/public/api/post-categories/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -43429,7 +47621,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/post-categories/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/post-categories/16"
 );
 
 const headers = {
@@ -43448,7 +47640,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/post-categories/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/post-categories/16';
 $response = $client-&gt;delete(
     $url,
     [
@@ -43580,10 +47772,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="category_id"                data-endpoint="DELETEapi-post-categories--category_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the category. Example: <code>1</code></p>
+<p>The ID of the category. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>category</code></b>&nbsp;&nbsp;
@@ -43613,7 +47805,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PATCH \
-    "http://localhost/laravel_hq/quandh-core/public/api/post-categories/1/status" \
+    "http://localhost/laravel_hq/quandh-core/public/api/post-categories/16/status" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -43626,7 +47818,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/post-categories/1/status"
+    "http://localhost/laravel_hq/quandh-core/public/api/post-categories/16/status"
 );
 
 const headers = {
@@ -43649,7 +47841,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/post-categories/1/status';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/post-categories/16/status';
 $response = $client-&gt;patch(
     $url,
     [
@@ -43677,20 +47869,20 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 663,
+        &quot;id&quot;: 23,
         &quot;name&quot;: &quot;Quidem Nostrum&quot;,
         &quot;slug&quot;: &quot;quidem-nostrum&quot;,
         &quot;description&quot;: null,
         &quot;status&quot;: &quot;inactive&quot;,
         &quot;sort_order&quot;: 0,
-        &quot;parent_id&quot;: 662,
+        &quot;parent_id&quot;: 22,
         &quot;depth&quot;: 1,
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-        &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;,
+        &quot;created_at&quot;: &quot;18/10/2026 11:07:52&quot;,
+        &quot;updated_at&quot;: &quot;18/10/2026 11:07:52&quot;,
         &quot;parent&quot;: {
-            &quot;id&quot;: 662,
+            &quot;id&quot;: 22,
             &quot;name&quot;: &quot;Et Et&quot;,
             &quot;slug&quot;: &quot;et-et&quot;,
             &quot;description&quot;: &quot;Nostrum omnis autem et consequatur aut.&quot;,
@@ -43700,23 +47892,23 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;depth&quot;: 0,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-            &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+            &quot;created_at&quot;: &quot;18/10/2026 11:07:52&quot;,
+            &quot;updated_at&quot;: &quot;18/10/2026 11:07:52&quot;
         },
         &quot;children&quot;: [
             {
-                &quot;id&quot;: 664,
+                &quot;id&quot;: 24,
                 &quot;name&quot;: &quot;Non Facere&quot;,
                 &quot;slug&quot;: &quot;non-facere&quot;,
                 &quot;description&quot;: &quot;Voluptatem laboriosam praesentium quis adipisci.&quot;,
                 &quot;status&quot;: &quot;inactive&quot;,
                 &quot;sort_order&quot;: 10,
-                &quot;parent_id&quot;: 663,
+                &quot;parent_id&quot;: 23,
                 &quot;depth&quot;: 2,
                 &quot;created_by&quot;: &quot;N/A&quot;,
                 &quot;updated_by&quot;: &quot;N/A&quot;,
-                &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-                &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+                &quot;created_at&quot;: &quot;18/10/2026 11:07:52&quot;,
+                &quot;updated_at&quot;: &quot;18/10/2026 11:07:52&quot;
             }
         ]
     },
@@ -43828,10 +48020,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="category_id"                data-endpoint="PATCHapi-post-categories--category_id--status"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the category. Example: <code>1</code></p>
+<p>The ID of the category. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>category</code></b>&nbsp;&nbsp;
@@ -44176,7 +48368,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "file=@C:\Users\Admin\AppData\Local\Temp\php6476.tmp" </code></pre></div>
+    --form "file=@/tmp/phpp3v3kq81ssfs2Ryhjjn" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -44216,7 +48408,7 @@ $response = $client-&gt;post(
         'multipart' =&gt; [
             [
                 'name' =&gt; 'file',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php6476.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/phpp3v3kq81ssfs2Ryhjjn', 'r')
             ],
         ],
     ]
@@ -44344,7 +48536,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>C:\Users\Admin\AppData\Local\Temp\php6476.tmp</code></p>
+<p>File Excel (xlsx, xls, csv). Cột theo chuẩn export. Example: <code>/tmp/phpp3v3kq81ssfs2Ryhjjn</code></p>
         </div>
         </form>
 
@@ -45158,7 +49350,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: [
         {
-            &quot;id&quot;: 203,
+            &quot;id&quot;: 1,
             &quot;title&quot;: &quot;Et animi quos velit et fugiat.&quot;,
             &quot;slug&quot;: &quot;et-animi-quos-velit-et-fugiat&quot;,
             &quot;content&quot;: &quot;Accusantium harum mollitia modi deserunt aut ab. Perspiciatis quo omnis nostrum aut adipisci quidem nostrum qui. Incidunt iure odit et et modi ipsum.\n\nAutem et consequatur aut dolores enim non facere tempora. Voluptatem laboriosam praesentium quis adipisci.\n\nDeleniti distinctio eum doloremque id aut. Aliquam veniam corporis dolorem mollitia deleniti nemo. Quia officia est dignissimos neque. Odio veritatis excepturi doloribus delectus fugit qui repudiandae.&quot;,
@@ -45166,11 +49358,11 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;view_count&quot;: 0,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-            &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+            &quot;created_at&quot;: &quot;18/10/2026 11:07:51&quot;,
+            &quot;updated_at&quot;: &quot;18/10/2026 11:07:51&quot;
         },
         {
-            &quot;id&quot;: 204,
+            &quot;id&quot;: 2,
             &quot;title&quot;: &quot;Alias tenetur ratione nemo voluptate accusamus ut et.&quot;,
             &quot;slug&quot;: &quot;alias-tenetur-ratione-nemo-voluptate-accusamus-ut-et&quot;,
             &quot;content&quot;: &quot;Rerum ex repellendus assumenda et. Ab reiciendis quia perspiciatis deserunt ducimus corrupti. Dolores quia maiores assumenda odit doloribus repellat officiis. Nesciunt ut ratione iure impedit molestiae ut rem.\n\nSint aut molestiae sunt suscipit. Fugiat ut aut deserunt et error neque recusandae. Ipsam dolorem et ut dicta vitae assumenda consequatur. Et sunt quisquam sit repellendus ut.\n\nRatione dolores sed rem ea ut. Deserunt sint quis in quod. Aspernatur consectetur id a consectetur assumenda eaque neque.&quot;,
@@ -45178,8 +49370,8 @@ print_r(json_decode((string) $body));</code></pre></div>
             &quot;view_count&quot;: 0,
             &quot;created_by&quot;: &quot;N/A&quot;,
             &quot;updated_by&quot;: &quot;N/A&quot;,
-            &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-            &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+            &quot;created_at&quot;: &quot;18/10/2026 11:07:51&quot;,
+            &quot;updated_at&quot;: &quot;18/10/2026 11:07:51&quot;
         }
     ],
     &quot;links&quot;: {
@@ -45429,7 +49621,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/laravel_hq/quandh-core/public/api/posts/1" \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/posts/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -45438,7 +49630,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/posts/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/posts/16"
 );
 
 const headers = {
@@ -45457,7 +49649,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/posts/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/posts/16';
 $response = $client-&gt;get(
     $url,
     [
@@ -45482,7 +49674,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 205,
+        &quot;id&quot;: 3,
         &quot;title&quot;: &quot;Adipisci quidem nostrum qui commodi incidunt iure.&quot;,
         &quot;slug&quot;: &quot;adipisci-quidem-nostrum-qui-commodi-incidunt-iure&quot;,
         &quot;content&quot;: &quot;Et modi ipsum nostrum omnis autem et consequatur. Dolores enim non facere tempora. Voluptatem laboriosam praesentium quis adipisci.\n\nDeleniti distinctio eum doloremque id aut. Aliquam veniam corporis dolorem mollitia deleniti nemo. Quia officia est dignissimos neque. Odio veritatis excepturi doloribus delectus fugit qui repudiandae.\n\nAlias tenetur ratione nemo voluptate accusamus ut et. Modi rerum ex repellendus assumenda et tenetur.&quot;,
@@ -45490,7 +49682,7 @@ print_r(json_decode((string) $body));</code></pre></div>
         &quot;view_count&quot;: 0,
         &quot;categories&quot;: [
             {
-                &quot;id&quot;: 645,
+                &quot;id&quot;: 5,
                 &quot;name&quot;: &quot;Reiciendis Quia&quot;,
                 &quot;slug&quot;: &quot;reiciendis-quia&quot;,
                 &quot;description&quot;: &quot;Ducimus corrupti et dolores quia maiores assumenda.&quot;,
@@ -45500,14 +49692,14 @@ print_r(json_decode((string) $body));</code></pre></div>
                 &quot;depth&quot;: 0,
                 &quot;created_by&quot;: &quot;N/A&quot;,
                 &quot;updated_by&quot;: &quot;N/A&quot;,
-                &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-                &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+                &quot;created_at&quot;: &quot;18/10/2026 11:07:51&quot;,
+                &quot;updated_at&quot;: &quot;18/10/2026 11:07:51&quot;
             }
         ],
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-        &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+        &quot;created_at&quot;: &quot;18/10/2026 11:07:51&quot;,
+        &quot;updated_at&quot;: &quot;18/10/2026 11:07:51&quot;
     },
     &quot;success&quot;: &quot;true&quot;
 }</code>
@@ -45616,10 +49808,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="post_id"                data-endpoint="GETapi-posts--post_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the post. Example: <code>1</code></p>
+<p>The ID of the post. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>post</code></b>&nbsp;&nbsp;
@@ -45649,7 +49841,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/laravel_hq/quandh-core/public/api/posts/1/view" \
+    "http://localhost/laravel_hq/quandh-core/public/api/posts/16/view" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -45658,7 +49850,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/posts/1/view"
+    "http://localhost/laravel_hq/quandh-core/public/api/posts/16/view"
 );
 
 const headers = {
@@ -45677,7 +49869,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/posts/1/view';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/posts/16/view';
 $response = $client-&gt;post(
     $url,
     [
@@ -45812,10 +50004,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="post_id"                data-endpoint="POSTapi-posts--post_id--view"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the post. Example: <code>1</code></p>
+<p>The ID of the post. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>post</code></b>&nbsp;&nbsp;
@@ -45854,8 +50046,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "content=Nội dung bài viết..."\
     --form "status=draft"\
     --form "category_ids[]=1"\
-    --form "images[]=@C:\Users\Admin\AppData\Local\Temp\php6523.tmp" \
-    --form "images[]=@C:\Users\Admin\AppData\Local\Temp\php6524.tmp" </code></pre></div>
+    --form "images[]=@/tmp/php55782n8c2k0h8d5K7DO" \
+    --form "images[]=@/tmp/php33b9ljl4n77f6oa3Bng" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -45916,11 +50108,11 @@ $response = $client-&gt;post(
             ],
             [
                 'name' =&gt; 'images[]',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php6523.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/php55782n8c2k0h8d5K7DO', 'r')
             ],
             [
                 'name' =&gt; 'images[]',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php6524.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/php33b9ljl4n77f6oa3Bng', 'r')
             ],
         ],
     ]
@@ -45938,7 +50130,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 206,
+        &quot;id&quot;: 4,
         &quot;title&quot;: &quot;Eius et animi quos velit et.&quot;,
         &quot;slug&quot;: &quot;eius-et-animi-quos-velit-et&quot;,
         &quot;content&quot;: &quot;Nihil accusantium harum mollitia modi deserunt. Ab provident perspiciatis quo omnis nostrum aut adipisci. Nostrum qui commodi incidunt iure.\n\nEt modi ipsum nostrum omnis autem et consequatur. Dolores enim non facere tempora. Voluptatem laboriosam praesentium quis adipisci.\n\nDeleniti distinctio eum doloremque id aut. Aliquam veniam corporis dolorem mollitia deleniti nemo. Quia officia est dignissimos neque. Odio veritatis excepturi doloribus delectus fugit qui repudiandae.&quot;,
@@ -45946,7 +50138,7 @@ print_r(json_decode((string) $body));</code></pre></div>
         &quot;view_count&quot;: 0,
         &quot;categories&quot;: [
             {
-                &quot;id&quot;: 646,
+                &quot;id&quot;: 6,
                 &quot;name&quot;: &quot;Est Alias&quot;,
                 &quot;slug&quot;: &quot;est-alias&quot;,
                 &quot;description&quot;: &quot;Nemo voluptate accusamus ut et.&quot;,
@@ -45956,14 +50148,14 @@ print_r(json_decode((string) $body));</code></pre></div>
                 &quot;depth&quot;: 0,
                 &quot;created_by&quot;: &quot;N/A&quot;,
                 &quot;updated_by&quot;: &quot;N/A&quot;,
-                &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-                &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+                &quot;created_at&quot;: &quot;18/10/2026 11:07:51&quot;,
+                &quot;updated_at&quot;: &quot;18/10/2026 11:07:51&quot;
             }
         ],
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-        &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+        &quot;created_at&quot;: &quot;18/10/2026 11:07:51&quot;,
+        &quot;updated_at&quot;: &quot;18/10/2026 11:07:51&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;B&agrave;i viết đ&atilde; được tạo th&agrave;nh c&ocirc;ng!&quot;
@@ -46140,7 +50332,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>Ảnh đính kèm (jpeg/png/gif/webp, tối đa 10 ảnh, mỗi ảnh ≤ 5MB). Example: <code>C:\Users\Admin\AppData\Local\Temp\php6524.tmp</code></p>
+<p>Ảnh đính kèm (jpeg/png/gif/webp, tối đa 10 ảnh, mỗi ảnh ≤ 5MB). Example: <code>/tmp/php33b9ljl4n77f6oa3Bng</code></p>
         </div>
         </form>
 
@@ -46158,7 +50350,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/laravel_hq/quandh-core/public/api/posts/1" \
+    "http://localhost/laravel_hq/quandh-core/public/api/posts/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: multipart/form-data" \
@@ -46168,13 +50360,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "status=architecto"\
     --form "category_ids[]=architecto"\
     --form "remove_attachment_ids[]=architecto"\
-    --form "images[]=@C:\Users\Admin\AppData\Local\Temp\php6544.tmp" \
-    --form "images[]=@C:\Users\Admin\AppData\Local\Temp\php6545.tmp" </code></pre></div>
+    --form "images[]=@/tmp/phpp1c57a1jo1tp10GILe7" \
+    --form "images[]=@/tmp/php3i5thj5pccop8bxAsed" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/posts/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/posts/16"
 );
 
 const headers = {
@@ -46202,7 +50394,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/posts/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/posts/16';
 $response = $client-&gt;put(
     $url,
     [
@@ -46235,11 +50427,11 @@ $response = $client-&gt;put(
             ],
             [
                 'name' =&gt; 'images[]',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php6544.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/phpp1c57a1jo1tp10GILe7', 'r')
             ],
             [
                 'name' =&gt; 'images[]',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php6545.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/php3i5thj5pccop8bxAsed', 'r')
             ],
         ],
     ]
@@ -46257,7 +50449,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 207,
+        &quot;id&quot;: 5,
         &quot;title&quot;: &quot;Et animi quos velit et fugiat.&quot;,
         &quot;slug&quot;: &quot;et-animi-quos-velit-et-fugiat&quot;,
         &quot;content&quot;: &quot;Accusantium harum mollitia modi deserunt aut ab. Perspiciatis quo omnis nostrum aut adipisci quidem nostrum qui. Incidunt iure odit et et modi ipsum.\n\nAutem et consequatur aut dolores enim non facere tempora. Voluptatem laboriosam praesentium quis adipisci.\n\nDeleniti distinctio eum doloremque id aut. Aliquam veniam corporis dolorem mollitia deleniti nemo. Quia officia est dignissimos neque. Odio veritatis excepturi doloribus delectus fugit qui repudiandae.&quot;,
@@ -46265,7 +50457,7 @@ print_r(json_decode((string) $body));</code></pre></div>
         &quot;view_count&quot;: 0,
         &quot;categories&quot;: [
             {
-                &quot;id&quot;: 647,
+                &quot;id&quot;: 7,
                 &quot;name&quot;: &quot;Tenetur Ratione&quot;,
                 &quot;slug&quot;: &quot;tenetur-ratione&quot;,
                 &quot;description&quot;: null,
@@ -46275,14 +50467,14 @@ print_r(json_decode((string) $body));</code></pre></div>
                 &quot;depth&quot;: 0,
                 &quot;created_by&quot;: &quot;N/A&quot;,
                 &quot;updated_by&quot;: &quot;N/A&quot;,
-                &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-                &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+                &quot;created_at&quot;: &quot;18/10/2026 11:07:51&quot;,
+                &quot;updated_at&quot;: &quot;18/10/2026 11:07:51&quot;
             }
         ],
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-        &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+        &quot;created_at&quot;: &quot;18/10/2026 11:07:51&quot;,
+        &quot;updated_at&quot;: &quot;18/10/2026 11:07:51&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;B&agrave;i viết đ&atilde; được cập nhật!&quot;
@@ -46392,10 +50584,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="post_id"                data-endpoint="PUTapi-posts--post_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the post. Example: <code>1</code></p>
+<p>The ID of the post. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>post</code></b>&nbsp;&nbsp;
@@ -46498,7 +50690,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>Ảnh mới (append). Example: <code>C:\Users\Admin\AppData\Local\Temp\php6545.tmp</code></p>
+<p>Ảnh mới (append). Example: <code>/tmp/php3i5thj5pccop8bxAsed</code></p>
         </div>
         </form>
 
@@ -46516,7 +50708,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PATCH \
-    "http://localhost/laravel_hq/quandh-core/public/api/posts/1" \
+    "http://localhost/laravel_hq/quandh-core/public/api/posts/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: multipart/form-data" \
@@ -46526,13 +50718,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "status=architecto"\
     --form "category_ids[]=architecto"\
     --form "remove_attachment_ids[]=architecto"\
-    --form "images[]=@C:\Users\Admin\AppData\Local\Temp\php6565.tmp" \
-    --form "images[]=@C:\Users\Admin\AppData\Local\Temp\php6566.tmp" </code></pre></div>
+    --form "images[]=@/tmp/phpb5o7q4se3dpq8Ehy0OU" \
+    --form "images[]=@/tmp/phpel75iiritp1k0qlqjDA" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/posts/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/posts/16"
 );
 
 const headers = {
@@ -46560,7 +50752,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/posts/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/posts/16';
 $response = $client-&gt;patch(
     $url,
     [
@@ -46593,11 +50785,11 @@ $response = $client-&gt;patch(
             ],
             [
                 'name' =&gt; 'images[]',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php6565.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/phpb5o7q4se3dpq8Ehy0OU', 'r')
             ],
             [
                 'name' =&gt; 'images[]',
-                'contents' =&gt; fopen('C:\Users\Admin\AppData\Local\Temp\php6566.tmp', 'r')
+                'contents' =&gt; fopen('/tmp/phpel75iiritp1k0qlqjDA', 'r')
             ],
         ],
     ]
@@ -46615,7 +50807,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 208,
+        &quot;id&quot;: 6,
         &quot;title&quot;: &quot;Et animi quos velit et fugiat.&quot;,
         &quot;slug&quot;: &quot;et-animi-quos-velit-et-fugiat&quot;,
         &quot;content&quot;: &quot;Accusantium harum mollitia modi deserunt aut ab. Perspiciatis quo omnis nostrum aut adipisci quidem nostrum qui. Incidunt iure odit et et modi ipsum.\n\nAutem et consequatur aut dolores enim non facere tempora. Voluptatem laboriosam praesentium quis adipisci.\n\nDeleniti distinctio eum doloremque id aut. Aliquam veniam corporis dolorem mollitia deleniti nemo. Quia officia est dignissimos neque. Odio veritatis excepturi doloribus delectus fugit qui repudiandae.&quot;,
@@ -46623,7 +50815,7 @@ print_r(json_decode((string) $body));</code></pre></div>
         &quot;view_count&quot;: 0,
         &quot;categories&quot;: [
             {
-                &quot;id&quot;: 648,
+                &quot;id&quot;: 8,
                 &quot;name&quot;: &quot;Nemo Voluptate&quot;,
                 &quot;slug&quot;: &quot;nemo-voluptate&quot;,
                 &quot;description&quot;: &quot;Et recusandae modi rerum ex repellendus assumenda et.&quot;,
@@ -46633,14 +50825,14 @@ print_r(json_decode((string) $body));</code></pre></div>
                 &quot;depth&quot;: 0,
                 &quot;created_by&quot;: &quot;N/A&quot;,
                 &quot;updated_by&quot;: &quot;N/A&quot;,
-                &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-                &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+                &quot;created_at&quot;: &quot;18/10/2026 11:07:51&quot;,
+                &quot;updated_at&quot;: &quot;18/10/2026 11:07:51&quot;
             }
         ],
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-        &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+        &quot;created_at&quot;: &quot;18/10/2026 11:07:51&quot;,
+        &quot;updated_at&quot;: &quot;18/10/2026 11:07:51&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;B&agrave;i viết đ&atilde; được cập nhật!&quot;
@@ -46750,10 +50942,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="post_id"                data-endpoint="PATCHapi-posts--post_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the post. Example: <code>1</code></p>
+<p>The ID of the post. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>post</code></b>&nbsp;&nbsp;
@@ -46856,7 +51048,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>Ảnh mới (append). Example: <code>C:\Users\Admin\AppData\Local\Temp\php6566.tmp</code></p>
+<p>Ảnh mới (append). Example: <code>/tmp/phpel75iiritp1k0qlqjDA</code></p>
         </div>
         </form>
 
@@ -46874,7 +51066,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/laravel_hq/quandh-core/public/api/posts/1" \
+    "http://localhost/laravel_hq/quandh-core/public/api/posts/16" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -46883,7 +51075,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/posts/1"
+    "http://localhost/laravel_hq/quandh-core/public/api/posts/16"
 );
 
 const headers = {
@@ -46902,7 +51094,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/posts/1';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/posts/16';
 $response = $client-&gt;delete(
     $url,
     [
@@ -47034,10 +51226,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="post_id"                data-endpoint="DELETEapi-posts--post_id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the post. Example: <code>1</code></p>
+<p>The ID of the post. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>post</code></b>&nbsp;&nbsp;
@@ -47067,7 +51259,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PATCH \
-    "http://localhost/laravel_hq/quandh-core/public/api/posts/1/status" \
+    "http://localhost/laravel_hq/quandh-core/public/api/posts/16/status" \
     --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
     --header "X-Organization-Id: ID tổ chức cần làm việc (bắt buộc với endpoint yêu cầu auth). Example: 1" \
     --header "Content-Type: application/json" \
@@ -47080,7 +51272,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/laravel_hq/quandh-core/public/api/posts/1/status"
+    "http://localhost/laravel_hq/quandh-core/public/api/posts/16/status"
 );
 
 const headers = {
@@ -47103,7 +51295,7 @@ fetch(url, {
 
 <div class="php-example">
     <pre><code class="language-php">$client = new \GuzzleHttp\Client();
-$url = 'http://localhost/laravel_hq/quandh-core/public/api/posts/1/status';
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/posts/16/status';
 $response = $client-&gt;patch(
     $url,
     [
@@ -47131,7 +51323,7 @@ print_r(json_decode((string) $body));</code></pre></div>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;data&quot;: {
-        &quot;id&quot;: 209,
+        &quot;id&quot;: 7,
         &quot;title&quot;: &quot;Adipisci quidem nostrum qui commodi incidunt iure.&quot;,
         &quot;slug&quot;: &quot;adipisci-quidem-nostrum-qui-commodi-incidunt-iure&quot;,
         &quot;content&quot;: &quot;Et modi ipsum nostrum omnis autem et consequatur. Dolores enim non facere tempora. Voluptatem laboriosam praesentium quis adipisci.\n\nDeleniti distinctio eum doloremque id aut. Aliquam veniam corporis dolorem mollitia deleniti nemo. Quia officia est dignissimos neque. Odio veritatis excepturi doloribus delectus fugit qui repudiandae.\n\nAlias tenetur ratione nemo voluptate accusamus ut et. Modi rerum ex repellendus assumenda et tenetur.&quot;,
@@ -47139,7 +51331,7 @@ print_r(json_decode((string) $body));</code></pre></div>
         &quot;view_count&quot;: 0,
         &quot;categories&quot;: [
             {
-                &quot;id&quot;: 649,
+                &quot;id&quot;: 9,
                 &quot;name&quot;: &quot;Perspiciatis Deserunt&quot;,
                 &quot;slug&quot;: &quot;perspiciatis-deserunt&quot;,
                 &quot;description&quot;: &quot;Et dolores quia maiores.&quot;,
@@ -47149,14 +51341,14 @@ print_r(json_decode((string) $body));</code></pre></div>
                 &quot;depth&quot;: 0,
                 &quot;created_by&quot;: &quot;N/A&quot;,
                 &quot;updated_by&quot;: &quot;N/A&quot;,
-                &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-                &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+                &quot;created_at&quot;: &quot;18/10/2026 11:07:51&quot;,
+                &quot;updated_at&quot;: &quot;18/10/2026 11:07:51&quot;
             }
         ],
         &quot;created_by&quot;: &quot;N/A&quot;,
         &quot;updated_by&quot;: &quot;N/A&quot;,
-        &quot;created_at&quot;: &quot;01/05/2026 14:13:20&quot;,
-        &quot;updated_at&quot;: &quot;01/05/2026 14:13:20&quot;
+        &quot;created_at&quot;: &quot;18/10/2026 11:07:51&quot;,
+        &quot;updated_at&quot;: &quot;18/10/2026 11:07:51&quot;
     },
     &quot;success&quot;: &quot;true&quot;,
     &quot;message&quot;: &quot;Cập nhật trạng th&aacute;i th&agrave;nh c&ocirc;ng!&quot;
@@ -47266,10 +51458,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="post_id"                data-endpoint="PATCHapi-posts--post_id--status"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the post. Example: <code>1</code></p>
+<p>The ID of the post. Example: <code>16</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>post</code></b>&nbsp;&nbsp;
@@ -47297,6 +51489,3070 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>Trạng thái mới: draft, published, archived. Example: <code>published</code></p>
         </div>
         </form>
+
+                <h1 id="quan-ly-trang-thiet-bi-khach-san">Quản lý Trang thiết bị Khách sạn</h1>
+
+    <p>API quản lý cá thể thiết bị, điều chuyển kho - phòng, báo hỏng, kiểm kê và xuất nhập Excel.</p>
+
+                                <h2 id="quan-ly-trang-thiet-bi-khach-san-GETapi-equipments-stats">Báo cáo thống kê toàn khách sạn</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Thống kê tổng số lượng TV, Remote, Box, Wifi...; phân loại theo tốt, hỏng, trong kho, bảo trì.</p>
+
+<span id="example-requests-GETapi-equipments-stats">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/equipments/stats" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/stats"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/equipments/stats';
+$response = $client-&gt;get(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-equipments-stats">
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;The route laravel_hq/quandh-core/public/api/equipments/stats could not be found.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-equipments-stats" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-equipments-stats"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-equipments-stats"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-equipments-stats" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-equipments-stats">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-equipments-stats" data-method="GET"
+      data-path="api/equipments/stats"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-equipments-stats', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-equipments-stats"
+                    onclick="tryItOut('GETapi-equipments-stats');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-equipments-stats"
+                    onclick="cancelTryOut('GETapi-equipments-stats');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-equipments-stats"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/equipments/stats</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-equipments-stats"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-equipments-stats"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-equipments-stats"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="quan-ly-trang-thiet-bi-khach-san-GETapi-equipments-export">Xuất danh sách thiết bị ra Excel</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Xuất ra các trường: ID, Mã Serial, Danh mục, Mẫu thiết bị, Thương hiệu, Phòng đặt, Vị trí trong phòng, Trạng thái, Ghi chú tình trạng, Ngày lắp đặt, Ngày tạo.</p>
+
+<span id="example-requests-GETapi-equipments-export">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/equipments/export" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/export"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/equipments/export';
+$response = $client-&gt;get(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-equipments-export">
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;The route laravel_hq/quandh-core/public/api/equipments/export could not be found.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-equipments-export" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-equipments-export"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-equipments-export"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-equipments-export" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-equipments-export">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-equipments-export" data-method="GET"
+      data-path="api/equipments/export"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-equipments-export', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-equipments-export"
+                    onclick="tryItOut('GETapi-equipments-export');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-equipments-export"
+                    onclick="cancelTryOut('GETapi-equipments-export');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-equipments-export"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/equipments/export</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-equipments-export"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-equipments-export"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-equipments-export"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="quan-ly-trang-thiet-bi-khach-san-POSTapi-equipments-import">Nhập danh sách thiết bị từ Excel</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Cột bắt buộc: mau_thiet_bi (hoặc model_name). Cột không bắt buộc: ma_serial, so_phong, trang_thai (mặc định good), vi_tri_trong_phong, ghi_chu.</p>
+
+<span id="example-requests-POSTapi-equipments-import">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/import" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "file=@/tmp/php47msn12i1kaq18JKAXA" </code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/import"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "multipart/form-data",
+    "Accept": "application/json",
+};
+
+const body = new FormData();
+body.append('file', document.querySelector('input[name="file"]').files[0]);
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/equipments/import';
+$response = $client-&gt;post(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'multipart/form-data',
+            'Accept' =&gt; 'application/json',
+        ],
+        'multipart' =&gt; [
+            [
+                'name' =&gt; 'file',
+                'contents' =&gt; fopen('/tmp/php47msn12i1kaq18JKAXA', 'r')
+            ],
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-equipments-import">
+</span>
+<span id="execution-results-POSTapi-equipments-import" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-equipments-import"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-equipments-import"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-equipments-import" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-equipments-import">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-equipments-import" data-method="POST"
+      data-path="api/equipments/import"
+      data-authed="1"
+      data-hasfiles="1"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-equipments-import', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-equipments-import"
+                    onclick="tryItOut('POSTapi-equipments-import');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-equipments-import"
+                    onclick="cancelTryOut('POSTapi-equipments-import');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-equipments-import"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/equipments/import</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-equipments-import"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-equipments-import"
+               value="multipart/form-data"
+               data-component="header">
+    <br>
+<p>Example: <code>multipart/form-data</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-equipments-import"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>file</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="file"                data-endpoint="POSTapi-equipments-import"
+               value=""
+               data-component="body">
+    <br>
+<p>Must be a file. Must not be greater than 10240 kilobytes. Example: <code>/tmp/php47msn12i1kaq18JKAXA</code></p>
+        </div>
+        </form>
+
+                    <h2 id="quan-ly-trang-thiet-bi-khach-san-POSTapi-equipments-assign-to-room">Điều chuyển thiết bị (Gán phòng hoặc thu hồi về kho)</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-equipments-assign-to-room">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/assign-to-room" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"equipment_id\": 16,
+    \"room_id\": 16,
+    \"position_note\": \"n\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/assign-to-room"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "equipment_id": 16,
+    "room_id": 16,
+    "position_note": "n"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/equipments/assign-to-room';
+$response = $client-&gt;post(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'equipment_id' =&gt; 16,
+            'room_id' =&gt; 16,
+            'position_note' =&gt; 'n',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-equipments-assign-to-room">
+</span>
+<span id="execution-results-POSTapi-equipments-assign-to-room" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-equipments-assign-to-room"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-equipments-assign-to-room"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-equipments-assign-to-room" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-equipments-assign-to-room">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-equipments-assign-to-room" data-method="POST"
+      data-path="api/equipments/assign-to-room"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-equipments-assign-to-room', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-equipments-assign-to-room"
+                    onclick="tryItOut('POSTapi-equipments-assign-to-room');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-equipments-assign-to-room"
+                    onclick="cancelTryOut('POSTapi-equipments-assign-to-room');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-equipments-assign-to-room"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/equipments/assign-to-room</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-equipments-assign-to-room"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-equipments-assign-to-room"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-equipments-assign-to-room"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>equipment_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="equipment_id"                data-endpoint="POSTapi-equipments-assign-to-room"
+               value="16"
+               data-component="body">
+    <br>
+<p>The <code>id</code> of an existing record in the room_equipments table. Example: <code>16</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>room_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="room_id"                data-endpoint="POSTapi-equipments-assign-to-room"
+               value="16"
+               data-component="body">
+    <br>
+<p>The <code>id</code> of an existing record in the rooms table. Example: <code>16</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>position_note</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="position_note"                data-endpoint="POSTapi-equipments-assign-to-room"
+               value="n"
+               data-component="body">
+    <br>
+<p>Must not be greater than 255 characters. Example: <code>n</code></p>
+        </div>
+        </form>
+
+                    <h2 id="quan-ly-trang-thiet-bi-khach-san-POSTapi-equipments--id--report-broken">Báo hỏng thiết bị (Kèm ảnh hiện trường)</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-equipments--id--report-broken">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/architecto/report-broken" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "issue_description=b"\
+    --form "broken_photo=@/tmp/phpahin032s9dfieaBSV6I" </code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/architecto/report-broken"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "multipart/form-data",
+    "Accept": "application/json",
+};
+
+const body = new FormData();
+body.append('issue_description', 'b');
+body.append('broken_photo', document.querySelector('input[name="broken_photo"]').files[0]);
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/equipments/architecto/report-broken';
+$response = $client-&gt;post(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'multipart/form-data',
+            'Accept' =&gt; 'application/json',
+        ],
+        'multipart' =&gt; [
+            [
+                'name' =&gt; 'issue_description',
+                'contents' =&gt; 'b'
+            ],
+            [
+                'name' =&gt; 'broken_photo',
+                'contents' =&gt; fopen('/tmp/phpahin032s9dfieaBSV6I', 'r')
+            ],
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-equipments--id--report-broken">
+</span>
+<span id="execution-results-POSTapi-equipments--id--report-broken" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-equipments--id--report-broken"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-equipments--id--report-broken"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-equipments--id--report-broken" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-equipments--id--report-broken">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-equipments--id--report-broken" data-method="POST"
+      data-path="api/equipments/{id}/report-broken"
+      data-authed="1"
+      data-hasfiles="1"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-equipments--id--report-broken', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-equipments--id--report-broken"
+                    onclick="tryItOut('POSTapi-equipments--id--report-broken');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-equipments--id--report-broken"
+                    onclick="cancelTryOut('POSTapi-equipments--id--report-broken');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-equipments--id--report-broken"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/equipments/{id}/report-broken</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-equipments--id--report-broken"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-equipments--id--report-broken"
+               value="multipart/form-data"
+               data-component="header">
+    <br>
+<p>Example: <code>multipart/form-data</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-equipments--id--report-broken"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="id"                data-endpoint="POSTapi-equipments--id--report-broken"
+               value="architecto"
+               data-component="url">
+    <br>
+<p>The ID of the equipment. Example: <code>architecto</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>issue_description</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="issue_description"                data-endpoint="POSTapi-equipments--id--report-broken"
+               value="b"
+               data-component="body">
+    <br>
+<p>Must not be greater than 1000 characters. Example: <code>b</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>broken_photo</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="broken_photo"                data-endpoint="POSTapi-equipments--id--report-broken"
+               value=""
+               data-component="body">
+    <br>
+<p>Must be an image. Must not be greater than 10240 kilobytes. Example: <code>/tmp/phpahin032s9dfieaBSV6I</code></p>
+        </div>
+        </form>
+
+                    <h2 id="quan-ly-trang-thiet-bi-khach-san-POSTapi-equipments--id--upload-photo">Tải ảnh cho thiết bị</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-equipments--id--upload-photo">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/architecto/upload-photo" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "collection=broken_photos"\
+    --form "file=@/tmp/phpo00ae3rkbp3g7HGviVB" </code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/architecto/upload-photo"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "multipart/form-data",
+    "Accept": "application/json",
+};
+
+const body = new FormData();
+body.append('collection', 'broken_photos');
+body.append('file', document.querySelector('input[name="file"]').files[0]);
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/equipments/architecto/upload-photo';
+$response = $client-&gt;post(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'multipart/form-data',
+            'Accept' =&gt; 'application/json',
+        ],
+        'multipart' =&gt; [
+            [
+                'name' =&gt; 'collection',
+                'contents' =&gt; 'broken_photos'
+            ],
+            [
+                'name' =&gt; 'file',
+                'contents' =&gt; fopen('/tmp/phpo00ae3rkbp3g7HGviVB', 'r')
+            ],
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-equipments--id--upload-photo">
+</span>
+<span id="execution-results-POSTapi-equipments--id--upload-photo" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-equipments--id--upload-photo"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-equipments--id--upload-photo"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-equipments--id--upload-photo" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-equipments--id--upload-photo">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-equipments--id--upload-photo" data-method="POST"
+      data-path="api/equipments/{id}/upload-photo"
+      data-authed="1"
+      data-hasfiles="1"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-equipments--id--upload-photo', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-equipments--id--upload-photo"
+                    onclick="tryItOut('POSTapi-equipments--id--upload-photo');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-equipments--id--upload-photo"
+                    onclick="cancelTryOut('POSTapi-equipments--id--upload-photo');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-equipments--id--upload-photo"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/equipments/{id}/upload-photo</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-equipments--id--upload-photo"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-equipments--id--upload-photo"
+               value="multipart/form-data"
+               data-component="header">
+    <br>
+<p>Example: <code>multipart/form-data</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-equipments--id--upload-photo"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="id"                data-endpoint="POSTapi-equipments--id--upload-photo"
+               value="architecto"
+               data-component="url">
+    <br>
+<p>The ID of the equipment. Example: <code>architecto</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>file</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="file"                data-endpoint="POSTapi-equipments--id--upload-photo"
+               value=""
+               data-component="body">
+    <br>
+<p>Must be an image. Must not be greater than 10240 kilobytes. Example: <code>/tmp/phpo00ae3rkbp3g7HGviVB</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>collection</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="collection"                data-endpoint="POSTapi-equipments--id--upload-photo"
+               value="broken_photos"
+               data-component="body">
+    <br>
+<p>Example: <code>broken_photos</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>equipment_photos</code></li> <li><code>broken_photos</code></li></ul>
+        </div>
+        </form>
+
+                    <h2 id="quan-ly-trang-thiet-bi-khach-san-PATCHapi-equipments--id--status">Đổi trạng thái thiết bị nhanh</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-PATCHapi-equipments--id--status">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request PATCH \
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/architecto/status" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"status\": \"in_stock\",
+    \"note\": \"b\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/architecto/status"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "status": "in_stock",
+    "note": "b"
+};
+
+fetch(url, {
+    method: "PATCH",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/equipments/architecto/status';
+$response = $client-&gt;patch(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'status' =&gt; 'in_stock',
+            'note' =&gt; 'b',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-PATCHapi-equipments--id--status">
+</span>
+<span id="execution-results-PATCHapi-equipments--id--status" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PATCHapi-equipments--id--status"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PATCHapi-equipments--id--status"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-PATCHapi-equipments--id--status" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PATCHapi-equipments--id--status">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-PATCHapi-equipments--id--status" data-method="PATCH"
+      data-path="api/equipments/{id}/status"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PATCHapi-equipments--id--status', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PATCHapi-equipments--id--status"
+                    onclick="tryItOut('PATCHapi-equipments--id--status');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PATCHapi-equipments--id--status"
+                    onclick="cancelTryOut('PATCHapi-equipments--id--status');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PATCHapi-equipments--id--status"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-purple">PATCH</small>
+            <b><code>api/equipments/{id}/status</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="PATCHapi-equipments--id--status"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="PATCHapi-equipments--id--status"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="PATCHapi-equipments--id--status"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="id"                data-endpoint="PATCHapi-equipments--id--status"
+               value="architecto"
+               data-component="url">
+    <br>
+<p>The ID of the equipment. Example: <code>architecto</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="status"                data-endpoint="PATCHapi-equipments--id--status"
+               value="in_stock"
+               data-component="body">
+    <br>
+<p>Example: <code>in_stock</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>good</code></li> <li><code>broken</code></li> <li><code>maintenance</code></li> <li><code>lost</code></li> <li><code>in_stock</code></li> <li><code>disposed</code></li></ul>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>note</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="note"                data-endpoint="PATCHapi-equipments--id--status"
+               value="b"
+               data-component="body">
+    <br>
+<p>Must not be greater than 1000 characters. Example: <code>b</code></p>
+        </div>
+        </form>
+
+                    <h2 id="quan-ly-trang-thiet-bi-khach-san-PATCHapi-equipments-bulk-status">Cập nhật trạng thái hàng loạt</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-PATCHapi-equipments-bulk-status">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request PATCH \
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/bulk/status" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"ids\": [
+        16
+    ],
+    \"status\": \"lost\",
+    \"note\": \"n\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/bulk/status"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "ids": [
+        16
+    ],
+    "status": "lost",
+    "note": "n"
+};
+
+fetch(url, {
+    method: "PATCH",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/equipments/bulk/status';
+$response = $client-&gt;patch(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'ids' =&gt; [
+                16,
+            ],
+            'status' =&gt; 'lost',
+            'note' =&gt; 'n',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-PATCHapi-equipments-bulk-status">
+</span>
+<span id="execution-results-PATCHapi-equipments-bulk-status" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PATCHapi-equipments-bulk-status"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PATCHapi-equipments-bulk-status"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-PATCHapi-equipments-bulk-status" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PATCHapi-equipments-bulk-status">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-PATCHapi-equipments-bulk-status" data-method="PATCH"
+      data-path="api/equipments/bulk/status"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PATCHapi-equipments-bulk-status', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PATCHapi-equipments-bulk-status"
+                    onclick="tryItOut('PATCHapi-equipments-bulk-status');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PATCHapi-equipments-bulk-status"
+                    onclick="cancelTryOut('PATCHapi-equipments-bulk-status');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PATCHapi-equipments-bulk-status"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-purple">PATCH</small>
+            <b><code>api/equipments/bulk/status</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="PATCHapi-equipments-bulk-status"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="PATCHapi-equipments-bulk-status"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="PATCHapi-equipments-bulk-status"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>ids</code></b>&nbsp;&nbsp;
+<small>integer[]</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="ids[0]"                data-endpoint="PATCHapi-equipments-bulk-status"
+               data-component="body">
+        <input type="number" style="display: none"
+               name="ids[1]"                data-endpoint="PATCHapi-equipments-bulk-status"
+               data-component="body">
+    <br>
+<p>The <code>id</code> of an existing record in the room_equipments table.</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="status"                data-endpoint="PATCHapi-equipments-bulk-status"
+               value="lost"
+               data-component="body">
+    <br>
+<p>Example: <code>lost</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>good</code></li> <li><code>broken</code></li> <li><code>maintenance</code></li> <li><code>lost</code></li> <li><code>in_stock</code></li> <li><code>disposed</code></li></ul>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>note</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="note"                data-endpoint="PATCHapi-equipments-bulk-status"
+               value="n"
+               data-component="body">
+    <br>
+<p>Must not be greater than 1000 characters. Example: <code>n</code></p>
+        </div>
+        </form>
+
+                    <h2 id="quan-ly-trang-thiet-bi-khach-san-POSTapi-equipments-bulk-destroy">Xóa hàng loạt</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-equipments-bulk-destroy">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/bulk/destroy" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"ids\": [
+        16
+    ]
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/bulk/destroy"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "ids": [
+        16
+    ]
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/equipments/bulk/destroy';
+$response = $client-&gt;post(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+        'json' =&gt; [
+            'ids' =&gt; [
+                16,
+            ],
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-equipments-bulk-destroy">
+</span>
+<span id="execution-results-POSTapi-equipments-bulk-destroy" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-equipments-bulk-destroy"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-equipments-bulk-destroy"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-equipments-bulk-destroy" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-equipments-bulk-destroy">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-equipments-bulk-destroy" data-method="POST"
+      data-path="api/equipments/bulk/destroy"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-equipments-bulk-destroy', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-equipments-bulk-destroy"
+                    onclick="tryItOut('POSTapi-equipments-bulk-destroy');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-equipments-bulk-destroy"
+                    onclick="cancelTryOut('POSTapi-equipments-bulk-destroy');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-equipments-bulk-destroy"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/equipments/bulk/destroy</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-equipments-bulk-destroy"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-equipments-bulk-destroy"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-equipments-bulk-destroy"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>ids</code></b>&nbsp;&nbsp;
+<small>integer[]</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="ids[0]"                data-endpoint="POSTapi-equipments-bulk-destroy"
+               data-component="body">
+        <input type="number" style="display: none"
+               name="ids[1]"                data-endpoint="POSTapi-equipments-bulk-destroy"
+               data-component="body">
+    <br>
+<p>The <code>id</code> of an existing record in the room_equipments table.</p>
+        </div>
+        </form>
+
+                    <h2 id="quan-ly-trang-thiet-bi-khach-san-GETapi-equipments">Danh sách thiết bị</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Lấy danh sách thiết bị có phân trang, lọc theo trạng thái, phòng, danh mục.</p>
+
+<span id="example-requests-GETapi-equipments">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/equipments" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/equipments';
+$response = $client-&gt;get(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-equipments">
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;The route laravel_hq/quandh-core/public/api/equipments could not be found.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-equipments" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-equipments"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-equipments"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-equipments" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-equipments">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-equipments" data-method="GET"
+      data-path="api/equipments"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-equipments', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-equipments"
+                    onclick="tryItOut('GETapi-equipments');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-equipments"
+                    onclick="cancelTryOut('GETapi-equipments');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-equipments"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/equipments</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-equipments"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-equipments"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-equipments"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="quan-ly-trang-thiet-bi-khach-san-GETapi-equipments--id-">Chi tiết thiết bị</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-equipments--id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/equipments/architecto" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/architecto"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/equipments/architecto';
+$response = $client-&gt;get(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-equipments--id-">
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;The route laravel_hq/quandh-core/public/api/equipments/architecto could not be found.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-equipments--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-equipments--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-equipments--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-equipments--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-equipments--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-equipments--id-" data-method="GET"
+      data-path="api/equipments/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-equipments--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-equipments--id-"
+                    onclick="tryItOut('GETapi-equipments--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-equipments--id-"
+                    onclick="cancelTryOut('GETapi-equipments--id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-equipments--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/equipments/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-equipments--id-"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-equipments--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-equipments--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="id"                data-endpoint="GETapi-equipments--id-"
+               value="architecto"
+               data-component="url">
+    <br>
+<p>The ID of the equipment. Example: <code>architecto</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="quan-ly-trang-thiet-bi-khach-san-POSTapi-equipments">Thêm mới thiết bị</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Tạo mới thiết bị kèm số serial, vị trí và ảnh chụp nếu có.</p>
+
+<span id="example-requests-POSTapi-equipments">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "equipment_model_id=16"\
+    --form "serial_number=n"\
+    --form "room_id=16"\
+    --form "status=in_stock"\
+    --form "position_note=n"\
+    --form "note=g"\
+    --form "installed_at=2026-10-18T11:08:00"\
+    --form "photo=@/tmp/phpfgeojus0bohi10YvmlA" </code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "multipart/form-data",
+    "Accept": "application/json",
+};
+
+const body = new FormData();
+body.append('equipment_model_id', '16');
+body.append('serial_number', 'n');
+body.append('room_id', '16');
+body.append('status', 'in_stock');
+body.append('position_note', 'n');
+body.append('note', 'g');
+body.append('installed_at', '2026-10-18T11:08:00');
+body.append('photo', document.querySelector('input[name="photo"]').files[0]);
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/equipments';
+$response = $client-&gt;post(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'multipart/form-data',
+            'Accept' =&gt; 'application/json',
+        ],
+        'multipart' =&gt; [
+            [
+                'name' =&gt; 'equipment_model_id',
+                'contents' =&gt; '16'
+            ],
+            [
+                'name' =&gt; 'serial_number',
+                'contents' =&gt; 'n'
+            ],
+            [
+                'name' =&gt; 'room_id',
+                'contents' =&gt; '16'
+            ],
+            [
+                'name' =&gt; 'status',
+                'contents' =&gt; 'in_stock'
+            ],
+            [
+                'name' =&gt; 'position_note',
+                'contents' =&gt; 'n'
+            ],
+            [
+                'name' =&gt; 'note',
+                'contents' =&gt; 'g'
+            ],
+            [
+                'name' =&gt; 'installed_at',
+                'contents' =&gt; '2026-10-18T11:08:00'
+            ],
+            [
+                'name' =&gt; 'photo',
+                'contents' =&gt; fopen('/tmp/phpfgeojus0bohi10YvmlA', 'r')
+            ],
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-equipments">
+</span>
+<span id="execution-results-POSTapi-equipments" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-equipments"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-equipments"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-equipments" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-equipments">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-equipments" data-method="POST"
+      data-path="api/equipments"
+      data-authed="1"
+      data-hasfiles="1"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-equipments', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-equipments"
+                    onclick="tryItOut('POSTapi-equipments');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-equipments"
+                    onclick="cancelTryOut('POSTapi-equipments');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-equipments"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/equipments</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-equipments"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-equipments"
+               value="multipart/form-data"
+               data-component="header">
+    <br>
+<p>Example: <code>multipart/form-data</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-equipments"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>equipment_model_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="equipment_model_id"                data-endpoint="POSTapi-equipments"
+               value="16"
+               data-component="body">
+    <br>
+<p>The <code>id</code> of an existing record in the equipment_models table. Example: <code>16</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>serial_number</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="serial_number"                data-endpoint="POSTapi-equipments"
+               value="n"
+               data-component="body">
+    <br>
+<p>Must not be greater than 100 characters. Example: <code>n</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>room_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="room_id"                data-endpoint="POSTapi-equipments"
+               value="16"
+               data-component="body">
+    <br>
+<p>The <code>id</code> of an existing record in the rooms table. Example: <code>16</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="status"                data-endpoint="POSTapi-equipments"
+               value="in_stock"
+               data-component="body">
+    <br>
+<p>Example: <code>in_stock</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>good</code></li> <li><code>broken</code></li> <li><code>maintenance</code></li> <li><code>lost</code></li> <li><code>in_stock</code></li> <li><code>disposed</code></li></ul>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>position_note</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="position_note"                data-endpoint="POSTapi-equipments"
+               value="n"
+               data-component="body">
+    <br>
+<p>Must not be greater than 255 characters. Example: <code>n</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>note</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="note"                data-endpoint="POSTapi-equipments"
+               value="g"
+               data-component="body">
+    <br>
+<p>Must not be greater than 1000 characters. Example: <code>g</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>installed_at</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="installed_at"                data-endpoint="POSTapi-equipments"
+               value="2026-10-18T11:08:00"
+               data-component="body">
+    <br>
+<p>Must be a valid date. Example: <code>2026-10-18T11:08:00</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>photo</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="photo"                data-endpoint="POSTapi-equipments"
+               value=""
+               data-component="body">
+    <br>
+<p>Must be an image. Must not be greater than 10240 kilobytes. Example: <code>/tmp/phpfgeojus0bohi10YvmlA</code></p>
+        </div>
+        </form>
+
+                    <h2 id="quan-ly-trang-thiet-bi-khach-san-PUTapi-equipments--id-">Cập nhật thông tin thiết bị</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-PUTapi-equipments--id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request PUT \
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/architecto" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "equipment_model_id=16"\
+    --form "serial_number=n"\
+    --form "room_id=16"\
+    --form "status=good"\
+    --form "position_note=n"\
+    --form "note=g"\
+    --form "installed_at=2026-10-18T11:08:00"\
+    --form "photo=@/tmp/phpeuptmigmnmumegNHu0O" </code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/architecto"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "multipart/form-data",
+    "Accept": "application/json",
+};
+
+const body = new FormData();
+body.append('equipment_model_id', '16');
+body.append('serial_number', 'n');
+body.append('room_id', '16');
+body.append('status', 'good');
+body.append('position_note', 'n');
+body.append('note', 'g');
+body.append('installed_at', '2026-10-18T11:08:00');
+body.append('photo', document.querySelector('input[name="photo"]').files[0]);
+
+fetch(url, {
+    method: "PUT",
+    headers,
+    body,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/equipments/architecto';
+$response = $client-&gt;put(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'multipart/form-data',
+            'Accept' =&gt; 'application/json',
+        ],
+        'multipart' =&gt; [
+            [
+                'name' =&gt; 'equipment_model_id',
+                'contents' =&gt; '16'
+            ],
+            [
+                'name' =&gt; 'serial_number',
+                'contents' =&gt; 'n'
+            ],
+            [
+                'name' =&gt; 'room_id',
+                'contents' =&gt; '16'
+            ],
+            [
+                'name' =&gt; 'status',
+                'contents' =&gt; 'good'
+            ],
+            [
+                'name' =&gt; 'position_note',
+                'contents' =&gt; 'n'
+            ],
+            [
+                'name' =&gt; 'note',
+                'contents' =&gt; 'g'
+            ],
+            [
+                'name' =&gt; 'installed_at',
+                'contents' =&gt; '2026-10-18T11:08:00'
+            ],
+            [
+                'name' =&gt; 'photo',
+                'contents' =&gt; fopen('/tmp/phpeuptmigmnmumegNHu0O', 'r')
+            ],
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-PUTapi-equipments--id-">
+</span>
+<span id="execution-results-PUTapi-equipments--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PUTapi-equipments--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PUTapi-equipments--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-PUTapi-equipments--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PUTapi-equipments--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-PUTapi-equipments--id-" data-method="PUT"
+      data-path="api/equipments/{id}"
+      data-authed="1"
+      data-hasfiles="1"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PUTapi-equipments--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PUTapi-equipments--id-"
+                    onclick="tryItOut('PUTapi-equipments--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PUTapi-equipments--id-"
+                    onclick="cancelTryOut('PUTapi-equipments--id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PUTapi-equipments--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-darkblue">PUT</small>
+            <b><code>api/equipments/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="PUTapi-equipments--id-"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="PUTapi-equipments--id-"
+               value="multipart/form-data"
+               data-component="header">
+    <br>
+<p>Example: <code>multipart/form-data</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="PUTapi-equipments--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="id"                data-endpoint="PUTapi-equipments--id-"
+               value="architecto"
+               data-component="url">
+    <br>
+<p>The ID of the equipment. Example: <code>architecto</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>equipment_model_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="equipment_model_id"                data-endpoint="PUTapi-equipments--id-"
+               value="16"
+               data-component="body">
+    <br>
+<p>The <code>id</code> of an existing record in the equipment_models table. Example: <code>16</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>serial_number</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="serial_number"                data-endpoint="PUTapi-equipments--id-"
+               value="n"
+               data-component="body">
+    <br>
+<p>Must not be greater than 100 characters. Example: <code>n</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>room_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="room_id"                data-endpoint="PUTapi-equipments--id-"
+               value="16"
+               data-component="body">
+    <br>
+<p>The <code>id</code> of an existing record in the rooms table. Example: <code>16</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="status"                data-endpoint="PUTapi-equipments--id-"
+               value="good"
+               data-component="body">
+    <br>
+<p>Example: <code>good</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>good</code></li> <li><code>broken</code></li> <li><code>maintenance</code></li> <li><code>lost</code></li> <li><code>in_stock</code></li> <li><code>disposed</code></li></ul>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>position_note</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="position_note"                data-endpoint="PUTapi-equipments--id-"
+               value="n"
+               data-component="body">
+    <br>
+<p>Must not be greater than 255 characters. Example: <code>n</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>note</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="note"                data-endpoint="PUTapi-equipments--id-"
+               value="g"
+               data-component="body">
+    <br>
+<p>Must not be greater than 1000 characters. Example: <code>g</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>installed_at</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="installed_at"                data-endpoint="PUTapi-equipments--id-"
+               value="2026-10-18T11:08:00"
+               data-component="body">
+    <br>
+<p>Must be a valid date. Example: <code>2026-10-18T11:08:00</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>photo</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="photo"                data-endpoint="PUTapi-equipments--id-"
+               value=""
+               data-component="body">
+    <br>
+<p>Must be an image. Must not be greater than 10240 kilobytes. Example: <code>/tmp/phpeuptmigmnmumegNHu0O</code></p>
+        </div>
+        </form>
+
+                    <h2 id="quan-ly-trang-thiet-bi-khach-san-DELETEapi-equipments--id-">Xóa thiết bị</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-DELETEapi-equipments--id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request DELETE \
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/architecto" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/architecto"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "DELETE",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/equipments/architecto';
+$response = $client-&gt;delete(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-DELETEapi-equipments--id-">
+</span>
+<span id="execution-results-DELETEapi-equipments--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-DELETEapi-equipments--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-DELETEapi-equipments--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-DELETEapi-equipments--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-DELETEapi-equipments--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-DELETEapi-equipments--id-" data-method="DELETE"
+      data-path="api/equipments/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('DELETEapi-equipments--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-DELETEapi-equipments--id-"
+                    onclick="tryItOut('DELETEapi-equipments--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-DELETEapi-equipments--id-"
+                    onclick="cancelTryOut('DELETEapi-equipments--id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-DELETEapi-equipments--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-red">DELETE</small>
+            <b><code>api/equipments/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="DELETEapi-equipments--id-"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="DELETEapi-equipments--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="DELETEapi-equipments--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="id"                data-endpoint="DELETEapi-equipments--id-"
+               value="architecto"
+               data-component="url">
+    <br>
+<p>The ID of the equipment. Example: <code>architecto</code></p>
+            </div>
+                    </form>
+
+                <h1 id="so-do-khach-san-thiet-bi-hotel-map-view">Sơ đồ Khách sạn & Thiết bị (Hotel Map View)</h1>
+
+    <p>API cung cấp dữ liệu trực quan cho sơ đồ mặt bằng các Block, Tầng và trạng thái thiết bị của từng phòng.</p>
+
+                                <h2 id="so-do-khach-san-thiet-bi-hotel-map-view-GETapi-equipments-map-view-blocks">Danh sách Block / Khu vực của khách sạn</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-equipments-map-view-blocks">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/equipments/map-view/blocks" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/map-view/blocks"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/equipments/map-view/blocks';
+$response = $client-&gt;get(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-equipments-map-view-blocks">
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;The route laravel_hq/quandh-core/public/api/equipments/map-view/blocks could not be found.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-equipments-map-view-blocks" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-equipments-map-view-blocks"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-equipments-map-view-blocks"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-equipments-map-view-blocks" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-equipments-map-view-blocks">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-equipments-map-view-blocks" data-method="GET"
+      data-path="api/equipments/map-view/blocks"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-equipments-map-view-blocks', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-equipments-map-view-blocks"
+                    onclick="tryItOut('GETapi-equipments-map-view-blocks');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-equipments-map-view-blocks"
+                    onclick="cancelTryOut('GETapi-equipments-map-view-blocks');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-equipments-map-view-blocks"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/equipments/map-view/blocks</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-equipments-map-view-blocks"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-equipments-map-view-blocks"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-equipments-map-view-blocks"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="so-do-khach-san-thiet-bi-hotel-map-view-GETapi-equipments-map-view">Dữ liệu sơ đồ mặt bằng phòng (Map View)</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Lấy danh sách phòng theo Block và Tầng kèm trạng thái cảnh báo thiết bị (xanh, đỏ, vàng).</p>
+
+<span id="example-requests-GETapi-equipments-map-view">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/laravel_hq/quandh-core/public/api/equipments/map-view" \
+    --header "Authorization: Bearer {YOUR_ACCESS_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/laravel_hq/quandh-core/public/api/equipments/map-view"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_ACCESS_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+
+<div class="php-example">
+    <pre><code class="language-php">$client = new \GuzzleHttp\Client();
+$url = 'http://localhost/laravel_hq/quandh-core/public/api/equipments/map-view';
+$response = $client-&gt;get(
+    $url,
+    [
+        'headers' =&gt; [
+            'Authorization' =&gt; 'Bearer {YOUR_ACCESS_TOKEN}',
+            'Content-Type' =&gt; 'application/json',
+            'Accept' =&gt; 'application/json',
+        ],
+    ]
+);
+$body = $response-&gt;getBody();
+print_r(json_decode((string) $body));</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-equipments-map-view">
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;The route laravel_hq/quandh-core/public/api/equipments/map-view could not be found.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-equipments-map-view" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-equipments-map-view"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-equipments-map-view"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-equipments-map-view" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-equipments-map-view">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-equipments-map-view" data-method="GET"
+      data-path="api/equipments/map-view"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-equipments-map-view', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-equipments-map-view"
+                    onclick="tryItOut('GETapi-equipments-map-view');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-equipments-map-view"
+                    onclick="cancelTryOut('GETapi-equipments-map-view');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-equipments-map-view"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/equipments/map-view</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-equipments-map-view"
+               value="Bearer {YOUR_ACCESS_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_ACCESS_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-equipments-map-view"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-equipments-map-view"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
 
             
 
