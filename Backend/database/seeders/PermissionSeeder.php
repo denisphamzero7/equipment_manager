@@ -102,6 +102,17 @@ class PermissionSeeder extends Seeder
             'stats', 'index', 'show', 'store', 'update', 'destroy',
             'bulkDestroy', 'bulkUpdateStatus', 'changeStatus', 'export', 'import',
         ],
+        // Equipment - Quản lý thiết bị
+        'equipments' => [
+            'stats', 'index', 'show', 'store', 'update', 'destroy',
+            'bulkDestroy', 'bulkUpdateStatus', 'changeStatus', 'export', 'import',
+            'mapView', 'roomDetail', 'assignToRoom', 'reportBroken', 'uploadPhoto',
+        ],
+        // Motel - Quản lý phòng khách sạn
+        'motel' => [
+            'stats', 'index', 'show', 'store', 'update', 'destroy',
+            'bulkDestroy', 'bulkUpdateStatus', 'changeStatus', 'export', 'import',
+        ],
         // Core - Cấu hình hệ thống
         'settings' => [
             'index', 'show', 'update',
@@ -157,6 +168,8 @@ class PermissionSeeder extends Seeder
         'settings' => 'Cấu hình hệ thống',
         'category' => 'Danh mục',
         'jobs' => 'Công việc',
+        'equipments' => 'Quản lý thiết bị',
+        'motel' => 'Quản lý phòng khách sạn',
     ];
 
     /** Nhãn action (để description). */
@@ -176,6 +189,11 @@ class PermissionSeeder extends Seeder
         'incrementView' => 'Tăng lượt xem',
         'destroyByDate' => 'Xóa theo khoảng thời gian',
         'destroyAll' => 'Xóa toàn bộ',
+        'mapView' => 'Xem sơ đồ mặt bằng',
+        'roomDetail' => 'Xem chi tiết thiết bị phòng',
+        'assignToRoom' => 'Điều chuyển thiết bị',
+        'reportBroken' => 'Báo hỏng thiết bị',
+        'uploadPhoto' => 'Tải ảnh thiết bị',
     ];
 
     /** Tạo đầy đủ permission từ danh sách PERMISSIONS (kèm description, sort_order, parent_id). */
