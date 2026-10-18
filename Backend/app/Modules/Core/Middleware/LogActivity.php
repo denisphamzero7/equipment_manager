@@ -223,7 +223,12 @@ class LogActivity
     protected function resolveCountry(Request $request): ?string
     {
         $ip = $request->ip();
-        if (! $ip || in_array($ip, ['127.0.0.1', '::1'], true)) {
+        if (! $ip || in_array($ip, ['127.0.0.1', '::1'], true) || app()->isLocal()) {
+            return null;
+        }
+
+        // Bỏ qua các dải IP nội bộ / private subnet (Docker bridge, LAN, v.v.)
+        if (! filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
             return null;
         }
 
