@@ -17,26 +17,31 @@ class EquipmentMapViewService
             $query->where('organization_id', $organizationId);
         }
 
-        $blocks = $query->whereNotNull('block')
+        return $query->whereNotNull('block')
             ->distinct()
+            ->orderBy('block', 'asc')
             ->pluck('block')
             ->toArray();
+    }
 
-        if (empty($blocks)) {
-            // Danh sách mặc định theo thực tế ảnh khách sạn
-            $blocks = [
-                'Olalani Hotel',
-                'Block A',
-                'Block B',
-                'Block C',
-                'Block D',
-                'Condos 1',
-                'Condos 2',
-                'Penthouse-spa+Villa',
-            ];
+    /**
+     * Lấy danh sách các Tầng hiện có (có thể lọc theo Block nếu có).
+     */
+    public function getAvailableFloors(?string $block = null, ?int $organizationId = null): array
+    {
+        $query = Room::query();
+        if ($organizationId) {
+            $query->where('organization_id', $organizationId);
+        }
+        if (!empty($block)) {
+            $query->where('block', $block);
         }
 
-        return $blocks;
+        return $query->whereNotNull('floor')
+            ->distinct()
+            ->orderBy('floor', 'asc')
+            ->pluck('floor')
+            ->toArray();
     }
 
     /**

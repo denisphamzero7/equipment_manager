@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function () {
     // 1. Hotel Map View & Sơ đồ mặt bằng
     Route::get('map-view/blocks', [EquipmentMapViewController::class, 'getBlocks']);
+    Route::get('map-view/floors', [EquipmentMapViewController::class, 'getFloors']);
     Route::get('map-view', [EquipmentMapViewController::class, 'index']);
 
     // 2. Chi tiết thiết bị phòng khi click chọn phòng

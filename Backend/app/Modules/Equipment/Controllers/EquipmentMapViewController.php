@@ -29,6 +29,18 @@ class EquipmentMapViewController extends Controller
     }
 
     /**
+     * Danh sách Tầng (Floors) của khách sạn
+     */
+    public function getFloors(Request $request): JsonResponse
+    {
+        $floors = $this->mapViewService->getAvailableFloors(
+            $request->query('block'),
+            $request->user()?->organization_id
+        );
+        return $this->success($floors, 'Lấy danh sách Tầng thành công');
+    }
+
+    /**
      * Dữ liệu sơ đồ mặt bằng phòng (Map View)
      *
      * Lấy danh sách phòng theo Block và Tầng kèm trạng thái cảnh báo thiết bị (xanh, đỏ, vàng).

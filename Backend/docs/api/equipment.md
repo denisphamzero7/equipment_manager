@@ -24,23 +24,35 @@ Lấy danh sách các Block/Khu vực hiện có để hiển thị bộ lọc s
 {
   "success": true,
   "message": "Lấy danh sách Block thành công",
-  "data": [
-    "Olalani Hotel",
-    "Block A",
-    "Block B",
-    "Block C",
-    "Block D",
-    "Condos 1",
-    "Condos 2",
-    "Penthouse-spa+Villa"
-  ]
+  "data": ["Tòa A", "Tòa B"]
 }
 ```
 
 ---
 
-### 1.2. Dữ liệu Sơ đồ Mặt bằng (Map View)
-Lấy danh sách các phòng theo Block và Tầng kèm trạng thái cảnh báo thiết bị (xanh, đỏ, vàng) để vẽ giao diện sơ đồ mặt bằng (Grid View).
+### 1.2. Danh sách Tầng (Floors)
+Lấy danh sách các Tầng hiện có trong khách sạn (dành cho cơ sở không chia theo Block hoặc muốn lọc phòng theo Tầng).
+
+| | |
+|---|---|
+| **Method** | GET |
+| **Path** | `/api/equipments/map-view/floors` |
+| **Query** | `block` (optional, string): Lọc các tầng của 1 Block cụ thể. |
+| **Response** | Danh sách các số tầng (ví dụ: `[1, 2, 3, 4]`). |
+
+**Ví dụ Response:**
+```json
+{
+  "success": true,
+  "message": "Lấy danh sách Tầng thành công",
+  "data": [1, 2, 3, 4, 5]
+}
+```
+
+---
+
+### 1.3. Dữ liệu Sơ đồ Mặt bằng (Map View)
+Lấy danh sách các phòng theo Block và Tầng kèm trạng thái cảnh báo thiết bị (xanh, đỏ, vàng) để vẽ giao diện sơ đồ mặt bằng (Grid View). Lưu ý: Các tham số `block` và `floor` hoàn toàn không bắt buộc (optional).
 
 | | |
 |---|---|
