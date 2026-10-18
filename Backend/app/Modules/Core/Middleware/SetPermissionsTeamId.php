@@ -26,9 +26,18 @@ class SetPermissionsTeamId
             $organizationId = $this->resolveRequestedOrganizationId($request);
 
             if ($organizationId === null) {
-                throw ValidationException::withMessages([
-                    'organization_id' => ['Vui lòng gửi header X-Organization-Id để xác định tổ chức làm việc.'],
-                ]);
+                $defaultOrg = Organization::query()
+                    ->where('status', 'active')
+                    ->orderBy('id', 'asc')
+                    ->first();
+
+                if ($defaultOrg) {
+                    $organizationId = (int) $defaultOrg->id;
+                } else {
+                    throw ValidationException::withMessages([
+                        'organization_id' => ['Vui lòng gửi header X-Organization-Id để xác định tổ chức làm việc.'],
+                    ]);
+                }
             }
 
             $organization = Organization::query()
