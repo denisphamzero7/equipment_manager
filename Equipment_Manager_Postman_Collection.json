@@ -1,0 +1,790 @@
+{
+    "info": {
+        "_postman_id": "equipment-manager-module-6ad7400bb5d43",
+        "name": "Quản lý Trang thiết bị (Equipment)",
+        "description": "Bộ sưu tập đầy đủ các API Quản lý Trang thiết bị (Equipment Management):\n- Sơ đồ mặt bằng (Hotel Map View)\n- Chi tiết thiết bị phòng & đối soát định mức\n- CRUD & lọc danh sách thiết bị\n- Điều chuyển phòng, báo hỏng, đổi trạng thái\n- Thống kê, xuất/nhập Excel",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{token}}",
+                "type": "string"
+            }
+        ]
+    },
+    "item": [
+        {
+            "name": "1. Sơ đồ Khách sạn (Hotel Map View)",
+            "description": "Các API phục vụ vẽ sơ đồ mặt bằng các Block, Tầng và trạng thái cảnh báo của từng phòng.",
+            "item": [
+                {
+                    "name": "1.1 Danh sách Block / Khu vực",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "X-Organization-Id",
+                                "value": "22",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{url}}/equipments/map-view/blocks",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "equipments",
+                                "map-view",
+                                "blocks"
+                            ]
+                        },
+                        "description": "Lấy danh sách các Block/Khu vực hiện có để hiển thị bộ lọc sơ đồ mặt bằng."
+                    }
+                },
+                {
+                    "name": "1.2 Danh sách Tầng (Floors)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "X-Organization-Id",
+                                "value": "22",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{url}}/equipments/map-view/floors?block=",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "equipments",
+                                "map-view",
+                                "floors"
+                            ],
+                            "query": [
+                                {
+                                    "key": "block",
+                                    "value": "",
+                                    "description": "Lọc theo Block (tùy chọn)",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Lấy danh sách các tầng trong khách sạn (có thể lọc theo Block)."
+                    }
+                },
+                {
+                    "name": "1.3 Dữ liệu Sơ đồ Mặt bằng (Map View Grid)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "X-Organization-Id",
+                                "value": "22",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{url}}/equipments/map-view?block=&floor=",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "equipments",
+                                "map-view"
+                            ],
+                            "query": [
+                                {
+                                    "key": "block",
+                                    "value": "",
+                                    "description": "Tên block (tùy chọn)",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "floor",
+                                    "value": "",
+                                    "description": "Số tầng (tùy chọn)",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Lấy danh sách các phòng kèm tọa độ grid, số lượng thiết bị, và trạng thái màu sắc cảnh báo (xanh: đủ tốt, vàng: bảo trì, đỏ: hỏng/thiếu)."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "2. Chi tiết Thiết bị Phòng & Định mức",
+            "description": "API hiển thị khi nhấp chọn 1 phòng trên sơ đồ.",
+            "item": [
+                {
+                    "name": "2.1 Chi tiết thiết bị phòng & Đối soát định mức",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "X-Organization-Id",
+                                "value": "22",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{url}}/equipments/rooms/1",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "equipments",
+                                "rooms",
+                                "1"
+                            ]
+                        },
+                        "description": "Hiển thị toàn bộ thiết bị thực tế trong phòng, so sánh với định mức chuẩn của loại phòng và cảnh báo thiết bị bị thiếu."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "3. Quản lý Thiết bị (CRUD & Bộ lọc)",
+            "description": "Danh sách cá thể thiết bị, tìm kiếm, phân trang và thêm sửa xóa.",
+            "item": [
+                {
+                    "name": "3.1 Danh sách thiết bị (Phân trang & Lọc)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "X-Organization-Id",
+                                "value": "22",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{url}}/equipments?page=1&limit=15&search=&status=&room_id=&equipment_category_id=&sort_by=id&sort_order=desc",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "equipments"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Số trang"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "15",
+                                    "description": "Số bản ghi / trang"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "description": "Tìm theo Serial, tên model",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "",
+                                    "description": "good, broken, maintenance, lost, in_stock, disposed",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "room_id",
+                                    "value": "",
+                                    "description": "ID phòng",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "equipment_category_id",
+                                    "value": "",
+                                    "description": "ID danh mục",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "sort_by",
+                                    "value": "id",
+                                    "description": "Cột sắp xếp"
+                                },
+                                {
+                                    "key": "sort_order",
+                                    "value": "desc",
+                                    "description": "asc | desc"
+                                }
+                            ]
+                        },
+                        "description": "Lấy danh sách thiết bị có phân trang và đa tiêu chí lọc."
+                    }
+                },
+                {
+                    "name": "3.2 Chi tiết 1 thiết bị",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "X-Organization-Id",
+                                "value": "22",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{url}}/equipments/1",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "equipments",
+                                "1"
+                            ]
+                        },
+                        "description": "Lấy chi tiết 1 thiết bị kèm thông tin model, phòng đang đặt, lịch sử bảo dưỡng."
+                    }
+                },
+                {
+                    "name": "3.3 Thêm mới thiết bị",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "X-Organization-Id",
+                                "value": "22",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"equipment_model_id\": 1,\n    \"serial_number\": \"TV-LG-43-9999\",\n    \"room_id\": 1,\n    \"status\": \"good\",\n    \"position_note\": \"Treo tường phòng khách\",\n    \"note\": \"Thiết bị nhập mới tháng 10\\/2026\",\n    \"installed_at\": \"2026-10-20 10:18:51\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{url}}/equipments",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "equipments"
+                            ]
+                        },
+                        "description": "Thêm mới một thiết bị vào hệ thống."
+                    }
+                },
+                {
+                    "name": "3.4 Cập nhật thiết bị",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "X-Organization-Id",
+                                "value": "22",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"equipment_model_id\": 1,\n    \"serial_number\": \"TV-LG-43-9999\",\n    \"room_id\": 1,\n    \"status\": \"good\",\n    \"position_note\": \"Treo tường phòng khách (vị trí A)\",\n    \"note\": \"Đã kiểm tra bảo dưỡng định kỳ\",\n    \"installed_at\": \"2026-10-20 10:18:51\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{url}}/equipments/1",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "equipments",
+                                "1"
+                            ]
+                        },
+                        "description": "Cập nhật thông tin chi tiết một thiết bị."
+                    }
+                },
+                {
+                    "name": "3.5 Xóa thiết bị",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "X-Organization-Id",
+                                "value": "22",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{url}}/equipments/1",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "equipments",
+                                "1"
+                            ]
+                        },
+                        "description": "Xóa một thiết bị khỏi hệ thống."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "4. Điều chuyển & Báo hỏng & Trạng thái",
+            "description": "Các thao tác điều chuyển phòng/kho, báo hỏng kèm ảnh, cập nhật trạng thái đơn lẻ hoặc hàng loạt.",
+            "item": [
+                {
+                    "name": "4.1 Điều chuyển thiết bị (Vào phòng hoặc về kho)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "X-Organization-Id",
+                                "value": "22",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"equipment_id\": 1,\n    \"room_id\": 2,\n    \"position_note\": \"Chuyển từ phòng 1 sang phòng 2\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{url}}/equipments/assign-to-room",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "equipments",
+                                "assign-to-room"
+                            ]
+                        },
+                        "description": "Gán thiết bị vào phòng mới hoặc thu hồi về kho (truyền room_id = null)."
+                    }
+                },
+                {
+                    "name": "4.2 Báo hỏng thiết bị & Tạo phiếu bảo trì",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "X-Organization-Id",
+                                "value": "22",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"issue_description\": \"Tivi chớp màn hình liên tục, âm thanh bị rè\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{url}}/equipments/1/report-broken",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "equipments",
+                                "1",
+                                "report-broken"
+                            ]
+                        },
+                        "description": "Báo sự cố hỏng hóc, tự động chuyển trạng thái thiết bị sang \"broken\" và tạo lịch sử bảo dưỡng."
+                    }
+                },
+                {
+                    "name": "4.3 Đổi trạng thái thiết bị nhanh",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "X-Organization-Id",
+                                "value": "22",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"status\": \"maintenance\",\n    \"note\": \"Đang đưa đi sửa board nguồn\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{url}}/equipments/1/status",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "equipments",
+                                "1",
+                                "status"
+                            ]
+                        },
+                        "description": "Cập nhật nhanh trạng thái của một thiết bị."
+                    }
+                },
+                {
+                    "name": "4.4 Cập nhật trạng thái hàng loạt",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "X-Organization-Id",
+                                "value": "22",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ids\": [\n        1,\n        2,\n        3\n    ],\n    \"status\": \"good\",\n    \"note\": \"Đã nghiệm thu hoạt động tốt sau đợt bảo trì\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{url}}/equipments/bulk/status",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "equipments",
+                                "bulk",
+                                "status"
+                            ]
+                        },
+                        "description": "Cập nhật trạng thái cho nhiều thiết bị cùng lúc."
+                    }
+                },
+                {
+                    "name": "4.5 Xóa thiết bị hàng loạt",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "X-Organization-Id",
+                                "value": "22",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ids\": [\n        10,\n        11\n    ]\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{url}}/equipments/bulk/destroy",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "equipments",
+                                "bulk",
+                                "destroy"
+                            ]
+                        },
+                        "description": "Xóa nhiều thiết bị cùng lúc theo danh sách ID."
+                    }
+                },
+                {
+                    "name": "4.6 Tải ảnh thiết bị / Hiện trường sự cố",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "X-Organization-Id",
+                                "value": "22",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": ""
+                                },
+                                {
+                                    "key": "collection",
+                                    "value": "equipment_photos",
+                                    "type": "text",
+                                    "description": "equipment_photos hoặc broken_photos"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{url}}/equipments/1/upload-photo",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "equipments",
+                                "1",
+                                "upload-photo"
+                            ]
+                        },
+                        "description": "Tải ảnh thiết bị hoặc ảnh chụp hư hỏng lên thư viện media."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "5. Thống kê & Xuất / Nhập Excel",
+            "description": "Báo cáo số lượng theo trạng thái, xuất ra file .xlsx và nhập hàng loạt từ Excel.",
+            "item": [
+                {
+                    "name": "5.1 Báo cáo thống kê tổng quan toàn khách sạn",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "X-Organization-Id",
+                                "value": "22",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{url}}/equipments/stats",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "equipments",
+                                "stats"
+                            ]
+                        },
+                        "description": "Thống kê tổng số lượng, số lượng theo tình trạng (tốt, hỏng, bảo trì, kho) và theo danh mục (TV, Remote, Box, Wifi...)."
+                    }
+                },
+                {
+                    "name": "5.2 Xuất danh sách thiết bị ra Excel (.xlsx)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "X-Organization-Id",
+                                "value": "22",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{url}}/equipments/export?status=&equipment_category_id=&room_id=",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "equipments",
+                                "export"
+                            ],
+                            "query": [
+                                {
+                                    "key": "status",
+                                    "value": "",
+                                    "description": "Lọc theo trạng thái",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "equipment_category_id",
+                                    "value": "",
+                                    "description": "Lọc theo danh mục",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "room_id",
+                                    "value": "",
+                                    "description": "Lọc theo phòng",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Tải về file Excel danh sách thiết bị đầy đủ các trường."
+                    }
+                },
+                {
+                    "name": "5.3 Nhập danh sách thiết bị từ Excel (.xlsx / .csv)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "X-Organization-Id",
+                                "value": "22",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": ""
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{url}}/equipments/import",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "equipments",
+                                "import"
+                            ]
+                        },
+                        "description": "Tải lên file Excel để nhập thiết bị hàng loạt vào cơ sở dữ liệu."
+                    }
+                }
+            ]
+        }
+    ]
+}
