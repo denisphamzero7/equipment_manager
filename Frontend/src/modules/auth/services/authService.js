@@ -12,6 +12,13 @@ export const authService = {
     return response.data
   },
 
+  async switchOrganization(organizationId) {
+    const response = await axiosClient.post('/api/auth/switch-organization', {
+      organization_id: organizationId,
+    })
+    return response.data
+  },
+
   async getMe() {
     const response = await axiosClient.get(Endpoints.AUTH.ME)
     return response.data
@@ -21,7 +28,7 @@ export const authService = {
     try {
       await axiosClient.post(Endpoints.AUTH.LOGOUT)
     } catch {
-      // Bỏ qua lỗi server khi logout để dọn sạch client
+      // Bỏ qua lỗi server khi logout
     }
   },
 }
