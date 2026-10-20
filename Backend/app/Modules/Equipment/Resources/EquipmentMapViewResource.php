@@ -36,12 +36,32 @@ class EquipmentMapViewResource extends JsonResource
         }
         $quickSummary = implode(', ', $summaryParts);
 
-        // Mức độ cảnh báo
-        $alertLevel = 'good';
-        if ($brokenCount > 0) {
-            $alertLevel = 'danger';   // Đỏ: có đồ hỏng
+        // Mức độ cảnh báo & Màu badge
+        // 4 trạng thái:
+        // 1. unconfigured / slate: chưa cấu hình thiết bị nào
+        // 2. broken / red: có thiết bị hỏng hoặc thiếu định mức nghiêm trọng
+        // 3. maintenance / missing / yellow: đang bảo trì hoặc thiếu 1 vài thiết bị
+        // 4. good / green: đủ định mức và hoạt động tốt
+        if ($totalEquipments === 0 && $standardAllocations->isEmpty()) {
+            $badgeColor = 'slate';
+            $equipmentStatus = 'unconfigured';
+            $alertLevel = 'default';
+        } elseif ($brokenCount > 0) {
+            $badgeColor = 'red';
+            $equipmentStatus = 'broken';
+            $alertLevel = 'danger';
         } elseif ($missingCount > 0) {
-            $alertLevel = 'warning';  // Vàng: thiếu đồ so với chuẩn
+            $badgeColor = 'red';
+            $equipmentStatus = 'missing';
+            $alertLevel = 'warning';
+        } elseif ($maintenanceCount > 0) {
+            $badgeColor = 'yellow';
+            $equipmentStatus = 'maintenance';
+            $alertLevel = 'warning';
+        } else {
+            $badgeColor = 'green';
+            $equipmentStatus = 'good';
+            $alertLevel = 'good';
         }
 
         return [
@@ -54,6 +74,15 @@ class EquipmentMapViewResource extends JsonResource
             'grid_col' => $room->grid_col,
             'room_status' => $room->status?->value ?? $room->status,
             'room_type_id' => $room->room_type_id,
+            'room_type' => $room->roomType?->name ?? 'Tiêu chuẩn',
+            'badge_color' => $badgeColor,
+            'equipment_status' => $equipmentStatus,
+            'stats' => [
+                'total_equipments' => $totalEquipments,
+                'broken_count' => $brokenCount,
+                'maintenance_count' => $maintenanceCount,
+                'missing_count' => $missingCount,
+            ],
             'equipment_stats' => [
                 'total' => $totalEquipments,
                 'broken' => $brokenCount,

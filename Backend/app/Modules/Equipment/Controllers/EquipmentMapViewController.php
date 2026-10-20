@@ -19,12 +19,25 @@ class EquipmentMapViewController extends Controller
         protected EquipmentMapViewService $mapViewService
     ) {}
 
+    protected function resolveOrganizationId(Request $request): ?int
+    {
+        $orgId = $request->header('X-Organization-Id') ?? $request->header('x-organization-id');
+        if ($orgId && is_numeric($orgId)) {
+            return (int) $orgId;
+        }
+        if (function_exists('getPermissionsTeamId') && getPermissionsTeamId()) {
+            return (int) getPermissionsTeamId();
+        }
+        return $request->user()?->organization_id;
+    }
+
     /**
      * Danh sách Block / Khu vực của khách sạn
      */
     public function getBlocks(Request $request): JsonResponse
     {
-        $blocks = $this->mapViewService->getAvailableBlocks($request->user()?->organization_id);
+        $orgId = $this->resolveOrganizationId($request);
+        $blocks = $this->mapViewService->getAvailableBlocks($orgId);
         return $this->success($blocks, 'Lấy danh sách Block thành công');
     }
 
@@ -33,9 +46,10 @@ class EquipmentMapViewController extends Controller
      */
     public function getFloors(Request $request): JsonResponse
     {
+        $orgId = $this->resolveOrganizationId($request);
         $floors = $this->mapViewService->getAvailableFloors(
             $request->query('block'),
-            $request->user()?->organization_id
+            $orgId
         );
         return $this->success($floors, 'Lấy danh sách Tầng thành công');
     }
@@ -47,7 +61,13 @@ class EquipmentMapViewController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $rooms = $this->mapViewService->getMapViewRooms($request->all());
+        $params = $request->all();
+        $orgId = $this->resolveOrganizationId($request);
+        if ($orgId && empty($params['organization_id'])) {
+            $params['organization_id'] = $orgId;
+        }
+
+        $rooms = $this->mapViewService->getMapViewRooms($params);
         $data = EquipmentMapViewResource::collection($rooms);
 
         return $this->success($data, 'Lấy dữ liệu Map View thành công');

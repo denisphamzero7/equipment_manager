@@ -47,6 +47,11 @@ class Room extends Model implements HasMedia
         'status' => RoomStatusEnum::class,
     ];
 
+    public function roomType()
+    {
+        return $this->belongsTo(\App\Modules\Motel\Models\RoomType::class, 'room_type_id');
+    }
+
     public function equipments()
     {
         return $this->hasMany(\App\Modules\Equipment\Models\RoomEquipment::class, 'room_id');

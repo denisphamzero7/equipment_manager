@@ -48,7 +48,7 @@ class RoomEquipmentDetailResource extends JsonResource
                 $grouped[$catCode]['maintenance_count']++;
             }
 
-            // Tóm tắt theo model (ví dụ: 2 cái 32", 1 cái 40")
+            // Tóm tắt theo model
             $modelName = $model?->name ?? 'Không rõ';
             $modelId = $model?->id ?? 0;
             $actualModelCounts[$modelId] = ($actualModelCounts[$modelId] ?? 0) + 1;
@@ -106,18 +106,27 @@ class RoomEquipmentDetailResource extends JsonResource
                 $missingEquipments[] = [
                     'model_id' => $modelId,
                     'model_name' => $stdModel?->name ?? 'Thiết bị chuẩn',
+                    'name' => $stdModel?->name ?? 'Thiết bị chuẩn',
                     'category_name' => $stdModel?->category?->name ?? 'Khác',
                     'standard_quantity' => $requiredQty,
                     'actual_quantity' => $actualQty,
                     'missing_quantity' => $diff,
+                    'missing_count' => $diff,
                 ];
             }
         }
 
         $totalBrokenCount = $equipments->where('status', EquipmentStatusEnum::Broken)->count();
         $totalGoodCount = $equipments->where('status', EquipmentStatusEnum::Good)->count();
+        $isCompliant = ($totalMissingCount === 0 && $totalBrokenCount === 0 && $equipments->isNotEmpty());
 
         return [
+            'id' => $room->id,
+            'room_id' => $room->id,
+            'room_number' => $room->room_number,
+            'name' => $room->name,
+            'room_type' => $room->roomType?->name ?? 'Phòng Tiêu chuẩn',
+            'compliance_status' => $isCompliant ? 'compliant' : 'non_compliant',
             'room' => [
                 'id' => $room->id,
                 'name' => $room->name,
@@ -128,6 +137,7 @@ class RoomEquipmentDetailResource extends JsonResource
                 'grid_col' => $room->grid_col,
                 'status' => $room->status?->value ?? $room->status,
                 'room_type_id' => $room->room_type_id,
+                'room_type' => $room->roomType?->name ?? 'Tiêu chuẩn',
             ],
             'summary' => [
                 'total_equipments' => $equipments->count(),

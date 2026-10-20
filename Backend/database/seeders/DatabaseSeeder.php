@@ -20,6 +20,16 @@ class DatabaseSeeder extends Seeder
         $this->seedPosts();
         $this->call(PermissionSeeder::class);
         $this->call(SettingSeeder::class);
+
+        // Seed dữ liệu Quản lý Khách sạn & Thiết bị
+        $this->call([
+            RoomTypeSeeder::class,
+            EquipmentMasterSeeder::class,
+            RoomStandardEquipmentSeeder::class,
+            HotelRoomSeeder::class,
+            RoomEquipmentSeeder::class,
+            EquipmentMaintenanceLogSeeder::class,
+        ]);
     }
 
     /**
