@@ -131,18 +131,21 @@ function handleRoomNumberChange() {
 
 async function handleSubmit() {
   const { valid } = await formRef.value.validate()
-  if (!valid) return
+  if (!valid) {
+    toast.warning('Vui lòng kiểm tra lại các trường thông tin bắt buộc còn thiếu.')
+    return
+  }
 
   submitting.value = true
   try {
     const payload = {
       ...form.value,
-      room_number: parseInt(form.value.room_number, 10),
+      room_number: String(form.value.room_number ?? '').trim(),
       floor: parseInt(form.value.floor, 10),
       bedroom_count: Math.max(0, parseInt(form.value.bedroom_count, 10) || 0),
       living_room_count: Math.max(0, parseInt(form.value.living_room_count, 10) || 0),
       wifi_mode: form.value.wifi_mode || 'dedicated',
-      shared_wifi_room_id: form.value.wifi_mode === 'shared' ? (form.value.shared_wifi_room_id || null) : null,
+      shared_wifi_room_id: form.value.wifi_mode === 'shared' ? (form.value.shared_wifi_room_id ? parseInt(form.value.shared_wifi_room_id, 10) : null) : null,
       shared_wifi_note: form.value.wifi_mode === 'shared' ? (form.value.shared_wifi_note || '') : null,
       grid_row: parseInt(form.value.grid_row, 10) || parseInt(form.value.floor, 10) || 1,
       grid_col: parseInt(form.value.grid_col, 10) || 1,
@@ -161,7 +164,14 @@ async function handleSubmit() {
     emit('update:modelValue', false)
     emit('saved')
   } catch (err) {
-    const msg = err.response?.data?.message || err.message || 'Thao tác không thành công.'
+    const errorData = err.response?.data
+    let msg = errorData?.message || err.message || 'Thao tác không thành công.'
+    if (errorData?.errors) {
+      const firstKey = Object.keys(errorData.errors)[0]
+      if (firstKey && errorData.errors[firstKey]?.[0]) {
+        msg = errorData.errors[firstKey][0]
+      }
+    }
     toast.error(msg)
   } finally {
     submitting.value = false
@@ -186,8 +196,8 @@ async function handleSubmit() {
           </label>
           <v-text-field
             v-model="form.room_number"
-            type="number"
-            placeholder="Ví dụ: 201"
+            type="text"
+            placeholder="Ví dụ: 140 hoặc 140A"
             :rules="[rules.required]"
             hide-details="auto"
             variant="outlined"

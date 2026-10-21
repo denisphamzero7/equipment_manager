@@ -12,6 +12,15 @@ class UpdateRoomRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('room_number') && $this->room_number !== null) {
+            $this->merge([
+                'room_number' => (string) $this->room_number,
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return [
