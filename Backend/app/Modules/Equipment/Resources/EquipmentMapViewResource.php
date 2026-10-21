@@ -60,11 +60,20 @@ class EquipmentMapViewResource extends JsonResource
             }
         }
 
-        // 4. Kiểm tra các thiết bị khác ngoài TV, Remote, Wifi
+        // 4. Kiểm tra Điện thoại bàn (Mỗi 1 phòng cần 1 máy điện thoại)
+        $hasPhoneStandard = $standardAllocations->contains(fn ($std) => ($std->model?->category?->code ?? '') === 'phone');
+        if ($hasPhoneStandard || $standardAllocations->isNotEmpty()) {
+            $actualPhone = $equipmentsByCat['phone'] ?? 0;
+            if ($actualPhone < 1) {
+                $missingCount += (1 - $actualPhone);
+            }
+        }
+
+        // 5. Kiểm tra các thiết bị khác ngoài TV, Remote, Wifi, Phone (bỏ qua ac, fridge, appliance theo nghiệp vụ khách sạn)
         foreach ($standardAllocations as $std) {
             $catCode = $std->model?->category?->code ?? '';
-            if (in_array($catCode, ['tv', 'remote', 'wifi'])) {
-                continue; // Đã kiểm tra theo định mức động ở trên
+            if (in_array($catCode, ['tv', 'remote', 'wifi', 'phone', 'ac', 'fridge', 'appliance'])) {
+                continue; // Đã kiểm tra theo định mức động ở trên hoặc đã bỏ định mức
             }
             $actual = $modelCounts[$std->equipment_model_id] ?? 0;
             if ($actual === 0 && !empty($catCode) && isset($equipmentsByCat[$catCode])) {

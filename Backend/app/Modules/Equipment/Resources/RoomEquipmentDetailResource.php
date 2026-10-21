@@ -170,11 +170,32 @@ class RoomEquipmentDetailResource extends JsonResource
             }
         }
 
-        // 4. Kiểm tra các danh mục khác (Điều hòa, Tủ lạnh, Máy sấy, Ấm siêu tốc,...)
+        // 4. Kiểm tra Điện thoại bàn (Mỗi 1 phòng cần 1 máy điện thoại)
+        $phoneStd = $standardAllocations->first(fn ($s) => ($s->model?->category?->code ?? '') === 'phone');
+        if ($phoneStd || $standardAllocations->isNotEmpty()) {
+            $actualPhone = $equipmentsByCat['phone'] ?? 0;
+            if ($actualPhone < 1) {
+                $diff = 1 - $actualPhone;
+                $totalMissingCount += $diff;
+                $missingEquipments[] = [
+                    'model_id' => $phoneStd?->equipment_model_id ?? 0,
+                    'model_name' => $phoneStd?->model?->name ?? 'Điện thoại bàn',
+                    'name' => 'Điện thoại bàn (Điện thoại phòng)',
+                    'category_code' => 'phone',
+                    'category_name' => 'Điện thoại bàn',
+                    'standard_quantity' => 1,
+                    'actual_quantity' => $actualPhone,
+                    'missing_quantity' => $diff,
+                    'missing_count' => $diff,
+                ];
+            }
+        }
+
+        // 5. Kiểm tra các danh mục khác (bỏ qua ac, fridge, appliance theo yêu cầu nghiệp vụ)
         foreach ($standardAllocations as $std) {
             $catCode = $std->model?->category?->code ?? '';
-            if (in_array($catCode, ['tv', 'remote', 'wifi'])) {
-                continue; // Đã đối soát theo định mức động ở trên
+            if (in_array($catCode, ['tv', 'remote', 'wifi', 'phone', 'ac', 'fridge', 'appliance'])) {
+                continue; // Đã đối soát theo định mức động ở trên hoặc đã bỏ định mức
             }
 
             $modelId = $std->equipment_model_id;

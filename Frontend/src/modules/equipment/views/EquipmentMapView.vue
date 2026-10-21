@@ -60,6 +60,8 @@ function getCategoryIcon(code) {
     remote: 'mdi-remote',
     box: 'mdi-set-top-box',
     wifi: 'mdi-wifi',
+    phone: 'mdi-phone-classic',
+    telephone: 'mdi-phone-classic',
     ac: 'mdi-air-conditioner',
     air_conditioner: 'mdi-air-conditioner',
     refrigerator: 'mdi-fridge',
@@ -710,6 +712,11 @@ function getBadgeIndicatorClass(room) {
               <span v-else class="text-emerald-700 font-semibold flex items-center gap-1">
                 <v-icon icon="mdi-wifi" size="13" />
                 Router riêng (1 bộ)
+              </span>
+              <span>•</span>
+              <span class="text-indigo-700 font-semibold flex items-center gap-1">
+                <v-icon icon="mdi-phone-classic" size="13" />
+                Điện thoại bàn (1 máy)
               </span>
             </div>
           </div>
