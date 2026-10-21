@@ -201,7 +201,7 @@ async function handleDelete() {
       </div>
     </div>
 
-    <template #actions>
+    <template #footer>
       <div class="flex items-center justify-end gap-2 w-full">
         <AppButton variant="secondary" :disabled="submitting" @click="emit('update:modelValue', false)">
           Đóng

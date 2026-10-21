@@ -65,8 +65,10 @@ function handleClose() {
       </div>
 
       <!-- Modal Footer -->
-      <div v-if="$slots.footer" class="px-4 py-3 sm:px-6 sm:py-4 border-t border-slate-100 bg-slate-50/50 flex items-center justify-end gap-2 sm:gap-3 flex-wrap">
-        <slot name="footer" />
+      <div v-if="$slots.footer || $slots.actions" class="px-4 py-3 sm:px-6 sm:py-4 border-t border-slate-100 bg-slate-50/50 flex items-center justify-end gap-2 sm:gap-3 flex-wrap">
+        <slot name="footer">
+          <slot name="actions" />
+        </slot>
       </div>
     </div>
   </v-dialog>
