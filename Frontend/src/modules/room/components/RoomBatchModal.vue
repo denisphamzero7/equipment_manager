@@ -89,9 +89,9 @@ async function handleSubmit() {
       prefix: form.value.prefix,
       start_number: parseInt(form.value.start_number, 10),
       end_number: parseInt(form.value.end_number, 10),
-      room_type_id: form.value.room_type_id,
+      room_type_id: form.value.room_type_id ? parseInt(form.value.room_type_id, 10) : null,
       price: parseFloat(form.value.price) || 0,
-      status: form.value.status,
+      status: form.value.status || 'ready',
     }
 
     const res = await roomService.batchGenerate(payload)

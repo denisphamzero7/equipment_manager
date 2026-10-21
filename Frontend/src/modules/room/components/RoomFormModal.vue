@@ -99,6 +99,7 @@ async function handleSubmit() {
       grid_row: parseInt(form.value.grid_row, 10) || parseInt(form.value.floor, 10) || 1,
       grid_col: parseInt(form.value.grid_col, 10) || 1,
       price: parseFloat(form.value.price) || 0,
+      room_type_id: form.value.room_type_id ? parseInt(form.value.room_type_id, 10) : null,
     }
 
     if (isEdit.value) {
