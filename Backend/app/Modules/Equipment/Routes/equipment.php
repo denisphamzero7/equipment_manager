@@ -36,7 +36,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('bulk/status', [EquipmentController::class, 'bulkUpdateStatus']);
     Route::post('bulk/destroy', [EquipmentController::class, 'bulkDestroy']);
 
-    // 6. CRUD thiết bị
+    // 6. Danh mục mẫu thiết bị & Danh sách phòng phục vụ chọn lựa
+    Route::get('models', [EquipmentController::class, 'getModels']);
+    Route::get('room-options', [EquipmentController::class, 'getRoomOptions']);
+
+    // 7. CRUD thiết bị
     Route::get('', [EquipmentController::class, 'index']);
     Route::get('{id}', [EquipmentController::class, 'show']);
     Route::post('', [EquipmentController::class, 'store']);

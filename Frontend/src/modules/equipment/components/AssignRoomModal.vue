@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue'
 import AppModal from '@/core/components/AppModal.vue'
 import AppButton from '@/core/components/AppButton.vue'
+import RoomCascaderSelect from '@/core/components/RoomCascaderSelect.vue'
 import { rules } from '@/core/helpers/validators'
 
 const props = defineProps({
@@ -98,16 +99,11 @@ async function handleSubmit() {
 
         <!-- Room Input if targetMode is room -->
         <div v-if="targetMode === 'room'">
-          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-            ID Phòng đích *
-          </label>
-          <v-text-field
-            v-model.number="roomId"
-            type="number"
-            placeholder="Ví dụ: 101, 202..."
-            prepend-inner-icon="mdi-door"
-            :rules="[rules.required]"
-            hide-details="auto"
+          <RoomCascaderSelect
+            v-model="roomId"
+            label="Chọn Phòng đích đến"
+            :allow-warehouse="false"
+            :required="true"
           />
         </div>
 
@@ -137,6 +133,7 @@ async function handleSubmit() {
       <AppButton
         color="primary"
         :loading="loading"
+        :disabled="loading || (targetMode === 'room' && !roomId)"
         @click="handleSubmit"
       >
         Xác nhận điều chuyển

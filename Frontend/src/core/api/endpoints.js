@@ -30,6 +30,8 @@ export const Endpoints = Object.freeze({
     MAP_VIEW_FLOORS: '/api/equipments/map-view/floors',
     MAP_VIEW: '/api/equipments/map-view',
     ROOM_DETAIL: roomId => `/api/equipments/rooms/${roomId}`,
+    MODELS: '/api/equipments/models',
+    ROOM_OPTIONS: '/api/equipments/room-options',
   },
   ROOM: {
     INDEX: '/api/motel/rooms',

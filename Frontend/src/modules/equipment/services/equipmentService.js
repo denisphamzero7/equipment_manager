@@ -133,4 +133,16 @@ export const equipmentService = {
     })
     return response.data
   },
+
+  // 18. Danh sách mẫu thiết bị (Equipment Models)
+  async getModels() {
+    const response = await axiosClient.get(Endpoints.EQUIPMENT.MODELS)
+    return response.data?.data || []
+  },
+
+  // 19. Danh sách phòng cho bộ chọn bậc thang (Room Options)
+  async getRoomOptions() {
+    const response = await axiosClient.get(Endpoints.EQUIPMENT.ROOM_OPTIONS)
+    return response.data?.data || []
+  },
 }

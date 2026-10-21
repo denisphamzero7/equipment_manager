@@ -1,7 +1,9 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import AppModal from '@/core/components/AppModal.vue'
 import AppButton from '@/core/components/AppButton.vue'
+import RoomCascaderSelect from '@/core/components/RoomCascaderSelect.vue'
+import { equipmentService } from '../services/equipmentService'
 import { EquipmentStatus, EquipmentStatusOptions } from '@/core/enums/EquipmentStatus'
 import { rules } from '@/core/helpers/validators'
 import { resolveMediaUrl } from '@/core/helpers/formatters'
@@ -27,6 +29,22 @@ const formRef = ref(null)
 const isEdit = ref(false)
 const photoFile = ref(null)
 const photoPreview = ref(null)
+const models = ref([])
+
+onMounted(async () => {
+  try {
+    models.value = await equipmentService.getModels()
+  } catch (err) {
+    console.error('Failed to load equipment models:', err)
+  }
+})
+
+const modelOptions = computed(() => {
+  return models.value.map(m => ({
+    id: m.id,
+    title: `${m.name}${m.brand ? ' — ' + m.brand : ''}${m.category?.name ? ' (' + m.category.name + ')' : ''}`,
+  }))
+})
 
 const form = ref({
   equipment_model_id: 1,
@@ -119,16 +137,31 @@ async function handleSubmit() {
   >
     <v-form ref="formRef" @submit.prevent="handleSubmit">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Model ID -->
+        <!-- Model Select -->
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-            Mẫu thiết bị (Model ID) *
+            Mẫu thiết bị *
           </label>
+          <v-autocomplete
+            v-if="modelOptions.length > 0"
+            v-model.number="form.equipment_model_id"
+            :items="modelOptions"
+            item-title="title"
+            item-value="id"
+            placeholder="Tìm & chọn mẫu thiết bị..."
+            :rules="[rules.required]"
+            density="compact"
+            variant="outlined"
+            hide-details="auto"
+          />
           <v-text-field
+            v-else
             v-model.number="form.equipment_model_id"
             type="number"
             placeholder="1"
             :rules="[rules.required]"
+            density="compact"
+            variant="outlined"
             hide-details="auto"
           />
         </div>
@@ -142,20 +175,18 @@ async function handleSubmit() {
             v-model="form.serial_number"
             placeholder="TV-SAM-43-001"
             :rules="[rules.serialNumber]"
+            density="compact"
+            variant="outlined"
             hide-details="auto"
           />
         </div>
 
-        <!-- Room ID -->
-        <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-            ID Phòng (Để trống nếu ở kho)
-          </label>
-          <v-text-field
-            v-model.number="form.room_id"
-            type="number"
-            placeholder="101"
-            hide-details="auto"
+        <!-- Room Cascader (Bậc thang: Block -> Tầng -> Phòng) -->
+        <div class="md:col-span-2">
+          <RoomCascaderSelect
+            v-model="form.room_id"
+            label="Phòng / Vị trí đặt thiết bị"
+            :allow-warehouse="true"
           />
         </div>
 
@@ -169,18 +200,8 @@ async function handleSubmit() {
             :items="EquipmentStatusOptions"
             item-title="title"
             item-value="value"
-            hide-details="auto"
-          />
-        </div>
-
-        <!-- Position Note -->
-        <div class="md:col-span-2">
-          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-            Vị trí đặt trong phòng
-          </label>
-          <v-text-field
-            v-model="form.position_note"
-            placeholder="Ví dụ: Treo tường phòng ngủ, Cạnh bàn làm việc..."
+            density="compact"
+            variant="outlined"
             hide-details="auto"
           />
         </div>
@@ -193,6 +214,22 @@ async function handleSubmit() {
           <v-text-field
             v-model="form.installed_at"
             type="date"
+            density="compact"
+            variant="outlined"
+            hide-details="auto"
+          />
+        </div>
+
+        <!-- Position Note -->
+        <div class="md:col-span-2">
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+            Vị trí đặt cụ thể trong phòng / kho
+          </label>
+          <v-text-field
+            v-model="form.position_note"
+            placeholder="Ví dụ: Treo tường phòng ngủ, Cạnh bàn làm việc, Kệ A3..."
+            density="compact"
+            variant="outlined"
             hide-details="auto"
           />
         </div>

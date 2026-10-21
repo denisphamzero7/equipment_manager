@@ -5,6 +5,7 @@ namespace App\Modules\Equipment\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Equipment\Exports\EquipmentExport;
 use App\Modules\Equipment\Imports\EquipmentImport;
+use App\Modules\Equipment\Models\EquipmentModel;
 use App\Modules\Equipment\Requests\AssignRoomEquipmentRequest;
 use App\Modules\Equipment\Requests\BulkUpdateStatusEquipmentRequest;
 use App\Modules\Equipment\Requests\ChangeEquipmentStatusRequest;
@@ -15,6 +16,7 @@ use App\Modules\Equipment\Requests\UpdateEquipmentRequest;
 use App\Modules\Equipment\Resources\EquipmentCollection;
 use App\Modules\Equipment\Resources\EquipmentResource;
 use App\Modules\Equipment\Services\EquipmentService;
+use App\Modules\Motel\Models\Room;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -232,5 +234,48 @@ class EquipmentController extends Controller
 
         $result = $import->getResult();
         return $this->success($result, "Nhập dữ liệu hoàn tất: Thành công {$result['success_count']}, Thất bại {$result['failed_count']}");
+    }
+
+    /**
+     * Danh sách mẫu thiết bị (Equipment Models) cho dropdown chọn mẫu
+     */
+    public function getModels(Request $request): JsonResponse
+    {
+        $orgId = $request->user()?->organization_id;
+        $query = EquipmentModel::with('category');
+        if ($orgId) {
+            $query->where(function ($q) use ($orgId) {
+                $q->where('organization_id', $orgId)->orWhereNull('organization_id');
+            });
+        }
+        $models = $query->orderBy('name', 'asc')->get();
+
+        return $this->success($models, 'Lấy danh sách mẫu thiết bị thành công');
+    }
+
+    /**
+     * Danh sách phòng theo Block và Tầng (Room Options cho cascader bậc thang)
+     */
+    public function getRoomOptions(Request $request): JsonResponse
+    {
+        $orgId = $request->user()?->organization_id;
+        $query = Room::with('roomType:id,name');
+        if ($orgId) {
+            $query->where('organization_id', $orgId);
+        }
+        $rooms = $query->select(['id', 'room_number', 'block', 'floor', 'room_type_id'])
+            ->orderBy('block', 'asc')
+            ->orderBy('floor', 'asc')
+            ->orderBy('room_number', 'asc')
+            ->get()
+            ->map(fn ($r) => [
+                'id' => $r->id,
+                'room_number' => (string) $r->room_number,
+                'block' => $r->block ?: 'Chưa phân khu',
+                'floor' => $r->floor ?? 1,
+                'room_type' => $r->roomType?->name ?: 'Tiêu chuẩn',
+            ]);
+
+        return $this->success($rooms, 'Lấy danh sách phòng thành công');
     }
 }
