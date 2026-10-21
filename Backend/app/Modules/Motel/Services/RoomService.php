@@ -25,6 +25,8 @@ class RoomService
         cache()->forget('hotel_blocks_all');
         cache()->forget('hotel_floors_' . $orgId . '_all');
         cache()->forget('hotel_floors_all_all');
+        cache()->forget('equipment_room_options_' . $orgId);
+        cache()->forget('equipment_room_options_all');
     }
 
     public function stats(array $filters = []): array

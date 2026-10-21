@@ -1,6 +1,15 @@
 import axiosClient from '@/core/api/axiosClient'
 import { Endpoints } from '@/core/api/endpoints'
 
+let cachedRoomOptions = null
+let roomOptionsPromise = null
+
+let cachedModels = null
+let modelsPromise = null
+
+let cachedCategories = null
+let categoriesPromise = null
+
 export const equipmentService = {
   // 1. Danh sách thiết bị (phân trang & lọc)
   async getEquipments(params = {}) {
@@ -142,35 +151,85 @@ export const equipmentService = {
   },
 
   // 18. Quản lý Mẫu thiết bị (Equipment Models)
-  async getModels() {
-    const response = await axiosClient.get(Endpoints.EQUIPMENT.MODELS)
-    return response.data?.data || []
+  async getModels(forceRefresh = false) {
+    if (cachedModels && !forceRefresh) {
+      return cachedModels
+    }
+    if (modelsPromise && !forceRefresh) {
+      return modelsPromise
+    }
+    modelsPromise = axiosClient
+      .get(Endpoints.EQUIPMENT.MODELS)
+      .then(response => {
+        cachedModels = response.data?.data || []
+        return cachedModels
+      })
+      .finally(() => {
+        modelsPromise = null
+      })
+    return modelsPromise
   },
 
   async createModel(data) {
+    cachedModels = null
     const response = await axiosClient.post(Endpoints.EQUIPMENT.MODELS, data)
     return response.data?.data || response.data
   },
 
   async updateModel(id, data) {
+    cachedModels = null
     const response = await axiosClient.put(Endpoints.EQUIPMENT.MODEL_DETAIL(id), data)
     return response.data?.data || response.data
   },
 
   async deleteModel(id) {
+    cachedModels = null
     const response = await axiosClient.delete(Endpoints.EQUIPMENT.MODEL_DETAIL(id))
     return response.data
   },
 
   // 19. Danh mục nhóm thiết bị (Categories)
-  async getCategories() {
-    const response = await axiosClient.get(Endpoints.EQUIPMENT.CATEGORIES)
-    return response.data?.data || []
+  async getCategories(forceRefresh = false) {
+    if (cachedCategories && !forceRefresh) {
+      return cachedCategories
+    }
+    if (categoriesPromise && !forceRefresh) {
+      return categoriesPromise
+    }
+    categoriesPromise = axiosClient
+      .get(Endpoints.EQUIPMENT.CATEGORIES)
+      .then(response => {
+        cachedCategories = response.data?.data || []
+        return cachedCategories
+      })
+      .finally(() => {
+        categoriesPromise = null
+      })
+    return categoriesPromise
   },
 
   // 20. Danh sách phòng cho bộ chọn bậc thang (Room Options)
-  async getRoomOptions() {
-    const response = await axiosClient.get(Endpoints.EQUIPMENT.ROOM_OPTIONS)
-    return response.data?.data || []
+  async getRoomOptions(forceRefresh = false) {
+    if (cachedRoomOptions && !forceRefresh) {
+      return cachedRoomOptions
+    }
+    if (roomOptionsPromise && !forceRefresh) {
+      return roomOptionsPromise
+    }
+    roomOptionsPromise = axiosClient
+      .get(Endpoints.EQUIPMENT.ROOM_OPTIONS)
+      .then(response => {
+        cachedRoomOptions = response.data?.data || []
+        return cachedRoomOptions
+      })
+      .finally(() => {
+        roomOptionsPromise = null
+      })
+    return roomOptionsPromise
+  },
+
+  clearRoomOptionsCache() {
+    cachedRoomOptions = null
+    roomOptionsPromise = null
   },
 }

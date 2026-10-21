@@ -12,6 +12,7 @@ use App\Modules\Equipment\Events\EquipmentStatusChanged;
 use App\Modules\Equipment\Events\EquipmentUpdated;
 use App\Modules\Equipment\Models\EquipmentCategory;
 use App\Modules\Equipment\Models\EquipmentMaintenanceLog;
+use App\Modules\Equipment\Models\EquipmentModel;
 use App\Modules\Equipment\Models\RoomEquipment;
 use App\Modules\Equipment\Models\RoomStandardEquipment;
 use App\Modules\Motel\Models\Room;
@@ -239,29 +240,29 @@ class EquipmentService
      */
     public function checkAssignTarget(int $equipmentId, ?int $targetRoomId): array
     {
-        $equipment = RoomEquipment::with(['model', 'room'])->findOrFail($equipmentId);
+        $equipment = RoomEquipment::with(['model.category', 'room'])->findOrFail($equipmentId);
+
+        $category = $equipment->model?->category;
+        $catCode = $category?->code ?? '';
+        $catId = $category?->id;
+        $isDynamicCategory = in_array($catCode, ['tv', 'remote', 'wifi']);
+        $sameCatModelIds = ($isDynamicCategory && $catId)
+            ? EquipmentModel::where('equipment_category_id', $catId)->pluck('id')
+            : collect([$equipment->equipment_model_id]);
 
         // Trường hợp 1: Thu hồi về kho
         if (!$targetRoomId) {
             $sourceImpact = null;
             if ($equipment->room_id) {
                 $sourceRoom = Room::find($equipment->room_id);
-                $catCode = $equipment->model?->category?->code ?? '';
 
                 $sourceStd = $sourceRoom ? RoomStandardEquipment::where('room_type_id', $sourceRoom->room_type_id)
-                    ->when(!in_array($catCode, ['tv', 'remote', 'wifi']), fn ($q) => $q->where('equipment_model_id', $equipment->equipment_model_id))
-                    ->when(in_array($catCode, ['tv', 'remote', 'wifi']), fn ($q) => $q->whereHas('model.category', fn ($c) => $c->where('code', $catCode)))
+                    ->whereIn('equipment_model_id', $sameCatModelIds)
                     ->first() : null;
 
-                if (in_array($catCode, ['tv', 'remote', 'wifi'])) {
-                    $sourceCurr = $sourceRoom ? RoomEquipment::where('room_id', $sourceRoom->id)
-                        ->whereHas('model.category', fn ($q) => $q->where('code', $catCode))
-                        ->count() : 0;
-                } else {
-                    $sourceCurr = $sourceRoom ? RoomEquipment::where('room_id', $sourceRoom->id)
-                        ->where('equipment_model_id', $equipment->equipment_model_id)
-                        ->count() : 0;
-                }
+                $sourceCurr = $sourceRoom ? RoomEquipment::where('room_id', $sourceRoom->id)
+                    ->whereIn('equipment_model_id', $sameCatModelIds)
+                    ->count() : 0;
 
                 $sourceAfter = max(0, $sourceCurr - 1);
                 $sourceStaticQty = $sourceStd ? $sourceStd->standard_quantity : 0;
@@ -295,29 +296,20 @@ class EquipmentService
 
         // Trường hợp 2: Chuyển vào phòng đích
         $targetRoom = Room::with('roomType')->findOrFail($targetRoomId);
-        $catCode = $equipment->model?->category?->code ?? '';
 
         // Định mức chuẩn của model thiết bị trong loại phòng này
         $std = RoomStandardEquipment::where('room_type_id', $targetRoom->room_type_id)
-            ->when(!in_array($catCode, ['tv', 'remote', 'wifi']), fn ($q) => $q->where('equipment_model_id', $equipment->equipment_model_id))
-            ->when(in_array($catCode, ['tv', 'remote', 'wifi']), fn ($q) => $q->whereHas('model.category', fn ($c) => $c->where('code', $catCode)))
+            ->whereIn('equipment_model_id', $sameCatModelIds)
             ->first();
 
         $staticQuota = $std ? $std->standard_quantity : 0;
         $standardQuota = $this->getDynamicStandardQuota($targetRoom, $equipment->model, $staticQuota);
 
         // Số lượng hiện có của thiết bị/loại này trong phòng đích (không tính chính cá thể thiết bị này nếu đang ở đó)
-        if (in_array($catCode, ['tv', 'remote', 'wifi'])) {
-            $currentCount = RoomEquipment::where('room_id', $targetRoom->id)
-                ->whereHas('model.category', fn ($q) => $q->where('code', $catCode))
-                ->where('id', '!=', $equipment->id)
-                ->count();
-        } else {
-            $currentCount = RoomEquipment::where('room_id', $targetRoom->id)
-                ->where('equipment_model_id', $equipment->equipment_model_id)
-                ->where('id', '!=', $equipment->id)
-                ->count();
-        }
+        $currentCount = RoomEquipment::where('room_id', $targetRoom->id)
+            ->whereIn('equipment_model_id', $sameCatModelIds)
+            ->where('id', '!=', $equipment->id)
+            ->count();
 
         $afterCount = $currentCount + 1;
         $modelName = $equipment->model?->name ?? 'Thiết bị';
@@ -345,19 +337,12 @@ class EquipmentService
             $sourceRoom = Room::find($equipment->room_id);
             if ($sourceRoom) {
                 $sourceStd = RoomStandardEquipment::where('room_type_id', $sourceRoom->room_type_id)
-                    ->when(!in_array($catCode, ['tv', 'remote', 'wifi']), fn ($q) => $q->where('equipment_model_id', $equipment->equipment_model_id))
-                    ->when(in_array($catCode, ['tv', 'remote', 'wifi']), fn ($q) => $q->whereHas('model.category', fn ($c) => $c->where('code', $catCode)))
+                    ->whereIn('equipment_model_id', $sameCatModelIds)
                     ->first();
 
-                if (in_array($catCode, ['tv', 'remote', 'wifi'])) {
-                    $sourceCurr = RoomEquipment::where('room_id', $sourceRoom->id)
-                        ->whereHas('model.category', fn ($q) => $q->where('code', $catCode))
-                        ->count();
-                } else {
-                    $sourceCurr = RoomEquipment::where('room_id', $sourceRoom->id)
-                        ->where('equipment_model_id', $equipment->equipment_model_id)
-                        ->count();
-                }
+                $sourceCurr = RoomEquipment::where('room_id', $sourceRoom->id)
+                    ->whereIn('equipment_model_id', $sameCatModelIds)
+                    ->count();
 
                 $sourceAfter = max(0, $sourceCurr - 1);
                 $sourceStaticQty = $sourceStd ? $sourceStd->standard_quantity : 0;

@@ -254,13 +254,17 @@ class EquipmentController extends Controller
     public function getModels(Request $request): JsonResponse
     {
         $orgId = $request->user()?->organization_id;
-        $query = EquipmentModel::with('category');
-        if ($orgId) {
-            $query->where(function ($q) use ($orgId) {
-                $q->where('organization_id', $orgId)->orWhereNull('organization_id');
-            });
-        }
-        $models = $query->orderBy('name', 'asc')->get();
+        $cacheKey = 'equipment_models_dropdown_' . ($orgId ?: 'all');
+
+        $models = cache()->remember($cacheKey, 300, function () use ($orgId) {
+            $query = EquipmentModel::with('category');
+            if ($orgId) {
+                $query->where(function ($q) use ($orgId) {
+                    $q->where('organization_id', $orgId)->orWhereNull('organization_id');
+                });
+            }
+            return $query->orderBy('name', 'asc')->get();
+        });
 
         return $this->success($models, 'Lấy danh sách mẫu thiết bị thành công');
     }
@@ -271,26 +275,32 @@ class EquipmentController extends Controller
     public function getRoomOptions(Request $request): JsonResponse
     {
         $orgId = $request->user()?->organization_id;
-        $query = Room::with('roomType:id,name');
-        if ($orgId) {
-            $query->where('organization_id', $orgId);
-        }
-        $rooms = $query->select(['id', 'room_number', 'block', 'floor', 'room_type_id', 'bedroom_count', 'living_room_count', 'wifi_mode', 'shared_wifi_note'])
-            ->orderBy('block', 'asc')
-            ->orderBy('floor', 'asc')
-            ->orderBy('room_number', 'asc')
-            ->get()
-            ->map(fn ($r) => [
-                'id' => $r->id,
-                'room_number' => (string) $r->room_number,
-                'block' => $r->block ?: 'Chưa phân khu',
-                'floor' => $r->floor ?? 1,
-                'room_type' => $r->roomType?->name ?: 'Tiêu chuẩn',
-                'bedroom_count' => $r->bedroom_count ?? 1,
-                'living_room_count' => $r->living_room_count ?? 0,
-                'wifi_mode' => $r->wifi_mode ?? 'dedicated',
-                'shared_wifi_note' => $r->shared_wifi_note,
-            ]);
+        $cacheKey = 'equipment_room_options_' . ($orgId ?: 'all');
+
+        $rooms = cache()->remember($cacheKey, 300, function () use ($orgId) {
+            $query = Room::with('roomType:id,name');
+            if ($orgId) {
+                $query->where('organization_id', $orgId);
+            }
+            return $query->select(['id', 'room_number', 'block', 'floor', 'room_type_id', 'bedroom_count', 'living_room_count', 'wifi_mode', 'shared_wifi_note'])
+                ->orderBy('block', 'asc')
+                ->orderBy('floor', 'asc')
+                ->orderBy('room_number', 'asc')
+                ->get()
+                ->map(fn ($r) => [
+                    'id' => $r->id,
+                    'room_number' => (string) $r->room_number,
+                    'block' => $r->block ?: 'Chưa phân khu',
+                    'floor' => $r->floor ?? 1,
+                    'room_type' => $r->roomType?->name ?: 'Tiêu chuẩn',
+                    'bedroom_count' => $r->bedroom_count ?? 1,
+                    'living_room_count' => $r->living_room_count ?? 0,
+                    'wifi_mode' => $r->wifi_mode ?? 'dedicated',
+                    'shared_wifi_note' => $r->shared_wifi_note,
+                ])
+                ->values()
+                ->all();
+        });
 
         return $this->success($rooms, 'Lấy danh sách phòng thành công');
     }
