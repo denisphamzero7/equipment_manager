@@ -41,3 +41,23 @@ export function truncateText(text, length = 30) {
   if (!text) return ''
   return text.length > length ? text.substring(0, length) + '...' : text
 }
+
+export function resolveMediaUrl(url) {
+  if (!url) return ''
+  // 1. Clean up legacy subpath if present
+  let cleanUrl = String(url).replace('/laravel_hq/quandh-core/public', '')
+
+  // 2. Normalize full localhost/127.0.0.1 url on port 80 to relative /storage
+  try {
+    if (cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://')) {
+      const parsed = new URL(cleanUrl)
+      if ((parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1') && (!parsed.port || parsed.port === '80')) {
+        return parsed.pathname + parsed.search
+      }
+    }
+  } catch {
+    // fallback
+  }
+
+  return cleanUrl
+}

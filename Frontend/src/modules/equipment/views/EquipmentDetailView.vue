@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { equipmentService } from '../services/equipmentService'
-import { formatDate, formatCurrencyVND } from '@/core/helpers/formatters'
+import { formatDate, formatCurrencyVND, resolveMediaUrl } from '@/core/helpers/formatters'
 import { toast } from '@/core/helpers/toast'
 import DefaultLayout from '@/core/layouts/DefaultLayout.vue'
 import AppPageHeader from '@/core/components/AppPageHeader.vue'
@@ -30,6 +30,7 @@ const previewImageUrl = ref('')
 const deletePhotoDialogOpen = ref(false)
 const photoToDelete = ref(null)
 const isDraggingOver = ref(false)
+const imageLoadError = ref(false)
 
 // Modals
 const editModalOpen = ref(false)
@@ -42,13 +43,18 @@ const equipmentPhotos = computed(() => {
   if (!equipment.value) return []
   const list = []
   if (Array.isArray(equipment.value.photos) && equipment.value.photos.length > 0) {
-    list.push(...equipment.value.photos)
+    list.push(
+      ...equipment.value.photos.map(p => ({
+        ...p,
+        url: resolveMediaUrl(p.url),
+      }))
+    )
   } else if (equipment.value.photo_url) {
-    list.push({ id: null, url: equipment.value.photo_url, file_name: 'equipment-photo' })
+    list.push({ id: null, url: resolveMediaUrl(equipment.value.photo_url), file_name: 'equipment-photo' })
   } else if (equipment.value.media?.[0]?.original_url) {
     list.push({
       id: equipment.value.media[0].id,
-      url: equipment.value.media[0].original_url,
+      url: resolveMediaUrl(equipment.value.media[0].original_url),
       file_name: equipment.value.media[0].file_name,
     })
   }
@@ -62,7 +68,11 @@ const currentPhoto = computed(() => {
 
 const brokenPhotos = computed(() => {
   if (!equipment.value) return []
-  return Array.isArray(equipment.value.broken_photos) ? equipment.value.broken_photos : []
+  const list = Array.isArray(equipment.value.broken_photos) ? equipment.value.broken_photos : []
+  return list.map(bp => ({
+    ...bp,
+    url: resolveMediaUrl(bp.url),
+  }))
 })
 
 onMounted(async () => {
@@ -410,10 +420,26 @@ async function handleDelete() {
                 <!-- Main Preview Container -->
                 <div class="relative group rounded-xl overflow-hidden border border-slate-200 bg-slate-900/5 aspect-4/3 flex items-center justify-center">
                   <img
+                    v-if="!imageLoadError"
                     :src="currentPhoto.url"
                     :alt="equipment.name || 'Hình ảnh thiết bị'"
                     class="object-contain w-full h-full max-h-64 transition-transform duration-300 group-hover:scale-102"
+                    @error="imageLoadError = true"
+                    @load="imageLoadError = false"
                   />
+
+                  <!-- Error Fallback -->
+                  <div v-else class="text-center p-6 text-slate-400">
+                    <v-icon icon="mdi-image-broken-variant" size="44" class="text-slate-300 mb-2" />
+                    <p class="text-xs font-medium text-slate-600">Không thể tải hiển thị hình ảnh</p>
+                    <button
+                      type="button"
+                      class="mt-2 text-xs text-primary font-semibold hover:underline"
+                      @click="imageLoadError = false"
+                    >
+                      Thử tải lại ảnh
+                    </button>
+                  </div>
 
                   <!-- Loading Overlay -->
                   <div
@@ -469,7 +495,7 @@ async function handleDelete() {
                     type="button"
                     class="relative w-14 h-14 shrink-0 rounded-lg overflow-hidden border-2 transition-all"
                     :class="selectedPhotoIndex === idx ? 'border-primary ring-2 ring-primary/20 shadow-xs' : 'border-slate-200 opacity-70 hover:opacity-100'"
-                    @click="selectedPhotoIndex = idx"
+                    @click="selectedPhotoIndex = idx; imageLoadError = false"
                   >
                     <img :src="p.url" alt="Thumbnail" class="w-full h-full object-cover" />
                   </button>

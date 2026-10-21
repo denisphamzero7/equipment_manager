@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { formatDate, formatCurrencyVND, formatNumber, truncateText } from '@/core/helpers/formatters'
+import { formatDate, formatCurrencyVND, formatNumber, truncateText, resolveMediaUrl } from '@/core/helpers/formatters'
 
 describe('Formatters Helper', () => {
   it('formats date to DD/MM/YYYY correctly', () => {
@@ -30,5 +30,12 @@ describe('Formatters Helper', () => {
   it('truncates text with ellipsis', () => {
     expect(truncateText('Hệ thống Quản lý Trang thiết bị Khách sạn', 10)).toBe('Hệ thống Q...')
     expect(truncateText('Ngắn', 10)).toBe('Ngắn')
+  })
+
+  it('resolves and normalizes media URLs correctly', () => {
+    expect(resolveMediaUrl('')).toBe('')
+    expect(resolveMediaUrl('http://localhost/laravel_hq/quandh-core/public/storage/1/photo.jpg')).toBe('/storage/1/photo.jpg')
+    expect(resolveMediaUrl('http://localhost/storage/1/photo.jpg')).toBe('/storage/1/photo.jpg')
+    expect(resolveMediaUrl('https://cdn.example.com/photo.jpg')).toBe('https://cdn.example.com/photo.jpg')
   })
 })

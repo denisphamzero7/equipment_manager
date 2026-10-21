@@ -18,15 +18,15 @@ class EquipmentResource extends JsonResource
             'position_note' => $this->position_note,
             'note' => $this->note,
             'installed_at' => $this->installed_at?->format('Y-m-d H:i:s'),
-            'photo_url' => $this->getFirstMediaUrl('equipment_photos') ?: null,
+            'photo_url' => $this->getFirstMediaUrl('equipment_photos') ? str_replace('/laravel_hq/quandh-core/public', '', $this->getFirstMediaUrl('equipment_photos')) : null,
             'photos' => $this->getMedia('equipment_photos')->map(fn ($m) => [
                 'id' => $m->id,
-                'url' => $m->getUrl(),
+                'url' => str_replace('/laravel_hq/quandh-core/public', '', $m->getUrl()),
                 'file_name' => $m->file_name,
             ]),
             'broken_photos' => $this->getMedia('broken_photos')->map(fn ($m) => [
                 'id' => $m->id,
-                'url' => $m->getUrl(),
+                'url' => str_replace('/laravel_hq/quandh-core/public', '', $m->getUrl()),
                 'file_name' => $m->file_name,
             ]),
             'model' => $this->whenLoaded('model', fn () => [

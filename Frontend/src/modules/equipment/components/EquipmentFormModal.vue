@@ -4,6 +4,7 @@ import AppModal from '@/core/components/AppModal.vue'
 import AppButton from '@/core/components/AppButton.vue'
 import { EquipmentStatus, EquipmentStatusOptions } from '@/core/enums/EquipmentStatus'
 import { rules } from '@/core/helpers/validators'
+import { resolveMediaUrl } from '@/core/helpers/formatters'
 
 const props = defineProps({
   modelValue: {
@@ -43,7 +44,7 @@ watch(
     photoFile.value = null
     if (newVal) {
       isEdit.value = true
-      photoPreview.value = newVal.photo_url || newVal.photos?.[0]?.url || null
+      photoPreview.value = resolveMediaUrl(newVal.photo_url || newVal.photos?.[0]?.url || null)
       form.value = {
         equipment_model_id: newVal.equipment_model_id || newVal.model?.id || 1,
         serial_number: newVal.serial_number || '',

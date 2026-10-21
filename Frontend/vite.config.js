@@ -20,6 +20,10 @@ export default defineConfig({
         target: 'http://localhost',
         changeOrigin: true,
       },
+      '/storage': {
+        target: 'http://localhost',
+        changeOrigin: true,
+      },
     },
   },
 })

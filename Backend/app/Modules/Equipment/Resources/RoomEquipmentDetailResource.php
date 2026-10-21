@@ -74,13 +74,14 @@ class RoomEquipmentDetailResource extends JsonResource
                 'position_note' => $item->position_note,
                 'note' => $item->note,
                 'installed_at' => $item->installed_at?->format('Y-m-d H:i:s'),
+                'photo_url' => $item->getFirstMediaUrl('equipment_photos') ? str_replace('/laravel_hq/quandh-core/public', '', $item->getFirstMediaUrl('equipment_photos')) : null,
                 'photos' => $item->getMedia('equipment_photos')->map(fn ($m) => [
                     'id' => $m->id,
-                    'url' => $m->getUrl(),
+                    'url' => str_replace('/laravel_hq/quandh-core/public', '', $m->getUrl()),
                 ]),
                 'broken_photos' => $item->getMedia('broken_photos')->map(fn ($m) => [
                     'id' => $m->id,
-                    'url' => $m->getUrl(),
+                    'url' => str_replace('/laravel_hq/quandh-core/public', '', $m->getUrl()),
                 ]),
             ];
         }
