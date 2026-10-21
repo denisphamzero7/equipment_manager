@@ -12,6 +12,11 @@ const authStore = useAuthStore()
 const realtimeStore = useRealtimeStore()
 const { mobile } = useDisplay()
 
+const user = computed(() => authStore.user)
+const organizationId = computed(() => authStore.organizationId)
+const availableOrgs = computed(() => authStore.availableOrganizations)
+const currentOrg = computed(() => authStore.currentOrganization)
+
 // Khởi tạo kết nối Real-time qua Reverb WebSocket
 onMounted(() => {
   if (organizationId.value) {
@@ -39,11 +44,6 @@ watch(mobile, isMobile => {
     drawer.value = true
   }
 })
-
-const user = computed(() => authStore.user)
-const organizationId = computed(() => authStore.organizationId)
-const availableOrgs = computed(() => authStore.availableOrganizations)
-const currentOrg = computed(() => authStore.currentOrganization)
 
 const navItems = [
   {
