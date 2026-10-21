@@ -38,7 +38,7 @@ class Room extends Model implements HasMedia
     protected $casts = [
         'price' => 'decimal:2',
         'organization_id' => 'integer',
-        'room_number' => 'integer',
+        'room_number' => 'string',
         'room_type_id' => 'integer',
         'floor' => 'integer',
         'grid_row' => 'integer',
