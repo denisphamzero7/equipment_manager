@@ -12,12 +12,19 @@ import { resolveMediaUrl } from '@/core/helpers/formatters'
 
 const router = useRouter()
 const realtimeStore = useRealtimeStore()
+
+// Master hotel block order matching hotel layout
+const hotelBlockOrder = ['Block A', 'Block B', 'Block C', 'Block D', 'Condos 1', 'Condos 2', 'Penthouse-spa+Villa']
+
+// Data state
 const loading = ref(true)
-const blocks = ref([])
-const floors = ref([])
+const rawRooms = ref([])
+
+// Filter states
 const selectedBlock = ref('')
-const selectedFloor = ref('')
-const rooms = ref([])
+const selectedFloor = ref(null)
+const selectedStatus = ref('')
+const searchQuery = ref('')
 
 // Detail room modal
 const selectedRoomDetail = ref(null)
@@ -56,11 +63,7 @@ function getCategoryIcon(code) {
 }
 
 onMounted(() => {
-  // Load filters and map grid concurrently for fastest perceived load time
-  Promise.all([
-    loadFilterOptions(),
-    loadMapViewData(),
-  ])
+  loadMapViewData()
 })
 
 // Tự động cập nhật sơ đồ phòng Real-time khi có sự kiện từ WebSocket
@@ -68,38 +71,19 @@ watch(
   () => realtimeStore.lastEvent,
   (event) => {
     if (!event) return
-    // Cập nhật ngầm dữ liệu phòng tức thời mà không gây chớp giật màn hình
     loadMapViewData(true)
-    if (event.type && (event.type.startsWith('room_') || event.type === 'assigned')) {
-      loadFilterOptions()
-    }
   }
 )
-
-async function loadFilterOptions() {
-  try {
-    const [blocksData, floorsData] = await Promise.all([
-      equipmentService.getBlocks().catch(() => []),
-      equipmentService.getFloors().catch(() => []),
-    ])
-    blocks.value = blocksData || []
-    floors.value = floorsData || []
-  } catch (e) {
-    console.error('Failed to load blocks/floors:', e)
-  }
-}
 
 async function loadMapViewData(silent = false) {
   if (!silent) {
     loading.value = true
   }
   try {
-    const params = {}
-    if (selectedBlock.value) params.block = selectedBlock.value
-    if (selectedFloor.value) params.floor = selectedFloor.value
-
-    const data = await equipmentService.getMapView(params)
-    rooms.value = data || []
+    const data = await equipmentService.getMapView({})
+    rawRooms.value = Array.isArray(data) ? data : []
+  } catch (e) {
+    console.error('Failed to load map view rooms:', e)
   } finally {
     if (!silent) {
       loading.value = false
@@ -107,17 +91,173 @@ async function loadMapViewData(silent = false) {
   }
 }
 
-async function handleBlockChange(block) {
-  selectedBlock.value = block
-  // Reload floors for this block
-  floors.value = await equipmentService.getFloors(block).catch(() => [])
-  await loadMapViewData()
+// Compute distinct blocks ordered by hotelBlockOrder
+const existingBlocks = computed(() => {
+  const set = new Set(rawRooms.value.map(r => r.block).filter(Boolean))
+  hotelBlockOrder.forEach(b => set.add(b))
+  return Array.from(set).sort((a, b) => {
+    const idxA = hotelBlockOrder.indexOf(a)
+    const idxB = hotelBlockOrder.indexOf(b)
+    if (idxA !== -1 && idxB !== -1) return idxA - idxB
+    if (idxA !== -1) return -1
+    if (idxB !== -1) return 1
+    return a.localeCompare(b, 'vi', { numeric: true })
+  })
+})
+
+// Room counts per block for pill badges
+const blockCounts = computed(() => {
+  const counts = { total: rawRooms.value.length }
+  rawRooms.value.forEach(r => {
+    const b = r.block || 'Khu vực chung'
+    counts[b] = (counts[b] || 0) + 1
+  })
+  return counts
+})
+
+// Floors available based on selected block
+const availableFloors = computed(() => {
+  const target = selectedBlock.value
+    ? rawRooms.value.filter(r => r.block === selectedBlock.value)
+    : rawRooms.value
+  const set = new Set(target.map(r => r.floor).filter(f => f !== null && f !== undefined))
+  return Array.from(set).sort((a, b) => a - b)
+})
+
+const hasActiveFilters = computed(() => {
+  return !!(searchQuery.value || selectedBlock.value || (selectedFloor.value !== null && selectedFloor.value !== '') || selectedStatus.value)
+})
+
+function selectBlock(b) {
+  selectedBlock.value = b
+  selectedFloor.value = null
 }
 
-async function handleFloorChange(floor) {
-  selectedFloor.value = floor
-  await loadMapViewData()
+function selectStatus(statusKey) {
+  if (selectedStatus.value === statusKey) {
+    selectedStatus.value = ''
+  } else {
+    selectedStatus.value = statusKey
+  }
 }
+
+function resetFilters() {
+  searchQuery.value = ''
+  selectedBlock.value = ''
+  selectedFloor.value = null
+  selectedStatus.value = ''
+}
+
+// Status options for select dropdown
+const statusFilterOptions = [
+  { value: '', label: 'Tất cả tình trạng thiết bị' },
+  { value: 'good', label: 'Hoạt động tốt & Đầy đủ' },
+  { value: 'maintenance', label: 'Đang bảo trì thiết bị' },
+  { value: 'broken', label: 'Có thiết bị hỏng / Thiếu' },
+  { value: 'unconfigured', label: 'Chưa cấu hình thiết bị' },
+]
+
+// Status color legends
+const colorLegends = [
+  { key: 'good', label: 'Hoạt động tốt & Đầy đủ', color: 'bg-emerald-500', text: 'text-emerald-700', border: 'border-emerald-200' },
+  { key: 'maintenance', label: 'Đang bảo trì thiết bị', color: 'bg-amber-500', text: 'text-amber-700', border: 'border-amber-200' },
+  { key: 'broken', label: 'Có thiết bị hỏng / Thiếu', color: 'bg-rose-500', text: 'text-rose-700', border: 'border-rose-200' },
+  { key: 'unconfigured', label: 'Chưa cấu hình thiết bị', color: 'bg-slate-400', text: 'text-slate-600', border: 'border-slate-200' },
+]
+
+// Group rooms by Block and Floor (hierarchical layout matching hotel blueprints)
+const groupedRooms = computed(() => {
+  const filtered = rawRooms.value.filter(room => {
+    // 1. Search filter
+    if (searchQuery.value) {
+      const q = searchQuery.value.toLowerCase().trim()
+      const matchNum = String(room.room_number).toLowerCase().includes(q)
+      const matchName = room.name?.toLowerCase().includes(q)
+      if (!matchNum && !matchName) return false
+    }
+
+    // 2. Block filter
+    if (selectedBlock.value && room.block !== selectedBlock.value) {
+      return false
+    }
+
+    // 3. Floor filter
+    if (selectedFloor.value !== null && selectedFloor.value !== '' && room.floor !== Number(selectedFloor.value)) {
+      return false
+    }
+
+    // 4. Equipment Status filter
+    if (selectedStatus.value) {
+      const isGood = room.badge_color === 'green' || room.equipment_status === 'good'
+      const isMaint = room.badge_color === 'yellow' || room.equipment_status === 'maintenance'
+      const isBroken = room.badge_color === 'red' || room.equipment_status === 'broken' || room.equipment_status === 'missing'
+      const isUnconf = !room.badge_color || room.equipment_status === 'unconfigured'
+
+      if (selectedStatus.value === 'good' && !isGood) return false
+      if (selectedStatus.value === 'maintenance' && !isMaint) return false
+      if (selectedStatus.value === 'broken' && !isBroken) return false
+      if (selectedStatus.value === 'unconfigured' && !isUnconf) return false
+    }
+
+    return true
+  })
+
+  // Group into Block -> Floor -> Rooms
+  const blocksMap = {}
+
+  filtered.forEach(room => {
+    const blockKey = room.block || 'Khu vực chung'
+    const floorKey = room.floor ?? 1
+
+    if (!blocksMap[blockKey]) {
+      blocksMap[blockKey] = {
+        name: blockKey,
+        floors: {},
+      }
+    }
+
+    if (!blocksMap[blockKey].floors[floorKey]) {
+      blocksMap[blockKey].floors[floorKey] = {
+        floor: floorKey,
+        rooms: [],
+      }
+    }
+
+    blocksMap[blockKey].floors[floorKey].rooms.push(room)
+  })
+
+  return Object.values(blocksMap)
+    .sort((b1, b2) => {
+      const idxA = hotelBlockOrder.indexOf(b1.name)
+      const idxB = hotelBlockOrder.indexOf(b2.name)
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB
+      if (idxA !== -1) return -1
+      if (idxB !== -1) return 1
+      return b1.name.localeCompare(b2.name, 'vi', { numeric: true })
+    })
+    .map(b => {
+      // Sort floors descending (tầng cao nhất ở trên, tầng 1 ở dưới)
+      const sortedFloors = Object.values(b.floors).sort((f1, f2) => f2.floor - f1.floor)
+      sortedFloors.forEach(f => {
+        // Sort rooms by grid_col or room_number
+        f.rooms.sort((r1, r2) => {
+          if (r1.grid_col && r2.grid_col && r1.grid_col !== r2.grid_col) {
+            return r1.grid_col - r2.grid_col
+          }
+          return String(r1.room_number).localeCompare(String(r2.room_number), 'vi', { numeric: true })
+        })
+      })
+      return {
+        name: b.name,
+        floors: sortedFloors,
+        totalRooms: sortedFloors.reduce((sum, f) => sum + f.rooms.length, 0),
+      }
+    })
+})
+
+const totalFilteredRooms = computed(() => {
+  return groupedRooms.value.reduce((sum, b) => sum + b.totalRooms, 0)
+})
 
 async function openRoomDetail(room) {
   roomDetailModalOpen.value = true
@@ -130,13 +270,6 @@ async function openRoomDetail(room) {
     roomDetailLoading.value = false
   }
 }
-
-const colorLegends = [
-  { label: 'Hoạt động tốt & Đầy đủ', color: 'bg-emerald-500', border: 'border-emerald-200', text: 'text-emerald-700' },
-  { label: 'Đang bảo trì thiết bị', color: 'bg-amber-500', border: 'border-amber-200', text: 'text-amber-700' },
-  { label: 'Có thiết bị hỏng / Thiếu', color: 'bg-rose-500', border: 'border-rose-200', text: 'text-rose-700' },
-  { label: 'Chưa cấu hình thiết bị', color: 'bg-slate-400', border: 'border-slate-200', text: 'text-slate-600' },
-]
 
 function getRoomColorClass(room) {
   if (room.badge_color === 'green' || room.equipment_status === 'good') {
@@ -181,127 +314,281 @@ function getBadgeIndicatorClass(room) {
         <AppButton
           icon="mdi-refresh"
           color="primary"
-          @click="loadMapViewData"
+          @click="loadMapViewData(false)"
         >
           Tải lại sơ đồ
         </AppButton>
       </template>
     </AppPageHeader>
 
-    <!-- Top Toolbar: Filters & Legends -->
-    <div class="bg-white rounded-2xl p-3.5 sm:p-5 border border-slate-200/80 shadow-xs mb-4 sm:mb-6 space-y-3 sm:space-y-4">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
-        <!-- Block & Floor selectors -->
-        <div class="flex items-center gap-2.5 sm:gap-3 flex-wrap w-full md:w-auto">
-          <div class="flex-1 min-w-[130px] sm:flex-none sm:w-48">
-            <v-select
-              v-model="selectedBlock"
-              :items="[{ value: '', title: 'Tất cả Block' }, ...blocks.map(b => ({ value: b, title: b }))]"
-              item-title="title"
-              item-value="value"
+    <!-- Upgraded Control & Filter Card (Synchronized with Room Management) -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs mb-6 overflow-hidden">
+      <!-- Top Section: Block Quick-Filter Pills Bar -->
+      <div class="px-4 pt-3.5 pb-3 border-b border-slate-100 bg-slate-50/60">
+        <div class="flex items-center justify-between gap-2 mb-2">
+          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+            <v-icon icon="mdi-domain" size="15" color="primary" />
+            <span>Phân khu & Tòa nhà (Block):</span>
+          </span>
+          <button
+            v-if="selectedBlock"
+            class="text-xs text-primary font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+            @click="selectBlock('')"
+          >
+            <v-icon icon="mdi-eye-outline" size="14" />
+            <span>Hiển thị tất cả 7 Block</span>
+          </button>
+        </div>
+
+        <!-- Horizontal Block Pills Bar -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+          <button
+            class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-2 border cursor-pointer"
+            :class="!selectedBlock
+              ? 'bg-primary text-white border-primary shadow-xs'
+              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'"
+            @click="selectBlock('')"
+          >
+            <span>Tất cả Block</span>
+            <span
+              class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold"
+              :class="!selectedBlock ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'"
+            >
+              {{ blockCounts.total || 0 }}
+            </span>
+          </button>
+
+          <button
+            v-for="b in existingBlocks"
+            :key="b"
+            class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-2 border cursor-pointer"
+            :class="selectedBlock === b
+              ? 'bg-primary text-white border-primary shadow-xs'
+              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'"
+            @click="selectBlock(b)"
+          >
+            <span>{{ b }}</span>
+            <span
+              class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold"
+              :class="selectedBlock === b ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'"
+            >
+              {{ blockCounts[b] || 0 }}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bottom Section: Search, Floor, Status & Clickable Legends -->
+      <div class="p-4 space-y-3.5">
+        <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3.5">
+          <!-- Left: Search Box -->
+          <div class="flex-1 min-w-[240px]">
+            <v-text-field
+              v-model="searchQuery"
+              placeholder="Tìm nhanh theo số phòng, tên phòng..."
               density="compact"
+              variant="outlined"
               hide-details
-              prepend-inner-icon="mdi-office-building"
-              placeholder="Chọn Block"
-              @update:model-value="handleBlockChange"
+              prepend-inner-icon="mdi-magnify"
+              clearable
+              bg-color="slate-50"
             />
           </div>
 
-          <div class="flex-1 min-w-[120px] sm:flex-none sm:w-40">
-            <v-select
-              v-model="selectedFloor"
-              :items="[{ value: '', title: 'Tất cả Tầng' }, ...floors.map(f => ({ value: f, title: `Tầng ${f}` }))]"
-              item-title="title"
-              item-value="value"
-              density="compact"
-              hide-details
-              prepend-inner-icon="mdi-layers-outline"
-              placeholder="Chọn Tầng"
-              @update:model-value="handleFloorChange"
-            />
+          <!-- Middle: Filters Group (Floor, Status) -->
+          <div class="flex flex-wrap sm:flex-nowrap items-center gap-2.5">
+            <!-- Floor Filter -->
+            <div class="w-full sm:w-36 shrink-0">
+              <v-select
+                v-model="selectedFloor"
+                :items="[{ value: null, title: 'Tất cả Tầng' }, ...availableFloors.map(f => ({ value: f, title: `Tầng ${f}` }))]"
+                item-title="title"
+                item-value="value"
+                density="compact"
+                variant="outlined"
+                hide-details
+                prepend-inner-icon="mdi-stairs"
+              />
+            </div>
+
+            <!-- Status Filter -->
+            <div class="w-full sm:w-52 shrink-0">
+              <v-select
+                v-model="selectedStatus"
+                :items="statusFilterOptions"
+                item-title="label"
+                item-value="value"
+                density="compact"
+                variant="outlined"
+                hide-details
+                prepend-inner-icon="mdi-shield-check-outline"
+              />
+            </div>
+
+            <!-- Reset Button -->
+            <button
+              v-if="hasActiveFilters"
+              class="px-3 py-2 text-xs font-semibold rounded-lg border border-slate-200 text-slate-600 bg-slate-50 hover:bg-slate-100 hover:text-slate-900 transition flex items-center gap-1 shrink-0 cursor-pointer"
+              title="Xóa tất cả bộ lọc đang áp dụng"
+              @click="resetFilters"
+            >
+              <v-icon icon="mdi-filter-off-outline" size="16" />
+              <span>Đặt lại</span>
+            </button>
           </div>
 
-          <div class="text-xs text-slate-500 font-medium whitespace-nowrap self-center">
-            Tìm thấy <strong>{{ rooms.length }}</strong> phòng
+          <!-- Counter badge -->
+          <div class="text-xs text-slate-500 font-medium whitespace-nowrap self-end lg:self-center">
+            Tìm thấy <strong class="text-slate-800 text-sm font-bold">{{ totalFilteredRooms }}</strong> / {{ rawRooms.length }} phòng
           </div>
         </div>
 
-        <!-- Color Legend Badges -->
-        <div class="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-3 text-xs pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-          <div v-for="leg in colorLegends" :key="leg.label" class="flex items-center gap-1.5">
+        <!-- Interactive Color Legend Badges (Click to quick-filter!) -->
+        <div class="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-2 sm:gap-3 text-xs">
+          <span class="text-slate-400 font-semibold mr-1">Tình trạng:</span>
+          <button
+            v-for="leg in colorLegends"
+            :key="leg.key"
+            class="px-2.5 py-1 rounded-lg border text-xs font-medium transition-all duration-150 flex items-center gap-1.5 cursor-pointer"
+            :class="selectedStatus === leg.key
+              ? `${leg.border} ${leg.text} bg-white ring-2 ring-primary shadow-xs font-bold`
+              : 'border-slate-200/80 bg-slate-50 text-slate-600 hover:bg-white hover:border-slate-300'"
+            @click="selectStatus(leg.key)"
+          >
             <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" :class="leg.color" />
-            <span class="text-slate-600 font-medium truncate">{{ leg.label }}</span>
+            <span>{{ leg.label }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Map View Grouped by Block and Floor -->
+    <div v-if="loading" class="space-y-6">
+      <div v-for="n in 2" :key="n" class="space-y-4">
+        <div class="h-6 w-36 bg-slate-200 rounded animate-pulse" />
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs space-y-3">
+          <div class="h-4 w-24 bg-slate-200 rounded animate-pulse" />
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-7 gap-2.5 sm:gap-3.5">
+            <div v-for="c in 6" :key="c" class="h-32 bg-slate-100 rounded-xl animate-pulse" />
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Map View Room Grid -->
-    <div v-if="loading" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 sm:gap-4">
-      <div v-for="n in 12" :key="n" class="h-32 bg-slate-100 rounded-xl sm:rounded-2xl animate-pulse" />
-    </div>
-
-    <div v-else-if="rooms.length > 0" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 sm:gap-4">
+    <!-- Grouped Blocks & Floors Grid -->
+    <div v-else-if="groupedRooms.length > 0" class="space-y-6">
       <div
-        v-for="room in rooms"
-        :key="room.id"
-        class="rounded-xl sm:rounded-2xl p-3 sm:p-4 border shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between h-32 sm:h-36 relative overflow-hidden active:scale-[0.98]"
-        :class="getRoomColorClass(room)"
-        @click="openRoomDetail(room)"
+        v-for="blockGroup in groupedRooms"
+        :key="blockGroup.name"
+        class="space-y-4"
       >
-        <!-- Top Status Bar Indicator -->
-        <div class="flex items-center justify-between">
-          <span class="font-extrabold text-sm sm:text-base text-slate-800">
-            {{ room.room_number }}
-          </span>
-          <span
-            class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full shadow-xs flex-shrink-0"
-            :class="getBadgeIndicatorClass(room)"
-            :title="room.equipment_status"
-          />
+        <!-- Block Header Title -->
+        <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-6 rounded-full bg-primary inline-block"></span>
+            <h2 class="text-base sm:text-lg font-bold text-slate-800">{{ blockGroup.name }}</h2>
+            <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
+              {{ blockGroup.totalRooms }} phòng
+            </span>
+          </div>
+          <button
+            v-if="selectedBlock !== blockGroup.name"
+            class="text-xs text-primary font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+            @click="selectBlock(blockGroup.name)"
+          >
+            <span>Chỉ xem {{ blockGroup.name }}</span>
+            <v-icon icon="mdi-chevron-right" size="14" />
+          </button>
         </div>
 
-        <!-- Center Room Type / Floor -->
-        <div class="my-auto py-1">
-          <p class="text-[11px] sm:text-xs font-semibold text-slate-700 truncate" :title="room.name">
-            {{ room.name || `Phòng ${room.room_number}` }}
-          </p>
-          <p class="text-[10px] sm:text-[11px] text-slate-400 truncate">
-            Tầng {{ room.floor || '1' }} • {{ room.block || 'Chính' }}
-          </p>
-        </div>
+        <!-- Floors in Block -->
+        <div
+          v-for="floorGroup in blockGroup.floors"
+          :key="floorGroup.floor"
+          class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs space-y-3"
+        >
+          <!-- Floor Header -->
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <div class="flex items-center gap-2">
+              <v-icon icon="mdi-stairs" color="primary" size="18" />
+              <span class="font-bold text-slate-800 text-xs sm:text-sm">Tầng {{ floorGroup.floor }}</span>
+              <span class="text-xs text-slate-400">({{ floorGroup.rooms.length }} phòng)</span>
+            </div>
+          </div>
 
-        <!-- Bottom Devices Stats -->
-        <div class="pt-1.5 sm:pt-2 border-t border-slate-100/80 flex items-center justify-between text-[10px] sm:text-[11px]">
-          <span class="text-slate-500 font-medium">
-            {{ room.stats?.total_equipments || 0 }} TB
-          </span>
+          <!-- Rooms Grid for this floor -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-7 gap-2.5 sm:gap-3.5">
+            <div
+              v-for="room in floorGroup.rooms"
+              :key="room.id"
+              class="rounded-xl p-3 sm:p-3.5 border shadow-2xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between h-32 relative overflow-hidden active:scale-[0.98]"
+              :class="getRoomColorClass(room)"
+              @click="openRoomDetail(room)"
+            >
+              <!-- Top Status Bar Indicator -->
+              <div class="flex items-center justify-between">
+                <span class="font-black text-sm sm:text-base text-slate-900 tracking-tight">
+                  {{ room.room_number }}
+                </span>
+                <span
+                  class="w-2.5 h-2.5 rounded-full shadow-xs flex-shrink-0"
+                  :class="getBadgeIndicatorClass(room)"
+                  :title="room.equipment_status"
+                />
+              </div>
 
-          <div class="flex items-center gap-1">
-            <span
-              v-if="room.stats?.broken_count > 0"
-              class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 font-bold"
-              title="Thiết bị hỏng"
-            >
-              {{ room.stats.broken_count }}!
-            </span>
-            <span
-              v-if="room.stats?.missing_count > 0"
-              class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-bold"
-              title="Thiết bị thiếu định mức"
-            >
-              -{{ room.stats.missing_count }}
-            </span>
+              <!-- Center Room Name / Floor -->
+              <div class="my-auto py-1">
+                <p class="text-[11px] sm:text-xs font-semibold text-slate-700 truncate" :title="room.name">
+                  {{ room.name || `Phòng ${room.room_number}` }}
+                </p>
+                <p class="text-[10px] sm:text-[11px] text-slate-400 truncate mt-0.5">
+                  Tầng {{ room.floor || '1' }} • {{ room.block || 'Chính' }}
+                </p>
+              </div>
+
+              <!-- Bottom Devices Stats -->
+              <div class="pt-1.5 border-t border-slate-100 flex items-center justify-between text-[10px] sm:text-[11px]">
+                <span class="text-slate-500 font-medium">
+                  {{ room.stats?.total_equipments || 0 }} TB
+                </span>
+
+                <div class="flex items-center gap-1">
+                  <span
+                    v-if="room.stats?.broken_count > 0"
+                    class="px-1.5 py-0.2 rounded bg-rose-100 text-rose-700 font-bold"
+                    title="Thiết bị hỏng"
+                  >
+                    {{ room.stats.broken_count }}!
+                  </span>
+                  <span
+                    v-if="room.stats?.missing_count > 0"
+                    class="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-bold"
+                    title="Thiết bị thiếu định mức"
+                  >
+                    -{{ room.stats.missing_count }}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Empty state -->
-    <div v-else class="text-center py-16 bg-white rounded-2xl border border-slate-200">
+    <div v-else class="text-center py-16 bg-white rounded-2xl border border-slate-200 p-8 shadow-xs">
       <v-icon icon="mdi-map-marker-off-outline" size="56" class="text-slate-300 mb-2 block mx-auto" />
       <h3 class="text-base font-bold text-slate-700">Không tìm thấy phòng nào</h3>
-      <p class="text-xs text-slate-400 mt-1">Vui lòng chọn Block hoặc Tầng khác trong bộ lọc.</p>
+      <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+        Không có phòng nào phù hợp với bộ lọc hiện tại. Hãy thử chọn Block hoặc Tầng khác.
+      </p>
+      <div class="mt-4">
+        <AppButton variant="secondary" @click="resetFilters">
+          <v-icon start icon="mdi-refresh" />
+          Đặt lại bộ lọc
+        </AppButton>
+      </div>
     </div>
 
     <!-- Room Equipment Detail Modal -->
@@ -428,7 +715,7 @@ function getBadgeIndicatorClass(room) {
                     <AppStatusBadge :status="item.status" />
                     <button
                       type="button"
-                      class="p-1 rounded-lg text-slate-400 hover:text-primary hover:bg-white transition"
+                      class="p-1 rounded-lg text-slate-400 hover:text-primary hover:bg-white transition cursor-pointer"
                       title="Xem trang chi tiết thiết bị"
                       @click="router.push(`/equipments/${item.id}`)"
                     >
@@ -464,12 +751,13 @@ function getBadgeIndicatorClass(room) {
         </AppButton>
       </template>
     </AppModal>
+
     <!-- Image Preview Lightbox Dialog -->
     <v-dialog v-model="lightboxOpen" max-width="700">
       <div class="bg-slate-900 rounded-2xl overflow-hidden p-4 relative">
         <button
           type="button"
-          class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-colors"
+          class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-colors cursor-pointer"
           @click="lightboxOpen = false"
         >
           <v-icon icon="mdi-close" size="18" />
