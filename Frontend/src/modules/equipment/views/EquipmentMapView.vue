@@ -124,8 +124,11 @@ const availableFloors = computed(() => {
   return Array.from(set).sort((a, b) => a - b)
 })
 
+// Sắp xếp tầng: mặc định 'asc' (Tầng 1 -> 7 đồng bộ với Quản lý phòng)
+const floorSortOrder = ref('asc')
+
 const hasActiveFilters = computed(() => {
-  return !!(searchQuery.value || selectedBlock.value || (selectedFloor.value !== null && selectedFloor.value !== '') || selectedStatus.value)
+  return !!(searchQuery.value || selectedBlock.value || (selectedFloor.value !== null && selectedFloor.value !== '') || selectedStatus.value || floorSortOrder.value !== 'asc')
 })
 
 function selectBlock(b) {
@@ -146,6 +149,7 @@ function resetFilters() {
   selectedBlock.value = ''
   selectedFloor.value = null
   selectedStatus.value = ''
+  floorSortOrder.value = 'asc'
 }
 
 // Status options for select dropdown
@@ -236,8 +240,10 @@ const groupedRooms = computed(() => {
       return b1.name.localeCompare(b2.name, 'vi', { numeric: true })
     })
     .map(b => {
-      // Sort floors descending (tầng cao nhất ở trên, tầng 1 ở dưới)
-      const sortedFloors = Object.values(b.floors).sort((f1, f2) => f2.floor - f1.floor)
+      // Sort floors: mặc định 'asc' (Tầng 1 -> 7 đồng bộ với Quản lý phòng)
+      const sortedFloors = Object.values(b.floors).sort((f1, f2) => {
+        return floorSortOrder.value === 'desc' ? f2.floor - f1.floor : f1.floor - f2.floor
+      })
       sortedFloors.forEach(f => {
         // Sort rooms by grid_col or room_number
         f.rooms.sort((r1, r2) => {
@@ -410,6 +416,17 @@ function getBadgeIndicatorClass(room) {
                 prepend-inner-icon="mdi-stairs"
               />
             </div>
+
+            <!-- Floor Sort Direction Toggle Button -->
+            <button
+              type="button"
+              class="px-2.5 py-2 text-xs font-semibold rounded-lg border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 transition flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs"
+              :title="floorSortOrder === 'asc' ? 'Đang sắp xếp Tầng 1 → 7 (Bấm để đảo 7 → 1)' : 'Đang sắp xếp Tầng 7 → 1 (Bấm để đảo 1 → 7)'"
+              @click="floorSortOrder = floorSortOrder === 'asc' ? 'desc' : 'asc'"
+            >
+              <v-icon :icon="floorSortOrder === 'asc' ? 'mdi-sort-numeric-ascending' : 'mdi-sort-numeric-descending'" size="16" color="primary" />
+              <span>Tầng {{ floorSortOrder === 'asc' ? '1 → 7' : '7 → 1' }}</span>
+            </button>
 
             <!-- Status Filter -->
             <div class="w-full sm:w-52 shrink-0">
