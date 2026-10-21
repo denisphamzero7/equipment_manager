@@ -5,6 +5,7 @@ import { roomService } from '../services/roomService'
 import { equipmentService } from '@/modules/equipment/services/equipmentService'
 import { useRealtimeStore } from '@/core/stores/realtimeStore'
 import { toast } from '@/core/helpers/toast'
+import { resolveMediaUrl } from '@/core/helpers/formatters'
 import DefaultLayout from '@/core/layouts/DefaultLayout.vue'
 import AppPageHeader from '@/core/components/AppPageHeader.vue'
 import AppButton from '@/core/components/AppButton.vue'
@@ -89,6 +90,37 @@ async function loadRoomDetail(id) {
   } finally {
     loading.value = false
   }
+}
+
+// Lightbox state
+const lightboxOpen = ref(false)
+const lightboxImage = ref('')
+const lightboxTitle = ref('')
+const lightboxSubtitle = ref('')
+
+function openLightbox(item) {
+  const url = item.photo_url || item.photos?.[0]?.url
+  if (!url) return
+  lightboxImage.value = resolveMediaUrl(url)
+  lightboxTitle.value = item.model_name || 'Hình ảnh thiết bị'
+  lightboxSubtitle.value = `Mã Serial: ${item.serial_number || 'Chưa gắn mã'} • ID #${item.id}`
+  lightboxOpen.value = true
+}
+
+function getCategoryIcon(code) {
+  const map = {
+    tv: 'mdi-television',
+    remote: 'mdi-remote',
+    box: 'mdi-set-top-box',
+    wifi: 'mdi-wifi',
+    ac: 'mdi-air-conditioner',
+    air_conditioner: 'mdi-air-conditioner',
+    refrigerator: 'mdi-fridge',
+    kettle: 'mdi-kettle-outline',
+    safe: 'mdi-safe',
+    hairdryer: 'mdi-hair-dryer',
+  }
+  return map[code?.toLowerCase()] || 'mdi-devices'
 }
 
 // 1. Thao tác Điều chuyển
@@ -367,15 +399,51 @@ async function handleCreateSubmit({ data }) {
                     :key="item.id"
                     class="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-slate-50 hover:bg-slate-100/70 transition rounded-xl text-xs gap-3 border border-slate-100"
                   >
-                    <!-- Left: Equipment Info -->
-                    <div class="min-w-0 flex-1">
-                      <p class="font-bold text-slate-800 text-sm truncate">{{ item.model_name || 'Thiết bị' }}</p>
-                      <p class="font-mono text-blue-600 font-semibold mt-0.5 truncate">
-                        {{ item.serial_number || 'Chưa gắn Serial' }}
-                      </p>
-                      <p v-if="item.position_note" class="text-[11px] text-slate-400 mt-0.5 truncate">
-                        Vị trí: {{ item.position_note }}
-                      </p>
+                    <!-- Left: Thumbnail & Equipment Info -->
+                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                      <div
+                        class="relative w-12 h-12 rounded-lg overflow-hidden shrink-0 border border-slate-200/80 bg-white flex items-center justify-center shadow-2xs group cursor-pointer"
+                        :title="(item.photo_url || item.photos?.[0]?.url) ? 'Nhấp để xem ảnh lớn' : (item.model_name || 'Thiết bị')"
+                        @click="openLightbox(item)"
+                      >
+                        <img
+                          v-if="item.photo_url || item.photos?.[0]?.url"
+                          :src="resolveMediaUrl(item.photo_url || item.photos?.[0]?.url)"
+                          :alt="item.model_name || 'Thiết bị'"
+                          class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
+                          loading="lazy"
+                        />
+                        <div v-else class="flex flex-col items-center justify-center text-slate-400">
+                          <v-icon :icon="cat.category_icon || getCategoryIcon(cat.category_code)" size="22" />
+                        </div>
+
+                        <div
+                          v-if="item.photo_url || item.photos?.[0]?.url"
+                          class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white"
+                        >
+                          <v-icon icon="mdi-magnify-plus" size="16" />
+                        </div>
+                      </div>
+
+                      <div class="min-w-0 flex-1">
+                        <div class="flex items-center gap-1.5">
+                          <router-link
+                            :to="`/equipments/${item.id}`"
+                            class="font-bold text-slate-800 text-sm hover:text-primary transition-colors truncate"
+                          >
+                            {{ item.model_name || 'Thiết bị' }}
+                          </router-link>
+                          <span v-if="item.photos?.length > 1" class="text-[10px] bg-slate-200/70 text-slate-600 px-1.5 py-0.2 rounded-full font-medium">
+                            {{ item.photos.length }} ảnh
+                          </span>
+                        </div>
+                        <p class="font-mono text-blue-600 font-semibold mt-0.5 truncate">
+                          {{ item.serial_number || 'Chưa gắn Serial' }}
+                        </p>
+                        <p v-if="item.position_note" class="text-[11px] text-slate-400 mt-0.5 truncate">
+                          Vị trí: {{ item.position_note }}
+                        </p>
+                      </div>
                     </div>
 
                     <!-- Right: Status & Actions Toolbar -->
@@ -543,5 +611,24 @@ async function handleCreateSubmit({ data }) {
         </AppButton>
       </template>
     </AppModal>
+    <!-- Image Preview Lightbox Dialog -->
+    <v-dialog v-model="lightboxOpen" max-width="700">
+      <div class="bg-slate-900 rounded-2xl overflow-hidden p-4 relative">
+        <button
+          type="button"
+          class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-colors"
+          @click="lightboxOpen = false"
+        >
+          <v-icon icon="mdi-close" size="18" />
+        </button>
+        <div class="text-center mb-3 pr-8">
+          <p class="text-sm font-bold text-white">{{ lightboxTitle }}</p>
+          <p class="text-xs text-slate-400 font-mono mt-0.5">{{ lightboxSubtitle }}</p>
+        </div>
+        <div class="flex items-center justify-center max-h-[70vh]">
+          <img :src="lightboxImage" alt="Preview" class="max-w-full max-h-[65vh] object-contain rounded-lg" />
+        </div>
+      </div>
+    </v-dialog>
   </DefaultLayout>
 </template>
