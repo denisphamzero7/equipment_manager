@@ -96,10 +96,10 @@ async function loadRoomDetail(id) {
 
         <div v-else-if="roomDetail" class="space-y-6">
           <!-- Room Header & Compliance Badge -->
-          <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Đối soát phòng</span>
-              <h2 class="text-2xl font-extrabold text-slate-800">
+              <h2 class="text-xl sm:text-2xl font-extrabold text-slate-800">
                 Phòng {{ roomDetail.room_number }}
               </h2>
               <p class="text-xs text-slate-500 mt-0.5">
@@ -122,7 +122,7 @@ async function loadRoomDetail(id) {
           </div>
 
           <!-- Missing items banner -->
-          <div v-if="roomDetail.missing_equipments && roomDetail.missing_equipments.length" class="bg-rose-50 border border-rose-200 rounded-2xl p-5 text-xs text-rose-900">
+          <div v-if="roomDetail.missing_equipments && roomDetail.missing_equipments.length" class="bg-rose-50 border border-rose-200 rounded-2xl p-4 sm:p-5 text-xs text-rose-900">
             <h4 class="font-bold uppercase tracking-wider mb-2 flex items-center gap-2">
               <v-icon icon="mdi-alert-circle" size="18" color="error" />
               <span>Cảnh báo thiết bị còn thiếu so với định mức:</span>
@@ -135,7 +135,7 @@ async function loadRoomDetail(id) {
           </div>
 
           <!-- Actual Equipment Table by Category -->
-          <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs">
+          <div class="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200/80 shadow-xs">
             <h3 class="text-base font-bold text-slate-800 mb-4">
               Danh mục Thiết bị Thực tế trong phòng
             </h3>
@@ -144,7 +144,7 @@ async function loadRoomDetail(id) {
               <div
                 v-for="cat in roomDetail.categories"
                 :key="cat.category_code || cat.category_name"
-                class="border border-slate-200 rounded-xl p-4"
+                class="border border-slate-200 rounded-xl p-3.5 sm:p-4"
               >
                 <div class="flex items-center justify-between mb-3">
                   <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">
@@ -157,19 +157,21 @@ async function loadRoomDetail(id) {
                   <div
                     v-for="item in cat.items"
                     :key="item.id"
-                    class="flex items-center justify-between p-3 bg-slate-50 rounded-xl text-xs"
+                    class="flex items-center justify-between p-3 bg-slate-50 rounded-xl text-xs gap-2"
                   >
-                    <div>
-                      <p class="font-bold text-slate-800 text-sm">{{ item.model_name || 'Thiết bị' }}</p>
-                      <p class="font-mono text-blue-600 font-semibold mt-0.5">
+                    <div class="min-w-0 flex-1">
+                      <p class="font-bold text-slate-800 text-sm truncate">{{ item.model_name || 'Thiết bị' }}</p>
+                      <p class="font-mono text-blue-600 font-semibold mt-0.5 truncate">
                         {{ item.serial_number || 'Chưa gắn Serial' }}
                       </p>
-                      <p v-if="item.position_note" class="text-[11px] text-slate-400 mt-0.5">
+                      <p v-if="item.position_note" class="text-[11px] text-slate-400 mt-0.5 truncate">
                         Vị trí: {{ item.position_note }}
                       </p>
                     </div>
 
-                    <AppStatusBadge :status="item.status" />
+                    <div class="shrink-0">
+                      <AppStatusBadge :status="item.status" />
+                    </div>
                   </div>
                 </div>
               </div>

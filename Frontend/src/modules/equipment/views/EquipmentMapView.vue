@@ -138,11 +138,11 @@ function getBadgeIndicatorClass(room) {
     </AppPageHeader>
 
     <!-- Top Toolbar: Filters & Legends -->
-    <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs mb-6 space-y-4">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="bg-white rounded-2xl p-3.5 sm:p-5 border border-slate-200/80 shadow-xs mb-4 sm:mb-6 space-y-3 sm:space-y-4">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
         <!-- Block & Floor selectors -->
-        <div class="flex items-center gap-3 flex-wrap">
-          <div class="w-48">
+        <div class="flex items-center gap-2.5 sm:gap-3 flex-wrap w-full md:w-auto">
+          <div class="flex-1 min-w-[130px] sm:flex-none sm:w-48">
             <v-select
               v-model="selectedBlock"
               :items="[{ value: '', title: 'Tất cả Block' }, ...blocks.map(b => ({ value: b, title: b }))]"
@@ -156,7 +156,7 @@ function getBadgeIndicatorClass(room) {
             />
           </div>
 
-          <div class="w-40">
+          <div class="flex-1 min-w-[120px] sm:flex-none sm:w-40">
             <v-select
               v-model="selectedFloor"
               :items="[{ value: '', title: 'Tất cả Tầng' }, ...floors.map(f => ({ value: f, title: `Tầng ${f}` }))]"
@@ -170,58 +170,58 @@ function getBadgeIndicatorClass(room) {
             />
           </div>
 
-          <div class="text-xs text-slate-500 font-medium">
+          <div class="text-xs text-slate-500 font-medium whitespace-nowrap self-center">
             Tìm thấy <strong>{{ rooms.length }}</strong> phòng
           </div>
         </div>
 
         <!-- Color Legend Badges -->
-        <div class="flex items-center gap-3 flex-wrap text-xs">
+        <div class="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-3 text-xs pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
           <div v-for="leg in colorLegends" :key="leg.label" class="flex items-center gap-1.5">
-            <span class="w-2.5 h-2.5 rounded-full" :class="leg.color" />
-            <span class="text-slate-600 font-medium">{{ leg.label }}</span>
+            <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" :class="leg.color" />
+            <span class="text-slate-600 font-medium truncate">{{ leg.label }}</span>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Map View Room Grid -->
-    <div v-if="loading" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-      <div v-for="n in 12" :key="n" class="h-32 bg-slate-100 rounded-2xl animate-pulse" />
+    <div v-if="loading" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 sm:gap-4">
+      <div v-for="n in 12" :key="n" class="h-32 bg-slate-100 rounded-xl sm:rounded-2xl animate-pulse" />
     </div>
 
-    <div v-else-if="rooms.length > 0" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+    <div v-else-if="rooms.length > 0" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 sm:gap-4">
       <div
         v-for="room in rooms"
         :key="room.id"
-        class="rounded-2xl p-4 border shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between h-36 relative overflow-hidden"
+        class="rounded-xl sm:rounded-2xl p-3 sm:p-4 border shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between h-32 sm:h-36 relative overflow-hidden active:scale-[0.98]"
         :class="getRoomColorClass(room)"
         @click="openRoomDetail(room)"
       >
         <!-- Top Status Bar Indicator -->
         <div class="flex items-center justify-between">
-          <span class="font-extrabold text-base text-slate-800">
+          <span class="font-extrabold text-sm sm:text-base text-slate-800">
             {{ room.room_number }}
           </span>
           <span
-            class="w-3 h-3 rounded-full shadow-xs"
+            class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full shadow-xs flex-shrink-0"
             :class="getBadgeIndicatorClass(room)"
             :title="room.equipment_status"
           />
         </div>
 
         <!-- Center Room Type / Floor -->
-        <div class="my-auto">
-          <p class="text-xs font-semibold text-slate-700 truncate" :title="room.name">
+        <div class="my-auto py-1">
+          <p class="text-[11px] sm:text-xs font-semibold text-slate-700 truncate" :title="room.name">
             {{ room.name || `Phòng ${room.room_number}` }}
           </p>
-          <p class="text-[11px] text-slate-400">
+          <p class="text-[10px] sm:text-[11px] text-slate-400 truncate">
             Tầng {{ room.floor || '1' }} • {{ room.block || 'Chính' }}
           </p>
         </div>
 
         <!-- Bottom Devices Stats -->
-        <div class="pt-2 border-t border-slate-100/80 flex items-center justify-between text-[11px]">
+        <div class="pt-1.5 sm:pt-2 border-t border-slate-100/80 flex items-center justify-between text-[10px] sm:text-[11px]">
           <span class="text-slate-500 font-medium">
             {{ room.stats?.total_equipments || 0 }} TB
           </span>
@@ -229,14 +229,14 @@ function getBadgeIndicatorClass(room) {
           <div class="flex items-center gap-1">
             <span
               v-if="room.stats?.broken_count > 0"
-              class="px-1.5 py-0.2 rounded bg-rose-100 text-rose-700 font-bold"
+              class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 font-bold"
               title="Thiết bị hỏng"
             >
               {{ room.stats.broken_count }}!
             </span>
             <span
               v-if="room.stats?.missing_count > 0"
-              class="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-bold"
+              class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-bold"
               title="Thiết bị thiếu định mức"
             >
               -{{ room.stats.missing_count }}
@@ -322,18 +322,20 @@ function getBadgeIndicatorClass(room) {
                 <div
                   v-for="item in cat.items"
                   :key="item.id"
-                  class="flex items-center justify-between p-2.5 bg-slate-50 rounded-lg text-xs"
+                  class="flex items-center justify-between gap-2 p-2.5 bg-slate-50 rounded-lg text-xs"
                 >
-                  <div>
-                    <p class="font-bold text-slate-800">{{ item.model_name || 'Thiết bị' }}</p>
-                    <p class="text-[11px] font-mono text-blue-600 font-medium">
+                  <div class="min-w-0 flex-1">
+                    <p class="font-bold text-slate-800 truncate">{{ item.model_name || 'Thiết bị' }}</p>
+                    <p class="text-[11px] font-mono text-blue-600 font-medium truncate">
                       {{ item.serial_number || 'Chưa gắn Serial' }}
                     </p>
-                    <p v-if="item.position_note" class="text-[10px] text-slate-400">
+                    <p v-if="item.position_note" class="text-[10px] text-slate-400 truncate">
                       Vị trí: {{ item.position_note }}
                     </p>
                   </div>
-                  <AppStatusBadge :status="item.status" />
+                  <div class="flex-shrink-0">
+                    <AppStatusBadge :status="item.status" />
+                  </div>
                 </div>
               </div>
             </div>

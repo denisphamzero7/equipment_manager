@@ -21,18 +21,18 @@ const alertRooms = computed(() => {
 </script>
 
 <template>
-  <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+  <div class="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between">
     <div>
-      <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center justify-between gap-3 mb-4">
         <div>
-          <h3 class="text-base font-bold text-slate-800">
+          <h3 class="text-sm sm:text-base font-bold text-slate-800">
             Cảnh báo Thiết bị theo Phòng
           </h3>
-          <p class="text-xs text-slate-400 mt-0.5">
+          <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">
             Các phòng phát hiện sự cố hỏng hóc hoặc thiếu thiết bị chuẩn
           </p>
         </div>
-        <div class="p-2 bg-rose-50 text-rose-600 rounded-xl">
+        <div class="p-2 bg-rose-50 text-rose-600 rounded-xl flex-shrink-0">
           <v-icon icon="mdi-alert-octagon-outline" size="20" />
         </div>
       </div>
@@ -47,36 +47,36 @@ const alertRooms = computed(() => {
         <div
           v-for="room in alertRooms"
           :key="room.id"
-          class="flex items-center justify-between p-3 rounded-xl border transition-colors"
+          class="flex items-center justify-between gap-2 p-2.5 sm:p-3 rounded-xl border transition-colors"
           :class="room.badge_color === 'red' ? 'bg-rose-50/60 border-rose-100' : 'bg-amber-50/60 border-amber-100'"
         >
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
             <div
-              class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm shadow-xs"
+              class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center font-bold text-xs sm:text-sm shadow-xs flex-shrink-0"
               :class="room.badge_color === 'red' ? 'bg-rose-600 text-white' : 'bg-amber-500 text-white'"
             >
               {{ room.room_number }}
             </div>
-            <div>
-              <p class="text-xs font-bold text-slate-800">
+            <div class="min-w-0 flex-1">
+              <p class="text-xs font-bold text-slate-800 truncate">
                 {{ room.name || `Phòng ${room.room_number}` }}
               </p>
-              <p class="text-[11px] text-slate-500">
+              <p class="text-[10px] sm:text-[11px] text-slate-500 truncate">
                 Tầng {{ room.floor || '—' }} • {{ room.block || 'Khu chính' }}
               </p>
             </div>
           </div>
 
-          <div class="text-right">
+          <div class="text-right flex-shrink-0">
             <span
               v-if="room.stats?.broken_count > 0"
-              class="inline-block px-2 py-0.5 rounded text-[11px] font-bold bg-rose-100 text-rose-700 mr-1"
+              class="inline-block px-1.5 sm:px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-bold bg-rose-100 text-rose-700 mr-1"
             >
               {{ room.stats.broken_count }} hỏng
             </span>
             <span
               v-if="room.stats?.missing_count > 0"
-              class="inline-block px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-800"
+              class="inline-block px-1.5 sm:px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-bold bg-amber-100 text-amber-800"
             >
               {{ room.stats.missing_count }} thiếu
             </span>

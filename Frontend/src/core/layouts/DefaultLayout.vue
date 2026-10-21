@@ -1,15 +1,28 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useDisplay } from 'vuetify'
 import { useAuthStore } from '@/modules/auth/stores/authStore'
 import { toast } from '@/core/helpers/toast'
 
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
+const { mobile } = useDisplay()
 
-const drawer = ref(true)
+// Drawer is open by default on desktop, hidden on mobile
+const drawer = ref(!mobile.value)
 const rail = ref(false)
+
+// Keep drawer state synced with viewport resize
+watch(mobile, isMobile => {
+  if (isMobile) {
+    drawer.value = false
+    rail.value = false
+  } else {
+    drawer.value = true
+  }
+})
 
 const user = computed(() => authStore.user)
 const organizationId = computed(() => authStore.organizationId)
@@ -65,19 +78,26 @@ function handleLogout() {
   toast.info('Đã đăng xuất khỏi hệ thống.')
   router.push('/login')
 }
+
+function handleNavClick() {
+  if (mobile.value) {
+    drawer.value = false
+  }
+}
 </script>
 
 <template>
   <div class="min-h-screen bg-slate-50 flex">
-    <!-- Sidebar Navigation -->
+    <!-- Sidebar Navigation Drawer -->
     <v-navigation-drawer
       v-model="drawer"
-      :rail="rail"
-      permanent
+      :rail="!mobile && rail"
+      :temporary="mobile"
+      :permanent="!mobile"
       elevation="0"
       color="white"
       class="border-r border-slate-200/80"
-      width="260"
+      :width="260"
     >
       <!-- Logo / Header -->
       <div class="p-4 border-b border-slate-100 flex items-center justify-between">
@@ -85,7 +105,7 @@ function handleLogout() {
           <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center flex-shrink-0 text-white shadow-sm shadow-blue-500/20">
             <v-icon icon="mdi-shield-home" size="20" />
           </div>
-          <div v-if="!rail" class="overflow-hidden">
+          <div v-if="mobile || !rail" class="overflow-hidden">
             <h2 class="text-sm font-bold text-slate-800 tracking-tight truncate">
               Equipment Hub
             </h2>
@@ -96,12 +116,23 @@ function handleLogout() {
         </div>
 
         <v-btn
+          v-if="!mobile"
           :icon="rail ? 'mdi-chevron-right' : 'mdi-chevron-left'"
           variant="text"
           density="comfortable"
           size="small"
           color="secondary"
           @click="rail = !rail"
+        />
+
+        <v-btn
+          v-else
+          icon="mdi-close"
+          variant="text"
+          density="comfortable"
+          size="small"
+          color="secondary"
+          @click="drawer = false"
         />
       </div>
 
@@ -113,23 +144,24 @@ function handleLogout() {
             v-if="$can(item.action, item.subject)"
             :to="item.to"
             class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all"
-            :class="route.path === item.to || route.path.startsWith(item.to + '/') 
+            :class="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to))
               ? 'bg-blue-50 text-blue-600 font-semibold shadow-xs' 
               : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
+            @click="handleNavClick"
           >
             <v-icon
               :icon="item.icon"
               size="20"
-              :color="route.path === item.to ? 'primary' : 'secondary'"
+              :color="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to)) ? 'primary' : 'secondary'"
             />
-            <span v-if="!rail" class="truncate">{{ item.title }}</span>
+            <span v-if="mobile || !rail" class="truncate">{{ item.title }}</span>
           </router-link>
         </template>
       </div>
 
       <!-- Organization badge in Sidebar Bottom -->
       <template #append>
-        <div v-if="!rail" class="p-4 border-t border-slate-100 bg-slate-50/50">
+        <div v-if="mobile || !rail" class="p-4 border-t border-slate-100 bg-slate-50/50">
           <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
             <span class="font-medium">Tổ chức hiện tại:</span>
             <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-700 font-bold">
@@ -144,14 +176,14 @@ function handleLogout() {
     <!-- Main Content Area -->
     <div class="flex-1 flex flex-col min-w-0">
       <!-- Top Navbar -->
-      <header class="h-16 bg-white border-b border-slate-200/80 px-6 flex items-center justify-between sticky top-0 z-30">
-        <div class="flex items-center gap-3">
+      <header class="h-16 bg-white border-b border-slate-200/80 px-3 sm:px-6 flex items-center justify-between sticky top-0 z-30">
+        <div class="flex items-center gap-2 sm:gap-3 min-w-0">
           <v-btn
             icon="mdi-menu"
             variant="text"
             density="comfortable"
             size="small"
-            class="md:hidden"
+            class="md:hidden flex-shrink-0"
             @click="drawer = !drawer"
           />
 
@@ -160,11 +192,15 @@ function handleLogout() {
             <template #activator="{ props: menuProps }">
               <button
                 v-bind="menuProps"
-                class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 hover:bg-slate-100 transition text-xs font-semibold text-slate-700 cursor-pointer"
+                class="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 hover:bg-slate-100 transition text-xs font-semibold text-slate-700 cursor-pointer min-w-0"
+                title="Đổi tổ chức làm việc"
               >
-                <v-icon icon="mdi-office-building-outline" size="16" color="primary" />
-                <span>{{ currentOrg.name }} (#{{ organizationId }})</span>
-                <v-icon icon="mdi-chevron-down" size="14" color="secondary" />
+                <v-icon icon="mdi-office-building-outline" size="16" color="primary" class="flex-shrink-0" />
+                <span class="truncate max-w-[110px] xs:max-w-[140px] sm:max-w-[220px] md:max-w-none">
+                  {{ currentOrg.name }}
+                </span>
+                <span class="hidden sm:inline text-slate-400 font-normal">(#{{ organizationId }})</span>
+                <v-icon icon="mdi-chevron-down" size="14" color="secondary" class="flex-shrink-0" />
               </button>
             </template>
 
@@ -193,7 +229,7 @@ function handleLogout() {
         </div>
 
         <!-- Right User Actions -->
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-1 sm:gap-3 flex-shrink-0">
           <!-- Notification Bell -->
           <v-btn icon="mdi-bell-outline" variant="text" density="comfortable" size="small" color="secondary" />
 
@@ -202,23 +238,23 @@ function handleLogout() {
             <template #activator="{ props }">
               <button
                 v-bind="props"
-                class="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
+                class="flex items-center gap-1.5 sm:gap-2.5 p-1 sm:p-1.5 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
               >
-                <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center border border-blue-200">
+                <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center border border-blue-200 flex-shrink-0">
                   {{ user?.name ? user.name.charAt(0).toUpperCase() : 'A' }}
                 </div>
                 <div class="hidden md:block text-left text-xs">
                   <p class="font-bold text-slate-800 leading-tight">{{ user?.name || 'Admin User' }}</p>
                   <p class="text-slate-400 text-[11px]">{{ user?.email || 'admin@example.com' }}</p>
                 </div>
-                <v-icon icon="mdi-chevron-down" size="16" color="secondary" />
+                <v-icon icon="mdi-chevron-down" size="16" color="secondary" class="hidden sm:inline" />
               </button>
             </template>
 
             <div class="bg-white rounded-xl shadow-xl border border-slate-100 p-2 min-w-[200px] text-xs">
               <div class="px-3 py-2 border-b border-slate-100 mb-1">
                 <p class="font-bold text-slate-800">{{ user?.name || 'Administrator' }}</p>
-                <p class="text-slate-400 text-[11px]">{{ user?.email }}</p>
+                <p class="text-slate-400 text-[11px] truncate">{{ user?.email }}</p>
                 <div class="mt-1.5 inline-block px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-semibold border border-emerald-200">
                   Super Admin
                 </div>
@@ -237,7 +273,7 @@ function handleLogout() {
       </header>
 
       <!-- Page Content Slot -->
-      <main class="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto">
+      <main class="flex-1 p-3.5 sm:p-6 md:p-8 max-w-7xl w-full mx-auto">
         <slot />
       </main>
     </div>

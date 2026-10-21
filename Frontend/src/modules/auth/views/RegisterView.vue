@@ -42,7 +42,7 @@ async function handleRegister() {
 
 <template>
   <AuthLayout>
-    <div class="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200/80 shadow-xl shadow-slate-200/50">
+    <div class="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-10 border border-slate-200/80 shadow-xl shadow-slate-200/50">
       <div class="mb-8">
         <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center mb-4 shadow-lg shadow-indigo-500/20">
           <v-icon icon="mdi-account-plus-outline" size="26" />

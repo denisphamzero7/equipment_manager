@@ -28,18 +28,18 @@ const statusBreakdown = computed(() => {
 </script>
 
 <template>
-  <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+  <div class="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between">
     <div>
-      <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center justify-between gap-3 mb-4">
         <div>
-          <h3 class="text-base font-bold text-slate-800">
+          <h3 class="text-sm sm:text-base font-bold text-slate-800">
             Phân bố Tình trạng Thiết bị
           </h3>
-          <p class="text-xs text-slate-400 mt-0.5">
+          <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">
             Tỷ lệ tình trạng sức khỏe của tổng {{ total }} thiết bị
           </p>
         </div>
-        <div class="p-2 bg-blue-50 text-blue-600 rounded-xl">
+        <div class="p-2 bg-blue-50 text-blue-600 rounded-xl flex-shrink-0">
           <v-icon icon="mdi-chart-pie" size="20" />
         </div>
       </div>

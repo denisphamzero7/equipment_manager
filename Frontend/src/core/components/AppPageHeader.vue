@@ -16,9 +16,9 @@ defineProps({
 </script>
 
 <template>
-  <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+  <div class="mb-4 sm:mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4">
     <div>
-      <div v-if="breadcrumbs.length" class="flex items-center gap-1.5 text-xs text-slate-400 mb-1.5 font-medium">
+      <div v-if="breadcrumbs.length" class="flex items-center gap-1.5 text-xs text-slate-400 mb-1 font-medium flex-wrap">
         <template v-for="(crumb, idx) in breadcrumbs" :key="idx">
           <router-link
             v-if="crumb.to"
@@ -32,16 +32,16 @@ defineProps({
         </template>
       </div>
 
-      <h1 class="text-2xl font-bold text-slate-800 tracking-tight">
+      <h1 class="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight">
         {{ title }}
       </h1>
-      <p v-if="subtitle" class="text-sm text-slate-500 mt-0.5">
+      <p v-if="subtitle" class="text-xs sm:text-sm text-slate-500 mt-0.5">
         {{ subtitle }}
       </p>
     </div>
 
     <!-- Actions slot -->
-    <div v-if="$slots.actions" class="flex items-center gap-2.5 flex-wrap">
+    <div v-if="$slots.actions" class="flex items-center gap-2 flex-wrap">
       <slot name="actions" />
     </div>
   </div>

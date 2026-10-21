@@ -34,16 +34,16 @@ const emit = defineEmits(['update:page', 'update:itemsPerPage', 'click:row'])
 </script>
 
 <template>
-  <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col">
-    <!-- Table Content -->
-    <div class="overflow-x-auto">
-      <table class="w-full text-left text-sm text-slate-700">
+  <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden flex flex-col">
+    <!-- Table Content (Horizontal scroll wrapper for mobile) -->
+    <div class="overflow-x-auto touch-pan-x">
+      <table class="w-full text-left text-sm text-slate-700 min-w-[620px] sm:min-w-full">
         <thead class="bg-slate-50/80 text-xs uppercase font-semibold text-slate-500 border-b border-slate-200">
           <tr>
             <th
               v-for="head in headers"
               :key="head.key"
-              class="px-5 py-3.5 tracking-wider"
+              class="px-3.5 sm:px-5 py-3 tracking-wider whitespace-nowrap"
               :class="head.align === 'center' ? 'text-center' : head.align === 'end' ? 'text-right' : 'text-left'"
               :style="head.width ? { width: head.width } : {}"
             >
@@ -54,7 +54,7 @@ const emit = defineEmits(['update:page', 'update:itemsPerPage', 'click:row'])
 
         <tbody v-if="loading" class="divide-y divide-slate-100">
           <tr v-for="n in 5" :key="n" class="animate-pulse">
-            <td v-for="head in headers" :key="head.key" class="px-5 py-4">
+            <td v-for="head in headers" :key="head.key" class="px-3.5 sm:px-5 py-3.5">
               <div class="h-4 bg-slate-200 rounded w-3/4" />
             </td>
           </tr>
@@ -70,7 +70,7 @@ const emit = defineEmits(['update:page', 'update:itemsPerPage', 'click:row'])
             <td
               v-for="head in headers"
               :key="head.key"
-              class="px-5 py-3.5 align-middle"
+              class="px-3.5 sm:px-5 py-3 align-middle"
               :class="head.align === 'center' ? 'text-center' : head.align === 'end' ? 'text-right' : 'text-left'"
             >
               <slot :name="`item.${head.key}`" :item="item" :index="idx">
@@ -83,7 +83,7 @@ const emit = defineEmits(['update:page', 'update:itemsPerPage', 'click:row'])
         <tbody v-else>
           <tr>
             <td :colspan="headers.length" class="text-center py-12 text-slate-400">
-              <v-icon icon="mdi-database-off-outline" size="48" class="text-slate-300 mb-2 block mx-auto" />
+              <v-icon icon="mdi-database-off-outline" size="44" class="text-slate-300 mb-2 block mx-auto" />
               <p class="text-sm font-medium">{{ emptyText }}</p>
             </td>
           </tr>
@@ -94,9 +94,9 @@ const emit = defineEmits(['update:page', 'update:itemsPerPage', 'click:row'])
     <!-- Table Pagination Footer -->
     <div
       v-if="totalItems > 0"
-      class="px-5 py-3 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500"
+      class="px-3.5 sm:px-5 py-3 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3 text-xs text-slate-500"
     >
-      <div>
+      <div class="text-center sm:text-left">
         Hiển thị <strong>{{ (page - 1) * itemsPerPage + (items.length ? 1 : 0) }}</strong>
         đến <strong>{{ Math.min(page * itemsPerPage, totalItems) }}</strong> trong tổng số <strong>{{ totalItems }}</strong> bản ghi
       </div>
@@ -110,7 +110,7 @@ const emit = defineEmits(['update:page', 'update:itemsPerPage', 'click:row'])
           :disabled="page <= 1"
           @click="emit('update:page', page - 1)"
         />
-        <span class="px-3 py-1 font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg">
+        <span class="px-2.5 py-1 font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg text-xs">
           Trang {{ page }} / {{ Math.ceil(totalItems / itemsPerPage) || 1 }}
         </span>
         <v-btn

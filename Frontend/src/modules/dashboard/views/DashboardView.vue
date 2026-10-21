@@ -65,7 +65,7 @@ onMounted(() => {
     </AppPageHeader>
 
     <!-- Top 4 KPI Stat Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5 mb-5 sm:mb-8">
       <AppStatCard
         title="Tổng số thiết bị"
         :value="stats.total_equipments || 0"
@@ -101,37 +101,37 @@ onMounted(() => {
     </div>
 
     <!-- Center 2 Columns: Status Distribution Chart & Room Alerts -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-5 sm:mb-8">
       <EquipmentOverviewChart :stats="stats" />
       <RoomAlertList :rooms="mapRooms" :loading="loading" />
     </div>
 
     <!-- Category Breakdown Cards -->
-    <div v-if="stats.by_category && stats.by_category.length" class="mt-8">
-      <div class="flex items-center justify-between mb-4">
+    <div v-if="stats.by_category && stats.by_category.length" class="mt-6 sm:mt-8">
+      <div class="flex items-center justify-between mb-3 sm:mb-4">
         <div>
-          <h3 class="text-base font-bold text-slate-800">
+          <h3 class="text-sm sm:text-base font-bold text-slate-800">
             Số lượng Thiết bị theo Nhóm Danh mục
           </h3>
-          <p class="text-xs text-slate-400">
+          <p class="text-[11px] sm:text-xs text-slate-400">
             Tivi, Điều hòa, Tủ lạnh, Bộ phát Wifi, Thiết bị ngoại vi
           </p>
         </div>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 sm:gap-4">
         <div
           v-for="cat in stats.by_category"
           :key="cat.category_id || cat.name"
-          class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs hover:border-blue-300 transition-all text-center"
+          class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/80 shadow-xs hover:border-blue-300 transition-all text-center"
         >
-          <div class="w-10 h-10 rounded-lg bg-slate-50 text-slate-700 flex items-center justify-center mx-auto mb-2 font-bold text-xs border border-slate-100">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-slate-50 text-slate-700 flex items-center justify-center mx-auto mb-2 font-bold text-xs border border-slate-100">
             <v-icon icon="mdi-tag-outline" size="18" color="primary" />
           </div>
-          <p class="text-xs font-semibold text-slate-600 truncate mb-1" :title="cat.name">
+          <p class="text-xs font-semibold text-slate-600 truncate mb-0.5 sm:mb-1" :title="cat.name">
             {{ cat.name }}
           </p>
-          <p class="text-lg font-extrabold text-slate-800">
+          <p class="text-base sm:text-lg font-extrabold text-slate-800">
             {{ cat.count || 0 }}
           </p>
         </div>

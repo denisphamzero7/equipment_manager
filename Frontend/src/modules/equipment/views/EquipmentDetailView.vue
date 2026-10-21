@@ -150,7 +150,7 @@ async function handleDelete() {
         <!-- Left 2 Cols: Main Info -->
         <div class="lg:col-span-2 space-y-6">
           <!-- General Specs Card -->
-          <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs">
+          <div class="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200/80 shadow-xs">
             <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
               <h3 class="text-base font-bold text-slate-800">Thông tin Thông số & Định danh</h3>
               <AppStatusBadge :status="equipment.status" />
@@ -212,7 +212,7 @@ async function handleDelete() {
           </div>
 
           <!-- Maintenance Logs History Card -->
-          <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs">
+          <div class="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200/80 shadow-xs">
             <h3 class="text-base font-bold text-slate-800 mb-4 flex items-center justify-between">
               <span>Lịch sử Bảo trì & Sự cố</span>
               <span class="text-xs text-slate-400 font-normal">

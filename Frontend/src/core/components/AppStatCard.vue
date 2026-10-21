@@ -60,50 +60,46 @@ const colorMap = {
 
 <template>
   <div
-    class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden"
+    class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 relative overflow-hidden"
   >
-    <div class="flex items-start justify-between">
-      <div>
-        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+    <div class="flex items-start justify-between gap-3">
+      <div class="min-w-0 flex-1">
+        <p class="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 truncate">
           {{ title }}
         </p>
         <div class="flex items-baseline gap-2">
-          <h3 v-if="!loading" class="text-2xl font-bold text-slate-800 tracking-tight">
+          <h3 v-if="!loading" class="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight">
             {{ value }}
           </h3>
           <v-progress-circular
             v-else
             indeterminate
-            size="24"
+            size="20"
             width="2"
             color="primary"
             class="my-1"
           />
         </div>
-        <p v-if="subtitle" class="text-xs text-slate-400 mt-1">
+        <p v-if="subtitle" class="text-[11px] sm:text-xs text-slate-400 mt-0.5 truncate">
           {{ subtitle }}
         </p>
       </div>
 
       <div
-        class="w-12 h-12 rounded-xl flex items-center justify-center border"
+        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center border flex-shrink-0"
         :class="[colorMap[color]?.bg || colorMap.primary.bg, colorMap[color]?.border || colorMap.primary.border]"
       >
-        <v-icon :icon="icon" size="24" />
+        <v-icon :icon="icon" size="20" class="sm:scale-110" />
       </div>
     </div>
 
-    <div v-if="trend" class="mt-4 pt-3 border-t border-slate-100 flex items-center gap-1.5 text-xs">
+    <div v-if="trend" class="mt-3 pt-2.5 border-t border-slate-100 flex items-center gap-1.5 text-xs truncate">
       <v-icon
         :icon="trendType === 'up' ? 'mdi-trending-up' : trendType === 'down' ? 'mdi-trending-down' : 'mdi-minus'"
         size="16"
         :color="trendType === 'up' ? 'success' : trendType === 'down' ? 'error' : 'secondary'"
       />
-      <span
-        :class="trendType === 'up' ? 'text-emerald-600 font-medium' : trendType === 'down' ? 'text-rose-600 font-medium' : 'text-slate-500'"
-      >
-        {{ trend }}
-      </span>
+      <span class="text-slate-500 truncate">{{ trend }}</span>
     </div>
   </div>
 </template>

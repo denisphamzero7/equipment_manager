@@ -83,7 +83,7 @@ function fillDemoAccount() {
 
 <template>
   <AuthLayout>
-    <div class="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200/80 shadow-xl shadow-slate-200/50">
+    <div class="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-10 border border-slate-200/80 shadow-xl shadow-slate-200/50">
       
       <!-- ================= STEP 1: FORM ĐĂNG NHẬP ================= -->
       <div v-if="step === 'credentials'">
