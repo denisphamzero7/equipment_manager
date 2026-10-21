@@ -2,8 +2,9 @@ import axiosClient from '@/core/api/axiosClient'
 import { Endpoints } from '@/core/api/endpoints'
 
 export const dashboardService = {
-  async getStats() {
-    const response = await axiosClient.get(Endpoints.EQUIPMENT.STATS)
+  async getStats(block = '') {
+    const params = block ? { block } : {}
+    const response = await axiosClient.get(Endpoints.EQUIPMENT.STATS, { params })
     return response.data?.data || response.data
   },
 

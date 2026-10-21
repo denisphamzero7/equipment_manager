@@ -278,14 +278,17 @@ class EquipmentService
     /**
      * Thống kê tổng thể toàn khách sạn: Tổng số TV, Remote, Box, Wifi...
      */
-    public function getHotelStats(?int $organizationId = null): array
+    public function getHotelStats(?int $organizationId = null, ?string $block = null): array
     {
-        $cacheKey = 'hotel_stats_' . ($organizationId ?? 'all');
+        $cacheKey = 'hotel_stats_' . ($organizationId ?? 'all') . '_' . ($block ?? 'all');
 
-        return cache()->remember($cacheKey, 30, function () use ($organizationId) {
+        return cache()->remember($cacheKey, 30, function () use ($organizationId, $block) {
             $query = RoomEquipment::with(['model.category']);
             if ($organizationId) {
                 $query->where('organization_id', $organizationId);
+            }
+            if (!empty($block)) {
+                $query->whereHas('room', fn ($q) => $q->where('block', $block));
             }
             $allEquipments = $query->get();
 
@@ -293,7 +296,9 @@ class EquipmentService
             $goodCount = $allEquipments->where('status', EquipmentStatusEnum::Good)->count();
             $brokenCount = $allEquipments->where('status', EquipmentStatusEnum::Broken)->count();
             $maintenanceCount = $allEquipments->where('status', EquipmentStatusEnum::Maintenance)->count();
-            $inStockCount = $allEquipments->where('status', EquipmentStatusEnum::InStock)->count();
+            $inStockCount = empty($block)
+                ? $allEquipments->where('status', EquipmentStatusEnum::InStock)->count()
+                : RoomEquipment::whereNull('room_id')->where('status', EquipmentStatusEnum::InStock)->count();
             $lostCount = $allEquipments->where('status', EquipmentStatusEnum::Lost)->count();
 
             // Thống kê chi tiết theo từng loại (TV, Remote, Box, Wifi...)
@@ -321,6 +326,9 @@ class EquipmentService
                 ->whereNotNull('room_id');
             if ($organizationId) {
                 $brokenQuery->where('organization_id', $organizationId);
+            }
+            if (!empty($block)) {
+                $brokenQuery->whereHas('room', fn ($q) => $q->where('block', $block));
             }
             $roomsWithBroken = $brokenQuery->distinct('room_id')->count('room_id');
 

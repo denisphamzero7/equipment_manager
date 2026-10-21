@@ -1,24 +1,52 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { dashboardService } from '../services/dashboardService'
+import { equipmentService } from '@/modules/equipment/services/equipmentService'
 import { useRealtimeStore } from '@/core/stores/realtimeStore'
 import DefaultLayout from '@/core/layouts/DefaultLayout.vue'
 import AppPageHeader from '@/core/components/AppPageHeader.vue'
 import AppStatCard from '@/core/components/AppStatCard.vue'
 import AppButton from '@/core/components/AppButton.vue'
+import AppModal from '@/core/components/AppModal.vue'
+import AppStatusBadge from '@/core/components/AppStatusBadge.vue'
 import EquipmentOverviewChart from '../components/EquipmentOverviewChart.vue'
 import RoomAlertList from '../components/RoomAlertList.vue'
 
 const router = useRouter()
 const realtimeStore = useRealtimeStore()
 const loading = ref(true)
+
+const selectedBlock = ref('') // '' = Tất cả block
+
 const stats = ref({
   total_equipments: 0,
   by_status: {},
   by_category: [],
+  rooms_with_issues_count: 0,
 })
 const mapRooms = ref([])
+
+// Thứ tự block chuẩn đồng bộ với RoomListView và EquipmentMapView
+const hotelBlockOrder = [
+  'Block A',
+  'Block B',
+  'Block C',
+  'Block D',
+  'Condos 1',
+  'Condos 2',
+  'Penthouse-spa+Villa',
+]
+
+// Modal xem chi tiết thiết bị phòng ngay tại Dashboard
+const roomDetailModalOpen = ref(false)
+const roomDetailLoading = ref(false)
+const selectedRoomDetail = ref(null)
+
+// Lightbox xem ảnh lớn
+const lightboxOpen = ref(false)
+const lightboxImage = ref('')
+const lightboxTitle = ref('')
 
 async function loadDashboardData(silent = false) {
   if (!silent) {
@@ -26,7 +54,7 @@ async function loadDashboardData(silent = false) {
   }
   try {
     const [statsData, roomsData] = await Promise.all([
-      dashboardService.getStats().catch(() => ({})),
+      dashboardService.getStats(selectedBlock.value).catch(() => ({})),
       dashboardService.getMapOverview().catch(() => []),
     ])
     stats.value = statsData || {}
@@ -36,6 +64,88 @@ async function loadDashboardData(silent = false) {
       loading.value = false
     }
   }
+}
+
+// Lọc các phòng theo block đang chọn
+const filteredRooms = computed(() => {
+  if (!selectedBlock.value) return mapRooms.value
+  return mapRooms.value.filter(r => r.block === selectedBlock.value)
+})
+
+// Đếm số lượng phòng trong từng Block để hiển thị trên Pills
+const blockCounts = computed(() => {
+  const counts = { total: mapRooms.value.length }
+  mapRooms.value.forEach(r => {
+    const b = r.block || 'Khu vực chung'
+    counts[b] = (counts[b] || 0) + 1
+  })
+  return counts
+})
+
+// Danh sách các block thực tế có trong hệ thống
+const existingBlocks = computed(() => {
+  const presentSet = new Set(mapRooms.value.map(r => r.block).filter(Boolean))
+  const ordered = hotelBlockOrder.filter(b => presentSet.has(b))
+  Array.from(presentSet).forEach(b => {
+    if (!ordered.includes(b)) ordered.push(b)
+  })
+  return ordered
+})
+
+function selectBlock(b) {
+  selectedBlock.value = b
+  loadDashboardData(false)
+}
+
+// Điều hướng nhanh khi click vào các thẻ KPI
+function navigateToEquipments(statusFilter = '') {
+  const query = {}
+  if (statusFilter) query.status = statusFilter
+  if (selectedBlock.value) query.block = selectedBlock.value
+  router.push({ path: '/equipments', query })
+}
+
+// Mở modal xem chi tiết thiết bị của phòng
+async function openRoomDetail(room) {
+  roomDetailModalOpen.value = true
+  roomDetailLoading.value = true
+  try {
+    selectedRoomDetail.value = await equipmentService.getRoomDetail(room.id)
+  } catch {
+    selectedRoomDetail.value = null
+  } finally {
+    roomDetailLoading.value = false
+  }
+}
+
+function resolveMediaUrl(url) {
+  if (!url) return ''
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url
+  const base = import.meta.env.VITE_API_BASE_URL || ''
+  return `${base.replace(/\/$/, '')}/${url.replace(/^\//, '')}`
+}
+
+function openLightbox(item) {
+  const url = item.photo_url || item.photos?.[0]?.url
+  if (!url) return
+  lightboxImage.value = resolveMediaUrl(url)
+  lightboxTitle.value = `${item.model_name || 'Thiết bị'} (${item.serial_number || 'N/A'})`
+  lightboxOpen.value = true
+}
+
+const categoryIconMap = {
+  tv: 'mdi-television',
+  remote: 'mdi-remote',
+  box: 'mdi-set-top-box',
+  wifi: 'mdi-wifi',
+  ac: 'mdi-air-conditioner',
+  fridge: 'mdi-fridge-outline',
+  security: 'mdi-safe',
+  appliance: 'mdi-hair-dryer',
+}
+
+function getCategoryIcon(code) {
+  return categoryIconMap[code] || 'mdi-tag-outline'
 }
 
 onMounted(() => {
@@ -54,11 +164,28 @@ watch(
 
 <template>
   <DefaultLayout>
+    <!-- Header with Quick Actions & Live Indicator -->
     <AppPageHeader
       title="Bảng điều khiển Tổng quan"
       subtitle="Theo dõi tình trạng trang thiết bị, sơ đồ mặt bằng và đối soát phòng theo thời gian thực"
     >
       <template #actions>
+        <!-- Realtime WebSocket Live Badge -->
+        <div class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span>Realtime Live</span>
+        </div>
+
+        <AppButton
+          v-if="$can('read', 'Equipment')"
+          variant="tonal"
+          color="secondary"
+          icon="mdi-format-list-bulleted"
+          @click="router.push('/equipments')"
+        >
+          Danh sách thiết bị
+        </AppButton>
+
         <AppButton
           v-if="$can('read', 'Equipment')"
           variant="tonal"
@@ -68,6 +195,7 @@ watch(
         >
           Sơ đồ Mặt bằng
         </AppButton>
+
         <AppButton
           v-if="$can('create', 'Equipment')"
           color="primary"
@@ -79,49 +207,153 @@ watch(
       </template>
     </AppPageHeader>
 
-    <!-- Top 4 KPI Stat Cards -->
+    <!-- Modern Block Quick-Filter Pills (Đồng bộ với RoomListView & EquipmentMapView) -->
+    <div class="bg-white border border-slate-200/80 rounded-2xl shadow-xs overflow-hidden mb-5 sm:mb-6">
+      <div class="px-4 py-3 bg-slate-50/60 border-b border-slate-100 flex items-center justify-between gap-2">
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+          <v-icon icon="mdi-domain" size="15" color="primary" />
+          <span>Lọc Báo Cáo Theo Phân Khu & Tòa Nhà (Block):</span>
+        </span>
+        <button
+          v-if="selectedBlock"
+          type="button"
+          class="text-xs text-primary font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+          @click="selectBlock('')"
+        >
+          <v-icon icon="mdi-eye-outline" size="14" />
+          <span>Xem toàn bộ khách sạn</span>
+        </button>
+      </div>
+
+      <!-- Horizontal Pills Scroll -->
+      <div class="p-3 flex items-center gap-2 overflow-x-auto scrollbar-thin">
+        <button
+          type="button"
+          class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-2 border cursor-pointer"
+          :class="!selectedBlock
+            ? 'bg-primary text-white border-primary shadow-xs'
+            : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'"
+          @click="selectBlock('')"
+        >
+          <span>Tất cả Block</span>
+          <span
+            class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold"
+            :class="!selectedBlock ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'"
+          >
+            {{ blockCounts.total || 0 }}
+          </span>
+        </button>
+
+        <button
+          v-for="b in existingBlocks"
+          :key="b"
+          type="button"
+          class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-2 border cursor-pointer"
+          :class="selectedBlock === b
+            ? 'bg-primary text-white border-primary shadow-xs'
+            : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'"
+          @click="selectBlock(b)"
+        >
+          <span>{{ b }}</span>
+          <span
+            class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold"
+            :class="selectedBlock === b ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'"
+          >
+            {{ blockCounts[b] || 0 }}
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Top 4 Actionable KPI Stat Cards (Clickable to Filter!) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5 mb-5 sm:mb-8">
-      <AppStatCard
-        title="Tổng số thiết bị"
-        :value="stats.total_equipments || 0"
-        subtitle="Quản lý toàn bộ khách sạn"
-        icon="mdi-devices"
-        color="primary"
-        :loading="loading"
-      />
-      <AppStatCard
-        title="Đang hoạt động tốt"
-        :value="stats.by_status?.good || 0"
-        subtitle="Sẵn sàng phục vụ khách"
-        icon="mdi-check-circle-outline"
-        color="success"
-        :loading="loading"
-      />
-      <AppStatCard
-        title="Báo hỏng / Cần bảo trì"
-        :value="(stats.by_status?.broken || 0) + (stats.by_status?.maintenance || 0)"
-        subtitle="Cần kỹ thuật xử lý"
-        icon="mdi-wrench-alert"
-        color="error"
-        :loading="loading"
-      />
-      <AppStatCard
-        title="Tồn trong kho"
-        :value="stats.by_status?.in_stock || 0"
-        subtitle="Chưa gán phòng"
-        icon="mdi-package-variant-closed"
-        color="info"
-        :loading="loading"
-      />
+      <!-- 1. Total Equipments -->
+      <div
+        class="cursor-pointer group transform transition-transform duration-150 hover:-translate-y-0.5"
+        title="Nhấp để xem danh sách toàn bộ thiết bị"
+        @click="navigateToEquipments('')"
+      >
+        <AppStatCard
+          title="Tổng số thiết bị"
+          :value="stats.total_equipments || 0"
+          :subtitle="selectedBlock ? `Khu vực: ${selectedBlock}` : 'Quản lý toàn bộ khách sạn'"
+          icon="mdi-devices"
+          color="primary"
+          :loading="loading"
+          trend="Xem danh sách →"
+          trend-type="neutral"
+        />
+      </div>
+
+      <!-- 2. Good Equipments -->
+      <div
+        class="cursor-pointer group transform transition-transform duration-150 hover:-translate-y-0.5"
+        title="Nhấp để lọc thiết bị đang hoạt động tốt"
+        @click="navigateToEquipments('good')"
+      >
+        <AppStatCard
+          title="Đang hoạt động tốt"
+          :value="stats.by_status?.good || 0"
+          subtitle="Sẵn sàng phục vụ khách"
+          icon="mdi-check-circle-outline"
+          color="success"
+          :loading="loading"
+          :trend="`Tỷ lệ: ${stats.total_equipments > 0 ? Math.round(((stats.by_status?.good || 0) / stats.total_equipments) * 100) : 100}%`"
+          trend-type="up"
+        />
+      </div>
+
+      <!-- 3. Broken / Maintenance Equipments -->
+      <div
+        class="cursor-pointer group transform transition-transform duration-150 hover:-translate-y-0.5"
+        title="Nhấp để lọc thiết bị hỏng hóc hoặc đang bảo dưỡng"
+        @click="navigateToEquipments('broken')"
+      >
+        <AppStatCard
+          title="Báo hỏng / Cần bảo trì"
+          :value="(stats.by_status?.broken || 0) + (stats.by_status?.maintenance || 0)"
+          :subtitle="stats.rooms_with_issues_count > 0 ? `${stats.rooms_with_issues_count} phòng có sự cố` : 'Cần kỹ thuật xử lý'"
+          icon="mdi-wrench-alert"
+          color="error"
+          :loading="loading"
+          trend="Cần xử lý gấp →"
+          trend-type="down"
+        />
+      </div>
+
+      <!-- 4. Stock Equipments -->
+      <div
+        class="cursor-pointer group transform transition-transform duration-150 hover:-translate-y-0.5"
+        title="Nhấp để vào kho quản lý thiết bị dự phòng"
+        @click="navigateToEquipments('in_stock')"
+      >
+        <AppStatCard
+          title="Tồn trong kho"
+          :value="stats.by_status?.in_stock || 0"
+          subtitle="Sẵn sàng cấp bù phòng"
+          icon="mdi-package-variant-closed"
+          color="info"
+          :loading="loading"
+          trend="Kho thiết bị tổng"
+          trend-type="neutral"
+        />
+      </div>
     </div>
 
-    <!-- Center 2 Columns: Status Distribution Chart & Room Alerts -->
+    <!-- Center 2 Columns: Status Distribution Chart & Smart Room Alert List -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-5 sm:mb-8">
-      <EquipmentOverviewChart :stats="stats" />
-      <RoomAlertList :rooms="mapRooms" :loading="loading" />
+      <EquipmentOverviewChart
+        :stats="stats"
+        :selected-block="selectedBlock"
+      />
+      <RoomAlertList
+        :rooms="filteredRooms"
+        :loading="loading"
+        @select-room="openRoomDetail"
+      />
     </div>
 
-    <!-- Category Breakdown Cards -->
+    <!-- Category Breakdown Cards (Enhanced with Status Mini Matrix) -->
     <div v-if="stats.by_category && stats.by_category.length" class="mt-6 sm:mt-8">
       <div class="flex items-center justify-between mb-3 sm:mb-4">
         <div>
@@ -129,28 +361,224 @@ watch(
             Số lượng Thiết bị theo Nhóm Danh mục
           </h3>
           <p class="text-[11px] sm:text-xs text-slate-400">
-            Tivi, Điều hòa, Tủ lạnh, Bộ phát Wifi, Thiết bị ngoại vi
+            Tivi, Điều khiển, TV Box, Wifi, Điều hòa, Tủ lạnh... (Nhấp vào nhóm để xem danh sách chi tiết)
           </p>
         </div>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 sm:gap-4">
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-8 gap-3 sm:gap-4">
         <div
           v-for="cat in stats.by_category"
           :key="cat.category_id || cat.name"
-          class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/80 shadow-xs hover:border-blue-300 transition-all text-center"
+          class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-xs hover:border-primary/60 hover:shadow-sm transition-all text-center cursor-pointer group"
+          :title="`Xem chi tiết nhóm ${cat.category_name || cat.name}`"
+          @click="router.push({ path: '/equipments', query: { category_id: cat.category_id, ...(selectedBlock ? { block: selectedBlock } : {}) } })"
         >
-          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-slate-50 text-slate-700 flex items-center justify-center mx-auto mb-2 font-bold text-xs border border-slate-100">
-            <v-icon icon="mdi-tag-outline" size="18" color="primary" />
+          <div class="w-10 h-10 rounded-xl bg-slate-50 text-slate-700 flex items-center justify-center mx-auto mb-2 font-bold text-xs border border-slate-100 group-hover:bg-blue-50 group-hover:text-primary transition-colors">
+            <v-icon :icon="cat.icon || getCategoryIcon(cat.category_code)" size="20" color="primary" />
           </div>
-          <p class="text-xs font-semibold text-slate-600 truncate mb-0.5 sm:mb-1" :title="cat.name">
-            {{ cat.name }}
+
+          <p class="text-xs font-bold text-slate-700 truncate mb-1 group-hover:text-primary transition-colors" :title="cat.category_name || cat.name">
+            {{ cat.category_name || cat.name }}
           </p>
-          <p class="text-base sm:text-lg font-extrabold text-slate-800">
-            {{ cat.count || 0 }}
+
+          <p class="text-lg font-extrabold text-slate-800 tracking-tight">
+            {{ cat.total ?? (cat.count || 0) }}
           </p>
+
+          <!-- Mini Status badges for each category -->
+          <div v-if="cat.broken > 0 || cat.in_stock > 0" class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-center gap-1.5 text-[10px]">
+            <span v-if="cat.broken > 0" class="px-1.5 py-0.2 rounded font-bold bg-rose-50 text-rose-600">
+              {{ cat.broken }} hỏng
+            </span>
+            <span v-if="cat.in_stock > 0" class="px-1.5 py-0.2 rounded font-medium bg-sky-50 text-sky-600">
+              {{ cat.in_stock }} kho
+            </span>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Room Detail Modal (AppModal) right on Dashboard -->
+    <AppModal
+      v-model="roomDetailModalOpen"
+      :title="`Danh sách Thiết bị — Phòng ${selectedRoomDetail?.room_number || ''}`"
+      :subtitle="`${selectedRoomDetail?.block || ''} • Tầng ${selectedRoomDetail?.floor || ''} • Hạng: ${selectedRoomDetail?.room_type || 'Tiêu chuẩn'}`"
+      max-width="800"
+    >
+      <div v-if="roomDetailLoading" class="py-12 text-center">
+        <v-progress-circular indeterminate color="primary" size="44" />
+        <p class="text-xs text-slate-500 mt-3 font-medium">Đang tải danh sách thiết bị của phòng...</p>
+      </div>
+
+      <div v-else-if="selectedRoomDetail" class="space-y-4">
+        <!-- Room Status Summary Banner -->
+        <div class="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-primary text-white font-black text-sm flex items-center justify-center shadow-xs">
+              {{ selectedRoomDetail.room_number }}
+            </div>
+            <div>
+              <p class="text-xs font-bold text-slate-800">
+                {{ selectedRoomDetail.name || `Phòng ${selectedRoomDetail.room_number}` }}
+              </p>
+              <p class="text-[11px] text-slate-500">
+                {{ selectedRoomDetail.block }} • Tầng {{ selectedRoomDetail.floor }} • {{ selectedRoomDetail.room_type }}
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 text-xs">
+            <span class="text-slate-500 font-medium">Tổng thiết bị:</span>
+            <span class="px-2 py-0.5 rounded-full font-bold bg-slate-200 text-slate-800">
+              {{ selectedRoomDetail.total_equipments || 0 }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Categorized Equipment List in Room -->
+        <div class="space-y-3 max-h-[50vh] overflow-y-auto pr-1">
+          <div
+            v-if="selectedRoomDetail.categories && selectedRoomDetail.categories.length > 0"
+            class="space-y-3"
+          >
+            <div
+              v-for="cat in selectedRoomDetail.categories"
+              :key="cat.category_id"
+              class="border border-slate-200/80 rounded-xl p-3 bg-white shadow-2xs"
+            >
+              <p class="text-xs font-bold text-slate-700 mb-2 flex items-center justify-between">
+                <span>{{ cat.category_name }}</span>
+                <span class="text-[11px] text-slate-400 font-normal">{{ cat.items?.length || 0 }} thiết bị</span>
+              </p>
+
+              <div class="space-y-2">
+                <div
+                  v-for="item in cat.items"
+                  :key="item.id"
+                  class="flex items-center justify-between gap-3 p-2.5 bg-slate-50 hover:bg-slate-100/80 transition-colors rounded-xl text-xs border border-slate-100"
+                >
+                  <!-- Equipment Thumbnail with lightbox zoom -->
+                  <div
+                    class="relative w-11 h-11 rounded-lg overflow-hidden shrink-0 border border-slate-200/80 bg-white flex items-center justify-center shadow-2xs group cursor-pointer"
+                    :title="(item.photo_url || item.photos?.[0]?.url) ? 'Nhấp để xem ảnh lớn' : (item.model_name || 'Thiết bị')"
+                    @click="openLightbox(item)"
+                  >
+                    <img
+                      v-if="item.photo_url || item.photos?.[0]?.url"
+                      :src="resolveMediaUrl(item.photo_url || item.photos?.[0]?.url)"
+                      :alt="item.model_name || 'Thiết bị'"
+                      class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
+                      loading="lazy"
+                    />
+                    <div v-else class="flex flex-col items-center justify-center text-slate-400">
+                      <v-icon :icon="cat.category_icon || getCategoryIcon(cat.category_code)" size="20" />
+                    </div>
+
+                    <div
+                      v-if="item.photo_url || item.photos?.[0]?.url"
+                      class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white"
+                    >
+                      <v-icon icon="mdi-magnify-plus" size="14" />
+                    </div>
+                  </div>
+
+                  <!-- Equipment Info -->
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-1.5">
+                      <router-link
+                        :to="`/equipments/${item.id}`"
+                        class="font-bold text-slate-800 hover:text-primary transition-colors truncate"
+                        title="Xem trang chi tiết thiết bị"
+                      >
+                        {{ item.model_name || 'Thiết bị' }}
+                      </router-link>
+                      <span v-if="item.photos?.length > 1" class="text-[10px] bg-slate-200/70 text-slate-600 px-1.5 py-0.2 rounded-full font-medium">
+                        {{ item.photos.length }} ảnh
+                      </span>
+                    </div>
+                    <p class="text-[11px] font-mono text-blue-600 font-medium truncate mt-0.5">
+                      {{ item.serial_number || 'Chưa gắn Serial' }}
+                    </p>
+                    <p v-if="item.position_note" class="text-[10px] text-slate-400 truncate mt-0.5">
+                      Vị trí: {{ item.position_note }}
+                    </p>
+                  </div>
+
+                  <!-- Right: Status Badge & Link -->
+                  <div class="flex items-center gap-1.5 shrink-0">
+                    <AppStatusBadge :status="item.status" />
+                    <button
+                      type="button"
+                      class="p-1 rounded-lg text-slate-400 hover:text-primary hover:bg-white transition cursor-pointer"
+                      title="Xem trang chi tiết thiết bị"
+                      @click="router.push(`/equipments/${item.id}`)"
+                    >
+                      <v-icon icon="mdi-chevron-right" size="18" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div v-else class="text-center py-8 text-slate-400 text-xs">
+            <v-icon icon="mdi-package-variant-closed" size="36" class="text-slate-300 mb-2 block mx-auto" />
+            <p class="font-bold text-slate-600">Phòng này chưa có bất kỳ thiết bị nào được gán.</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">Bạn có thể bấm "Gán thêm thiết bị" bên dưới để trang bị cho phòng.</p>
+          </div>
+        </div>
+      </div>
+
+      <template #footer>
+        <v-btn
+          variant="tonal"
+          color="secondary"
+          @click="roomDetailModalOpen = false"
+        >
+          Đóng
+        </v-btn>
+        <AppButton
+          v-if="selectedRoomDetail?.room_id"
+          variant="tonal"
+          color="primary"
+          icon="mdi-floor-plan"
+          @click="router.push({ path: '/equipments/map-view', query: { block: selectedRoomDetail.block, floor: selectedRoomDetail.floor } })"
+        >
+          Xem trên Sơ đồ Map
+        </AppButton>
+        <AppButton
+          v-if="$can('assign', 'Equipment')"
+          color="primary"
+          icon="mdi-plus"
+          @click="router.push(`/equipments?action=create&room_id=${selectedRoomDetail?.room_id}`)"
+        >
+          Gán thêm thiết bị
+        </AppButton>
+      </template>
+    </AppModal>
+
+    <!-- Image Preview Lightbox Dialog -->
+    <v-dialog v-model="lightboxOpen" max-width="700">
+      <div class="bg-slate-900 rounded-2xl overflow-hidden p-4 relative">
+        <button
+          type="button"
+          class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-slate-800/80 text-white flex items-center justify-center hover:bg-slate-700 transition cursor-pointer"
+          @click="lightboxOpen = false"
+        >
+          <v-icon icon="mdi-close" size="18" />
+        </button>
+        <p v-if="lightboxTitle" class="text-xs font-bold text-slate-200 mb-3 px-1 truncate">
+          {{ lightboxTitle }}
+        </p>
+        <div class="flex items-center justify-center max-h-[75vh] overflow-hidden rounded-xl bg-black/40">
+          <img
+            :src="lightboxImage"
+            :alt="lightboxTitle"
+            class="max-w-full max-h-[75vh] object-contain rounded-xl"
+          />
+        </div>
+      </div>
+    </v-dialog>
   </DefaultLayout>
 </template>

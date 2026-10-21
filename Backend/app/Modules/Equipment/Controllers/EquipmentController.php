@@ -207,7 +207,8 @@ class EquipmentController extends Controller
      */
     public function stats(Request $request): JsonResponse
     {
-        $stats = $this->service->getHotelStats($request->user()?->organization_id);
+        $block = $request->query('block');
+        $stats = $this->service->getHotelStats($request->user()?->organization_id, $block);
         return $this->success($stats, 'Lấy báo cáo thống kê thiết bị thành công');
     }
 
