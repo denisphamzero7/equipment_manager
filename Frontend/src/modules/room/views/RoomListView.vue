@@ -123,18 +123,20 @@ const groupedRooms = computed(() => {
     blocksMap[blockKey].floors[floorKey].rooms.push(room)
   })
 
-  // Sort floors & rooms
-  return Object.values(blocksMap).map(b => {
-    const sortedFloors = Object.values(b.floors).sort((f1, f2) => f1.floor - f2.floor)
-    sortedFloors.forEach(f => {
-      f.rooms.sort((r1, r2) => r1.room_number - r2.room_number)
+  // Sort blocks alphabetically, floors & rooms ascending
+  return Object.values(blocksMap)
+    .sort((b1, b2) => b1.name.localeCompare(b2.name, 'vi', { numeric: true }))
+    .map(b => {
+      const sortedFloors = Object.values(b.floors).sort((f1, f2) => f1.floor - f2.floor)
+      sortedFloors.forEach(f => {
+        f.rooms.sort((r1, r2) => r1.room_number - r2.room_number)
+      })
+      return {
+        name: b.name,
+        floors: sortedFloors,
+        totalRooms: sortedFloors.reduce((sum, f) => sum + f.rooms.length, 0),
+      }
     })
-    return {
-      name: b.name,
-      floors: sortedFloors,
-      totalRooms: sortedFloors.reduce((sum, f) => sum + f.rooms.length, 0),
-    }
-  })
 })
 
 // Statistics counter
@@ -547,42 +549,48 @@ function getStatusBadge(status) {
             </div>
 
             <!-- Rooms Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-3.5">
               <div
                 v-for="room in floorGroup.rooms"
                 :key="room.id"
-                class="group bg-slate-50/70 hover:bg-white border border-slate-200 rounded-xl p-3.5 transition-all duration-200 hover:shadow-md hover:border-slate-300 relative flex flex-col justify-between"
+                class="group bg-slate-50/70 hover:bg-white border border-slate-200 rounded-xl p-3.5 transition-all duration-200 hover:shadow-md hover:border-slate-300 relative flex flex-col justify-between overflow-hidden"
               >
-                <!-- Top Row: Room Number & Status -->
-                <div class="flex items-start justify-between gap-1 mb-2">
-                  <div>
-                    <div class="text-lg font-extrabold text-slate-900 leading-tight">
+                <!-- Top Row: Room Number & Status Badge -->
+                <div>
+                  <div class="flex items-center justify-between gap-1.5 mb-1">
+                    <span class="text-xl font-black text-slate-900 tracking-tight">
                       {{ room.room_number }}
-                    </div>
-                    <div class="text-xs text-slate-500 font-medium truncate max-w-[120px]">
-                      {{ room.name || `Phòng ${room.room_number}` }}
-                    </div>
+                    </span>
+                    <span
+                      class="px-2 py-0.5 rounded-full text-[11px] font-bold border inline-flex items-center gap-1 shrink-0 whitespace-nowrap"
+                      :class="getStatusBadge(room.status).badgeClass"
+                    >
+                      <v-icon :icon="getStatusBadge(room.status).icon" size="12" />
+                      <span>{{ getStatusBadge(room.status).label }}</span>
+                    </span>
                   </div>
-                  <span
-                    class="px-2 py-0.5 rounded-full text-xs font-bold border inline-flex items-center gap-1 shrink-0"
-                    :class="getStatusBadge(room.status).badgeClass"
+
+                  <!-- Room Name (only show if not default "Phòng <number>") -->
+                  <div
+                    v-if="room.name && room.name !== `Phòng ${room.room_number}`"
+                    class="text-xs text-slate-500 font-medium truncate mb-1"
+                    :title="room.name"
                   >
-                    <v-icon :icon="getStatusBadge(room.status).icon" size="12" />
-                    {{ getStatusBadge(room.status).label }}
-                  </span>
+                    {{ room.name }}
+                  </div>
                 </div>
 
                 <!-- Middle Info: Type & Price -->
-                <div class="space-y-1 my-1.5 text-xs">
-                  <div class="flex items-center justify-between text-slate-600">
-                    <span class="text-slate-400">Hạng:</span>
-                    <span class="font-semibold text-slate-700 truncate max-w-[110px]">
+                <div class="space-y-1 my-2 text-xs">
+                  <div class="flex items-center justify-between text-slate-600 gap-2">
+                    <span class="text-slate-400 shrink-0">Hạng:</span>
+                    <span class="font-semibold text-slate-700 truncate text-right">
                       {{ room.roomType?.name || room.room_type?.name || 'Tiêu chuẩn' }}
                     </span>
                   </div>
-                  <div v-if="room.price" class="flex items-center justify-between text-slate-600">
-                    <span class="text-slate-400">Giá:</span>
-                    <span class="font-bold text-emerald-600">
+                  <div v-if="room.price" class="flex items-center justify-between text-slate-600 gap-2">
+                    <span class="text-slate-400 shrink-0">Giá:</span>
+                    <span class="font-bold text-emerald-600 truncate text-right">
                       {{ formatCurrency(room.price) }}
                     </span>
                   </div>
@@ -591,7 +599,7 @@ function getStatusBadge(status) {
                 <!-- Equipment Badge & Actions -->
                 <div class="pt-2 border-t border-slate-200/60 flex items-center justify-between gap-1 mt-2">
                   <button
-                    class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-md bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 hover:text-primary transition"
+                    class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-md bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 hover:text-primary transition shrink-0"
                     title="Xem thiết bị gắn trong phòng"
                     @click="goToRoomEquipments(room.id)"
                   >
@@ -599,7 +607,7 @@ function getStatusBadge(status) {
                     <span>{{ room.equipments_count ?? 0 }} TB</span>
                   </button>
 
-                  <div class="flex items-center gap-0.5">
+                  <div class="flex items-center gap-0.5 shrink-0">
                     <button
                       class="p-1 rounded text-slate-400 hover:text-primary hover:bg-slate-100 transition"
                       title="Chỉnh sửa"
