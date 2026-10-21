@@ -38,6 +38,9 @@ watch(
     if (!event) return
     // Cập nhật ngầm dữ liệu phòng tức thời mà không gây chớp giật màn hình
     loadMapViewData(true)
+    if (event.type && (event.type.startsWith('room_') || event.type === 'assigned')) {
+      loadFilterOptions()
+    }
   }
 )
 

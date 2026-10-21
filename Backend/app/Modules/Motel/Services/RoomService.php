@@ -18,6 +18,15 @@ class RoomService
         return (int) ($orgId ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 22));
     }
 
+    public function invalidateMapCache(?int $orgId = null): void
+    {
+        $orgId = $this->getActiveOrgId($orgId);
+        cache()->forget('hotel_blocks_' . $orgId);
+        cache()->forget('hotel_blocks_all');
+        cache()->forget('hotel_floors_' . $orgId . '_all');
+        cache()->forget('hotel_floors_all_all');
+    }
+
     public function stats(array $filters = []): array
     {
         $orgId = $this->getActiveOrgId($filters['organization_id'] ?? null);
@@ -76,6 +85,8 @@ class RoomService
         $room = RoomModel::create($data);
         $room->load(['roomType'])->loadCount('equipments');
 
+        $this->invalidateMapCache($room->organization_id);
+
         // Phát Broadcast Real-time
         event(new RoomChanged('created', $room, "Phòng {$room->room_number} ({$room->block} - Tầng {$room->floor}) vừa được tạo mới."));
 
@@ -87,6 +98,8 @@ class RoomService
         $room = RoomModel::findOrFail($id);
         $room->update($data);
         $room->load(['roomType'])->loadCount('equipments');
+
+        $this->invalidateMapCache($room->organization_id);
 
         // Phát Broadcast Real-time
         event(new RoomChanged('updated', $room, "Thông tin Phòng {$room->room_number} vừa được cập nhật."));
@@ -113,6 +126,8 @@ class RoomService
 
             $deleted = (bool) $room->delete();
 
+            $this->invalidateMapCache($orgId);
+
             // Phát Broadcast Real-time
             event(new RoomChanged('deleted', ['id' => $id, 'room_number' => $roomNumber], "Phòng {$roomNumber} đã được xóa khỏi hệ thống.", $orgId));
 
@@ -133,6 +148,8 @@ class RoomService
 
             $count = RoomModel::whereIn('id', $ids)->delete();
 
+            $this->invalidateMapCache();
+
             event(new RoomChanged('bulk_deleted', ['ids' => $ids], "Đã xóa {$count} phòng khỏi hệ thống."));
 
             return $count;
@@ -142,6 +159,7 @@ class RoomService
     public function bulkUpdateStatus(array $ids, string $status): int
     {
         $count = RoomModel::whereIn('id', $ids)->update(['status' => $status]);
+        $this->invalidateMapCache();
         event(new RoomChanged('bulk_status_updated', ['ids' => $ids, 'status' => $status], "Đã cập nhật trạng thái {$count} phòng thành công."));
         return $count;
     }
@@ -197,6 +215,7 @@ class RoomService
         });
 
         $count = count($created);
+        $this->invalidateMapCache($orgId);
         event(new RoomChanged('batch_generated', ['count' => $count, 'block' => $block, 'floor' => $floor], "Đã tạo nhanh {$count} phòng mới cho {$block} - Tầng {$floor}.", $orgId));
 
         return [
@@ -214,6 +233,8 @@ class RoomService
         $count = RoomModel::where('organization_id', $activeOrg)
             ->where('block', $oldBlock)
             ->update(['block' => $newBlock]);
+
+        $this->invalidateMapCache($activeOrg);
 
         event(new RoomChanged('block_renamed', ['old_block' => $oldBlock, 'new_block' => $newBlock], "Đã đổi tên khu vực từ '{$oldBlock}' thành '{$newBlock}' ({$count} phòng).", $activeOrg));
 
@@ -245,6 +266,8 @@ class RoomService
             } else {
                 $count = 0;
             }
+
+            $this->invalidateMapCache($activeOrg);
 
             event(new RoomChanged('block_deleted', ['block' => $block], "Đã xóa toàn bộ các phòng thuộc khu '{$block}'.", $activeOrg));
 
