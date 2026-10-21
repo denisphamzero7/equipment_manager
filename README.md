@@ -202,14 +202,54 @@ Tất cả các route đều được bảo vệ bởi middleware `auth:sanctum`
 
 ---
 
+## 🐳 6. Hướng dẫn Khởi chạy với Docker & Xem Log
+
+> 📖 **Xem tài liệu chi tiết đầy đủ:** [docs/DOCKER_GUIDE.md](docs/DOCKER_GUIDE.md)
+
+### A. Khởi chạy toàn bộ hệ thống
+```bash
+# 1. Khởi động cụm Docker Backend (Laravel, Reverb WebSocket, Horizon, Scheduler, Redis, Mailpit)
+docker compose -f backend/compose.yaml up -d
+
+# 2. Khởi động Frontend Vue 3 (mở terminal mới)
+npm run dev --prefix Frontend
+```
+
+- **Giao diện Web:** `http://localhost:3000`
+- **Backend API:** `http://localhost`
+- **Reverb WebSocket:** `ws://localhost:8090`
+- **Horizon Queue Dashboard:** `http://localhost/horizon`
+- **Mailpit Email Dashboard:** `http://localhost:8025`
+- **phpMyAdmin (XAMPP):** `http://localhost:8080/phpmyadmin`
+
+### B. Các lệnh xem log thời gian thực
+```bash
+# Xem log toàn bộ hệ thống
+docker compose -f backend/compose.yaml logs -f
+
+# Xem log Backend API
+docker logs -f --tail 100 backend-laravel.test-1
+
+# Xem log Real-time WebSocket Reverb
+docker logs -f --tail 100 backend-reverb-1
+
+# Xem log Hàng đợi Horizon
+docker logs -f --tail 100 backend-horizon-1
+
+# Xem file laravel.log với công cụ Pail
+docker exec -it backend-laravel.test-1 php artisan pail
+```
+
+---
+
 ## 🛣️ 7. Kế hoạch phát triển (Roadmap)
 
 - [x] Thiết kế Cơ sở dữ liệu và Migrations Module Thiết bị.
 - [x] Xây dựng Backend API: Sơ đồ phòng, CRUD, Định mức, Báo hỏng, Import/Export Excel.
 - [x] Seed dữ liệu danh mục, mẫu thiết bị chuẩn (TV, Box, Remote, Wifi...).
-- [ ] Phát triển Giao diện người dùng (Frontend):
-  - [ ] Dashboard tổng quan & biểu đồ thống kê.
-  - [ ] Sơ đồ mặt bằng tương tác (Interactive Grid / Floor Map).
-  - [ ] Popup kiểm tra thiết bị khi click vào từng phòng.
-  - [ ] Quét mã QR / Barcode trực tiếp qua Camera trên thiết bị di động.
-- [ ] Tích hợp WebSocket (Laravel Reverb) để cập nhật trạng thái thiết bị thời gian thực.
+- [x] Phát triển Giao diện người dùng (Frontend Vue 3 + Vuetify + Tailwind):
+  - [x] Dashboard tổng quan & biểu đồ thống kê.
+  - [x] Sơ đồ mặt bằng tương tác (Interactive Grid / Floor Map).
+  - [x] Popup kiểm tra & đối soát thiết bị từng phòng.
+  - [x] Tối ưu Responsive chuẩn cho điện thoại di động & máy tính bảng.
+- [x] Tích hợp WebSocket Real-time (Laravel Reverb & Echo): Tự động đổi màu phòng, chuông thông báo tức thời khi có sự cố hoặc thay đổi thiết bị.
