@@ -30,6 +30,8 @@ export function formatCurrencyVND(amount) {
   }).format(amount)
 }
 
+export const formatCurrency = formatCurrencyVND
+
 export function formatNumber(val) {
   if (val === null || val === undefined || isNaN(val)) return '0'
   return new Intl.NumberFormat('vi-VN').format(val)

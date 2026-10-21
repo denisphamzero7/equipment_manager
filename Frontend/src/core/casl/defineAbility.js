@@ -63,9 +63,18 @@ export function defineRulesFor(user = null, permissions = []) {
       can('import', 'Equipment')
     }
 
-    // Module Phòng (Rooms)
-    if (permName.startsWith('rooms.')) {
+    // Module Phòng (Rooms / Motel)
+    if (permName.startsWith('rooms.') || permName.startsWith('motel.')) {
       can('read', 'Room')
+      if (permName === 'motel.store' || permName === 'rooms.create') {
+        can('create', 'Room')
+      }
+      if (permName === 'motel.update' || permName === 'rooms.edit') {
+        can('update', 'Room')
+      }
+      if (permName === 'motel.destroy' || permName === 'rooms.delete') {
+        can('delete', 'Room')
+      }
     }
 
     // Dashboard

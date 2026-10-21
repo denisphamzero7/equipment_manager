@@ -135,6 +135,18 @@ export const useRealtimeStore = defineStore('realtime', () => {
       toast.error(event.message || `Khẩn cấp: Thiết bị phòng ${event.equipment?.room_number} vừa báo hỏng!`)
     })
 
+    // 7. Thay đổi phòng, tầng, block (Room CRUD)
+    channel.listen('.room.changed', (event) => {
+      lastEvent.value = { type: 'room_' + (event.type || event.action), ...event }
+      addNotification({
+        type: 'room_changed',
+        title: 'Cập nhật phòng',
+        message: event.message || 'Dữ liệu phòng vừa được cập nhật',
+        room: event.room,
+      })
+      toast.info(event.message || 'Dữ liệu phòng vừa được cập nhật.')
+    })
+
     connected.value = true
   }
 

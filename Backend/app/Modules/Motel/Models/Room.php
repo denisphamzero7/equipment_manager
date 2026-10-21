@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Room extends Model implements HasMedia
 {
@@ -62,9 +61,41 @@ class Room extends Model implements HasMedia
         return $this->hasMany(\App\Modules\Equipment\Models\RoomStandardEquipment::class, 'room_type_id', 'room_type_id');
     }
 
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when(!empty($filters['search']), function ($q) use ($filters) {
+            $s = $filters['search'];
+            $q->where(function ($sub) use ($s) {
+                $sub->where('room_number', 'like', "%{$s}%")
+                    ->orWhere('name', 'like', "%{$s}%");
+            });
+        })->when(!empty($filters['block']), function ($q) use ($filters) {
+            $q->where('block', $filters['block']);
+        })->when(isset($filters['floor']) && $filters['floor'] !== '' && $filters['floor'] !== null, function ($q) use ($filters) {
+            $q->where('floor', $filters['floor']);
+        })->when(!empty($filters['status']), function ($q) use ($filters) {
+            $q->where('status', $filters['status']);
+        })->when(!empty($filters['room_type_id']), function ($q) use ($filters) {
+            $q->where('room_type_id', $filters['room_type_id']);
+        })->when(!empty($filters['organization_id']), function ($q) use ($filters) {
+            $q->where('organization_id', $filters['organization_id']);
+        });
+    }
+
     protected static function booted()
     {
-        static::creating(fn ($room) => $room->created_by = $room->updated_by = auth()->id());
-        static::updating(fn ($room) => $room->updated_by = auth()->id());
+        static::creating(function ($room) {
+            if (auth()->check()) {
+                $room->created_by = $room->updated_by = auth()->id();
+            }
+            if (empty($room->name) && !empty($room->room_number)) {
+                $room->name = 'Phòng ' . $room->room_number;
+            }
+        });
+        static::updating(function ($room) {
+            if (auth()->check()) {
+                $room->updated_by = auth()->id();
+            }
+        });
     }
 }

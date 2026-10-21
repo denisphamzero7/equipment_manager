@@ -32,6 +32,15 @@ export const Endpoints = Object.freeze({
   },
   ROOM: {
     INDEX: '/api/motel/rooms',
+    SHOW: id => `/api/motel/rooms/${id}`,
+    STORE: '/api/motel/rooms',
+    UPDATE: id => `/api/motel/rooms/${id}`,
+    DESTROY: id => `/api/motel/rooms/${id}`,
+    BATCH_GENERATE: '/api/motel/rooms/batch-generate',
+    ROOM_TYPES: '/api/motel/rooms/room-types',
+    BULK_DESTROY: '/api/motel/rooms/bulk-delete',
+    RENAME_BLOCK: '/api/motel/structure/rename-block',
+    DELETE_BLOCK: '/api/motel/structure/delete-block',
   },
   ORGANIZATION: {
     PUBLIC_OPTIONS: '/api/organizations/public-options',

@@ -68,6 +68,13 @@ const navItems = [
     subject: 'Equipment',
   },
   {
+    title: 'Quản lý phòng & tầng',
+    to: '/rooms',
+    icon: 'mdi-home-city-outline',
+    action: 'read',
+    subject: 'Room',
+  },
+  {
     title: 'Định mức thiết bị phòng',
     to: '/rooms/equipments',
     icon: 'mdi-door-sliding',
