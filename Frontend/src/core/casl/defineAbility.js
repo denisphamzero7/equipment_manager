@@ -13,14 +13,22 @@ export function defineRulesFor(user = null, permissions = []) {
     return build()
   }
 
-  // 1. Kiểm tra vai trò Super Admin
+  // 1. Kiểm tra vai trò Super Admin / Admin
   const isSuperAdmin = 
     user.is_super_admin === true ||
-    user.roles?.some(r => (typeof r === 'string' ? r : r.name) === 'Super Admin') ||
-    permissions.includes('*')
+    user.roles?.some(r => {
+      const name = typeof r === 'string' ? r : r.name
+      return name === 'Super Admin' || name === 'Admin'
+    }) ||
+    user.assignments?.some(a => {
+      const name = a.role_name || a.name
+      return name === 'Super Admin' || name === 'Admin'
+    }) ||
+    permissions.includes('*') ||
+    permissions.includes('all')
 
   if (isSuperAdmin) {
-    // Super Admin có toàn quyền
+    // Super Admin & Admin có toàn quyền quản trị
     can('manage', 'all')
     return build()
   }
@@ -31,26 +39,26 @@ export function defineRulesFor(user = null, permissions = []) {
 
     if (!permName) return
 
-    // Mẫu: equipments.index -> can('read', 'Equipment')
+    // Module Trang thiết bị (Equipments)
     if (permName === 'equipments.index' || permName === 'equipments.show') {
       can('read', 'Equipment')
     }
-    if (permName === 'equipments.create') {
+    if (permName === 'equipments.create' || permName === 'equipments.store') {
       can('create', 'Equipment')
     }
-    if (permName === 'equipments.edit') {
+    if (permName === 'equipments.edit' || permName === 'equipments.update') {
       can('update', 'Equipment')
     }
-    if (permName === 'equipments.delete') {
+    if (permName === 'equipments.delete' || permName === 'equipments.destroy') {
       can('delete', 'Equipment')
     }
-    if (permName === 'equipments.assign') {
+    if (permName === 'equipments.assign' || permName === 'equipments.assignToRoom') {
       can('assign', 'Equipment')
     }
-    if (permName === 'equipments.report_broken') {
+    if (permName === 'equipments.report_broken' || permName === 'equipments.reportBroken') {
       can('report_broken', 'Equipment')
     }
-    if (permName === 'equipments.map_view') {
+    if (permName === 'equipments.map_view' || permName === 'equipments.mapView') {
       can('map_view', 'Equipment')
     }
     if (permName === 'equipments.stats') {
@@ -66,13 +74,13 @@ export function defineRulesFor(user = null, permissions = []) {
     // Module Phòng (Rooms / Motel)
     if (permName.startsWith('rooms.') || permName.startsWith('motel.')) {
       can('read', 'Room')
-      if (permName === 'motel.store' || permName === 'rooms.create') {
+      if (permName === 'motel.store' || permName === 'rooms.create' || permName === 'rooms.store') {
         can('create', 'Room')
       }
-      if (permName === 'motel.update' || permName === 'rooms.edit') {
+      if (permName === 'motel.update' || permName === 'rooms.edit' || permName === 'rooms.update') {
         can('update', 'Room')
       }
-      if (permName === 'motel.destroy' || permName === 'rooms.delete') {
+      if (permName === 'motel.destroy' || permName === 'rooms.delete' || permName === 'rooms.destroy') {
         can('delete', 'Room')
       }
     }
