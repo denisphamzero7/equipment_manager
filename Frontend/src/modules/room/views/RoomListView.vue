@@ -166,6 +166,16 @@ watch(
   }
 )
 
+watch(viewMode, () => {
+  pagination.currentPage = 1
+  fetchRooms()
+})
+
+function handlePageChange(page) {
+  pagination.currentPage = page
+  fetchRooms()
+}
+
 async function fetchRoomTypes() {
   try {
     const types = await roomService.getRoomTypes()
@@ -331,7 +341,8 @@ function getStatusBadge(status) {
           </div>
           <div>
             <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Tổng phòng</div>
-            <div class="text-xl font-bold text-slate-800">{{ stats.total }}</div>
+            <div v-if="loading" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
+            <div v-else class="text-xl font-bold text-slate-800">{{ stats.total }}</div>
           </div>
         </div>
 
@@ -341,7 +352,8 @@ function getStatusBadge(status) {
           </div>
           <div>
             <div class="text-xs font-semibold text-emerald-600 uppercase tracking-wider">Sẵn sàng</div>
-            <div class="text-xl font-bold text-emerald-700">{{ stats.ready }}</div>
+            <div v-if="loading" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
+            <div v-else class="text-xl font-bold text-emerald-700">{{ stats.ready }}</div>
           </div>
         </div>
 
@@ -351,7 +363,8 @@ function getStatusBadge(status) {
           </div>
           <div>
             <div class="text-xs font-semibold text-rose-600 uppercase tracking-wider">Đang có khách</div>
-            <div class="text-xl font-bold text-rose-700">{{ stats.occupied }}</div>
+            <div v-if="loading" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
+            <div v-else class="text-xl font-bold text-rose-700">{{ stats.occupied }}</div>
           </div>
         </div>
 
@@ -361,7 +374,8 @@ function getStatusBadge(status) {
           </div>
           <div>
             <div class="text-xs font-semibold text-amber-600 uppercase tracking-wider">Chờ dọn</div>
-            <div class="text-xl font-bold text-amber-700">{{ stats.notReady }}</div>
+            <div v-if="loading" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
+            <div v-else class="text-xl font-bold text-amber-700">{{ stats.notReady }}</div>
           </div>
         </div>
 
@@ -371,7 +385,8 @@ function getStatusBadge(status) {
           </div>
           <div>
             <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Bảo trì</div>
-            <div class="text-xl font-bold text-slate-700">{{ stats.maintenance }}</div>
+            <div v-if="loading" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
+            <div v-else class="text-xl font-bold text-slate-700">{{ stats.maintenance }}</div>
           </div>
         </div>
       </div>
@@ -489,10 +504,68 @@ function getStatusBadge(status) {
 
       <!-- VIEW 1: Dạng Thẻ theo Khu vực & Tầng (Cards View) -->
       <div v-if="viewMode === 'cards'" class="space-y-6">
-        <!-- Loading Spinner -->
-        <div v-if="loading" class="py-16 text-center text-slate-400">
-          <v-progress-circular indeterminate color="primary" size="40" />
-          <div class="mt-3 text-sm">Đang tải danh sách phòng...</div>
+        <!-- Loading Skeleton (Thẻ theo tầng đồng bộ phong cách với danh sách thiết bị) -->
+        <div v-if="loading" class="space-y-6">
+          <div v-for="blockIndex in 2" :key="blockIndex" class="space-y-4">
+            <!-- Block Title Skeleton -->
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200 animate-pulse">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-6 rounded-full bg-slate-300 inline-block"></span>
+                <div class="h-6 w-32 bg-slate-200 rounded-md"></div>
+                <div class="h-5 w-16 bg-slate-100 rounded-full"></div>
+              </div>
+              <div class="h-8 w-36 bg-slate-100 rounded-lg"></div>
+            </div>
+
+            <!-- Floor Container Skeleton -->
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs space-y-3">
+              <!-- Floor Header Skeleton -->
+              <div class="flex items-center justify-between border-b border-slate-100 pb-2.5 animate-pulse">
+                <div class="flex items-center gap-2">
+                  <div class="w-5 h-5 bg-slate-200 rounded"></div>
+                  <div class="h-4 w-20 bg-slate-200 rounded"></div>
+                  <div class="h-3 w-16 bg-slate-100 rounded"></div>
+                </div>
+                <div class="h-4 w-28 bg-slate-100 rounded"></div>
+              </div>
+
+              <!-- Rooms Grid Skeleton -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-3.5">
+                <div
+                  v-for="cardIndex in 5"
+                  :key="cardIndex"
+                  class="bg-slate-50/70 border border-slate-200 rounded-xl p-3.5 space-y-3 animate-pulse relative"
+                >
+                  <!-- Top Row: Room number & status badge skeleton -->
+                  <div class="flex items-center justify-between gap-1.5">
+                    <div class="h-6 w-14 bg-slate-200 rounded-md"></div>
+                    <div class="h-5 w-20 bg-slate-200 rounded-full"></div>
+                  </div>
+                  <!-- Room name skeleton -->
+                  <div class="h-3 w-24 bg-slate-200/60 rounded"></div>
+                  <!-- Middle: Type & Price skeleton -->
+                  <div class="space-y-1.5 py-1">
+                    <div class="flex justify-between items-center">
+                      <div class="h-3 w-10 bg-slate-200/60 rounded"></div>
+                      <div class="h-3 w-20 bg-slate-200 rounded"></div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <div class="h-3 w-8 bg-slate-200/60 rounded"></div>
+                      <div class="h-3 w-16 bg-slate-200 rounded"></div>
+                    </div>
+                  </div>
+                  <!-- Bottom: Equipment & actions skeleton -->
+                  <div class="pt-2 border-t border-slate-200/60 flex items-center justify-between gap-1">
+                    <div class="h-6 w-16 bg-slate-200 rounded-md"></div>
+                    <div class="flex items-center gap-1">
+                      <div class="w-6 h-6 bg-slate-200 rounded"></div>
+                      <div class="w-6 h-6 bg-slate-200 rounded"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Empty State -->
@@ -649,8 +722,13 @@ function getStatusBadge(status) {
           :headers="tableHeaders"
           :items="rooms"
           :loading="loading"
+          :total-items="pagination.totalItems"
+          :page="pagination.currentPage"
+          :items-per-page="pagination.perPage"
           item-value="id"
           show-select
+          @update:page="handlePageChange"
+          @click:row="item => goToRoomEquipments(item.id)"
         >
           <!-- Số phòng -->
           <template #item.room_number="{ item }">

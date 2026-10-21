@@ -319,7 +319,38 @@ async function handleCreateSubmit({ data }) {
 
       <!-- Right: Detailed Audit Card -->
       <div class="lg:col-span-3">
-        <div v-if="loading" class="h-96 bg-slate-200 rounded-2xl animate-pulse" />
+        <!-- Room Detail Skeleton Loader -->
+        <div v-if="loading" class="space-y-6">
+          <!-- Room Header Skeleton -->
+          <div class="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-pulse">
+            <div class="space-y-2">
+              <div class="h-3 w-24 bg-slate-200 rounded"></div>
+              <div class="h-7 w-48 bg-slate-200 rounded-lg"></div>
+              <div class="h-3.5 w-32 bg-slate-100 rounded"></div>
+            </div>
+            <div class="h-10 w-48 bg-slate-200 rounded-xl"></div>
+          </div>
+
+          <!-- Table Container Skeleton -->
+          <div class="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200/80 shadow-xs space-y-4 animate-pulse">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div class="h-5 w-48 bg-slate-200 rounded"></div>
+              <div class="h-8 w-32 bg-slate-100 rounded-lg"></div>
+            </div>
+            <div class="space-y-3">
+              <div v-for="n in 4" :key="n" class="h-16 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-between px-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 bg-slate-200 rounded-lg"></div>
+                  <div class="space-y-2">
+                    <div class="h-4 w-36 bg-slate-200 rounded"></div>
+                    <div class="h-3 w-24 bg-slate-100 rounded"></div>
+                  </div>
+                </div>
+                <div class="h-6 w-24 bg-slate-200 rounded-full"></div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div v-else-if="roomDetail" class="space-y-6">
           <!-- Room Header & Compliance Badge -->

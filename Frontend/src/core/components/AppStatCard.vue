@@ -71,13 +71,9 @@ const colorMap = {
           <h3 v-if="!loading" class="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight">
             {{ value }}
           </h3>
-          <v-progress-circular
+          <div
             v-else
-            indeterminate
-            size="20"
-            width="2"
-            color="primary"
-            class="my-1"
+            class="h-7 w-16 bg-slate-200 rounded-md animate-pulse my-1"
           />
         </div>
         <p v-if="subtitle" class="text-[11px] sm:text-xs text-slate-400 mt-0.5 truncate">
