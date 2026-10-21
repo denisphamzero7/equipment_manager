@@ -72,16 +72,51 @@ const tableHeaders = [
   { key: 'actions', title: 'Thao tác', align: 'end', width: '130px' },
 ]
 
-// Extract distinct blocks and floors from rooms list
+// Extract distinct blocks and floors from rooms list with standard hotel ordering
+const hotelBlockOrder = ['Block A', 'Block B', 'Block C', 'Block D', 'Condos 1', 'Condos 2', 'Penthouse-spa+Villa']
+
 const existingBlocks = computed(() => {
   const set = new Set(rooms.value.map(r => r.block).filter(Boolean))
-  return Array.from(set).sort()
+  // Merge standard blocks with any custom ones
+  hotelBlockOrder.forEach(b => set.add(b))
+  return Array.from(set).sort((a, b) => {
+    const idxA = hotelBlockOrder.indexOf(a)
+    const idxB = hotelBlockOrder.indexOf(b)
+    if (idxA !== -1 && idxB !== -1) return idxA - idxB
+    if (idxA !== -1) return -1
+    if (idxB !== -1) return 1
+    return a.localeCompare(b, 'vi', { numeric: true })
+  })
+})
+
+// Count rooms in each block for the quick-filter pills
+const blockCounts = computed(() => {
+  const counts = { total: rooms.value.length }
+  rooms.value.forEach(r => {
+    const b = r.block || 'Khu vực chung'
+    counts[b] = (counts[b] || 0) + 1
+  })
+  return counts
 })
 
 const existingFloors = computed(() => {
-  const set = new Set(rooms.value.map(r => r.floor).filter(f => f !== null && f !== undefined))
+  const targetRooms = filters.block
+    ? rooms.value.filter(r => r.block === filters.block)
+    : rooms.value
+  const set = new Set(targetRooms.map(r => r.floor).filter(f => f !== null && f !== undefined))
   return Array.from(set).sort((a, b) => a - b)
 })
+
+const hasActiveFilters = computed(() => {
+  return !!(filters.search || filters.block || (filters.floor !== null && filters.floor !== '') || filters.room_type_id || filters.status)
+})
+
+function selectBlock(b) {
+  filters.block = b
+  if (viewMode.value === 'table') {
+    handleSearch()
+  }
+}
 
 // Group rooms by Block and then Floor for Grid Cards view
 const groupedRooms = computed(() => {
@@ -123,13 +158,20 @@ const groupedRooms = computed(() => {
     blocksMap[blockKey].floors[floorKey].rooms.push(room)
   })
 
-  // Sort blocks alphabetically, floors & rooms ascending
+  // Sort blocks according to standard hotel layout, floors & rooms ascending
   return Object.values(blocksMap)
-    .sort((b1, b2) => b1.name.localeCompare(b2.name, 'vi', { numeric: true }))
+    .sort((b1, b2) => {
+      const idxA = hotelBlockOrder.indexOf(b1.name)
+      const idxB = hotelBlockOrder.indexOf(b2.name)
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB
+      if (idxA !== -1) return -1
+      if (idxB !== -1) return 1
+      return b1.name.localeCompare(b2.name, 'vi', { numeric: true })
+    })
     .map(b => {
       const sortedFloors = Object.values(b.floors).sort((f1, f2) => f1.floor - f2.floor)
       sortedFloors.forEach(f => {
-        f.rooms.sort((r1, r2) => r1.room_number - r2.room_number)
+        f.rooms.sort((r1, r2) => String(r1.room_number).localeCompare(String(r2.room_number), 'vi', { numeric: true }))
       })
       return {
         name: b.name,
@@ -189,9 +231,9 @@ async function fetchRooms(showLoading = true) {
   if (showLoading) loading.value = true
   try {
     const params = {
-      limit: viewMode.value === 'table' ? pagination.perPage : 150,
+      limit: viewMode.value === 'table' ? pagination.perPage : 500,
       page: viewMode.value === 'table' ? pagination.currentPage : 1,
-      ...filters,
+      ...(viewMode.value === 'table' ? filters : {}),
     }
     const res = await roomService.getRooms(params)
     const items = Array.isArray(res) ? res : (res?.data || [])
@@ -210,8 +252,10 @@ async function fetchRooms(showLoading = true) {
 }
 
 function handleSearch() {
-  pagination.currentPage = 1
-  fetchRooms()
+  if (viewMode.value === 'table') {
+    pagination.currentPage = 1
+    fetchRooms()
+  }
 }
 
 function resetFilters() {
@@ -221,7 +265,9 @@ function resetFilters() {
   filters.room_type_id = null
   filters.status = ''
   pagination.currentPage = 1
-  fetchRooms()
+  if (viewMode.value === 'table') {
+    fetchRooms()
+  }
 }
 
 function openCreateModal(defaultBlock = null, defaultFloor = null) {
@@ -391,113 +437,159 @@ function getStatusBadge(status) {
         </div>
       </div>
 
-      <!-- Filters & View Switcher Bar -->
-      <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs">
-        <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-          <!-- Filters row -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 flex-1">
-            <!-- Search -->
-            <v-text-field
-              v-model="filters.search"
-              placeholder="Tìm theo số phòng, tên..."
-              density="compact"
-              variant="outlined"
-              hide-details
-              prepend-inner-icon="mdi-magnify"
-              clearable
-              @update:model-value="handleSearch"
-            />
-
-            <!-- Filter Block -->
-            <v-select
-              v-model="filters.block"
-              :items="['', ...existingBlocks]"
-              item-title="title"
-              placeholder="Tất cả Block"
-              density="compact"
-              variant="outlined"
-              hide-details
-              prepend-inner-icon="mdi-domain"
-              clearable
-              @update:model-value="handleSearch"
+      <!-- Modern Filter & Navigation Control Card -->
+      <div class="bg-white border border-slate-200/80 rounded-2xl shadow-xs overflow-hidden">
+        <!-- Top Section: Block Quick-Filter Pills (Horizontal Scroll) -->
+        <div class="px-4 pt-3.5 pb-3 border-b border-slate-100 bg-slate-50/60">
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <v-icon icon="mdi-domain" size="15" color="primary" />
+              <span>Phân khu & Tòa nhà (Block):</span>
+            </span>
+            <button
+              v-if="filters.block"
+              class="text-xs text-primary font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+              @click="selectBlock('')"
             >
-              <template #selection="{ item }">
-                {{ item.raw || 'Tất cả Block' }}
-              </template>
-              <template #item="{ item, props: itemProps }">
-                <v-list-item v-bind="itemProps" :title="item.raw || 'Tất cả Block'" />
-              </template>
-            </v-select>
-
-            <!-- Filter Floor -->
-            <v-select
-              v-model="filters.floor"
-              :items="['', ...existingFloors]"
-              placeholder="Tất cả Tầng"
-              density="compact"
-              variant="outlined"
-              hide-details
-              prepend-inner-icon="mdi-stairs"
-              clearable
-              @update:model-value="handleSearch"
-            >
-              <template #selection="{ item }">
-                {{ item.raw ? `Tầng ${item.raw}` : 'Tất cả Tầng' }}
-              </template>
-              <template #item="{ item, props: itemProps }">
-                <v-list-item v-bind="itemProps" :title="item.raw ? `Tầng ${item.raw}` : 'Tất cả Tầng'" />
-              </template>
-            </v-select>
-
-            <!-- Filter Room Type -->
-            <v-select
-              v-model="filters.room_type_id"
-              :items="[{ id: null, name: 'Tất cả loại phòng' }, ...roomTypes]"
-              item-title="name"
-              item-value="id"
-              placeholder="Tất cả loại phòng"
-              density="compact"
-              variant="outlined"
-              hide-details
-              prepend-inner-icon="mdi-bed-outline"
-              clearable
-              @update:model-value="handleSearch"
-            />
-
-            <!-- Filter Status -->
-            <v-select
-              v-model="filters.status"
-              :items="[{ value: '', label: 'Tất cả trạng thái' }, ...RoomStatusOptions]"
-              item-title="label"
-              item-value="value"
-              placeholder="Tất cả trạng thái"
-              density="compact"
-              variant="outlined"
-              hide-details
-              prepend-inner-icon="mdi-shield-check-outline"
-              clearable
-              @update:model-value="handleSearch"
-            />
+              <v-icon icon="mdi-eye-outline" size="14" />
+              <span>Hiển thị tất cả 7 Block</span>
+            </button>
           </div>
 
-          <!-- View Mode Toggle Buttons -->
-          <div class="flex items-center gap-2 self-end lg:self-center">
+          <!-- Horizontal Block Pills Bar -->
+          <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
             <button
-              class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all duration-150 flex items-center gap-1.5"
-              :class="viewMode === 'cards' ? 'bg-primary text-white border-primary shadow-xs' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'"
-              @click="viewMode = 'cards'"
+              class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-2 border cursor-pointer"
+              :class="!filters.block
+                ? 'bg-primary text-white border-primary shadow-xs'
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'"
+              @click="selectBlock('')"
             >
-              <v-icon icon="mdi-view-grid-outline" size="16" />
-              Thẻ theo tầng
+              <span>Tất cả Block</span>
+              <span
+                class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold"
+                :class="!filters.block ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'"
+              >
+                {{ blockCounts.total || 0 }}
+              </span>
             </button>
+
             <button
-              class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all duration-150 flex items-center gap-1.5"
-              :class="viewMode === 'table' ? 'bg-primary text-white border-primary shadow-xs' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'"
-              @click="viewMode = 'table'"
+              v-for="b in existingBlocks"
+              :key="b"
+              class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-2 border cursor-pointer"
+              :class="filters.block === b
+                ? 'bg-primary text-white border-primary shadow-xs'
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'"
+              @click="selectBlock(b)"
             >
-              <v-icon icon="mdi-table" size="16" />
-              Dạng bảng
+              <span>{{ b }}</span>
+              <span
+                class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold"
+                :class="filters.block === b ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'"
+              >
+                {{ blockCounts[b] || 0 }}
+              </span>
             </button>
+          </div>
+        </div>
+
+        <!-- Bottom Section: Search, Filters & View Toggle -->
+        <div class="p-4">
+          <div class="flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3.5">
+            <!-- Search Input (Spacious) -->
+            <div class="flex-1 min-w-[260px]">
+              <v-text-field
+                v-model="filters.search"
+                placeholder="Tìm nhanh theo số phòng, tên phòng..."
+                density="compact"
+                variant="outlined"
+                hide-details
+                prepend-inner-icon="mdi-magnify"
+                clearable
+                bg-color="slate-50"
+                @update:model-value="handleSearch"
+              />
+            </div>
+
+            <!-- Filters Group (Fixed Comfortable Widths - No Wrapping) -->
+            <div class="flex flex-wrap sm:flex-nowrap items-center gap-2.5">
+              <!-- Filter Floor -->
+              <div class="w-full sm:w-36 shrink-0">
+                <v-select
+                  v-model="filters.floor"
+                  :items="[{ value: null, title: 'Tất cả Tầng' }, ...existingFloors.map(f => ({ value: f, title: `Tầng ${f}` }))]"
+                  item-title="title"
+                  item-value="value"
+                  density="compact"
+                  variant="outlined"
+                  hide-details
+                  prepend-inner-icon="mdi-stairs"
+                  @update:model-value="handleSearch"
+                />
+              </div>
+
+              <!-- Filter Status -->
+              <div class="w-full sm:w-48 shrink-0">
+                <v-select
+                  v-model="filters.status"
+                  :items="[{ value: '', label: 'Tất cả trạng thái' }, ...RoomStatusOptions]"
+                  item-title="label"
+                  item-value="value"
+                  density="compact"
+                  variant="outlined"
+                  hide-details
+                  prepend-inner-icon="mdi-shield-check-outline"
+                  @update:model-value="handleSearch"
+                />
+              </div>
+
+              <!-- Filter Room Type -->
+              <div class="w-full sm:w-44 shrink-0">
+                <v-select
+                  v-model="filters.room_type_id"
+                  :items="[{ id: null, name: 'Tất cả loại phòng' }, ...roomTypes]"
+                  item-title="name"
+                  item-value="id"
+                  density="compact"
+                  variant="outlined"
+                  hide-details
+                  prepend-inner-icon="mdi-bed-outline"
+                  @update:model-value="handleSearch"
+                />
+              </div>
+
+              <!-- Reset Button -->
+              <button
+                v-if="hasActiveFilters"
+                class="px-3 py-2 text-xs font-semibold rounded-lg border border-slate-200 text-slate-600 bg-slate-50 hover:bg-slate-100 hover:text-slate-900 transition flex items-center gap-1 shrink-0 cursor-pointer"
+                title="Xóa tất cả bộ lọc đang áp dụng"
+                @click="resetFilters"
+              >
+                <v-icon icon="mdi-filter-off-outline" size="16" />
+                <span>Đặt lại</span>
+              </button>
+            </div>
+
+            <!-- View Switcher -->
+            <div class="flex items-center gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200/80 shrink-0 self-end xl:self-center">
+              <button
+                class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-150 flex items-center gap-1.5 cursor-pointer"
+                :class="viewMode === 'cards' ? 'bg-white text-primary shadow-xs' : 'text-slate-600 hover:text-slate-900'"
+                @click="viewMode = 'cards'"
+              >
+                <v-icon icon="mdi-view-grid-outline" size="16" />
+                <span>Thẻ theo tầng</span>
+              </button>
+              <button
+                class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-150 flex items-center gap-1.5 cursor-pointer"
+                :class="viewMode === 'table' ? 'bg-white text-primary shadow-xs' : 'text-slate-600 hover:text-slate-900'"
+                @click="viewMode = 'table'"
+              >
+                <v-icon icon="mdi-table" size="16" />
+                <span>Dạng bảng</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
