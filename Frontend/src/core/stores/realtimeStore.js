@@ -7,15 +7,28 @@ import { storage, StorageKeys } from '../helpers/storage'
 
 export const useRealtimeStore = defineStore('realtime', () => {
   const connected = ref(false)
+  const isListening = ref(false)
   const currentOrgId = ref(null)
   const notifications = ref([])
   const unreadCount = ref(0)
   const soundEnabled = ref(true)
   const lastEvent = ref(null)
 
+  let lastNotificationFingerprint = ''
+  let lastNotificationTime = 0
+
   function addNotification(notification) {
+    const fingerprint = `${notification.type}_${notification.title}_${notification.message}`
+    const now = Date.now()
+    if (fingerprint === lastNotificationFingerprint && (now - lastNotificationTime) < 2000) {
+      // Bỏ qua sự kiện trùng lặp trong vòng 2 giây
+      return
+    }
+    lastNotificationFingerprint = fingerprint
+    lastNotificationTime = now
+
     notifications.value.unshift({
-      id: Date.now() + Math.random().toString(36).substring(2, 7),
+      id: now + Math.random().toString(36).substring(2, 7),
       read: false,
       timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
       ...notification,
@@ -51,11 +64,20 @@ export const useRealtimeStore = defineStore('realtime', () => {
     const targetOrgId = Number(orgId || storage.get(StorageKeys.ORGANIZATION_ID, 22))
     if (!targetOrgId) return
 
+    // Nếu đã đăng ký listener cho chính xác tổ chức này, không đăng ký trùng lặp
+    if (isListening.value && currentOrgId.value === targetOrgId) {
+      return
+    }
+
     const echo = getEcho()
 
-    // Nếu đang lắng nghe kênh khác, rời kênh cũ trước
-    if (currentOrgId.value && currentOrgId.value !== targetOrgId) {
-      echo.leave(`organization.${currentOrgId.value}`)
+    // Rời kênh cũ nếu đang lắng nghe để tránh gắn đè listeners
+    if (currentOrgId.value) {
+      try {
+        echo.leave(`organization.${currentOrgId.value}`)
+      } catch (e) {
+        console.warn('Error leaving old channel:', e)
+      }
     }
 
     currentOrgId.value = targetOrgId
@@ -147,6 +169,7 @@ export const useRealtimeStore = defineStore('realtime', () => {
       toast.info(event.message || 'Dữ liệu phòng vừa được cập nhật.')
     })
 
+    isListening.value = true
     connected.value = true
   }
 
@@ -160,6 +183,7 @@ export const useRealtimeStore = defineStore('realtime', () => {
       }
       currentOrgId.value = null
     }
+    isListening.value = false
     connected.value = false
     disconnectEcho()
   }
