@@ -12,16 +12,20 @@ class EquipmentMapViewService
      */
     public function getAvailableBlocks(?int $organizationId = null): array
     {
-        $query = Room::query();
-        if ($organizationId) {
-            $query->where('organization_id', $organizationId);
-        }
+        $cacheKey = 'hotel_blocks_' . ($organizationId ?? 'all');
 
-        return $query->whereNotNull('block')
-            ->distinct()
-            ->orderBy('block', 'asc')
-            ->pluck('block')
-            ->toArray();
+        return cache()->remember($cacheKey, 120, function () use ($organizationId) {
+            $query = Room::query();
+            if ($organizationId) {
+                $query->where('organization_id', $organizationId);
+            }
+
+            return $query->whereNotNull('block')
+                ->distinct()
+                ->orderBy('block', 'asc')
+                ->pluck('block')
+                ->toArray();
+        });
     }
 
     /**
@@ -29,19 +33,23 @@ class EquipmentMapViewService
      */
     public function getAvailableFloors(?string $block = null, ?int $organizationId = null): array
     {
-        $query = Room::query();
-        if ($organizationId) {
-            $query->where('organization_id', $organizationId);
-        }
-        if (!empty($block)) {
-            $query->where('block', $block);
-        }
+        $cacheKey = 'hotel_floors_' . ($organizationId ?? 'all') . '_' . ($block ?? 'all');
 
-        return $query->whereNotNull('floor')
-            ->distinct()
-            ->orderBy('floor', 'asc')
-            ->pluck('floor')
-            ->toArray();
+        return cache()->remember($cacheKey, 120, function () use ($block, $organizationId) {
+            $query = Room::query();
+            if ($organizationId) {
+                $query->where('organization_id', $organizationId);
+            }
+            if (!empty($block)) {
+                $query->where('block', $block);
+            }
+
+            return $query->whereNotNull('floor')
+                ->distinct()
+                ->orderBy('floor', 'asc')
+                ->pluck('floor')
+                ->toArray();
+        });
     }
 
     /**
@@ -50,6 +58,7 @@ class EquipmentMapViewService
     public function getMapViewRooms(array $params = []): Collection
     {
         $query = Room::with([
+            'roomType',
             'equipments.model.category',
             'standardEquipments.model.category',
         ]);

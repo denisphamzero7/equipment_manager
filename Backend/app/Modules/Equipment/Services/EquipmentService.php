@@ -221,57 +221,66 @@ class EquipmentService
      */
     public function getHotelStats(?int $organizationId = null): array
     {
-        $query = RoomEquipment::with(['model.category']);
-        if ($organizationId) {
-            $query->where('organization_id', $organizationId);
-        }
-        $allEquipments = $query->get();
+        $cacheKey = 'hotel_stats_' . ($organizationId ?? 'all');
 
-        $totalCount = $allEquipments->count();
-        $goodCount = $allEquipments->where('status', EquipmentStatusEnum::Good)->count();
-        $brokenCount = $allEquipments->where('status', EquipmentStatusEnum::Broken)->count();
-        $maintenanceCount = $allEquipments->where('status', EquipmentStatusEnum::Maintenance)->count();
-        $inStockCount = $allEquipments->where('status', EquipmentStatusEnum::InStock)->count();
-        $lostCount = $allEquipments->where('status', EquipmentStatusEnum::Lost)->count();
+        return cache()->remember($cacheKey, 30, function () use ($organizationId) {
+            $query = RoomEquipment::with(['model.category']);
+            if ($organizationId) {
+                $query->where('organization_id', $organizationId);
+            }
+            $allEquipments = $query->get();
 
-        // Thống kê chi tiết theo từng loại (TV, Remote, Box, Wifi...)
-        $byCategory = [];
-        $categories = EquipmentCategory::all();
+            $totalCount = $allEquipments->count();
+            $goodCount = $allEquipments->where('status', EquipmentStatusEnum::Good)->count();
+            $brokenCount = $allEquipments->where('status', EquipmentStatusEnum::Broken)->count();
+            $maintenanceCount = $allEquipments->where('status', EquipmentStatusEnum::Maintenance)->count();
+            $inStockCount = $allEquipments->where('status', EquipmentStatusEnum::InStock)->count();
+            $lostCount = $allEquipments->where('status', EquipmentStatusEnum::Lost)->count();
 
-        foreach ($categories as $cat) {
-            $items = $allEquipments->filter(fn ($e) => $e->model?->equipment_category_id === $cat->id);
-            $byCategory[] = [
-                'category_id' => $cat->id,
-                'category_name' => $cat->name,
-                'category_code' => $cat->code,
-                'icon' => $cat->icon,
-                'total' => $items->count(),
-                'good' => $items->where('status', EquipmentStatusEnum::Good)->count(),
-                'broken' => $items->where('status', EquipmentStatusEnum::Broken)->count(),
-                'maintenance' => $items->where('status', EquipmentStatusEnum::Maintenance)->count(),
-                'in_stock' => $items->where('status', EquipmentStatusEnum::InStock)->count(),
-                'lost' => $items->where('status', EquipmentStatusEnum::Lost)->count(),
-            ];
-        }
+            // Thống kê chi tiết theo từng loại (TV, Remote, Box, Wifi...)
+            $byCategory = [];
+            $categories = EquipmentCategory::orderBy('sort_order')->get();
 
-        // Đếm số phòng có vấn đề (thiết bị hỏng)
-        $roomsWithBroken = RoomEquipment::where('status', EquipmentStatusEnum::Broken)
-            ->whereNotNull('room_id')
-            ->distinct('room_id')
-            ->count('room_id');
+            foreach ($categories as $cat) {
+                $items = $allEquipments->filter(fn ($e) => $e->model?->equipment_category_id === $cat->id);
+                $byCategory[] = [
+                    'category_id' => $cat->id,
+                    'category_name' => $cat->name,
+                    'category_code' => $cat->code,
+                    'icon' => $cat->icon,
+                    'total' => $items->count(),
+                    'good' => $items->where('status', EquipmentStatusEnum::Good)->count(),
+                    'broken' => $items->where('status', EquipmentStatusEnum::Broken)->count(),
+                    'maintenance' => $items->where('status', EquipmentStatusEnum::Maintenance)->count(),
+                    'in_stock' => $items->where('status', EquipmentStatusEnum::InStock)->count(),
+                    'lost' => $items->where('status', EquipmentStatusEnum::Lost)->count(),
+                ];
+            }
 
-        return [
-            'total_equipments' => $totalCount,
-            'summary' => [
+            // Đếm số phòng có vấn đề (thiết bị hỏng)
+            $brokenQuery = RoomEquipment::where('status', EquipmentStatusEnum::Broken)
+                ->whereNotNull('room_id');
+            if ($organizationId) {
+                $brokenQuery->where('organization_id', $organizationId);
+            }
+            $roomsWithBroken = $brokenQuery->distinct('room_id')->count('room_id');
+
+            $statusData = [
                 'good' => $goodCount,
                 'broken' => $brokenCount,
                 'maintenance' => $maintenanceCount,
                 'in_stock' => $inStockCount,
                 'lost' => $lostCount,
-            ],
-            'rooms_with_issues_count' => $roomsWithBroken,
-            'by_category' => $byCategory,
-        ];
+            ];
+
+            return [
+                'total_equipments' => $totalCount,
+                'summary' => $statusData,
+                'by_status' => $statusData,
+                'rooms_with_issues_count' => $roomsWithBroken,
+                'by_category' => $byCategory,
+            ];
+        });
     }
 
     /**
@@ -280,6 +289,7 @@ class EquipmentService
     public function getRoomDetail(int $roomId): Room
     {
         return Room::with([
+            'roomType',
             'equipments.model.category',
             'equipments.media',
             'standardEquipments.model.category',

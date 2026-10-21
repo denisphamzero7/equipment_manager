@@ -21,9 +21,12 @@ const selectedRoomDetail = ref(null)
 const roomDetailModalOpen = ref(false)
 const roomDetailLoading = ref(false)
 
-onMounted(async () => {
-  await loadFilterOptions()
-  await loadMapViewData()
+onMounted(() => {
+  // Load filters and map grid concurrently for fastest perceived load time
+  Promise.all([
+    loadFilterOptions(),
+    loadMapViewData(),
+  ])
 })
 
 async function loadFilterOptions() {
