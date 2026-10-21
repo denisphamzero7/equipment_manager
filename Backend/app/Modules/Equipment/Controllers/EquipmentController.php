@@ -170,17 +170,32 @@ class EquipmentController extends Controller
     public function uploadPhoto(Request $request, int $id): JsonResponse
     {
         $request->validate([
-            'file' => 'required|image|max:10240',
+            'file' => 'nullable|image|max:10240',
+            'photo' => 'nullable|image|max:10240',
             'collection' => 'nullable|string|in:equipment_photos,broken_photos',
         ]);
 
+        $file = $request->file('file') ?? $request->file('photo');
+        if (! $file) {
+            return $this->error('Vui lòng chọn tệp hình ảnh để tải lên.', 422);
+        }
+
         $item = $this->service->uploadPhoto(
             $id,
-            $request->file('file'),
+            $file,
             $request->input('collection', 'equipment_photos')
         );
 
         return $this->successResource(new EquipmentResource($item), 'Tải ảnh thiết bị thành công');
+    }
+
+    /**
+     * Xóa ảnh thiết bị
+     */
+    public function deletePhoto(int $id, int $mediaId): JsonResponse
+    {
+        $item = $this->service->deletePhoto($id, $mediaId);
+        return $this->successResource(new EquipmentResource($item), 'Xóa ảnh thiết bị thành công');
     }
 
     /**

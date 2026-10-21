@@ -16,12 +16,23 @@ export const equipmentService = {
 
   // 3. Tạo mới thiết bị
   async createEquipment(data) {
-    const response = await axiosClient.post(Endpoints.EQUIPMENT.STORE, data)
+    const isFormData = data instanceof FormData
+    const response = await axiosClient.post(Endpoints.EQUIPMENT.STORE, data, {
+      headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : {},
+    })
     return response.data
   },
 
   // 4. Cập nhật thiết bị
   async updateEquipment(id, data) {
+    const isFormData = data instanceof FormData
+    if (isFormData) {
+      data.append('_method', 'PUT')
+      const response = await axiosClient.post(Endpoints.EQUIPMENT.UPDATE(id), data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      return response.data
+    }
     const response = await axiosClient.put(Endpoints.EQUIPMENT.UPDATE(id), data)
     return response.data
   },
@@ -72,6 +83,12 @@ export const equipmentService = {
     const response = await axiosClient.post(Endpoints.EQUIPMENT.UPLOAD_PHOTO(id), formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
+    return response.data
+  },
+
+  // 11.1 Xóa ảnh thiết bị
+  async deletePhoto(id, mediaId) {
+    const response = await axiosClient.delete(Endpoints.EQUIPMENT.DELETE_PHOTO(id, mediaId))
     return response.data
   },
 

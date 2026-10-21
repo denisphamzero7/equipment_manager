@@ -18,6 +18,7 @@ class EquipmentResource extends JsonResource
             'position_note' => $this->position_note,
             'note' => $this->note,
             'installed_at' => $this->installed_at?->format('Y-m-d H:i:s'),
+            'photo_url' => $this->getFirstMediaUrl('equipment_photos') ?: null,
             'photos' => $this->getMedia('equipment_photos')->map(fn ($m) => [
                 'id' => $m->id,
                 'url' => $m->getUrl(),

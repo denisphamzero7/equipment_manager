@@ -1,8 +1,9 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { equipmentService } from '../services/equipmentService'
 import { formatDate, formatCurrencyVND } from '@/core/helpers/formatters'
+import { toast } from '@/core/helpers/toast'
 import DefaultLayout from '@/core/layouts/DefaultLayout.vue'
 import AppPageHeader from '@/core/components/AppPageHeader.vue'
 import AppStatusBadge from '@/core/components/AppStatusBadge.vue'
@@ -19,12 +20,50 @@ const equipmentId = Number(route.params.id)
 const loading = ref(true)
 const equipment = ref(null)
 
+// Photo management
+const photoInputRef = ref(null)
+const uploadingPhoto = ref(false)
+const deletingPhoto = ref(false)
+const selectedPhotoIndex = ref(0)
+const previewDialogOpen = ref(false)
+const previewImageUrl = ref('')
+const deletePhotoDialogOpen = ref(false)
+const photoToDelete = ref(null)
+const isDraggingOver = ref(false)
+
 // Modals
 const editModalOpen = ref(false)
 const assignModalOpen = ref(false)
 const reportBrokenModalOpen = ref(false)
 const deleteDialogOpen = ref(false)
 const actionLoading = ref(false)
+
+const equipmentPhotos = computed(() => {
+  if (!equipment.value) return []
+  const list = []
+  if (Array.isArray(equipment.value.photos) && equipment.value.photos.length > 0) {
+    list.push(...equipment.value.photos)
+  } else if (equipment.value.photo_url) {
+    list.push({ id: null, url: equipment.value.photo_url, file_name: 'equipment-photo' })
+  } else if (equipment.value.media?.[0]?.original_url) {
+    list.push({
+      id: equipment.value.media[0].id,
+      url: equipment.value.media[0].original_url,
+      file_name: equipment.value.media[0].file_name,
+    })
+  }
+  return list
+})
+
+const currentPhoto = computed(() => {
+  if (equipmentPhotos.value.length === 0) return null
+  return equipmentPhotos.value[selectedPhotoIndex.value] || equipmentPhotos.value[0]
+})
+
+const brokenPhotos = computed(() => {
+  if (!equipment.value) return []
+  return Array.isArray(equipment.value.broken_photos) ? equipment.value.broken_photos : []
+})
 
 onMounted(async () => {
   await loadDetail()
@@ -39,12 +78,90 @@ async function loadDetail() {
   }
 }
 
+function triggerPhotoUpload() {
+  if (photoInputRef.value) {
+    photoInputRef.value.value = ''
+    photoInputRef.value.click()
+  }
+}
+
+async function handlePhotoUpload(event) {
+  const file = event.target?.files?.[0]
+  if (!file) return
+
+  if (!file.type.startsWith('image/')) {
+    toast.error('Vui lòng chọn tệp định dạng hình ảnh (PNG, JPG, JPEG, WEBP).')
+    return
+  }
+
+  if (file.size > 10 * 1024 * 1024) {
+    toast.error('Kích thước ảnh không được vượt quá 10MB.')
+    return
+  }
+
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('collection', 'equipment_photos')
+
+  uploadingPhoto.value = true
+  try {
+    await equipmentService.uploadPhoto(equipmentId, formData)
+    toast.success('Tải ảnh thiết bị lên thành công!')
+    await loadDetail()
+    selectedPhotoIndex.value = Math.max(0, (equipment.value?.photos?.length || 1) - 1)
+  } catch (err) {
+    toast.error(err.response?.data?.message || err.message || 'Tải ảnh lên thất bại.')
+  } finally {
+    uploadingPhoto.value = false
+    if (photoInputRef.value) photoInputRef.value.value = ''
+  }
+}
+
+function handleDrop(event) {
+  isDraggingOver.value = false
+  const file = event.dataTransfer?.files?.[0]
+  if (!file) return
+  handlePhotoUpload({ target: { files: [file] } })
+}
+
+function openPreview(url) {
+  previewImageUrl.value = url
+  previewDialogOpen.value = true
+}
+
+function confirmDeletePhoto(photo) {
+  photoToDelete.value = photo
+  deletePhotoDialogOpen.value = true
+}
+
+async function handleDeletePhoto() {
+  if (!photoToDelete.value) return
+  deletingPhoto.value = true
+  try {
+    if (photoToDelete.value.id && photoToDelete.value.id !== 'main') {
+      await equipmentService.deletePhoto(equipmentId, photoToDelete.value.id)
+    }
+    toast.success('Đã xóa ảnh thiết bị thành công!')
+    deletePhotoDialogOpen.value = false
+    selectedPhotoIndex.value = 0
+    await loadDetail()
+  } catch (err) {
+    toast.error(err.response?.data?.message || err.message || 'Xóa ảnh thất bại.')
+  } finally {
+    deletingPhoto.value = false
+    photoToDelete.value = null
+  }
+}
+
 async function handleEditSubmit({ id, data }) {
   actionLoading.value = true
   try {
     await equipmentService.updateEquipment(id, data)
     editModalOpen.value = false
+    toast.success('Cập nhật thông tin thiết bị thành công!')
     await loadDetail()
+  } catch (err) {
+    toast.error(err.response?.data?.message || err.message || 'Cập nhật thất bại.')
   } finally {
     actionLoading.value = false
   }
@@ -55,7 +172,10 @@ async function handleAssignSubmit(payload) {
   try {
     await equipmentService.assignToRoom(payload)
     assignModalOpen.value = false
+    toast.success('Điều chuyển thiết bị thành công!')
     await loadDetail()
+  } catch (err) {
+    toast.error(err.response?.data?.message || err.message || 'Điều chuyển thất bại.')
   } finally {
     actionLoading.value = false
   }
@@ -66,7 +186,10 @@ async function handleReportBrokenSubmit({ id, formData }) {
   try {
     await equipmentService.reportBroken(id, formData)
     reportBrokenModalOpen.value = false
+    toast.success('Báo hỏng thiết bị thành công!')
     await loadDetail()
+  } catch (err) {
+    toast.error(err.response?.data?.message || err.message || 'Báo hỏng thất bại.')
   } finally {
     actionLoading.value = false
   }
@@ -77,7 +200,10 @@ async function handleDelete() {
   try {
     await equipmentService.deleteEquipment(equipmentId)
     deleteDialogOpen.value = false
+    toast.success('Đã xóa thiết bị!')
     router.push('/equipments')
+  } catch (err) {
+    toast.error(err.response?.data?.message || err.message || 'Xóa thiết bị thất bại.')
   } finally {
     actionLoading.value = false
   }
@@ -254,22 +380,205 @@ async function handleDelete() {
         <!-- Right 1 Col: Media & Quick Actions -->
         <div class="space-y-6">
           <!-- Photo Card -->
-          <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs text-center">
-            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3 text-left">
-              Hình ảnh Thiết bị
-            </h4>
-
-            <div v-if="equipment.photo_url || equipment.media?.[0]?.original_url" class="rounded-xl overflow-hidden border border-slate-100 max-h-64 flex items-center justify-center bg-slate-50">
-              <img
-                :src="equipment.photo_url || equipment.media?.[0]?.original_url"
-                alt="Equipment Photo"
-                class="object-contain w-full h-full"
-              />
+          <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2">
+                <v-icon icon="mdi-camera" size="18" class="text-primary" />
+                <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                  Hình ảnh Thiết bị
+                </h4>
+              </div>
+              <span v-if="equipmentPhotos.length" class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                {{ equipmentPhotos.length }} ảnh
+              </span>
             </div>
 
-            <div v-else class="py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200 text-slate-400 text-xs">
-              <v-icon icon="mdi-image-outline" size="40" class="text-slate-300 mb-1" />
-              <p>Chưa có hình ảnh</p>
+            <!-- Hidden File Input -->
+            <input
+              ref="photoInputRef"
+              type="file"
+              accept="image/png, image/jpeg, image/jpg, image/webp"
+              class="hidden"
+              @change="handlePhotoUpload"
+            />
+
+            <!-- Photo Display & Upload Container -->
+            <div class="relative">
+              <!-- When photos exist -->
+              <div v-if="equipmentPhotos.length > 0" class="space-y-3">
+                <!-- Main Preview Container -->
+                <div class="relative group rounded-xl overflow-hidden border border-slate-200 bg-slate-900/5 aspect-4/3 flex items-center justify-center">
+                  <img
+                    :src="currentPhoto.url"
+                    :alt="equipment.name || 'Hình ảnh thiết bị'"
+                    class="object-contain w-full h-full max-h-64 transition-transform duration-300 group-hover:scale-102"
+                  />
+
+                  <!-- Loading Overlay -->
+                  <div
+                    v-if="uploadingPhoto || deletingPhoto"
+                    class="absolute inset-0 bg-white/80 backdrop-blur-xs flex flex-col items-center justify-center gap-2 z-20"
+                  >
+                    <v-progress-circular indeterminate color="primary" size="32" />
+                    <span class="text-xs font-medium text-slate-700">
+                      {{ uploadingPhoto ? 'Đang tải ảnh lên...' : 'Đang xóa ảnh...' }}
+                    </span>
+                  </div>
+
+                  <!-- Hover Action Buttons Overlay -->
+                  <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2 z-10">
+                    <button
+                      type="button"
+                      class="px-3 py-1.5 rounded-lg bg-white/90 hover:bg-white text-slate-800 text-xs font-semibold shadow-md flex items-center gap-1.5 transition-transform active:scale-95"
+                      title="Xem phóng to"
+                      @click="openPreview(currentPhoto.url)"
+                    >
+                      <v-icon icon="mdi-magnify-plus-outline" size="16" />
+                      Xem lớn
+                    </button>
+
+                    <button
+                      v-if="$can('update', 'Equipment')"
+                      type="button"
+                      class="px-3 py-1.5 rounded-lg bg-primary hover:bg-primary-dark text-white text-xs font-semibold shadow-md flex items-center gap-1.5 transition-transform active:scale-95"
+                      title="Thêm ảnh mới"
+                      @click="triggerPhotoUpload"
+                    >
+                      <v-icon icon="mdi-camera-plus-outline" size="16" />
+                      Thêm ảnh
+                    </button>
+
+                    <button
+                      v-if="$can('update', 'Equipment') && currentPhoto.id && currentPhoto.id !== 'main'"
+                      type="button"
+                      class="p-1.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white shadow-md transition-transform active:scale-95"
+                      title="Xóa ảnh này"
+                      @click="confirmDeletePhoto(currentPhoto)"
+                    >
+                      <v-icon icon="mdi-delete-outline" size="16" />
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Thumbnails Strip (if multiple photos) -->
+                <div v-if="equipmentPhotos.length > 1" class="flex items-center gap-2 overflow-x-auto pb-1">
+                  <button
+                    v-for="(p, idx) in equipmentPhotos"
+                    :key="p.id || idx"
+                    type="button"
+                    class="relative w-14 h-14 shrink-0 rounded-lg overflow-hidden border-2 transition-all"
+                    :class="selectedPhotoIndex === idx ? 'border-primary ring-2 ring-primary/20 shadow-xs' : 'border-slate-200 opacity-70 hover:opacity-100'"
+                    @click="selectedPhotoIndex = idx"
+                  >
+                    <img :src="p.url" alt="Thumbnail" class="w-full h-full object-cover" />
+                  </button>
+
+                  <!-- Add more thumbnail button -->
+                  <button
+                    v-if="$can('update', 'Equipment')"
+                    type="button"
+                    class="w-14 h-14 shrink-0 rounded-lg border-2 border-dashed border-slate-300 hover:border-primary hover:bg-primary/5 text-slate-400 hover:text-primary flex flex-col items-center justify-center transition-colors"
+                    title="Tải thêm ảnh mới"
+                    @click="triggerPhotoUpload"
+                  >
+                    <v-icon icon="mdi-plus" size="20" />
+                  </button>
+                </div>
+
+                <!-- Quick Action Bar under photo -->
+                <div v-if="$can('update', 'Equipment')" class="pt-2 flex items-center justify-between border-t border-slate-100">
+                  <span class="text-[11px] text-slate-400 truncate max-w-[150px]">
+                    {{ currentPhoto.file_name || 'Ảnh thiết bị' }}
+                  </span>
+                  <div class="flex items-center gap-2">
+                    <v-btn
+                      size="small"
+                      variant="tonal"
+                      color="primary"
+                      density="comfortable"
+                      prepend-icon="mdi-upload"
+                      :loading="uploadingPhoto"
+                      @click="triggerPhotoUpload"
+                    >
+                      Tải thêm ảnh
+                    </v-btn>
+                  </div>
+                </div>
+              </div>
+
+              <!-- When NO photo exists: Interactive Drag & Drop Area -->
+              <div
+                v-else
+                class="relative border-2 border-dashed rounded-xl p-6 text-center transition-all cursor-pointer select-none"
+                :class="isDraggingOver ? 'border-primary bg-primary/5 scale-101' : 'border-slate-200 hover:border-primary/60 hover:bg-slate-50/80'"
+                @dragover.prevent="isDraggingOver = true"
+                @dragleave.prevent="isDraggingOver = false"
+                @drop.prevent="handleDrop"
+                @click="triggerPhotoUpload"
+              >
+                <!-- Loading State -->
+                <div v-if="uploadingPhoto" class="py-6 flex flex-col items-center justify-center gap-2">
+                  <v-progress-circular indeterminate color="primary" size="36" />
+                  <span class="text-xs font-semibold text-slate-700">Đang tải ảnh lên hệ thống...</span>
+                </div>
+
+                <!-- Empty State Content -->
+                <div v-else class="space-y-3">
+                  <div class="w-14 h-14 mx-auto rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                    <v-icon icon="mdi-cloud-upload-outline" size="28" />
+                  </div>
+                  <div>
+                    <p class="text-sm font-bold text-slate-800">
+                      Tải ảnh thiết bị lên
+                    </p>
+                    <p class="text-xs text-slate-500 mt-1">
+                      Kéo & thả ảnh vào đây, hoặc <span class="text-primary font-semibold underline underline-offset-2">nhấp để duyệt</span>
+                    </p>
+                    <p class="text-[11px] text-slate-400 mt-1">
+                      Hỗ trợ PNG, JPG, JPEG, WEBP (Tối đa 10MB)
+                    </p>
+                  </div>
+
+                  <div v-if="$can('update', 'Equipment')" class="pt-1">
+                    <v-btn
+                      color="primary"
+                      size="small"
+                      variant="tonal"
+                      prepend-icon="mdi-camera-plus"
+                      :loading="uploadingPhoto"
+                      @click.stop="triggerPhotoUpload"
+                    >
+                      Chọn ảnh tải lên
+                    </v-btn>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Broken Photos Card (if any reported) -->
+          <div v-if="brokenPhotos.length > 0" class="bg-amber-50/50 rounded-2xl p-5 border border-amber-200/80 shadow-xs">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <v-icon icon="mdi-alert-circle-outline" size="18" class="text-amber-600" />
+                <h4 class="text-xs font-bold text-amber-900 uppercase tracking-wider">
+                  Ảnh Hiện trường Báo hỏng
+                </h4>
+              </div>
+              <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                {{ brokenPhotos.length }} ảnh
+              </span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div
+                v-for="(bp, bIdx) in brokenPhotos"
+                :key="bp.id || bIdx"
+                class="rounded-lg overflow-hidden border border-amber-200 aspect-square cursor-pointer hover:opacity-90 transition-opacity bg-white"
+                @click="openPreview(bp.url)"
+              >
+                <img :src="bp.url" alt="Broken Photo" class="w-full h-full object-cover" />
+              </div>
             </div>
           </div>
         </div>
@@ -307,5 +616,32 @@ async function handleDelete() {
       :loading="actionLoading"
       @confirm="handleDelete"
     />
+
+    <!-- Delete Photo Dialog -->
+    <AppConfirmDialog
+      v-model="deletePhotoDialogOpen"
+      title="Xác nhận xóa ảnh"
+      message="Bạn có chắc chắn muốn xóa ảnh này khỏi thiết bị không? Hành động này không thể hoàn tác."
+      confirm-text="Xóa ảnh"
+      confirm-color="error"
+      :loading="deletingPhoto"
+      @confirm="handleDeletePhoto"
+    />
+
+    <!-- Image Preview Lightbox Dialog -->
+    <v-dialog v-model="previewDialogOpen" max-width="800">
+      <div class="bg-slate-900 rounded-2xl overflow-hidden p-4 relative">
+        <button
+          type="button"
+          class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-colors"
+          @click="previewDialogOpen = false"
+        >
+          <v-icon icon="mdi-close" size="18" />
+        </button>
+        <div class="flex items-center justify-center max-h-[80vh]">
+          <img :src="previewImageUrl" alt="Preview" class="max-w-full max-h-[75vh] object-contain rounded-lg" />
+        </div>
+      </div>
+    </v-dialog>
   </DefaultLayout>
 </template>

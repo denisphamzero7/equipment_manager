@@ -264,6 +264,18 @@ class EquipmentService
     }
 
     /**
+     * Xóa ảnh của thiết bị theo media ID.
+     */
+    public function deletePhoto(int $equipmentId, int $mediaId): RoomEquipment
+    {
+        $item = RoomEquipment::findOrFail($equipmentId);
+        $media = $item->media()->where('id', $mediaId)->firstOrFail();
+        $media->delete();
+
+        return $item->load('media');
+    }
+
+    /**
      * Thống kê tổng thể toàn khách sạn: Tổng số TV, Remote, Box, Wifi...
      */
     public function getHotelStats(?int $organizationId = null): array

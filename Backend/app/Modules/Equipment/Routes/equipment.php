@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('assign-to-room', [EquipmentController::class, 'assignToRoom']);
     Route::post('{id}/report-broken', [EquipmentController::class, 'reportBroken']);
     Route::post('{id}/upload-photo', [EquipmentController::class, 'uploadPhoto']);
+    Route::delete('{id}/photos/{mediaId}', [EquipmentController::class, 'deletePhoto']);
 
     // 5. Cập nhật trạng thái
     Route::patch('{id}/status', [EquipmentController::class, 'changeStatus']);

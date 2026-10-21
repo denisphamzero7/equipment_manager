@@ -24,6 +24,8 @@ const emit = defineEmits(['update:modelValue', 'submit'])
 
 const formRef = ref(null)
 const isEdit = ref(false)
+const photoFile = ref(null)
+const photoPreview = ref(null)
 
 const form = ref({
   equipment_model_id: 1,
@@ -38,8 +40,10 @@ const form = ref({
 watch(
   () => props.equipment,
   newVal => {
+    photoFile.value = null
     if (newVal) {
       isEdit.value = true
+      photoPreview.value = newVal.photo_url || newVal.photos?.[0]?.url || null
       form.value = {
         equipment_model_id: newVal.equipment_model_id || newVal.model?.id || 1,
         serial_number: newVal.serial_number || '',
@@ -51,6 +55,7 @@ watch(
       }
     } else {
       isEdit.value = false
+      photoPreview.value = null
       form.value = {
         equipment_model_id: 1,
         serial_number: '',
@@ -65,14 +70,40 @@ watch(
   { immediate: true }
 )
 
+function handlePhotoChange(event) {
+  const file = event.target?.files?.[0]
+  if (file) {
+    photoFile.value = file
+    photoPreview.value = URL.createObjectURL(file)
+  }
+}
+
+function removePhoto() {
+  photoFile.value = null
+  photoPreview.value = null
+}
+
 async function handleSubmit() {
   const { valid } = await formRef.value.validate()
   if (!valid) return
 
+  const payloadData = { ...form.value }
+  let dataToSend = payloadData
+  if (photoFile.value) {
+    const fd = new FormData()
+    Object.keys(payloadData).forEach(key => {
+      if (payloadData[key] !== null && payloadData[key] !== undefined && payloadData[key] !== '') {
+        fd.append(key, payloadData[key])
+      }
+    })
+    fd.append('photo', photoFile.value)
+    dataToSend = fd
+  }
+
   emit('submit', {
     isEdit: isEdit.value,
     id: props.equipment?.id,
-    data: { ...form.value },
+    data: dataToSend,
   })
 }
 </script>
@@ -176,6 +207,39 @@ async function handleSubmit() {
             placeholder="Thông tin bảo dưỡng, xuất xứ hoặc tình trạng đặc biệt..."
             hide-details="auto"
           />
+        </div>
+        <!-- Photo Upload -->
+        <div class="md:col-span-2">
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+            Hình ảnh thiết bị (Tùy chọn)
+          </label>
+          <div class="flex items-center gap-3">
+            <div
+              v-if="photoPreview"
+              class="relative w-16 h-16 rounded-xl overflow-hidden border border-slate-200 shrink-0 bg-slate-50"
+            >
+              <img :src="photoPreview" alt="Photo Preview" class="w-full h-full object-cover" />
+              <button
+                type="button"
+                class="absolute top-1 right-1 w-5 h-5 rounded-full bg-rose-500 text-white flex items-center justify-center hover:bg-rose-600 transition-colors shadow-xs"
+                title="Gỡ ảnh"
+                @click="removePhoto"
+              >
+                <v-icon icon="mdi-close" size="12" />
+              </button>
+            </div>
+            <v-file-input
+              accept="image/png, image/jpeg, image/jpg, image/webp"
+              placeholder="Chọn hình ảnh từ máy tính"
+              prepend-inner-icon="mdi-camera"
+              prepend-icon=""
+              hide-details="auto"
+              density="compact"
+              variant="outlined"
+              class="flex-1"
+              @change="handlePhotoChange"
+            />
+          </div>
         </div>
       </div>
     </v-form>

@@ -22,6 +22,7 @@ export const Endpoints = Object.freeze({
     ASSIGN_ROOM: '/api/equipments/assign-to-room',
     REPORT_BROKEN: id => `/api/equipments/${id}/report-broken`,
     UPLOAD_PHOTO: id => `/api/equipments/${id}/upload-photo`,
+    DELETE_PHOTO: (id, mediaId) => `/api/equipments/${id}/photos/${mediaId}`,
     STATS: '/api/equipments/stats',
     EXPORT: '/api/equipments/export',
     IMPORT: '/api/equipments/import',
