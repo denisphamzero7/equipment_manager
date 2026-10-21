@@ -15,7 +15,10 @@ export const useEquipmentStore = defineStore('equipment', {
     filters: {
       search: '',
       status: '',
+      block: '',
+      floor: null,
       room_id: null,
+      room_number: '',
       equipment_category_id: null,
       sort_by: 'id',
       sort_order: 'desc',
@@ -127,7 +130,10 @@ export const useEquipmentStore = defineStore('equipment', {
       this.filters = {
         search: '',
         status: '',
+        block: '',
+        floor: null,
         room_id: null,
+        room_number: '',
         equipment_category_id: null,
         sort_by: 'id',
         sort_order: 'desc',

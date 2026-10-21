@@ -29,6 +29,19 @@ class EquipmentService
         if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
+        if (!empty($filters['block'])) {
+            if ($filters['block'] === '__stock__') {
+                $query->whereNull('room_id');
+            } else {
+                $query->whereHas('room', fn ($q) => $q->where('block', $filters['block']));
+            }
+        }
+        if (isset($filters['floor']) && $filters['floor'] !== '' && $filters['floor'] !== null) {
+            $query->whereHas('room', fn ($q) => $q->where('floor', (int) $filters['floor']));
+        }
+        if (!empty($filters['room_number'])) {
+            $query->whereHas('room', fn ($q) => $q->where('room_number', 'like', "%{$filters['room_number']}%"));
+        }
         if (!empty($filters['room_id'])) {
             $query->where('room_id', $filters['room_id']);
         }
@@ -46,7 +59,9 @@ class EquipmentService
             $query->where(function ($q) use ($s) {
                 $q->where('serial_number', 'like', "%{$s}%")
                     ->orWhere('position_note', 'like', "%{$s}%")
-                    ->orWhere('note', 'like', "%{$s}%");
+                    ->orWhere('note', 'like', "%{$s}%")
+                    ->orWhereHas('model', fn ($mq) => $mq->where('name', 'like', "%{$s}%")->orWhere('brand', 'like', "%{$s}%"))
+                    ->orWhereHas('room', fn ($rq) => $rq->where('room_number', 'like', "%{$s}%")->orWhere('name', 'like', "%{$s}%"));
             });
         }
 

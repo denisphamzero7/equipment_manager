@@ -233,7 +233,7 @@ async function handleDelete() {
     <div v-else-if="equipment">
       <AppPageHeader
         :title="equipment.model?.name || equipment.name || 'Chi tiết Thiết bị'"
-        :subtitle="`Mã Serial: ${equipment.serial_number || 'Chưa gắn mã'} • ID #${equipment.id}`"
+        :subtitle="`Mã Serial: ${equipment.serial_number || 'Chưa gắn mã'} • ID #${equipment.id}${equipment.room ? ` • ${equipment.room.block || 'Khu chính'} • Tầng ${equipment.room.floor || 1} • Phòng ${equipment.room.room_number}` : ' • Đang lưu trong kho'}`"
         :breadcrumbs="[
           { title: 'Trang chủ', to: '/dashboard' },
           { title: 'Trang thiết bị', to: '/equipments' },
@@ -313,18 +313,83 @@ async function handleDelete() {
                 <span class="font-semibold text-slate-800">{{ equipment.model?.brand || '—' }}</span>
               </div>
 
-              <div>
-                <span class="text-slate-400 block mb-1">Phòng hiện tại:</span>
-                <span v-if="equipment.room" class="font-bold text-blue-600 text-sm">
-                  Phòng {{ equipment.room.room_number }} (Tầng {{ equipment.room.floor || 1 }})
-                </span>
-                <span v-else class="font-semibold text-sky-700 bg-sky-50 px-2 py-0.5 rounded">
-                  Trong kho
-                </span>
+              <!-- Location Detail Box: Block mấy, Tầng mấy, Phòng mấy -->
+              <div v-if="equipment.room" class="sm:col-span-2 p-4 bg-gradient-to-r from-blue-50/80 to-indigo-50/60 border border-blue-200/90 rounded-2xl">
+                <div class="flex items-center justify-between gap-2 mb-2.5">
+                  <span class="text-xs font-bold text-primary uppercase tracking-wider flex items-center gap-1.5">
+                    <v-icon icon="mdi-map-marker-radius" size="18" />
+                    <span>Vị Trí Lắp Đặt Chi Tiết (Phân Khu & Phòng)</span>
+                  </span>
+                  <router-link
+                    v-if="equipment.room.block && equipment.room.floor"
+                    :to="{ path: '/equipments/map-view', query: { block: equipment.room.block, floor: equipment.room.floor } }"
+                    class="text-xs font-bold text-primary hover:underline flex items-center gap-1"
+                  >
+                    <span>Xem trên Sơ đồ Map</span>
+                    <v-icon icon="mdi-arrow-right" size="14" />
+                  </router-link>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <!-- Block -->
+                  <div class="bg-white p-3 rounded-xl border border-blue-100 shadow-2xs">
+                    <span class="text-[10px] font-bold text-slate-400 block uppercase">1. Tòa nhà / Block</span>
+                    <span class="text-base font-extrabold text-primary flex items-center gap-1.5 mt-0.5">
+                      <v-icon icon="mdi-domain" size="18" />
+                      <span>{{ equipment.room.block || 'Khu chính' }}</span>
+                    </span>
+                  </div>
+
+                  <!-- Floor -->
+                  <div class="bg-white p-3 rounded-xl border border-blue-100 shadow-2xs">
+                    <span class="text-[10px] font-bold text-slate-400 block uppercase">2. Tầng</span>
+                    <span class="text-base font-extrabold text-slate-800 flex items-center gap-1.5 mt-0.5">
+                      <v-icon icon="mdi-stairs" size="18" />
+                      <span>Tầng {{ equipment.room.floor ?? '—' }}</span>
+                    </span>
+                  </div>
+
+                  <!-- Room -->
+                  <div class="bg-white p-3 rounded-xl border border-blue-100 shadow-2xs">
+                    <span class="text-[10px] font-bold text-slate-400 block uppercase">3. Số phòng</span>
+                    <span class="text-base font-black text-blue-700 flex items-center gap-1.5 mt-0.5">
+                      <v-icon icon="mdi-door" size="18" />
+                      <span>Phòng {{ equipment.room.room_number }}</span>
+                    </span>
+                  </div>
+                </div>
+
+                <div v-if="equipment.position_note" class="mt-3 pt-2.5 border-t border-blue-100 flex items-center gap-2 text-xs text-slate-600">
+                  <span class="font-bold text-slate-500">Vị trí cụ thể trong phòng:</span>
+                  <span class="font-bold text-slate-800">{{ equipment.position_note }}</span>
+                </div>
+              </div>
+
+              <!-- In Stock Box if no room -->
+              <div v-else class="sm:col-span-2 p-3.5 bg-sky-50/70 border border-sky-200 rounded-2xl flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center">
+                    <v-icon icon="mdi-package-variant-closed" size="22" />
+                  </div>
+                  <div>
+                    <p class="text-xs font-bold text-sky-900">Thiết bị đang lưu trong kho dự phòng</p>
+                    <p class="text-[11px] text-sky-700 mt-0.5">Chưa được lắp đặt vào bất kỳ Block / Tầng / Phòng nào</p>
+                  </div>
+                </div>
+                <AppButton
+                  v-if="$can('assign', 'Equipment')"
+                  variant="tonal"
+                  color="primary"
+                  icon="mdi-swap-horizontal"
+                  density="compact"
+                  @click="openAssignModal"
+                >
+                  Điều chuyển vào phòng
+                </AppButton>
               </div>
 
               <div>
-                <span class="text-slate-400 block mb-1">Vị trí trong phòng:</span>
+                <span class="text-slate-400 block mb-1">Vị trí lưu kho / Vị trí phụ:</span>
                 <span class="font-medium text-slate-800">{{ equipment.position_note || '—' }}</span>
               </div>
 
