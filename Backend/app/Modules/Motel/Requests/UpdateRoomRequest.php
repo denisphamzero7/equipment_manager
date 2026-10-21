@@ -17,7 +17,12 @@ class UpdateRoomRequest extends FormRequest
         return [
             'name' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'room_number' => 'sometimes|integer|min:1',
+            'room_number' => 'sometimes|string|max:50',
+            'bedroom_count' => 'nullable|integer|min:0|max:20',
+            'living_room_count' => 'nullable|integer|min:0|max:20',
+            'wifi_mode' => 'nullable|string|in:dedicated,shared,none',
+            'shared_wifi_room_id' => 'nullable|integer|exists:rooms,id',
+            'shared_wifi_note' => 'nullable|string|max:255',
             'block' => 'nullable|string|max:100',
             'floor' => 'nullable|integer',
             'grid_row' => 'nullable|integer',

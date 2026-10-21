@@ -253,7 +253,8 @@ class EquipmentService
                     ->where('equipment_model_id', $equipment->equipment_model_id)
                     ->count() : 0;
                 $sourceAfter = max(0, $sourceCurr - 1);
-                $sourceStandardQty = $sourceStd ? $sourceStd->standard_quantity : 0;
+                $sourceStaticQty = $sourceStd ? $sourceStd->standard_quantity : 0;
+                $sourceStandardQty = $sourceRoom ? $this->getDynamicStandardQuota($sourceRoom, $equipment->model, $sourceStaticQty) : $sourceStaticQty;
                 $willBeMissing = $sourceStd && ($sourceAfter < $sourceStandardQty);
 
                 if ($sourceRoom) {
@@ -289,7 +290,8 @@ class EquipmentService
             ->where('equipment_model_id', $equipment->equipment_model_id)
             ->first();
 
-        $standardQuota = $std ? $std->standard_quantity : 0;
+        $staticQuota = $std ? $std->standard_quantity : 0;
+        $standardQuota = $this->getDynamicStandardQuota($targetRoom, $equipment->model, $staticQuota);
 
         // Số lượng hiện có của model này trong phòng đích (không tính chính cá thể thiết bị này nếu đang ở đó)
         $currentCount = RoomEquipment::where('room_id', $targetRoom->id)
@@ -299,8 +301,12 @@ class EquipmentService
 
         $afterCount = $currentCount + 1;
         $modelName = $equipment->model?->name ?? 'Thiết bị';
+        $catCode = $equipment->model?->category?->code ?? '';
 
-        if ($standardQuota === 0) {
+        if ($catCode === 'wifi' && in_array($targetRoom->wifi_mode, ['shared', 'none'])) {
+            $status = 'over_quota';
+            $message = "Phòng {$targetRoom->room_number} đang ở chế độ 'Dùng ké Wifi'. Việc chuyển thêm Wifi Router vào phòng sẽ vượt quá nhu cầu trang bị.";
+        } elseif ($standardQuota === 0) {
             $status = 'no_standard';
             $message = "Hạng phòng '{$targetRoom->roomType?->name}' không có định mức chuẩn bắt buộc cho mẫu '{$modelName}' (thiết bị trang bị thêm ngoài định mức).";
         } elseif ($afterCount > $standardQuota) {
@@ -326,7 +332,8 @@ class EquipmentService
                     ->where('equipment_model_id', $equipment->equipment_model_id)
                     ->count();
                 $sourceAfter = max(0, $sourceCurr - 1);
-                $sourceStandardQty = $sourceStd ? $sourceStd->standard_quantity : 0;
+                $sourceStaticQty = $sourceStd ? $sourceStd->standard_quantity : 0;
+                $sourceStandardQty = $this->getDynamicStandardQuota($sourceRoom, $equipment->model, $sourceStaticQty);
                 $willBeMissing = $sourceStd && ($sourceAfter < $sourceStandardQty);
 
                 $sourceImpact = [
@@ -353,6 +360,9 @@ class EquipmentService
                 'block' => $targetRoom->block,
                 'floor' => $targetRoom->floor,
                 'room_type' => $targetRoom->roomType?->name ?? 'Tiêu chuẩn',
+                'bedroom_count' => (int) ($targetRoom->bedroom_count ?? 1),
+                'living_room_count' => (int) ($targetRoom->living_room_count ?? 0),
+                'wifi_mode' => $targetRoom->wifi_mode ?? 'dedicated',
             ],
             'model' => [
                 'id' => $equipment->model?->id,
@@ -500,12 +510,39 @@ class EquipmentService
     }
 
     /**
+     * Tính toán định mức chuẩn động theo cơ cấu phòng:
+     * - TV, Remote, Box: max(1, bedroom_count + living_room_count)
+     * - Wifi Router: 0 nếu dùng ké wifi (shared) hoặc không wifi (none); 1 nếu riêng (dedicated)
+     * - Các danh mục khác: giữ nguyên định mức từ bảng room_standard_equipments
+     */
+    public function getDynamicStandardQuota(Room $room, ?EquipmentModel $model, int $staticQuota = 0): int
+    {
+        $catCode = $model?->category?->code ?? '';
+
+        if (in_array($catCode, ['tv', 'remote', 'box'])) {
+            $bedroomCount = (int) ($room->bedroom_count ?? 1);
+            $livingRoomCount = (int) ($room->living_room_count ?? 0);
+            return max(1, $bedroomCount + $livingRoomCount);
+        }
+
+        if ($catCode === 'wifi') {
+            if ($room->wifi_mode === 'shared' || $room->wifi_mode === 'none') {
+                return 0;
+            }
+            return max(1, $staticQuota);
+        }
+
+        return $staticQuota;
+    }
+
+    /**
      * Chi tiết thiết bị trong 1 phòng cụ thể.
      */
     public function getRoomDetail(int $roomId): Room
     {
         return Room::with([
             'roomType',
+            'sharedWifiRoom',
             'equipments.model.category',
             'equipments.media',
             'standardEquipments.model.category',

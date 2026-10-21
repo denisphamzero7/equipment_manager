@@ -66,6 +66,7 @@ const tableHeaders = [
   { key: 'block', title: 'Khu vực / Block', width: '130px' },
   { key: 'floor', title: 'Tầng', width: '80px' },
   { key: 'room_type', title: 'Hạng phòng', width: '140px' },
+  { key: 'composition', title: 'Cơ cấu & Wifi', width: '150px' },
   { key: 'equipments_count', title: 'Trang thiết bị', width: '130px' },
   { key: 'price', title: 'Giá niêm yết', width: '130px' },
   { key: 'status', title: 'Trạng thái', width: '140px' },
@@ -762,6 +763,36 @@ function getStatusBadge(status) {
                   >
                     {{ room.name }}
                   </div>
+
+                  <!-- Room Layout & Wifi Mode Badges -->
+                  <div class="flex items-center gap-1 flex-wrap my-1.5">
+                    <span
+                      class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-50 border border-blue-200/80 text-blue-700 text-[10px] font-bold"
+                      :title="`${room.bedroom_count || 1} Phòng ngủ • ${room.living_room_count || 0} Phòng khách`"
+                    >
+                      <v-icon icon="mdi-bed" size="11" />
+                      {{ room.bedroom_count || 1 }} PN
+                      <template v-if="(room.living_room_count || 0) > 0">
+                        • <v-icon icon="mdi-sofa" size="11" /> {{ room.living_room_count }} PK
+                      </template>
+                    </span>
+
+                    <span
+                      v-if="room.wifi_mode === 'shared'"
+                      class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-purple-50 border border-purple-200 text-purple-700 text-[10px] font-semibold"
+                      :title="room.shared_wifi_note || (room.shared_wifi_room ? `Dùng ké Wifi P.${room.shared_wifi_room.room_number}` : 'Dùng ké Wifi phòng bên cạnh')"
+                    >
+                      <v-icon icon="mdi-wifi-arrow-left-right" size="11" />
+                      {{ room.shared_wifi_room ? `Ké P.${room.shared_wifi_room.room_number}` : 'Ké Wifi' }}
+                    </span>
+                    <span
+                      v-else-if="room.wifi_mode === 'none'"
+                      class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-500 text-[10px]"
+                      title="Không trang bị Wifi"
+                    >
+                      <v-icon icon="mdi-wifi-off" size="11" /> Không Wifi
+                    </span>
+                  </div>
                 </div>
 
                 <!-- Middle Info: Type & Price -->
@@ -875,6 +906,29 @@ function getStatusBadge(status) {
             <span class="text-xs font-medium text-slate-700">
               {{ item.roomType?.name || item.room_type?.name || 'Tiêu chuẩn' }}
             </span>
+          </template>
+
+          <!-- Cơ cấu phòng & Wifi -->
+          <template #item.composition="{ item }">
+            <div class="flex flex-col gap-0.5 text-xs">
+              <span class="inline-flex items-center gap-1 font-semibold text-slate-800">
+                <v-icon icon="mdi-bed" size="13" class="text-blue-600" />
+                {{ item.bedroom_count ?? 1 }} PN
+                <template v-if="(item.living_room_count ?? 0) > 0">
+                  • <v-icon icon="mdi-sofa" size="13" class="text-indigo-600" /> {{ item.living_room_count }} PK
+                </template>
+              </span>
+              <span v-if="item.wifi_mode === 'shared'" class="text-[11px] text-purple-700 flex items-center gap-0.5">
+                <v-icon icon="mdi-wifi-arrow-left-right" size="12" />
+                {{ item.shared_wifi_room ? `Ké P.${item.shared_wifi_room.room_number}` : 'Ké Wifi' }}
+              </span>
+              <span v-else-if="item.wifi_mode === 'none'" class="text-[11px] text-slate-400 flex items-center gap-0.5">
+                <v-icon icon="mdi-wifi-off" size="12" /> Không Wifi
+              </span>
+              <span v-else class="text-[11px] text-emerald-600 flex items-center gap-0.5">
+                <v-icon icon="mdi-wifi" size="12" /> Router riêng
+              </span>
+            </div>
           </template>
 
           <!-- Thiết bị trong phòng -->

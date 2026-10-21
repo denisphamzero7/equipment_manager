@@ -208,6 +208,26 @@ async function openWarehouseModal() {
   }
 }
 
+const suggestedPositions = computed(() => {
+  const list = []
+  const living = parseInt(roomDetail.value?.living_room_count, 10) || 0
+  const bedroom = parseInt(roomDetail.value?.bedroom_count, 10) || 1
+
+  if (living > 0) {
+    list.push('Phòng khách')
+  }
+  if (bedroom === 1) {
+    list.push('Phòng ngủ')
+  } else {
+    for (let i = 1; i <= bedroom; i++) {
+      list.push(`Phòng ngủ ${i}`)
+    }
+  }
+  list.push('Bàn làm việc')
+  list.push('Lối vào / Ban công')
+  return list
+})
+
 async function handleAssignFromWarehouse() {
   if (!selectedWarehouseEquipmentId.value || !selectedRoomId.value) return
   actionLoading.value = true
@@ -363,6 +383,31 @@ async function handleCreateSubmit({ data }) {
               <p class="text-xs text-slate-500 mt-0.5">
                 Loại phòng: <strong>{{ roomDetail.room_type || 'Tiêu chuẩn' }}</strong>
               </p>
+
+              <!-- Space Composition & Wifi Badges -->
+              <div class="flex items-center gap-1.5 mt-2.5 flex-wrap">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold">
+                  <v-icon icon="mdi-bed" size="13" />
+                  {{ roomDetail.bedroom_count ?? 1 }} Phòng ngủ
+                  <template v-if="(roomDetail.living_room_count ?? 0) > 0">
+                    • <v-icon icon="mdi-sofa" size="13" /> {{ roomDetail.living_room_count }} Phòng khách
+                  </template>
+                </span>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold">
+                  <v-icon icon="mdi-television" size="13" class="text-blue-600" />
+                  Định mức TV: {{ Math.max(1, (roomDetail.bedroom_count ?? 1) + (roomDetail.living_room_count ?? 0)) }} bộ
+                </span>
+                <span v-if="roomDetail.wifi_mode === 'shared'" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-purple-50 border border-purple-200 text-purple-700 text-xs font-semibold">
+                  <v-icon icon="mdi-wifi-arrow-left-right" size="13" />
+                  Dùng ké Wifi {{ roomDetail.shared_wifi_note || (roomDetail.shared_wifi_room ? `P.${roomDetail.shared_wifi_room.room_number}` : 'phòng bên cạnh') }}
+                </span>
+                <span v-else-if="roomDetail.wifi_mode === 'none'" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-100 border border-slate-200 text-slate-500 text-xs">
+                  <v-icon icon="mdi-wifi-off" size="13" /> Không Wifi
+                </span>
+                <span v-else class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold">
+                  <v-icon icon="mdi-wifi" size="13" /> Router riêng (1 bộ)
+                </span>
+              </div>
             </div>
 
             <div class="flex items-center gap-2">
@@ -624,6 +669,21 @@ async function handleCreateSubmit({ data }) {
             hide-details
             prepend-inner-icon="mdi-map-marker-outline"
           />
+
+          <!-- Gợi ý vị trí không gian con nhanh -->
+          <div v-if="suggestedPositions.length" class="flex items-center gap-1.5 flex-wrap mt-2">
+            <span class="text-[11px] text-slate-400 font-medium">Gợi ý nhanh:</span>
+            <button
+              v-for="pos in suggestedPositions"
+              :key="pos"
+              type="button"
+              class="px-2 py-0.5 rounded-full text-[11px] font-medium transition cursor-pointer"
+              :class="warehousePositionNote === pos ? 'bg-primary text-white font-bold' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'"
+              @click="warehousePositionNote = pos"
+            >
+              {{ pos }}
+            </button>
+          </div>
         </div>
       </div>
 

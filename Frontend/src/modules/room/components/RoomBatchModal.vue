@@ -36,6 +36,9 @@ const form = ref({
   room_type_id: null,
   price: 500000,
   status: 'ready',
+  bedroom_count: 1,
+  living_room_count: 0,
+  wifi_mode: 'dedicated',
 })
 
 // Quick calculation of rooms to generate
@@ -92,6 +95,9 @@ async function handleSubmit() {
       room_type_id: form.value.room_type_id ? parseInt(form.value.room_type_id, 10) : null,
       price: parseFloat(form.value.price) || 0,
       status: form.value.status || 'ready',
+      bedroom_count: Math.max(0, parseInt(form.value.bedroom_count, 10) || 1),
+      living_room_count: Math.max(0, parseInt(form.value.living_room_count, 10) || 0),
+      wifi_mode: form.value.wifi_mode || 'dedicated',
     }
 
     const res = await roomService.batchGenerate(payload)
@@ -275,6 +281,59 @@ async function handleSubmit() {
             color="primary"
             prepend-inner-icon="mdi-cash"
           />
+        </div>
+
+        <!-- Cơ cấu phòng & Wifi mặc định -->
+        <div class="sm:col-span-2 p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5">
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+            <v-icon icon="mdi-home-analytics" size="16" color="primary" />
+            <span>Cơ cấu không gian &amp; Định mức thiết bị</span>
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+            <div>
+              <span class="block text-slate-500 mb-1 font-semibold">Phòng ngủ / phòng:</span>
+              <v-text-field
+                v-model.number="form.bedroom_count"
+                type="number"
+                min="0"
+                max="10"
+                density="compact"
+                variant="outlined"
+                hide-details
+                prepend-inner-icon="mdi-bed"
+              />
+            </div>
+            <div>
+              <span class="block text-slate-500 mb-1 font-semibold">Phòng khách / phòng:</span>
+              <v-text-field
+                v-model.number="form.living_room_count"
+                type="number"
+                min="0"
+                max="10"
+                density="compact"
+                variant="outlined"
+                hide-details
+                prepend-inner-icon="mdi-sofa"
+              />
+            </div>
+            <div>
+              <span class="block text-slate-500 mb-1 font-semibold">Chế độ Wifi:</span>
+              <v-select
+                v-model="form.wifi_mode"
+                :items="[
+                  { title: 'Router riêng (dedicated)', value: 'dedicated' },
+                  { title: 'Dùng ké wifi (shared)', value: 'shared' },
+                  { title: 'Không wifi (none)', value: 'none' },
+                ]"
+                density="compact"
+                variant="outlined"
+                hide-details
+              />
+            </div>
+          </div>
+          <p class="text-[11px] text-blue-700 font-medium">
+            👉 Mỗi phòng sẽ tự động tính định mức: <strong>{{ Math.max(1, (form.bedroom_count || 1) + (form.living_room_count || 0)) }} Tivi</strong> &amp; <strong>{{ Math.max(1, (form.bedroom_count || 1) + (form.living_room_count || 0)) }} Remote</strong>.
+          </p>
         </div>
       </div>
 

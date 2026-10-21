@@ -23,6 +23,11 @@ class Room extends Model implements HasMedia
         'name',
         'description',
         'room_number',
+        'bedroom_count',
+        'living_room_count',
+        'wifi_mode',
+        'shared_wifi_room_id',
+        'shared_wifi_note',
         'block',
         'floor',
         'grid_row',
@@ -39,6 +44,9 @@ class Room extends Model implements HasMedia
         'price' => 'decimal:2',
         'organization_id' => 'integer',
         'room_number' => 'string',
+        'bedroom_count' => 'integer',
+        'living_room_count' => 'integer',
+        'shared_wifi_room_id' => 'integer',
         'room_type_id' => 'integer',
         'floor' => 'integer',
         'grid_row' => 'integer',
@@ -59,6 +67,11 @@ class Room extends Model implements HasMedia
     public function standardEquipments()
     {
         return $this->hasMany(\App\Modules\Equipment\Models\RoomStandardEquipment::class, 'room_type_id', 'room_type_id');
+    }
+
+    public function sharedWifiRoom()
+    {
+        return $this->belongsTo(\App\Modules\Motel\Models\Room::class, 'shared_wifi_room_id');
     }
 
     public function scopeFilter($query, array $filters)

@@ -18,13 +18,34 @@ class EquipmentMapViewResource extends JsonResource
         $brokenCount = $equipments->where('status', EquipmentStatusEnum::Broken)->count();
         $maintenanceCount = $equipments->where('status', EquipmentStatusEnum::Maintenance)->count();
 
+        // Định mức động theo cơ cấu phòng:
+        // - TV, Remote, Box: max(1, bedroom_count + living_room_count)
+        // - Wifi Router: 0 nếu dùng ké wifi (shared) hoặc không dùng (none)
+        $bedroomCount = (int) ($room->bedroom_count ?? 1);
+        $livingRoomCount = (int) ($room->living_room_count ?? 0);
+        $tvSpaces = max(1, $bedroomCount + $livingRoomCount);
+        $wifiMode = $room->wifi_mode ?? 'dedicated';
+
         // Kiểm tra thiếu so với định mức
         $modelCounts = $equipments->groupBy('equipment_model_id')->map->count();
         $missingCount = 0;
         foreach ($standardAllocations as $std) {
+            $catCode = $std->model?->category?->code ?? '';
             $actual = $modelCounts[$std->equipment_model_id] ?? 0;
-            if ($actual < $std->standard_quantity) {
-                $missingCount += ($std->standard_quantity - $actual);
+            $required = (int) $std->standard_quantity;
+
+            if (in_array($catCode, ['tv', 'remote', 'box'])) {
+                $required = $tvSpaces;
+            } elseif ($catCode === 'wifi') {
+                if ($wifiMode === 'shared' || $wifiMode === 'none') {
+                    $required = 0;
+                } else {
+                    $required = max(1, $required);
+                }
+            }
+
+            if ($actual < $required) {
+                $missingCount += ($required - $actual);
             }
         }
 
@@ -72,6 +93,16 @@ class EquipmentMapViewResource extends JsonResource
             'floor' => $room->floor ?? 1,
             'grid_row' => $room->grid_row,
             'grid_col' => $room->grid_col,
+            'bedroom_count' => $bedroomCount,
+            'living_room_count' => $livingRoomCount,
+            'wifi_mode' => $wifiMode,
+            'shared_wifi_room_id' => $room->shared_wifi_room_id,
+            'shared_wifi_room' => $room->sharedWifiRoom ? [
+                'id' => $room->sharedWifiRoom->id,
+                'room_number' => (string) $room->sharedWifiRoom->room_number,
+                'name' => $room->sharedWifiRoom->name,
+            ] : null,
+            'shared_wifi_note' => $room->shared_wifi_note,
             'room_status' => $room->status?->value ?? $room->status,
             'room_type_id' => $room->room_type_id,
             'room_type' => $room->roomType?->name ?? 'Tiêu chuẩn',

@@ -9,6 +9,9 @@ import AppButton from '@/core/components/AppButton.vue'
 import AppModal from '@/core/components/AppModal.vue'
 import AppStatusBadge from '@/core/components/AppStatusBadge.vue'
 import { resolveMediaUrl } from '@/core/helpers/formatters'
+import RoomFormModal from '@/modules/room/components/RoomFormModal.vue'
+import { roomService } from '@/modules/room/services/roomService'
+import { toast } from '@/core/helpers/toast'
 
 const router = useRouter()
 const realtimeStore = useRealtimeStore()
@@ -19,6 +22,7 @@ const hotelBlockOrder = ['Block A', 'Block B', 'Block C', 'Block D', 'Condos 1',
 // Data state
 const loading = ref(true)
 const rawRooms = ref([])
+const roomTypesList = ref([])
 
 // Filter states
 const selectedBlock = ref('')
@@ -30,6 +34,10 @@ const searchQuery = ref('')
 const selectedRoomDetail = ref(null)
 const roomDetailModalOpen = ref(false)
 const roomDetailLoading = ref(false)
+
+// Edit room modal directly from Map View
+const editRoomModalOpen = ref(false)
+const roomForEdit = ref(null)
 
 // Lightbox state
 const lightboxOpen = ref(false)
@@ -62,9 +70,31 @@ function getCategoryIcon(code) {
   return map[code?.toLowerCase()] || 'mdi-devices'
 }
 
-onMounted(() => {
+onMounted(async () => {
   loadMapViewData()
+  try {
+    roomTypesList.value = await roomService.getRoomTypes()
+  } catch (err) {
+    console.error('Failed to load room types:', err)
+  }
 })
+
+function openEditRoomModal() {
+  if (!selectedRoomDetail.value) return
+  roomForEdit.value = {
+    ...selectedRoomDetail.value,
+    ...(selectedRoomDetail.value.room || {}),
+  }
+  editRoomModalOpen.value = true
+}
+
+async function handleRoomSaved() {
+  await loadMapViewData(true)
+  if (selectedRoomDetail.value?.id) {
+    await openRoomDetail({ id: selectedRoomDetail.value.id })
+  }
+  toast.success('Cập nhật cơ cấu phòng thành công!')
+}
 
 // Tự động cập nhật sơ đồ phòng Real-time khi có sự kiện từ WebSocket
 watch(
@@ -538,7 +568,7 @@ function getBadgeIndicatorClass(room) {
             <div
               v-for="room in floorGroup.rooms"
               :key="room.id"
-              class="rounded-xl p-3 sm:p-3.5 border shadow-2xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between h-32 relative overflow-hidden active:scale-[0.98]"
+              class="rounded-xl p-3 sm:p-3.5 border shadow-2xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between min-h-[136px] relative overflow-hidden active:scale-[0.98]"
               :class="getRoomColorClass(room)"
               @click="openRoomDetail(room)"
             >
@@ -554,14 +584,23 @@ function getBadgeIndicatorClass(room) {
                 />
               </div>
 
-              <!-- Center Room Name / Floor -->
+              <!-- Center Room Name / Floor / Layout -->
               <div class="my-auto py-1">
                 <p class="text-[11px] sm:text-xs font-semibold text-slate-700 truncate" :title="room.name">
                   {{ room.name || `Phòng ${room.room_number}` }}
                 </p>
-                <p class="text-[10px] sm:text-[11px] text-slate-400 truncate mt-0.5">
-                  Tầng {{ room.floor || '1' }} • {{ room.block || 'Chính' }}
-                </p>
+                <div class="flex items-center gap-1 mt-0.5 flex-wrap">
+                  <span class="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 text-[9px] font-bold">
+                    {{ room.bedroom_count ?? 1 }}PN<template v-if="(room.living_room_count ?? 0) > 0"> + {{ room.living_room_count }}PK</template>
+                  </span>
+                  <span
+                    v-if="room.wifi_mode === 'shared'"
+                    class="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-purple-100 text-purple-700 text-[9px] font-semibold"
+                    :title="room.shared_wifi_note || (room.shared_wifi_room ? `Dùng ké Wifi P.${room.shared_wifi_room.room_number}` : 'Dùng ké Wifi phòng bên cạnh')"
+                  >
+                    <v-icon icon="mdi-wifi-arrow-left-right" size="10" /> Ké Wifi
+                  </span>
+                </div>
               </div>
 
               <!-- Bottom Devices Stats -->
@@ -641,6 +680,49 @@ function getBadgeIndicatorClass(room) {
               </p>
             </div>
           </div>
+        </div>
+
+        <!-- Room Space Composition & Dynamic Quota Info Banner -->
+        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-slate-800 flex items-center gap-1">
+                <v-icon icon="mdi-home-analytics" size="16" color="primary" />
+                Cơ cấu không gian:
+              </span>
+              <span class="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-bold text-[11px]">
+                {{ selectedRoomDetail.bedroom_count ?? 1 }} Phòng ngủ
+                <template v-if="(selectedRoomDetail.living_room_count ?? 0) > 0">
+                  • {{ selectedRoomDetail.living_room_count }} Phòng khách
+                </template>
+              </span>
+            </div>
+            <div class="text-[11px] text-slate-500 flex items-center gap-2.5 flex-wrap">
+              <span>📺 Định mức TV & Remote: <strong>{{ Math.max(1, (selectedRoomDetail.bedroom_count ?? 1) + (selectedRoomDetail.living_room_count ?? 0)) }} bộ</strong></span>
+              <span>•</span>
+              <span v-if="selectedRoomDetail.wifi_mode === 'shared'" class="text-purple-700 font-semibold flex items-center gap-1">
+                <v-icon icon="mdi-wifi-arrow-left-right" size="13" />
+                Dùng ké Wifi: {{ selectedRoomDetail.shared_wifi_note || (selectedRoomDetail.shared_wifi_room ? `Phòng ${selectedRoomDetail.shared_wifi_room.room_number}` : 'Phòng bên cạnh') }}
+              </span>
+              <span v-else-if="selectedRoomDetail.wifi_mode === 'none'" class="text-slate-400">
+                🚫 Không có Wifi
+              </span>
+              <span v-else class="text-emerald-700 font-semibold flex items-center gap-1">
+                <v-icon icon="mdi-wifi" size="13" />
+                Router riêng (1 bộ)
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs flex items-center gap-1 shrink-0 transition shadow-2xs cursor-pointer"
+            title="Chỉnh sửa số phòng ngủ, phòng khách hoặc chế độ Wifi"
+            @click="openEditRoomModal"
+          >
+            <v-icon icon="mdi-pencil-outline" size="14" color="primary" />
+            <span>Sửa cơ cấu phòng</span>
+          </button>
         </div>
 
         <!-- Missing Equipments Alert (if any) -->
@@ -788,5 +870,14 @@ function getBadgeIndicatorClass(room) {
         </div>
       </div>
     </v-dialog>
+
+    <!-- Modal chỉnh sửa phòng / cơ cấu nhanh từ Map View -->
+    <RoomFormModal
+      v-model="editRoomModalOpen"
+      :room="roomForEdit"
+      :room-types="roomTypesList"
+      :existing-blocks="existingBlocks"
+      @saved="handleRoomSaved"
+    />
   </DefaultLayout>
 </template>

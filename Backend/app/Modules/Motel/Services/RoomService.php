@@ -49,7 +49,7 @@ class RoomService
         $sortBy = $filters['sort_by'] ?? 'room_number';
         $sortOrder = strtolower($filters['sort_order'] ?? 'asc') === 'desc' ? 'desc' : 'asc';
 
-        return RoomModel::with(['roomType'])
+        return RoomModel::with(['roomType', 'sharedWifiRoom'])
             ->withCount('equipments')
             ->filter($filters)
             ->orderBy($sortBy, $sortOrder)
@@ -67,7 +67,7 @@ class RoomService
 
     public function getRoomById(int $id): RoomModel
     {
-        return RoomModel::with(['roomType', 'equipments.model.category'])->findOrFail($id);
+        return RoomModel::with(['roomType', 'sharedWifiRoom', 'equipments.model.category'])->findOrFail($id);
     }
 
     public function createRoom(array $data): RoomModel
@@ -178,6 +178,9 @@ class RoomService
         $roomTypeId = $data['room_type_id'] ?? null;
         $price = $data['price'] ?? 0;
         $status = $data['status'] ?? RoomStatusEnum::Ready->value;
+        $bedroomCount = isset($data['bedroom_count']) ? (int) $data['bedroom_count'] : 1;
+        $livingRoomCount = isset($data['living_room_count']) ? (int) $data['living_room_count'] : 0;
+        $wifiMode = $data['wifi_mode'] ?? 'dedicated';
 
         if ($endNum < $startNum) {
             throw new \InvalidArgumentException('Số phòng kết thúc phải lớn hơn hoặc bằng số bắt đầu.');
@@ -186,7 +189,7 @@ class RoomService
         $created = [];
         $colIndex = 1;
 
-        DB::transaction(function () use ($orgId, $block, $floor, $startNum, $endNum, $prefix, $roomTypeId, $price, $status, &$created, &$colIndex) {
+        DB::transaction(function () use ($orgId, $block, $floor, $startNum, $endNum, $prefix, $roomTypeId, $price, $status, $bedroomCount, $livingRoomCount, $wifiMode, &$created, &$colIndex) {
             for ($num = $startNum; $num <= $endNum; $num++) {
                 // Kiểm tra nếu số phòng đã tồn tại trong tổ chức thì bỏ qua
                 $exists = RoomModel::where('organization_id', $orgId)
@@ -207,6 +210,9 @@ class RoomService
                     'room_type_id' => $roomTypeId,
                     'price' => $price,
                     'status' => $status,
+                    'bedroom_count' => $bedroomCount,
+                    'living_room_count' => $livingRoomCount,
+                    'wifi_mode' => $wifiMode,
                     'organization_id' => $orgId,
                 ]);
 

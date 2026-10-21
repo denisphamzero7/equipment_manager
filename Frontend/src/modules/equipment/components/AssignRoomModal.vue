@@ -76,6 +76,28 @@ async function fetchQuotaCheck(targetId) {
   }
 }
 
+const targetPositions = computed(() => {
+  if (targetMode.value === 'warehouse') {
+    return ['Kho trung tâm', 'Kho bảo trì', 'Dự phòng khẩn cấp']
+  }
+  const tr = quotaResult.value?.target_room
+  const list = []
+  const living = tr?.living_room_count || 0
+  const bedroom = tr?.bedroom_count || 1
+
+  if (living > 0) list.push('Phòng khách')
+  if (bedroom === 1) {
+    list.push('Phòng ngủ')
+  } else {
+    for (let i = 1; i <= bedroom; i++) {
+      list.push(`Phòng ngủ ${i}`)
+    }
+  }
+  list.push('Bàn làm việc')
+  list.push('Lối vào / Ban công')
+  return list
+})
+
 // Can submit validation
 const canSubmit = computed(() => {
   if (props.loading) return false
@@ -165,6 +187,21 @@ async function handleSubmit() {
         </div>
 
         <div v-else-if="quotaResult" class="space-y-2.5">
+          <!-- Target Room Composition Tag -->
+          <div v-if="quotaResult.target_room" class="flex items-center justify-between px-3 py-2 bg-slate-100/80 rounded-xl text-xs border border-slate-200">
+            <span class="font-bold text-slate-700 flex items-center gap-1">
+              <v-icon icon="mdi-door" size="15" color="primary" />
+              Phòng {{ quotaResult.target_room.room_number }} ({{ quotaResult.target_room.block }})
+            </span>
+            <div class="flex items-center gap-2">
+              <span class="text-blue-700 font-semibold text-[11px] bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                {{ quotaResult.target_room.bedroom_count || 1 }} PN • {{ quotaResult.target_room.living_room_count || 0 }} PK
+              </span>
+              <span v-if="quotaResult.target_room.wifi_mode === 'shared'" class="text-purple-700 text-[11px] font-semibold bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
+                Ké Wifi
+              </span>
+            </div>
+          </div>
           <!-- 1. Over-Quota Warning (Phòng đã có đủ/thừa thiết bị) -->
           <div
             v-if="quotaResult.status === 'over_quota'"
@@ -289,6 +326,21 @@ async function handleSubmit() {
             density="compact"
             variant="outlined"
           />
+
+          <!-- Gợi ý nhanh vị trí trong phòng -->
+          <div v-if="targetPositions.length" class="flex items-center gap-1.5 flex-wrap mt-2">
+            <span class="text-[11px] text-slate-400 font-medium">Gợi ý nhanh:</span>
+            <button
+              v-for="pos in targetPositions"
+              :key="pos"
+              type="button"
+              class="px-2 py-0.5 rounded-full text-[11px] font-medium transition cursor-pointer"
+              :class="positionNote === pos ? 'bg-primary text-white font-bold' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'"
+              @click="positionNote = pos"
+            >
+              {{ pos }}
+            </button>
+          </div>
         </div>
       </div>
     </v-form>

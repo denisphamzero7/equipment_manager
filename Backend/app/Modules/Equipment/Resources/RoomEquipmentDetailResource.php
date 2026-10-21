@@ -92,13 +92,33 @@ class RoomEquipmentDetailResource extends JsonResource
         }
 
         // 2. So sánh với định mức chuẩn để phát hiện thiết bị THIẾU
+        // Định mức động theo cơ cấu phòng:
+        // - TV, Remote, Box: max(1, bedroom_count + living_room_count)
+        // - Wifi Router: 0 nếu dùng ké wifi (shared) hoặc không wifi (none)
+        $bedroomCount = (int) ($room->bedroom_count ?? 1);
+        $livingRoomCount = (int) ($room->living_room_count ?? 0);
+        $tvSpaces = max(1, $bedroomCount + $livingRoomCount);
+        $wifiMode = $room->wifi_mode ?? 'dedicated';
+
         $missingEquipments = [];
         $totalMissingCount = 0;
 
         foreach ($standardAllocations as $std) {
             $modelId = $std->equipment_model_id;
             $stdModel = $std->model;
-            $requiredQty = $std->standard_quantity;
+            $catCode = $stdModel?->category?->code ?? '';
+            $requiredQty = (int) $std->standard_quantity;
+
+            if (in_array($catCode, ['tv', 'remote', 'box'])) {
+                $requiredQty = $tvSpaces;
+            } elseif ($catCode === 'wifi') {
+                if ($wifiMode === 'shared' || $wifiMode === 'none') {
+                    $requiredQty = 0;
+                } else {
+                    $requiredQty = max(1, $requiredQty);
+                }
+            }
+
             $actualQty = $actualModelCounts[$modelId] ?? 0;
 
             if ($actualQty < $requiredQty) {
@@ -108,6 +128,7 @@ class RoomEquipmentDetailResource extends JsonResource
                     'model_id' => $modelId,
                     'model_name' => $stdModel?->name ?? 'Thiết bị chuẩn',
                     'name' => $stdModel?->name ?? 'Thiết bị chuẩn',
+                    'category_code' => $catCode,
                     'category_name' => $stdModel?->category?->name ?? 'Khác',
                     'standard_quantity' => $requiredQty,
                     'actual_quantity' => $actualQty,
@@ -127,6 +148,16 @@ class RoomEquipmentDetailResource extends JsonResource
             'room_number' => $room->room_number,
             'name' => $room->name,
             'room_type' => $room->roomType?->name ?? 'Phòng Tiêu chuẩn',
+            'bedroom_count' => $bedroomCount,
+            'living_room_count' => $livingRoomCount,
+            'wifi_mode' => $wifiMode,
+            'shared_wifi_room_id' => $room->shared_wifi_room_id,
+            'shared_wifi_room' => $room->sharedWifiRoom ? [
+                'id' => $room->sharedWifiRoom->id,
+                'room_number' => (string) $room->sharedWifiRoom->room_number,
+                'name' => $room->sharedWifiRoom->name,
+            ] : null,
+            'shared_wifi_note' => $room->shared_wifi_note,
             'compliance_status' => $isCompliant ? 'compliant' : 'non_compliant',
             'room' => [
                 'id' => $room->id,
@@ -136,6 +167,16 @@ class RoomEquipmentDetailResource extends JsonResource
                 'floor' => $room->floor,
                 'grid_row' => $room->grid_row,
                 'grid_col' => $room->grid_col,
+                'bedroom_count' => $bedroomCount,
+                'living_room_count' => $livingRoomCount,
+                'wifi_mode' => $wifiMode,
+                'shared_wifi_room_id' => $room->shared_wifi_room_id,
+                'shared_wifi_room' => $room->sharedWifiRoom ? [
+                    'id' => $room->sharedWifiRoom->id,
+                    'room_number' => (string) $room->sharedWifiRoom->room_number,
+                    'name' => $room->sharedWifiRoom->name,
+                ] : null,
+                'shared_wifi_note' => $room->shared_wifi_note,
                 'status' => $room->status?->value ?? $room->status,
                 'room_type_id' => $room->room_type_id,
                 'room_type' => $room->roomType?->name ?? 'Tiêu chuẩn',

@@ -62,6 +62,9 @@ class RoomController extends Controller
             'room_type_id' => 'nullable|integer',
             'price' => 'nullable|numeric|min:0',
             'status' => 'nullable|string',
+            'bedroom_count' => 'nullable|integer|min:0|max:20',
+            'living_room_count' => 'nullable|integer|min:0|max:20',
+            'wifi_mode' => 'nullable|string|in:dedicated,shared,none',
         ]);
 
         $result = $this->roomService->batchGenerate($validated);

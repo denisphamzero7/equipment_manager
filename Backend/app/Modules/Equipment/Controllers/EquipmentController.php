@@ -275,7 +275,7 @@ class EquipmentController extends Controller
         if ($orgId) {
             $query->where('organization_id', $orgId);
         }
-        $rooms = $query->select(['id', 'room_number', 'block', 'floor', 'room_type_id'])
+        $rooms = $query->select(['id', 'room_number', 'block', 'floor', 'room_type_id', 'bedroom_count', 'living_room_count', 'wifi_mode', 'shared_wifi_note'])
             ->orderBy('block', 'asc')
             ->orderBy('floor', 'asc')
             ->orderBy('room_number', 'asc')
@@ -286,6 +286,10 @@ class EquipmentController extends Controller
                 'block' => $r->block ?: 'Chưa phân khu',
                 'floor' => $r->floor ?? 1,
                 'room_type' => $r->roomType?->name ?: 'Tiêu chuẩn',
+                'bedroom_count' => $r->bedroom_count ?? 1,
+                'living_room_count' => $r->living_room_count ?? 0,
+                'wifi_mode' => $r->wifi_mode ?? 'dedicated',
+                'shared_wifi_note' => $r->shared_wifi_note,
             ]);
 
         return $this->success($rooms, 'Lấy danh sách phòng thành công');
