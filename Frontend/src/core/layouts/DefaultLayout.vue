@@ -115,6 +115,7 @@ function handleNavClick() {
     <v-navigation-drawer
       v-model="drawer"
       :rail="!mobile && rail"
+      :rail-width="68"
       :temporary="mobile"
       :permanent="!mobile"
       elevation="0"
@@ -123,12 +124,15 @@ function handleNavClick() {
       :width="260"
     >
       <!-- Logo / Header -->
-      <div class="p-4 border-b border-slate-100 flex items-center justify-between">
-        <div class="flex items-center gap-3 overflow-hidden">
+      <div
+        class="h-16 border-b border-slate-100 flex items-center transition-all overflow-hidden"
+        :class="!mobile && rail ? 'justify-center px-2' : 'justify-between px-4'"
+      >
+        <div v-if="mobile || !rail" class="flex items-center gap-3 overflow-hidden min-w-0">
           <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center flex-shrink-0 text-white shadow-sm shadow-blue-500/20">
             <v-icon icon="mdi-shield-home" size="20" />
           </div>
-          <div v-if="mobile || !rail" class="overflow-hidden">
+          <div class="overflow-hidden">
             <h2 class="text-sm font-bold text-slate-800 tracking-tight truncate">
               Equipment Hub
             </h2>
@@ -138,16 +142,30 @@ function handleNavClick() {
           </div>
         </div>
 
+        <!-- Toggle Button when expanded -->
         <v-btn
-          v-if="!mobile"
-          :icon="rail ? 'mdi-chevron-right' : 'mdi-chevron-left'"
+          v-if="!mobile && !rail"
+          icon="mdi-chevron-left"
           variant="text"
           density="comfortable"
           size="small"
           color="secondary"
-          @click="rail = !rail"
+          title="Thu gọn menu"
+          @click="rail = true"
         />
 
+        <!-- Centered Expand Button when collapsed (rail mode) -->
+        <button
+          v-else-if="!mobile && rail"
+          type="button"
+          class="w-10 h-10 rounded-xl hover:bg-slate-100 text-slate-500 hover:text-blue-600 flex items-center justify-center transition cursor-pointer"
+          title="Mở rộng menu"
+          @click="rail = false"
+        >
+          <v-icon icon="mdi-chevron-right" size="22" />
+        </button>
+
+        <!-- Close Button on Mobile -->
         <v-btn
           v-else
           icon="mdi-close"
@@ -199,30 +217,31 @@ function handleNavClick() {
     <!-- Main Content Area -->
     <div class="flex-1 flex flex-col min-w-0">
       <!-- Top Navbar -->
-      <header class="h-16 bg-white border-b border-slate-200/80 px-3 sm:px-6 flex items-center justify-between sticky top-0 z-30">
-        <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-          <v-btn
-            icon="mdi-menu"
-            variant="text"
-            density="comfortable"
-            size="small"
-            class="md:hidden flex-shrink-0"
-            @click="drawer = !drawer"
-          />
+      <header class="h-16 bg-white border-b border-slate-200/80 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30">
+        <div class="flex items-center gap-2.5 sm:gap-4 min-w-0">
+          <!-- Toggle Button for Sidebar (Available on both Mobile and Desktop) -->
+          <button
+            type="button"
+            class="w-9 h-9 rounded-xl hover:bg-slate-100 text-slate-600 hover:text-slate-900 flex items-center justify-center transition cursor-pointer flex-shrink-0 border border-slate-200/70 shadow-2xs"
+            :title="mobile ? 'Mở danh mục' : (rail ? 'Mở rộng menu' : 'Thu gọn menu')"
+            @click="mobile ? (drawer = !drawer) : (rail = !rail)"
+          >
+            <v-icon :icon="mobile ? 'mdi-menu' : (rail ? 'mdi-menu-open' : 'mdi-menu')" size="20" />
+          </button>
 
           <!-- Organization Switcher Dropdown in Navbar -->
           <v-menu location="bottom start">
             <template #activator="{ props: menuProps }">
               <button
                 v-bind="menuProps"
-                class="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 hover:bg-slate-100 transition text-xs font-semibold text-slate-700 cursor-pointer min-w-0"
+                class="flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 hover:bg-slate-100 transition text-xs font-semibold text-slate-700 cursor-pointer min-w-0 shadow-2xs"
                 title="Đổi tổ chức làm việc"
               >
                 <v-icon icon="mdi-office-building-outline" size="16" color="primary" class="flex-shrink-0" />
-                <span class="truncate max-w-[110px] xs:max-w-[140px] sm:max-w-[220px] md:max-w-none">
+                <span class="truncate max-w-[130px] sm:max-w-[240px] md:max-w-none">
                   {{ currentOrg.name }}
                 </span>
-                <span class="hidden sm:inline text-slate-400 font-normal">(#{{ organizationId }})</span>
+                <span class="text-slate-400 font-normal text-[11px]">(#{{ organizationId }})</span>
                 <v-icon icon="mdi-chevron-down" size="14" color="secondary" class="flex-shrink-0" />
               </button>
             </template>
