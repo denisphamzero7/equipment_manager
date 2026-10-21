@@ -19,31 +19,58 @@ class EquipmentMapViewResource extends JsonResource
         $maintenanceCount = $equipments->where('status', EquipmentStatusEnum::Maintenance)->count();
 
         // Định mức động theo cơ cấu phòng:
-        // - TV, Remote, Box: max(1, bedroom_count + living_room_count)
-        // - Wifi Router: 0 nếu dùng ké wifi (shared) hoặc không dùng (none)
+        // - TV, Remote: max(1, bedroom_count + living_room_count)
+        // - Wifi Router: 0 nếu dùng ké wifi (shared) hoặc không dùng (none); 1 nếu dedicated
         $bedroomCount = (int) ($room->bedroom_count ?? 1);
         $livingRoomCount = (int) ($room->living_room_count ?? 0);
         $tvSpaces = max(1, $bedroomCount + $livingRoomCount);
         $wifiMode = $room->wifi_mode ?? 'dedicated';
 
-        // Kiểm tra thiếu so với định mức
+        $equipmentsByCat = $equipments->groupBy(fn ($item) => $item->model?->category?->code ?? 'other')->map->count();
         $modelCounts = $equipments->groupBy('equipment_model_id')->map->count();
-        $missingCount = 0;
-        foreach ($standardAllocations as $std) {
-            $catCode = $std->model?->category?->code ?? '';
-            $actual = $modelCounts[$std->equipment_model_id] ?? 0;
-            $required = (int) $std->standard_quantity;
 
-            if (in_array($catCode, ['tv', 'remote', 'box'])) {
-                $required = $tvSpaces;
-            } elseif ($catCode === 'wifi') {
-                if ($wifiMode === 'shared' || $wifiMode === 'none') {
-                    $required = 0;
-                } else {
-                    $required = max(1, $required);
+        $missingCount = 0;
+
+        // 1. Kiểm tra Tivi
+        $hasTvStandard = $standardAllocations->contains(fn ($std) => ($std->model?->category?->code ?? '') === 'tv');
+        if ($hasTvStandard || $standardAllocations->isNotEmpty()) {
+            $actualTv = $equipmentsByCat['tv'] ?? 0;
+            if ($actualTv < $tvSpaces) {
+                $missingCount += ($tvSpaces - $actualTv);
+            }
+        }
+
+        // 2. Kiểm tra Remote
+        $hasRemoteStandard = $standardAllocations->contains(fn ($std) => ($std->model?->category?->code ?? '') === 'remote');
+        if ($hasRemoteStandard || $standardAllocations->isNotEmpty()) {
+            $actualRemote = $equipmentsByCat['remote'] ?? 0;
+            if ($actualRemote < $tvSpaces) {
+                $missingCount += ($tvSpaces - $actualRemote);
+            }
+        }
+
+        // 3. Kiểm tra Wifi Router
+        if ($wifiMode !== 'shared' && $wifiMode !== 'none') {
+            $hasWifiStandard = $standardAllocations->contains(fn ($std) => ($std->model?->category?->code ?? '') === 'wifi');
+            if ($hasWifiStandard || $standardAllocations->isNotEmpty()) {
+                $actualWifi = $equipmentsByCat['wifi'] ?? 0;
+                if ($actualWifi < 1) {
+                    $missingCount += (1 - $actualWifi);
                 }
             }
+        }
 
+        // 4. Kiểm tra các thiết bị khác ngoài TV, Remote, Wifi
+        foreach ($standardAllocations as $std) {
+            $catCode = $std->model?->category?->code ?? '';
+            if (in_array($catCode, ['tv', 'remote', 'wifi'])) {
+                continue; // Đã kiểm tra theo định mức động ở trên
+            }
+            $actual = $modelCounts[$std->equipment_model_id] ?? 0;
+            if ($actual === 0 && !empty($catCode) && isset($equipmentsByCat[$catCode])) {
+                $actual = $equipmentsByCat[$catCode];
+            }
+            $required = (int) $std->standard_quantity;
             if ($actual < $required) {
                 $missingCount += ($required - $actual);
             }

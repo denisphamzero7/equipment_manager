@@ -246,12 +246,23 @@ class EquipmentService
             $sourceImpact = null;
             if ($equipment->room_id) {
                 $sourceRoom = Room::find($equipment->room_id);
+                $catCode = $equipment->model?->category?->code ?? '';
+
                 $sourceStd = $sourceRoom ? RoomStandardEquipment::where('room_type_id', $sourceRoom->room_type_id)
-                    ->where('equipment_model_id', $equipment->equipment_model_id)
+                    ->when(!in_array($catCode, ['tv', 'remote', 'wifi']), fn ($q) => $q->where('equipment_model_id', $equipment->equipment_model_id))
+                    ->when(in_array($catCode, ['tv', 'remote', 'wifi']), fn ($q) => $q->whereHas('model.category', fn ($c) => $c->where('code', $catCode)))
                     ->first() : null;
-                $sourceCurr = $sourceRoom ? RoomEquipment::where('room_id', $sourceRoom->id)
-                    ->where('equipment_model_id', $equipment->equipment_model_id)
-                    ->count() : 0;
+
+                if (in_array($catCode, ['tv', 'remote', 'wifi'])) {
+                    $sourceCurr = $sourceRoom ? RoomEquipment::where('room_id', $sourceRoom->id)
+                        ->whereHas('model.category', fn ($q) => $q->where('code', $catCode))
+                        ->count() : 0;
+                } else {
+                    $sourceCurr = $sourceRoom ? RoomEquipment::where('room_id', $sourceRoom->id)
+                        ->where('equipment_model_id', $equipment->equipment_model_id)
+                        ->count() : 0;
+                }
+
                 $sourceAfter = max(0, $sourceCurr - 1);
                 $sourceStaticQty = $sourceStd ? $sourceStd->standard_quantity : 0;
                 $sourceStandardQty = $sourceRoom ? $this->getDynamicStandardQuota($sourceRoom, $equipment->model, $sourceStaticQty) : $sourceStaticQty;
@@ -284,24 +295,32 @@ class EquipmentService
 
         // Trường hợp 2: Chuyển vào phòng đích
         $targetRoom = Room::with('roomType')->findOrFail($targetRoomId);
+        $catCode = $equipment->model?->category?->code ?? '';
 
         // Định mức chuẩn của model thiết bị trong loại phòng này
         $std = RoomStandardEquipment::where('room_type_id', $targetRoom->room_type_id)
-            ->where('equipment_model_id', $equipment->equipment_model_id)
+            ->when(!in_array($catCode, ['tv', 'remote', 'wifi']), fn ($q) => $q->where('equipment_model_id', $equipment->equipment_model_id))
+            ->when(in_array($catCode, ['tv', 'remote', 'wifi']), fn ($q) => $q->whereHas('model.category', fn ($c) => $c->where('code', $catCode)))
             ->first();
 
         $staticQuota = $std ? $std->standard_quantity : 0;
         $standardQuota = $this->getDynamicStandardQuota($targetRoom, $equipment->model, $staticQuota);
 
-        // Số lượng hiện có của model này trong phòng đích (không tính chính cá thể thiết bị này nếu đang ở đó)
-        $currentCount = RoomEquipment::where('room_id', $targetRoom->id)
-            ->where('equipment_model_id', $equipment->equipment_model_id)
-            ->where('id', '!=', $equipment->id)
-            ->count();
+        // Số lượng hiện có của thiết bị/loại này trong phòng đích (không tính chính cá thể thiết bị này nếu đang ở đó)
+        if (in_array($catCode, ['tv', 'remote', 'wifi'])) {
+            $currentCount = RoomEquipment::where('room_id', $targetRoom->id)
+                ->whereHas('model.category', fn ($q) => $q->where('code', $catCode))
+                ->where('id', '!=', $equipment->id)
+                ->count();
+        } else {
+            $currentCount = RoomEquipment::where('room_id', $targetRoom->id)
+                ->where('equipment_model_id', $equipment->equipment_model_id)
+                ->where('id', '!=', $equipment->id)
+                ->count();
+        }
 
         $afterCount = $currentCount + 1;
         $modelName = $equipment->model?->name ?? 'Thiết bị';
-        $catCode = $equipment->model?->category?->code ?? '';
 
         if ($catCode === 'wifi' && in_array($targetRoom->wifi_mode, ['shared', 'none'])) {
             $status = 'over_quota';
@@ -326,11 +345,20 @@ class EquipmentService
             $sourceRoom = Room::find($equipment->room_id);
             if ($sourceRoom) {
                 $sourceStd = RoomStandardEquipment::where('room_type_id', $sourceRoom->room_type_id)
-                    ->where('equipment_model_id', $equipment->equipment_model_id)
+                    ->when(!in_array($catCode, ['tv', 'remote', 'wifi']), fn ($q) => $q->where('equipment_model_id', $equipment->equipment_model_id))
+                    ->when(in_array($catCode, ['tv', 'remote', 'wifi']), fn ($q) => $q->whereHas('model.category', fn ($c) => $c->where('code', $catCode)))
                     ->first();
-                $sourceCurr = RoomEquipment::where('room_id', $sourceRoom->id)
-                    ->where('equipment_model_id', $equipment->equipment_model_id)
-                    ->count();
+
+                if (in_array($catCode, ['tv', 'remote', 'wifi'])) {
+                    $sourceCurr = RoomEquipment::where('room_id', $sourceRoom->id)
+                        ->whereHas('model.category', fn ($q) => $q->where('code', $catCode))
+                        ->count();
+                } else {
+                    $sourceCurr = RoomEquipment::where('room_id', $sourceRoom->id)
+                        ->where('equipment_model_id', $equipment->equipment_model_id)
+                        ->count();
+                }
+
                 $sourceAfter = max(0, $sourceCurr - 1);
                 $sourceStaticQty = $sourceStd ? $sourceStd->standard_quantity : 0;
                 $sourceStandardQty = $this->getDynamicStandardQuota($sourceRoom, $equipment->model, $sourceStaticQty);
@@ -511,7 +539,7 @@ class EquipmentService
 
     /**
      * Tính toán định mức chuẩn động theo cơ cấu phòng:
-     * - TV, Remote, Box: max(1, bedroom_count + living_room_count)
+     * - TV, Remote: max(1, bedroom_count + living_room_count)
      * - Wifi Router: 0 nếu dùng ké wifi (shared) hoặc không wifi (none); 1 nếu riêng (dedicated)
      * - Các danh mục khác: giữ nguyên định mức từ bảng room_standard_equipments
      */
@@ -519,7 +547,7 @@ class EquipmentService
     {
         $catCode = $model?->category?->code ?? '';
 
-        if (in_array($catCode, ['tv', 'remote', 'box'])) {
+        if (in_array($catCode, ['tv', 'remote'])) {
             $bedroomCount = (int) ($room->bedroom_count ?? 1);
             $livingRoomCount = (int) ($room->living_room_count ?? 0);
             return max(1, $bedroomCount + $livingRoomCount);
@@ -529,7 +557,7 @@ class EquipmentService
             if ($room->wifi_mode === 'shared' || $room->wifi_mode === 'none') {
                 return 0;
             }
-            return max(1, $staticQuota);
+            return 1;
         }
 
         return $staticQuota;

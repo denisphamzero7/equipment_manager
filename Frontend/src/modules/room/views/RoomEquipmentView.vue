@@ -15,6 +15,7 @@ import AppConfirmDialog from '@/core/components/AppConfirmDialog.vue'
 import AssignRoomModal from '@/modules/equipment/components/AssignRoomModal.vue'
 import ReportBrokenModal from '@/modules/equipment/components/ReportBrokenModal.vue'
 import EquipmentFormModal from '@/modules/equipment/components/EquipmentFormModal.vue'
+import RoomFormModal from '../components/RoomFormModal.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -44,9 +45,30 @@ const warehouseEquipments = ref([])
 const selectedWarehouseEquipmentId = ref(null)
 const warehousePositionNote = ref('')
 
+// Sửa nhanh cơ cấu phòng
+const editRoomModalOpen = ref(false)
+const roomTypesList = ref([])
+
 onMounted(async () => {
   await loadRooms()
+  try {
+    roomTypesList.value = await roomService.getRoomTypes()
+  } catch (err) {
+    console.error('Failed to load room types:', err)
+  }
 })
+
+function openEditRoomModal() {
+  if (!roomDetail.value) return
+  editRoomModalOpen.value = true
+}
+
+async function handleRoomSaved() {
+  await loadRooms()
+  if (selectedRoomId.value) {
+    await loadRoomDetail(selectedRoomId.value)
+  }
+}
 
 // Tự động đối soát lại phòng khi có thiết bị thay đổi Real-time
 watch(
@@ -410,17 +432,27 @@ async function handleCreateSubmit({ data }) {
               </div>
             </div>
 
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-wrap self-start sm:self-auto">
+              <button
+                type="button"
+                class="px-3 py-2 rounded-xl text-xs font-semibold border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 flex items-center gap-1.5 transition shadow-2xs cursor-pointer"
+                title="Chỉnh sửa số phòng ngủ, phòng khách hoặc chế độ Wifi"
+                @click="openEditRoomModal"
+              >
+                <v-icon icon="mdi-pencil-outline" size="15" color="primary" />
+                <span>Sửa cơ cấu phòng</span>
+              </button>
+
               <div
-                class="px-4 py-2 rounded-xl text-xs font-bold border flex items-center gap-2 self-start sm:self-auto"
+                class="px-3 py-2 rounded-xl text-xs font-bold border flex items-center gap-1.5"
                 :class="roomDetail.compliance_status === 'compliant' ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-rose-50 text-rose-800 border-rose-200'"
               >
                 <v-icon
                   :icon="roomDetail.compliance_status === 'compliant' ? 'mdi-check-decagram' : 'mdi-alert-decagram'"
-                  size="20"
+                  size="18"
                 />
                 <span>
-                  {{ roomDetail.compliance_status === 'compliant' ? 'Đạt chuẩn 100% định mức' : 'Chưa đạt định mức tiêu chuẩn' }}
+                  {{ roomDetail.compliance_status === 'compliant' ? 'Đạt chuẩn 100%' : 'Chưa đạt định mức' }}
                 </span>
               </div>
             </div>
@@ -721,5 +753,14 @@ async function handleCreateSubmit({ data }) {
         </div>
       </div>
     </v-dialog>
+
+    <!-- Modal Chỉnh sửa thông tin & cơ cấu phòng -->
+    <RoomFormModal
+      v-model="editRoomModalOpen"
+      :room="roomDetail ? { ...roomDetail, ...(roomDetail.room || {}) } : null"
+      :room-types="roomTypesList"
+      :existing-blocks="['Block A', 'Block B', 'Block C', 'Block D', 'Condos 1', 'Condos 2', 'Penthouse-spa+Villa']"
+      @saved="handleRoomSaved"
+    />
   </DefaultLayout>
 </template>

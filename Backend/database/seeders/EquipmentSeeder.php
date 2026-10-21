@@ -85,29 +85,5 @@ class EquipmentSeeder extends Seeder
             'model_code' => 'Archer-C6',
             'specs' => ['speed' => 'AC1200', 'bands' => '2.4GHz & 5GHz'],
         ]);
-
-        // 3. Khởi tạo định mức mẫu cho phòng (Ví dụ phòng có room_type_id = 1 hoặc phòng mẫu)
-        // Tiêu chuẩn 1 phòng VIP: 2 TV 32", 1 TV 40", 4 Box, 4 Remote, 1 Wifi
-        $sampleRoomTypeId = 1;
-        RoomStandardEquipment::updateOrCreate(
-            ['room_type_id' => $sampleRoomTypeId, 'equipment_model_id' => $modelTv32->id],
-            ['standard_quantity' => 2]
-        );
-        RoomStandardEquipment::updateOrCreate(
-            ['room_type_id' => $sampleRoomTypeId, 'equipment_model_id' => $modelTv40->id],
-            ['standard_quantity' => 1]
-        );
-        RoomStandardEquipment::updateOrCreate(
-            ['room_type_id' => $sampleRoomTypeId, 'equipment_model_id' => $modelBoxFpt->id],
-            ['standard_quantity' => 4]
-        );
-        RoomStandardEquipment::updateOrCreate(
-            ['room_type_id' => $sampleRoomTypeId, 'equipment_model_id' => $modelRemoteTv->id],
-            ['standard_quantity' => 4]
-        );
-        RoomStandardEquipment::updateOrCreate(
-            ['room_type_id' => $sampleRoomTypeId, 'equipment_model_id' => $modelWifi->id],
-            ['standard_quantity' => 1]
-        );
     }
 }
