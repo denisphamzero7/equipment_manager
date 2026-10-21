@@ -2,6 +2,7 @@
 
 use App\Modules\Equipment\Controllers\EquipmentController;
 use App\Modules\Equipment\Controllers\EquipmentMapViewController;
+use App\Modules\Equipment\Controllers\EquipmentModelController;
 use App\Modules\Equipment\Controllers\RoomEquipmentDetailController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,11 +37,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('bulk/status', [EquipmentController::class, 'bulkUpdateStatus']);
     Route::post('bulk/destroy', [EquipmentController::class, 'bulkDestroy']);
 
-    // 6. Danh mục mẫu thiết bị & Danh sách phòng phục vụ chọn lựa
-    Route::get('models', [EquipmentController::class, 'getModels']);
+    // 6. Quản lý Mẫu thiết bị (Equipment Models) & Danh mục (Categories)
+    Route::get('models', [EquipmentModelController::class, 'index']);
+    Route::post('models', [EquipmentModelController::class, 'store']);
+    Route::put('models/{id}', [EquipmentModelController::class, 'update']);
+    Route::delete('models/{id}', [EquipmentModelController::class, 'destroy']);
+    Route::get('categories', [EquipmentModelController::class, 'categories']);
+
+    // 7. Danh sách phòng phục vụ chọn lựa (Cascader)
     Route::get('room-options', [EquipmentController::class, 'getRoomOptions']);
 
-    // 7. CRUD thiết bị
+    // 8. CRUD thiết bị
     Route::get('', [EquipmentController::class, 'index']);
     Route::get('{id}', [EquipmentController::class, 'show']);
     Route::post('', [EquipmentController::class, 'store']);

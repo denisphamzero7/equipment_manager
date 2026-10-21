@@ -15,6 +15,7 @@ import AppConfirmDialog from '@/core/components/AppConfirmDialog.vue'
 import EquipmentFormModal from '../components/EquipmentFormModal.vue'
 import AssignRoomModal from '../components/AssignRoomModal.vue'
 import ReportBrokenModal from '../components/ReportBrokenModal.vue'
+import ManageEquipmentModelsModal from '../components/ManageEquipmentModelsModal.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -23,6 +24,7 @@ const realtimeStore = useRealtimeStore()
 
 // Modals state
 const formModalOpen = ref(false)
+const manageModelsModalOpen = ref(false)
 const selectedEquipmentForEdit = ref(null)
 
 const assignModalOpen = ref(false)
@@ -184,6 +186,15 @@ async function handleQuickStatusChange(item, newStatus) {
       ]"
     >
       <template #actions>
+        <AppButton
+          v-if="$can('create', 'Equipment')"
+          variant="tonal"
+          color="secondary"
+          icon="mdi-format-list-bulleted-type"
+          @click="manageModelsModalOpen = true"
+        >
+          Quản lý tên thiết bị
+        </AppButton>
         <AppButton
           v-if="$can('create', 'Equipment')"
           color="primary"
@@ -464,5 +475,7 @@ async function handleQuickStatusChange(item, newStatus) {
         </div>
       </div>
     </v-dialog>
+    <!-- Manage Models Modal -->
+    <ManageEquipmentModelsModal v-model="manageModelsModalOpen" />
   </DefaultLayout>
 </template>

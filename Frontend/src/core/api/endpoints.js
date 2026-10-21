@@ -31,6 +31,8 @@ export const Endpoints = Object.freeze({
     MAP_VIEW: '/api/equipments/map-view',
     ROOM_DETAIL: roomId => `/api/equipments/rooms/${roomId}`,
     MODELS: '/api/equipments/models',
+    MODEL_DETAIL: id => `/api/equipments/models/${id}`,
+    CATEGORIES: '/api/equipments/categories',
     ROOM_OPTIONS: '/api/equipments/room-options',
   },
   ROOM: {

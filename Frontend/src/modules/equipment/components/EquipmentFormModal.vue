@@ -3,6 +3,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import AppModal from '@/core/components/AppModal.vue'
 import AppButton from '@/core/components/AppButton.vue'
 import RoomCascaderSelect from '@/core/components/RoomCascaderSelect.vue'
+import ManageEquipmentModelsModal from './ManageEquipmentModelsModal.vue'
 import { equipmentService } from '../services/equipmentService'
 import { EquipmentStatus, EquipmentStatusOptions } from '@/core/enums/EquipmentStatus'
 import { rules } from '@/core/helpers/validators'
@@ -31,13 +32,42 @@ const photoFile = ref(null)
 const photoPreview = ref(null)
 const models = ref([])
 
+// Manage models modal
+const manageModelsModalOpen = ref(false)
+const prefillModelName = ref('')
+const modelSearchQuery = ref('')
+
 onMounted(async () => {
+  await loadModels()
+})
+
+async function loadModels() {
   try {
     models.value = await equipmentService.getModels()
   } catch (err) {
     console.error('Failed to load equipment models:', err)
   }
-})
+}
+
+function openManageModelsModal() {
+  prefillModelName.value = ''
+  manageModelsModalOpen.value = true
+}
+
+function openManageModelsModalWithQuery(name) {
+  prefillModelName.value = name || ''
+  manageModelsModalOpen.value = true
+}
+
+async function handleModelsChanged() {
+  await loadModels()
+}
+
+function handleModelCreated(created) {
+  if (created?.id) {
+    form.value.equipment_model_id = created.id
+  }
+}
 
 const modelOptions = computed(() => {
   return models.value.map(m => ({
@@ -139,9 +169,21 @@ async function handleSubmit() {
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Model Select -->
         <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-            Mẫu thiết bị *
-          </label>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+              Mẫu thiết bị *
+            </label>
+            <button
+              type="button"
+              class="text-[11px] text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-0.5 transition"
+              title="Quản lý danh sách mẫu và tên thiết bị"
+              @click="openManageModelsModal"
+            >
+              <v-icon icon="mdi-cog-outline" size="13" />
+              <span>Quản lý tên / mẫu</span>
+            </button>
+          </div>
+
           <v-autocomplete
             v-if="modelOptions.length > 0"
             v-model.number="form.equipment_model_id"
@@ -153,17 +195,40 @@ async function handleSubmit() {
             density="compact"
             variant="outlined"
             hide-details="auto"
-          />
-          <v-text-field
-            v-else
-            v-model.number="form.equipment_model_id"
-            type="number"
-            placeholder="1"
-            :rules="[rules.required]"
-            density="compact"
-            variant="outlined"
-            hide-details="auto"
-          />
+            @update:search="val => modelSearchQuery = val"
+          >
+            <template #no-data>
+              <div class="p-3 text-center text-xs">
+                <p class="text-slate-600 mb-2 font-medium">
+                  Chưa có mẫu nào khớp với "<strong>{{ modelSearchQuery }}</strong>"
+                </p>
+                <AppButton
+                  size="small"
+                  color="primary"
+                  @click="openManageModelsModalWithQuery(modelSearchQuery)"
+                >
+                  <v-icon start icon="mdi-plus" />
+                  Tạo mẫu mới: "{{ modelSearchQuery }}"
+                </AppButton>
+              </div>
+            </template>
+          </v-autocomplete>
+          <div v-else class="flex items-center gap-2">
+            <v-text-field
+              v-model.number="form.equipment_model_id"
+              type="number"
+              placeholder="1"
+              :rules="[rules.required]"
+              density="compact"
+              variant="outlined"
+              hide-details="auto"
+              class="flex-1"
+            />
+            <AppButton size="small" color="primary" @click="openManageModelsModal">
+              <v-icon start icon="mdi-plus" />
+              Thêm
+            </AppButton>
+          </div>
         </div>
 
         <!-- Serial Number -->
@@ -300,4 +365,12 @@ async function handleSubmit() {
       </AppButton>
     </template>
   </AppModal>
+
+  <!-- Sub-modal: Manage Equipment Models -->
+  <ManageEquipmentModelsModal
+    v-model="manageModelsModalOpen"
+    :initial-name="prefillModelName"
+    @model-created="handleModelCreated"
+    @models-changed="handleModelsChanged"
+  />
 </template>

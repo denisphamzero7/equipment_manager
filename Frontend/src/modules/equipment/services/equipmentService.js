@@ -134,13 +134,34 @@ export const equipmentService = {
     return response.data
   },
 
-  // 18. Danh sách mẫu thiết bị (Equipment Models)
+  // 18. Quản lý Mẫu thiết bị (Equipment Models)
   async getModels() {
     const response = await axiosClient.get(Endpoints.EQUIPMENT.MODELS)
     return response.data?.data || []
   },
 
-  // 19. Danh sách phòng cho bộ chọn bậc thang (Room Options)
+  async createModel(data) {
+    const response = await axiosClient.post(Endpoints.EQUIPMENT.MODELS, data)
+    return response.data?.data || response.data
+  },
+
+  async updateModel(id, data) {
+    const response = await axiosClient.put(Endpoints.EQUIPMENT.MODEL_DETAIL(id), data)
+    return response.data?.data || response.data
+  },
+
+  async deleteModel(id) {
+    const response = await axiosClient.delete(Endpoints.EQUIPMENT.MODEL_DETAIL(id))
+    return response.data
+  },
+
+  // 19. Danh mục nhóm thiết bị (Categories)
+  async getCategories() {
+    const response = await axiosClient.get(Endpoints.EQUIPMENT.CATEGORIES)
+    return response.data?.data || []
+  },
+
+  // 20. Danh sách phòng cho bộ chọn bậc thang (Room Options)
   async getRoomOptions() {
     const response = await axiosClient.get(Endpoints.EQUIPMENT.ROOM_OPTIONS)
     return response.data?.data || []
