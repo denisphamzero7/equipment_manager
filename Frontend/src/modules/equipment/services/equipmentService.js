@@ -68,6 +68,13 @@ export const equipmentService = {
     return response.data
   },
 
+  // 9.1 Kiểm tra định mức phòng đích trước khi điều chuyển
+  async checkAssignTarget(equipmentId, targetRoomId = null) {
+    const params = targetRoomId ? { target_room_id: targetRoomId } : {}
+    const response = await axiosClient.get(Endpoints.EQUIPMENT.CHECK_ASSIGN_TARGET(equipmentId), { params })
+    return response.data?.data || response.data
+  },
+
   // 10. Báo hỏng thiết bị
   async reportBroken(id, payload) {
     // payload: FormData with issue_description & optional broken_photo

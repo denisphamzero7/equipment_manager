@@ -13,6 +13,7 @@ use App\Modules\Equipment\Events\EquipmentUpdated;
 use App\Modules\Equipment\Models\EquipmentCategory;
 use App\Modules\Equipment\Models\EquipmentMaintenanceLog;
 use App\Modules\Equipment\Models\RoomEquipment;
+use App\Modules\Equipment\Models\RoomStandardEquipment;
 use App\Modules\Motel\Models\Room;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -231,6 +232,139 @@ class EquipmentService
         event(new EquipmentAssigned($item, $fromRoomId));
 
         return $item;
+    }
+
+    /**
+     * Kiểm tra định mức chuẩn của phòng đích và cảnh báo trước khi điều chuyển thiết bị.
+     */
+    public function checkAssignTarget(int $equipmentId, ?int $targetRoomId): array
+    {
+        $equipment = RoomEquipment::with(['model', 'room'])->findOrFail($equipmentId);
+
+        // Trường hợp 1: Thu hồi về kho
+        if (!$targetRoomId) {
+            $sourceImpact = null;
+            if ($equipment->room_id) {
+                $sourceRoom = Room::find($equipment->room_id);
+                $sourceStd = $sourceRoom ? RoomStandardEquipment::where('room_type_id', $sourceRoom->room_type_id)
+                    ->where('equipment_model_id', $equipment->equipment_model_id)
+                    ->first() : null;
+                $sourceCurr = $sourceRoom ? RoomEquipment::where('room_id', $sourceRoom->id)
+                    ->where('equipment_model_id', $equipment->equipment_model_id)
+                    ->count() : 0;
+                $sourceAfter = max(0, $sourceCurr - 1);
+                $sourceStandardQty = $sourceStd ? $sourceStd->standard_quantity : 0;
+                $willBeMissing = $sourceStd && ($sourceAfter < $sourceStandardQty);
+
+                if ($sourceRoom) {
+                    $sourceImpact = [
+                        'source_room_id' => $sourceRoom->id,
+                        'room_number' => (string) $sourceRoom->room_number,
+                        'block' => $sourceRoom->block,
+                        'floor' => $sourceRoom->floor,
+                        'standard_quota' => $sourceStandardQty,
+                        'current_count' => $sourceCurr,
+                        'after_count' => $sourceAfter,
+                        'will_be_missing' => $willBeMissing,
+                        'message' => $willBeMissing
+                            ? "Thu hồi thiết bị sẽ khiến Phòng {$sourceRoom->room_number} ({$sourceRoom->block}) bị THIẾU {$equipment->model?->name} so với định mức ({$sourceAfter}/{$sourceStandardQty})."
+                            : "Phòng {$sourceRoom->room_number} vẫn đáp ứng định mức sau khi thu hồi thiết bị ({$sourceAfter}/{$sourceStandardQty}).",
+                    ];
+                }
+            }
+
+            return [
+                'target_type' => 'warehouse',
+                'status' => 'warehouse',
+                'message' => 'Thiết bị sẽ được thu hồi về kho dự phòng chung (trạng thái in_stock).',
+                'source_room_impact' => $sourceImpact,
+            ];
+        }
+
+        // Trường hợp 2: Chuyển vào phòng đích
+        $targetRoom = Room::with('roomType')->findOrFail($targetRoomId);
+
+        // Định mức chuẩn của model thiết bị trong loại phòng này
+        $std = RoomStandardEquipment::where('room_type_id', $targetRoom->room_type_id)
+            ->where('equipment_model_id', $equipment->equipment_model_id)
+            ->first();
+
+        $standardQuota = $std ? $std->standard_quantity : 0;
+
+        // Số lượng hiện có của model này trong phòng đích (không tính chính cá thể thiết bị này nếu đang ở đó)
+        $currentCount = RoomEquipment::where('room_id', $targetRoom->id)
+            ->where('equipment_model_id', $equipment->equipment_model_id)
+            ->where('id', '!=', $equipment->id)
+            ->count();
+
+        $afterCount = $currentCount + 1;
+        $modelName = $equipment->model?->name ?? 'Thiết bị';
+
+        if ($standardQuota === 0) {
+            $status = 'no_standard';
+            $message = "Hạng phòng '{$targetRoom->roomType?->name}' không có định mức chuẩn bắt buộc cho mẫu '{$modelName}' (thiết bị trang bị thêm ngoài định mức).";
+        } elseif ($afterCount > $standardQuota) {
+            $status = 'over_quota';
+            $message = "Phòng {$targetRoom->room_number} ({$targetRoom->block}) đã có đủ {$currentCount}/{$standardQuota} {$modelName}. Nếu chuyển vào sẽ bị THỪA ({$afterCount}/{$standardQuota}) thiết bị.";
+        } elseif ($afterCount === $standardQuota) {
+            $status = 'exact_quota';
+            $message = "Phòng {$targetRoom->room_number} ({$targetRoom->block}) hiện có {$currentCount}/{$standardQuota}. Chuyển vào sẽ giúp phòng ĐẠT CHUẨN ĐỊNH MỨC ({$afterCount}/{$standardQuota})!";
+        } else {
+            $status = 'under_quota';
+            $message = "Phòng {$targetRoom->room_number} sau khi chuyển sẽ có {$afterCount}/{$standardQuota} thiết bị (vẫn cần thêm " . ($standardQuota - $afterCount) . " máy để đủ chuẩn).";
+        }
+
+        // Tác động tới phòng nguồn (nếu chuyển từ phòng khác qua)
+        $sourceImpact = null;
+        if ($equipment->room_id && $equipment->room_id !== $targetRoom->id) {
+            $sourceRoom = Room::find($equipment->room_id);
+            if ($sourceRoom) {
+                $sourceStd = RoomStandardEquipment::where('room_type_id', $sourceRoom->room_type_id)
+                    ->where('equipment_model_id', $equipment->equipment_model_id)
+                    ->first();
+                $sourceCurr = RoomEquipment::where('room_id', $sourceRoom->id)
+                    ->where('equipment_model_id', $equipment->equipment_model_id)
+                    ->count();
+                $sourceAfter = max(0, $sourceCurr - 1);
+                $sourceStandardQty = $sourceStd ? $sourceStd->standard_quantity : 0;
+                $willBeMissing = $sourceStd && ($sourceAfter < $sourceStandardQty);
+
+                $sourceImpact = [
+                    'source_room_id' => $sourceRoom->id,
+                    'room_number' => (string) $sourceRoom->room_number,
+                    'block' => $sourceRoom->block,
+                    'floor' => $sourceRoom->floor,
+                    'standard_quota' => $sourceStandardQty,
+                    'current_count' => $sourceCurr,
+                    'after_count' => $sourceAfter,
+                    'will_be_missing' => $willBeMissing,
+                    'message' => $willBeMissing
+                        ? "Lưu ý: Sau khi chuyển đi, phòng cũ (Phòng {$sourceRoom->room_number} - {$sourceRoom->block}) sẽ bị THIẾU {$modelName} so với định mức ({$sourceAfter}/{$sourceStandardQty})."
+                        : "Phòng cũ (Phòng {$sourceRoom->room_number}) vẫn đủ định mức ({$sourceAfter}/{$sourceStandardQty}).",
+                ];
+            }
+        }
+
+        return [
+            'target_type' => 'room',
+            'target_room' => [
+                'id' => $targetRoom->id,
+                'room_number' => (string) $targetRoom->room_number,
+                'block' => $targetRoom->block,
+                'floor' => $targetRoom->floor,
+                'room_type' => $targetRoom->roomType?->name ?? 'Tiêu chuẩn',
+            ],
+            'model' => [
+                'id' => $equipment->model?->id,
+                'name' => $modelName,
+            ],
+            'standard_quota' => $standardQuota,
+            'current_count' => $currentCount,
+            'after_count' => $afterCount,
+            'status' => $status,
+            'message' => $message,
+            'source_room_impact' => $sourceImpact,
+        ];
     }
 
     /**

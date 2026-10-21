@@ -152,6 +152,17 @@ class EquipmentController extends Controller
     }
 
     /**
+     * Kiểm tra đối soát định mức phòng đích trước khi điều chuyển
+     */
+    public function checkAssignTarget(Request $request, int $id): JsonResponse
+    {
+        $targetRoomId = $request->query('target_room_id') ? (int) $request->query('target_room_id') : null;
+        $result = $this->service->checkAssignTarget($id, $targetRoomId);
+
+        return $this->success($result, 'Kiểm tra định mức phòng thành công');
+    }
+
+    /**
      * Báo hỏng thiết bị (Kèm ảnh hiện trường)
      */
     public function reportBroken(ReportBrokenRequest $request, int $id): JsonResponse

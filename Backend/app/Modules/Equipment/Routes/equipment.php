@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // 4. Thao tác điều chuyển & Báo hỏng thiết bị
     Route::post('assign-to-room', [EquipmentController::class, 'assignToRoom']);
+    Route::get('{id}/check-assign-target', [EquipmentController::class, 'checkAssignTarget']);
     Route::post('{id}/report-broken', [EquipmentController::class, 'reportBroken']);
     Route::post('{id}/upload-photo', [EquipmentController::class, 'uploadPhoto']);
     Route::delete('{id}/photos/{mediaId}', [EquipmentController::class, 'deletePhoto']);
