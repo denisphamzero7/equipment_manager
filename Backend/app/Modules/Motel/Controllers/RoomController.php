@@ -3,7 +3,6 @@
 namespace App\Modules\Motel\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Modules\Core\Request\FilterRequest;
 use App\Modules\Motel\Requests\StoreRoomRequest;
 use App\Modules\Motel\Requests\UpdateRoomRequest;
 use App\Modules\Motel\Services\RoomService;
@@ -16,16 +15,16 @@ class RoomController extends Controller
     {
     }
 
-    public function stats(FilterRequest $request): JsonResponse
+    public function stats(Request $request): JsonResponse
     {
-        $filters = $request->validated();
+        $filters = $request->all();
         $stats = $this->roomService->stats($filters);
         return response()->json($stats);
     }
 
-    public function index(FilterRequest $request): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $filters = $request->validated();
+        $filters = $request->all();
         $limit = (int) $request->input('limit', 15);
         $rooms = $this->roomService->index($filters, $limit);
 

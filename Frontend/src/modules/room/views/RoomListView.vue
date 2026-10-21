@@ -182,17 +182,13 @@ async function fetchRooms(showLoading = true) {
       ...filters,
     }
     const res = await roomService.getRooms(params)
-    const items = res.data?.data || res.data || []
+    const items = Array.isArray(res) ? res : (res?.data || [])
     rooms.value = Array.isArray(items) ? items : []
 
-    if (res.data?.total !== undefined) {
-      pagination.totalItems = res.data.total
-      pagination.totalPages = res.data.last_page || 1
-      totalRooms.value = res.data.total
-    } else {
-      pagination.totalItems = rooms.value.length
-      totalRooms.value = rooms.value.length
-    }
+    const total = res?.total ?? (Array.isArray(res) ? res.length : rooms.value.length)
+    pagination.totalItems = total
+    pagination.totalPages = res?.last_page || 1
+    totalRooms.value = total
   } catch (err) {
     console.error('Fetch rooms error:', err)
     toast.error('Không thể tải danh sách phòng.')

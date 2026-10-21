@@ -7,7 +7,7 @@ export const roomService = {
    */
   async getRooms(params = {}) {
     const response = await axiosClient.get(Endpoints.ROOM.INDEX, { params })
-    return response.data?.data !== undefined ? response.data : { data: response.data }
+    return response.data
   },
 
   /**
