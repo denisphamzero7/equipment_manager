@@ -1,12 +1,14 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { roomService } from '../services/roomService'
 import { equipmentService } from '@/modules/equipment/services/equipmentService'
+import { useRealtimeStore } from '@/core/stores/realtimeStore'
 import DefaultLayout from '@/core/layouts/DefaultLayout.vue'
 import AppPageHeader from '@/core/components/AppPageHeader.vue'
 import AppButton from '@/core/components/AppButton.vue'
 import AppStatusBadge from '@/core/components/AppStatusBadge.vue'
 
+const realtimeStore = useRealtimeStore()
 const loading = ref(false)
 const rooms = ref([])
 const selectedRoomId = ref(null)
@@ -15,6 +17,17 @@ const roomDetail = ref(null)
 onMounted(async () => {
   await loadRooms()
 })
+
+// Tự động đối soát lại phòng khi có thiết bị thay đổi Real-time
+watch(
+  () => realtimeStore.lastEvent,
+  async (event) => {
+    if (!event) return
+    if (selectedRoomId.value) {
+      await loadRoomDetail(selectedRoomId.value)
+    }
+  }
+)
 
 async function loadRooms() {
   try {

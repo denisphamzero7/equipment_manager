@@ -1,7 +1,8 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { equipmentService } from '../services/equipmentService'
+import { useRealtimeStore } from '@/core/stores/realtimeStore'
 import DefaultLayout from '@/core/layouts/DefaultLayout.vue'
 import AppPageHeader from '@/core/components/AppPageHeader.vue'
 import AppButton from '@/core/components/AppButton.vue'
@@ -9,6 +10,7 @@ import AppModal from '@/core/components/AppModal.vue'
 import AppStatusBadge from '@/core/components/AppStatusBadge.vue'
 
 const router = useRouter()
+const realtimeStore = useRealtimeStore()
 const loading = ref(true)
 const blocks = ref([])
 const floors = ref([])
@@ -29,6 +31,16 @@ onMounted(() => {
   ])
 })
 
+// Tự động cập nhật sơ đồ phòng Real-time khi có sự kiện từ WebSocket
+watch(
+  () => realtimeStore.lastEvent,
+  (event) => {
+    if (!event) return
+    // Cập nhật ngầm dữ liệu phòng tức thời mà không gây chớp giật màn hình
+    loadMapViewData(true)
+  }
+)
+
 async function loadFilterOptions() {
   try {
     const [blocksData, floorsData] = await Promise.all([
@@ -42,8 +54,10 @@ async function loadFilterOptions() {
   }
 }
 
-async function loadMapViewData() {
-  loading.value = true
+async function loadMapViewData(silent = false) {
+  if (!silent) {
+    loading.value = true
+  }
   try {
     const params = {}
     if (selectedBlock.value) params.block = selectedBlock.value
@@ -52,7 +66,9 @@ async function loadMapViewData() {
     const data = await equipmentService.getMapView(params)
     rooms.value = data || []
   } finally {
-    loading.value = false
+    if (!silent) {
+      loading.value = false
+    }
   }
 }
 

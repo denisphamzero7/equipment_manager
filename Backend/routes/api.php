@@ -1,7 +1,11 @@
 <?php
 
 use App\Modules\Auth\AuthController;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
+
+// Broadcast authentication route cho SPA (Sanctum) qua /api/broadcasting/auth
+Broadcast::routes(['prefix' => 'api', 'middleware' => ['auth:sanctum']]);
 
 // Auth module - public routes (đăng nhập, quên mật khẩu, đặt lại mật khẩu)
 Route::prefix('auth')->middleware('log.activity')->group(function () {

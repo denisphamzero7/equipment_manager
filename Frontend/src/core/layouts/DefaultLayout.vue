@@ -1,14 +1,30 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useDisplay } from 'vuetify'
 import { useAuthStore } from '@/modules/auth/stores/authStore'
+import { useRealtimeStore } from '@/core/stores/realtimeStore'
 import { toast } from '@/core/helpers/toast'
 
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
+const realtimeStore = useRealtimeStore()
 const { mobile } = useDisplay()
+
+// Khởi tạo kết nối Real-time qua Reverb WebSocket
+onMounted(() => {
+  if (organizationId.value) {
+    realtimeStore.initRealtime(organizationId.value)
+  }
+})
+
+// Tự động chuyển kênh Realtime khi user đổi tổ chức
+watch(organizationId, (newOrg) => {
+  if (newOrg) {
+    realtimeStore.initRealtime(newOrg)
+  }
+})
 
 // Drawer is open by default on desktop, hidden on mobile
 const drawer = ref(!mobile.value)
@@ -230,8 +246,114 @@ function handleNavClick() {
 
         <!-- Right User Actions -->
         <div class="flex items-center gap-1 sm:gap-3 flex-shrink-0">
-          <!-- Notification Bell -->
-          <v-btn icon="mdi-bell-outline" variant="text" density="comfortable" size="small" color="secondary" />
+          <!-- Notification Bell Dropdown (Real-time Reverb) -->
+          <v-menu location="bottom end" :close-on-content-click="false" transition="slide-y-transition">
+            <template #activator="{ props: notifProps }">
+              <v-badge
+                :content="realtimeStore.unreadCount"
+                :model-value="realtimeStore.unreadCount > 0"
+                color="error"
+                offset-x="3"
+                offset-y="3"
+              >
+                <v-btn
+                  v-bind="notifProps"
+                  icon="mdi-bell-outline"
+                  variant="text"
+                  density="comfortable"
+                  size="small"
+                  :color="realtimeStore.unreadCount > 0 ? 'primary' : 'secondary'"
+                  title="Thông báo hệ thống Real-time"
+                />
+              </v-badge>
+            </template>
+
+            <div class="bg-white rounded-2xl shadow-2xl border border-slate-200/90 w-[340px] sm:w-[380px] overflow-hidden">
+              <!-- Header -->
+              <div class="p-3.5 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full" :class="realtimeStore.connected ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'" />
+                  <span class="font-bold text-xs text-slate-800">Thông báo Real-time</span>
+                  <span class="text-[10px] font-mono px-1.5 py-0.5 rounded" :class="realtimeStore.connected ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'">
+                    {{ realtimeStore.connected ? 'WS LIVE' : 'OFFLINE' }}
+                  </span>
+                </div>
+
+                <div class="flex items-center gap-1">
+                  <!-- Mute/Unmute sound -->
+                  <button
+                    class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition cursor-pointer"
+                    :title="realtimeStore.soundEnabled ? 'Tắt âm báo' : 'Bật âm báo'"
+                    @click="realtimeStore.toggleSound"
+                  >
+                    <v-icon :icon="realtimeStore.soundEnabled ? 'mdi-volume-high' : 'mdi-volume-off'" size="16" />
+                  </button>
+
+                  <!-- Mark all read -->
+                  <button
+                    v-if="realtimeStore.unreadCount > 0"
+                    class="text-[11px] font-semibold text-blue-600 hover:text-blue-700 px-2 py-1 rounded hover:bg-blue-50 transition cursor-pointer"
+                    @click="realtimeStore.markAllAsRead"
+                  >
+                    Đã đọc
+                  </button>
+                </div>
+              </div>
+
+              <!-- Notifications list -->
+              <div class="max-h-80 overflow-y-auto divide-y divide-slate-100">
+                <div
+                  v-for="item in realtimeStore.notifications"
+                  :key="item.id"
+                  class="p-3 hover:bg-slate-50 transition text-xs flex gap-3 items-start"
+                  :class="!item.read ? 'bg-blue-50/40' : ''"
+                >
+                  <!-- Icon indicator -->
+                  <div
+                    class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
+                    :class="{
+                      'bg-rose-100 text-rose-700': item.type === 'broken_reported',
+                      'bg-blue-100 text-blue-700': item.type === 'assigned',
+                      'bg-amber-100 text-amber-700': item.type === 'status_changed',
+                      'bg-emerald-100 text-emerald-700': item.type === 'created',
+                      'bg-slate-100 text-slate-700': item.type === 'deleted' || item.type === 'updated',
+                    }"
+                  >
+                    <v-icon
+                      :icon="
+                        item.type === 'broken_reported' ? 'mdi-alert-octagon' :
+                        item.type === 'assigned' ? 'mdi-transfer' :
+                        item.type === 'status_changed' ? 'mdi-swap-horizontal-bold' :
+                        item.type === 'created' ? 'mdi-plus-circle' :
+                        item.type === 'deleted' ? 'mdi-trash-can-outline' : 'mdi-pencil-circle'
+                      "
+                      size="18"
+                    />
+                  </div>
+
+                  <!-- Text -->
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between gap-1 mb-0.5">
+                      <p class="font-bold text-slate-800 truncate">{{ item.title }}</p>
+                      <span class="text-[10px] text-slate-400 shrink-0">{{ item.timestamp }}</span>
+                    </div>
+                    <p class="text-slate-600 line-clamp-2 text-[11px] leading-relaxed">{{ item.message }}</p>
+                  </div>
+                </div>
+
+                <!-- Empty state -->
+                <div v-if="realtimeStore.notifications.length === 0" class="py-8 text-center text-slate-400 text-xs">
+                  <v-icon icon="mdi-bell-sleep-outline" size="32" class="text-slate-300 mb-2 block mx-auto" />
+                  Chưa có thông báo mới nào
+                </div>
+              </div>
+
+              <!-- Footer info -->
+              <div class="p-2 bg-slate-50 border-t border-slate-100 text-center text-[10px] text-slate-400">
+                Laravel Reverb • Đồng bộ theo thời gian thực
+              </div>
+            </div>
+          </v-menu>
 
           <!-- User Menu -->
           <v-menu location="bottom end" transition="slide-y-transition">

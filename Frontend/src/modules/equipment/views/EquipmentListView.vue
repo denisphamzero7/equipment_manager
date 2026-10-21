@@ -1,7 +1,8 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useEquipmentStore } from '../stores/equipmentStore'
+import { useRealtimeStore } from '@/core/stores/realtimeStore'
 import { EquipmentStatus, EquipmentStatusOptions } from '@/core/enums/EquipmentStatus'
 import { formatDate } from '@/core/helpers/formatters'
 import { toast } from '@/core/helpers/toast'
@@ -18,6 +19,7 @@ import ReportBrokenModal from '../components/ReportBrokenModal.vue'
 const router = useRouter()
 const route = useRoute()
 const equipmentStore = useEquipmentStore()
+const realtimeStore = useRealtimeStore()
 
 // Modals state
 const formModalOpen = ref(false)
@@ -49,6 +51,36 @@ onMounted(() => {
     openCreateModal()
   }
 })
+
+// Cập nhật bảng dữ liệu thiết bị theo thời gian thực (In-place & Reload)
+watch(
+  () => realtimeStore.lastEvent,
+  (event) => {
+    if (!event) return
+
+    if (event.type === 'created' || event.type === 'deleted') {
+      equipmentStore.fetchEquipments(equipmentStore.pagination.currentPage)
+    } else if (event.type === 'status_changed') {
+      const target = equipmentStore.items.find(i => i.id === event.equipment?.id)
+      if (target) {
+        target.status = event.equipment?.new_status
+      }
+    } else if (event.type === 'assigned') {
+      const target = equipmentStore.items.find(i => i.id === event.equipment?.id)
+      if (target) {
+        target.room_id = event.equipment?.to_room_id
+        target.room = event.equipment?.to_room_number ? { id: event.equipment.to_room_id, room_number: event.equipment.to_room_number } : null
+        target.position_note = event.equipment?.position_note
+        target.status = event.equipment?.status
+      }
+    } else if (event.type === 'broken_reported') {
+      const target = equipmentStore.items.find(i => i.id === event.equipment?.id)
+      if (target) {
+        target.status = 'broken'
+      }
+    }
+  }
+)
 
 function openCreateModal() {
   selectedEquipmentForEdit.value = null

@@ -1,7 +1,8 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { dashboardService } from '../services/dashboardService'
+import { useRealtimeStore } from '@/core/stores/realtimeStore'
 import DefaultLayout from '@/core/layouts/DefaultLayout.vue'
 import AppPageHeader from '@/core/components/AppPageHeader.vue'
 import AppStatCard from '@/core/components/AppStatCard.vue'
@@ -10,6 +11,7 @@ import EquipmentOverviewChart from '../components/EquipmentOverviewChart.vue'
 import RoomAlertList from '../components/RoomAlertList.vue'
 
 const router = useRouter()
+const realtimeStore = useRealtimeStore()
 const loading = ref(true)
 const stats = ref({
   total_equipments: 0,
@@ -18,8 +20,10 @@ const stats = ref({
 })
 const mapRooms = ref([])
 
-async function loadDashboardData() {
-  loading.value = true
+async function loadDashboardData(silent = false) {
+  if (!silent) {
+    loading.value = true
+  }
   try {
     const [statsData, roomsData] = await Promise.all([
       dashboardService.getStats().catch(() => ({})),
@@ -28,13 +32,24 @@ async function loadDashboardData() {
     stats.value = statsData || {}
     mapRooms.value = roomsData || []
   } finally {
-    loading.value = false
+    if (!silent) {
+      loading.value = false
+    }
   }
 }
 
 onMounted(() => {
   loadDashboardData()
 })
+
+// Tự động làm mới số liệu Dashboard Real-time khi nhận sự kiện WebSocket
+watch(
+  () => realtimeStore.lastEvent,
+  (event) => {
+    if (!event) return
+    loadDashboardData(true)
+  }
+)
 </script>
 
 <template>

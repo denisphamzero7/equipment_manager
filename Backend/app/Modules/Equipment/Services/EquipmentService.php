@@ -4,6 +4,12 @@ namespace App\Modules\Equipment\Services;
 
 use App\Modules\Equipment\Enums\EquipmentStatusEnum;
 use App\Modules\Equipment\Enums\MaintenanceStatusEnum;
+use App\Modules\Equipment\Events\EquipmentAssigned;
+use App\Modules\Equipment\Events\EquipmentBrokenReported;
+use App\Modules\Equipment\Events\EquipmentCreated;
+use App\Modules\Equipment\Events\EquipmentDeleted;
+use App\Modules\Equipment\Events\EquipmentStatusChanged;
+use App\Modules\Equipment\Events\EquipmentUpdated;
 use App\Modules\Equipment\Models\EquipmentCategory;
 use App\Modules\Equipment\Models\EquipmentMaintenanceLog;
 use App\Modules\Equipment\Models\RoomEquipment;
@@ -58,7 +64,7 @@ class EquipmentService
 
     public function create(array $data): RoomEquipment
     {
-        return DB::transaction(function () use ($data) {
+        $item = DB::transaction(function () use ($data) {
             $photo = $data['photo'] ?? null;
             unset($data['photo']);
 
@@ -66,6 +72,10 @@ class EquipmentService
                 $data['installed_at'] = $data['installed_at'] ?? now();
             } else {
                 $data['status'] = $data['status'] ?? EquipmentStatusEnum::InStock->value;
+            }
+
+            if (empty($data['organization_id']) && function_exists('getPermissionsTeamId')) {
+                $data['organization_id'] = getPermissionsTeamId();
             }
 
             $item = RoomEquipment::create($data);
@@ -76,11 +86,16 @@ class EquipmentService
 
             return $item->load(['model.category', 'room']);
         });
+
+        // Phát Broadcast Real-time
+        event(new EquipmentCreated($item));
+
+        return $item;
     }
 
     public function update(int $id, array $data): RoomEquipment
     {
-        return DB::transaction(function () use ($id, $data) {
+        $item = DB::transaction(function () use ($id, $data) {
             $item = RoomEquipment::findOrFail($id);
             $photo = $data['photo'] ?? null;
             unset($data['photo']);
@@ -93,14 +108,27 @@ class EquipmentService
 
             return $item->load(['model.category', 'room']);
         });
+
+        // Phát Broadcast Real-time
+        event(new EquipmentUpdated($item));
+
+        return $item;
     }
 
     public function delete(int $id): bool
     {
-        return DB::transaction(function () use ($id) {
-            $item = RoomEquipment::findOrFail($id);
-            return (bool) $item->delete();
-        });
+        $item = RoomEquipment::findOrFail($id);
+        $roomId = $item->room_id;
+        $orgId = $item->organization_id;
+
+        $deleted = (bool) $item->delete();
+
+        if ($deleted) {
+            // Phát Broadcast Real-time
+            event(new EquipmentDeleted($id, $roomId, $orgId));
+        }
+
+        return $deleted;
     }
 
     public function bulkDestroy(array $ids): int
@@ -115,8 +143,10 @@ class EquipmentService
      */
     public function changeStatus(int $id, string $status, ?string $note = null): RoomEquipment
     {
-        return DB::transaction(function () use ($id, $status, $note) {
+        $oldStatus = null;
+        $item = DB::transaction(function () use ($id, $status, $note, &$oldStatus) {
             $item = RoomEquipment::findOrFail($id);
+            $oldStatus = $item->status instanceof \BackedEnum ? $item->status->value : (string) $item->status;
             $item->status = EquipmentStatusEnum::from($status);
             if ($note) {
                 $item->note = $note;
@@ -128,6 +158,11 @@ class EquipmentService
 
             return $item->load(['model.category', 'room']);
         });
+
+        // Phát Broadcast Real-time
+        event(new EquipmentStatusChanged($item, $oldStatus));
+
+        return $item;
     }
 
     /**
@@ -153,8 +188,10 @@ class EquipmentService
      */
     public function assignToRoom(int $equipmentId, ?int $roomId, ?string $positionNote = null): RoomEquipment
     {
-        return DB::transaction(function () use ($equipmentId, $roomId, $positionNote) {
+        $fromRoomId = null;
+        $item = DB::transaction(function () use ($equipmentId, $roomId, $positionNote, &$fromRoomId) {
             $item = RoomEquipment::findOrFail($equipmentId);
+            $fromRoomId = $item->room_id;
 
             if ($roomId) {
                 $item->room_id = $roomId;
@@ -174,6 +211,11 @@ class EquipmentService
 
             return $item->load(['model.category', 'room']);
         });
+
+        // Phát Broadcast Real-time
+        event(new EquipmentAssigned($item, $fromRoomId));
+
+        return $item;
     }
 
     /**
@@ -181,7 +223,7 @@ class EquipmentService
      */
     public function reportBroken(int $equipmentId, string $issueDescription, mixed $brokenPhoto = null): RoomEquipment
     {
-        return DB::transaction(function () use ($equipmentId, $issueDescription, $brokenPhoto) {
+        $item = DB::transaction(function () use ($equipmentId, $issueDescription, $brokenPhoto) {
             $item = RoomEquipment::findOrFail($equipmentId);
             $item->status = EquipmentStatusEnum::Broken;
             $item->note = $issueDescription;
@@ -203,6 +245,11 @@ class EquipmentService
 
             return $item->load(['model.category', 'room', 'maintenanceLogs']);
         });
+
+        // Phát Broadcast Real-time
+        event(new EquipmentBrokenReported($item, $issueDescription, auth()->user()?->name));
+
+        return $item;
     }
 
     /**
