@@ -139,6 +139,13 @@ class RoomService
         });
     }
 
+    public function bulkUpdateStatus(array $ids, string $status): int
+    {
+        $count = RoomModel::whereIn('id', $ids)->update(['status' => $status]);
+        event(new RoomChanged('bulk_status_updated', ['ids' => $ids, 'status' => $status], "Đã cập nhật trạng thái {$count} phòng thành công."));
+        return $count;
+    }
+
     /**
      * Sinh phòng nhanh hàng loạt (Batch Generator).
      */

@@ -3,6 +3,7 @@
 namespace App\Modules\Motel\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Motel\Requests\BulkUpdateStatusRoomRequest;
 use App\Modules\Motel\Requests\StoreRoomRequest;
 use App\Modules\Motel\Requests\UpdateRoomRequest;
 use App\Modules\Motel\Services\RoomService;
@@ -117,6 +118,27 @@ class RoomController extends Controller
         $retract = $request->boolean('retract_equipments', true);
         $this->roomService->deleteRoom((int) $id, $retract);
         return response()->json(['message' => 'Room deleted successfully']);
+    }
+
+    public function bulkUpdateStatus(BulkUpdateStatusRoomRequest $request): JsonResponse
+    {
+        $ids = $request->input('ids', []);
+        $status = $request->input('status');
+        $count = $this->roomService->bulkUpdateStatus($ids, $status);
+        return response()->json([
+            'message' => 'Cập nhật trạng thái thành công',
+            'updated_count' => $count,
+        ]);
+    }
+
+    public function export(Request $request): JsonResponse
+    {
+        return response()->json(['message' => 'Export not implemented yet']);
+    }
+
+    public function import(Request $request): JsonResponse
+    {
+        return response()->json(['message' => 'Import not implemented yet']);
     }
 
     public function changeStatus(Request $request, $id): JsonResponse
