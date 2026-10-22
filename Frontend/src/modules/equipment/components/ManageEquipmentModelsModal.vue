@@ -54,7 +54,8 @@ watch(
         openCreateForm(props.initialName.trim())
       }
     }
-  }
+  },
+  { immediate: true }
 )
 
 async function loadModels() {
