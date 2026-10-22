@@ -3,12 +3,16 @@
 namespace App\Modules\Motel\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Motel\Events\RoomChanged;
+use App\Modules\Motel\Exports\RoomExport;
+use App\Modules\Motel\Imports\RoomImport;
 use App\Modules\Motel\Requests\BulkUpdateStatusRoomRequest;
 use App\Modules\Motel\Requests\StoreRoomRequest;
 use App\Modules\Motel\Requests\UpdateRoomRequest;
 use App\Modules\Motel\Services\RoomService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RoomController extends Controller
 {
@@ -134,14 +138,52 @@ class RoomController extends Controller
         ]);
     }
 
-    public function export(Request $request): JsonResponse
+    public function export(Request $request)
     {
-        return response()->json(['message' => 'Export not implemented yet']);
+        $organizationId = (int) ($request->header('X-Organization-Id')
+            ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 0));
+        abort_if(!$organizationId, 422, 'Không xác định được tổ chức để xuất dữ liệu.');
+
+        $fileName = 'danh-sach-phong-'.now()->format('Y-m-d-His').'.xlsx';
+        return Excel::download(
+            new RoomExport($request->all(), $organizationId, $request->boolean('template')),
+            $fileName
+        );
     }
 
     public function import(Request $request): JsonResponse
     {
-        return response()->json(['message' => 'Import not implemented yet']);
+        $validated = $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv|max:10240',
+        ], [
+            'file.required' => 'Vui lòng chọn tệp Excel để nhập danh sách phòng.',
+            'file.mimes' => 'Hệ thống chỉ hỗ trợ định dạng Excel (.xlsx, .xls) hoặc .csv.',
+            'file.max' => 'Dung lượng tệp không được vượt quá 10MB.',
+        ]);
+
+        $organizationId = (int) ($request->header('X-Organization-Id')
+            ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 0));
+        abort_if(!$organizationId, 422, 'Không xác định được tổ chức để nhập dữ liệu.');
+
+        $import = new RoomImport($organizationId);
+        Excel::import($import, $validated['file']);
+        $result = $import->getResult();
+
+        if ($result['success_count'] > 0) {
+            $this->roomService->invalidateMapCache($organizationId);
+            event(new RoomChanged(
+                'room_imported',
+                ['imported_count' => $result['success_count']],
+                "Đã nhập {$result['success_count']} phòng từ Excel.",
+                $organizationId
+            ));
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Nhập dữ liệu hoàn tất: Thành công {$result['success_count']}, Bỏ qua / thất bại {$result['failed_count']}.",
+            'data' => $result,
+        ]);
     }
 
     public function changeStatus(Request $request, $id): JsonResponse

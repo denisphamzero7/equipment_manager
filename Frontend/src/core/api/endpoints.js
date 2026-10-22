@@ -45,6 +45,8 @@ export const Endpoints = Object.freeze({
     DESTROY: id => `/api/motel/rooms/${id}`,
     BATCH_GENERATE: '/api/motel/rooms/batch-generate',
     ROOM_TYPES: '/api/motel/rooms/room-types',
+    EXPORT: '/api/motel/export',
+    IMPORT: '/api/motel/import',
     BULK_DESTROY: '/api/motel/rooms/bulk-delete',
     RENAME_BLOCK: '/api/motel/structure/rename-block',
     DELETE_BLOCK: '/api/motel/structure/delete-block',

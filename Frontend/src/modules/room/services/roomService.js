@@ -104,6 +104,25 @@ export const roomService = {
     })
   },
 
+  async exportExcel(params = {}) {
+    const response = await axiosClient.get(Endpoints.ROOM.EXPORT, {
+      params,
+      responseType: 'blob',
+    })
+    return response.data
+  },
+
+  async importExcel(file) {
+    return runRoomMutation(async () => {
+      const payload = new FormData()
+      payload.append('file', file)
+      const response = await axiosClient.post(Endpoints.ROOM.IMPORT, payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      return response.data
+    })
+  },
+
   /**
    * Tạo phòng nhanh hàng loạt theo tầng và block
    */

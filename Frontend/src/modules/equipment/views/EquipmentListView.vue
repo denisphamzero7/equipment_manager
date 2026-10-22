@@ -13,6 +13,7 @@ import AppDataTable from '@/core/components/AppDataTable.vue'
 import AppStatusBadge from '@/core/components/AppStatusBadge.vue'
 import AppButton from '@/core/components/AppButton.vue'
 import AppConfirmDialog from '@/core/components/AppConfirmDialog.vue'
+import AppExcelTransfer from '@/core/components/AppExcelTransfer.vue'
 
 const EquipmentFormModal = defineAsyncComponent(() => import('../components/EquipmentFormModal.vue'))
 const AssignRoomModal = defineAsyncComponent(() => import('../components/AssignRoomModal.vue'))
@@ -252,6 +253,8 @@ watch(
       })
     } else if (event.type === 'broken_reported') {
       equipmentStore.patchEquipment(event.equipment?.id, { status: 'broken' })
+    } else if (event.type === 'imported') {
+      void refreshEquipmentListAfterRealtime()
     }
   }
 )
@@ -469,6 +472,17 @@ async function handleQuickStatusChange(item, newStatus) {
       ]"
     >
       <template #actions>
+        <AppExcelTransfer
+          v-if="$can('import', 'Equipment') || $can('export', 'Equipment')"
+          title="Thiết bị"
+          description="Nhập thiết bị theo mẫu hoặc xuất danh sách để kiểm kê."
+          :exporter="equipmentService.exportExcel"
+          :importer="equipmentService.importExcel"
+          :filters="equipmentStore.filters"
+          :allow-import="$can('import', 'Equipment')"
+          :allow-export="$can('export', 'Equipment')"
+          @imported="equipmentStore.fetchEquipments(1)"
+        />
         <AppButton
           v-if="$can('create', 'Equipment')"
           variant="tonal"

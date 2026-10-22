@@ -3,6 +3,7 @@
 namespace App\Modules\Equipment\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Equipment\Events\EquipmentImported;
 use App\Modules\Equipment\Exports\EquipmentExport;
 use App\Modules\Equipment\Imports\EquipmentImport;
 use App\Modules\Equipment\Models\EquipmentModel;
@@ -233,7 +234,12 @@ class EquipmentController extends Controller
     public function export(Request $request)
     {
         $fileName = 'danh-sach-thiet-bi-'.now()->format('Y-m-d-His').'.xlsx';
-        return Excel::download(new EquipmentExport($request->all()), $fileName);
+        $organizationId = (int) ($request->header('X-Organization-Id')
+            ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 0));
+        return Excel::download(
+            new EquipmentExport($request->all(), $organizationId ?: null, $request->boolean('template')),
+            $fileName
+        );
     }
 
     /**
@@ -243,10 +249,16 @@ class EquipmentController extends Controller
      */
     public function import(ImportEquipmentRequest $request): JsonResponse
     {
-        $import = new EquipmentImport;
+        $organizationId = (int) ($request->header('X-Organization-Id')
+            ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 0));
+        $import = new EquipmentImport($organizationId ?: null);
         Excel::import($import, $request->file('file'));
 
         $result = $import->getResult();
+        $this->service->invalidateCache($organizationId ?: null);
+        if ($result['success_count'] > 0 && $organizationId) {
+            event(new EquipmentImported($organizationId, $result['success_count']));
+        }
         return $this->success($result, "Nhập dữ liệu hoàn tất: Thành công {$result['success_count']}, Thất bại {$result['failed_count']}");
     }
 

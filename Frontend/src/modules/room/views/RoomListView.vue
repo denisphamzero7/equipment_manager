@@ -6,6 +6,7 @@ import AppPageHeader from '@/core/components/AppPageHeader.vue'
 import AppDataTable from '@/core/components/AppDataTable.vue'
 import AppButton from '@/core/components/AppButton.vue'
 import AppConfirmDialog from '@/core/components/AppConfirmDialog.vue'
+import AppExcelTransfer from '@/core/components/AppExcelTransfer.vue'
 import RoomFormModal from '../components/RoomFormModal.vue'
 import RoomBatchModal from '../components/RoomBatchModal.vue'
 import ManageStructureModal from '../components/ManageStructureModal.vue'
@@ -481,6 +482,17 @@ function getStatusBadge(status) {
       >
         <template #actions>
           <div class="flex flex-wrap items-center gap-2">
+            <AppExcelTransfer
+              v-if="$can('import', 'Room') || $can('export', 'Room')"
+              title="Phòng"
+              description="Nhập danh sách phòng theo mẫu hoặc xuất dữ liệu để kiểm kê."
+              :exporter="roomService.exportExcel"
+              :importer="roomService.importExcel"
+              :filters="filters"
+              :allow-import="$can('import', 'Room')"
+              :allow-export="$can('export', 'Room')"
+              @imported="fetchRooms()"
+            />
             <!-- Thêm phòng đơn -->
             <AppButton variant="primary" @click="openCreateModal()">
               <v-icon start icon="mdi-plus" />

@@ -49,4 +49,14 @@ describe('CASL Ability Definition', () => {
     expect(detailViewer.can('index', 'Room')).toBe(false)
     expect(detailViewer.can('read', 'Room')).toBe(true)
   })
+
+  it('maps room import and export permissions to their own actions', () => {
+    const importer = defineRulesFor({ id: 6, roles: ['Staff'] }, ['motel.import'])
+    const exporter = defineRulesFor({ id: 7, roles: ['Staff'] }, ['motel.export'])
+
+    expect(importer.can('import', 'Room')).toBe(true)
+    expect(importer.can('export', 'Room')).toBe(false)
+    expect(exporter.can('export', 'Room')).toBe(true)
+    expect(exporter.can('import', 'Room')).toBe(false)
+  })
 })

@@ -117,6 +117,16 @@ export const useRealtimeStore = defineStore('realtime', () => {
       toast.info(event.message || 'Một thiết bị mới vừa được thêm vào hệ thống.')
     })
 
+    channel.listen('.equipment.imported', (event) => {
+      invalidateChangedData()
+      lastEvent.value = { type: 'imported', ...event }
+      addNotification({
+        type: 'imported',
+        title: 'Nhập thiết bị từ Excel',
+        message: event.message || `Đã nhập ${event.imported_count || 0} thiết bị.`,
+      })
+    })
+
     // 2. Thiết bị được cập nhật
     channel.listen('.equipment.updated', (event) => {
       invalidateChangedData()

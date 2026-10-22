@@ -197,7 +197,9 @@ export const equipmentService = {
   // 17. Nhập Excel
   async importExcel(formData) {
     return runEquipmentMutation(async () => {
-      const response = await axiosClient.post(Endpoints.EQUIPMENT.IMPORT, formData, {
+      const payload = new FormData()
+      payload.append('file', formData)
+      const response = await axiosClient.post(Endpoints.EQUIPMENT.IMPORT, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       return response.data

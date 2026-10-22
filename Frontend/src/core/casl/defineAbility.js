@@ -91,6 +91,12 @@ export function defineRulesFor(user = null, permissions = []) {
       if (permName === 'motel.destroy' || permName === 'rooms.delete' || permName === 'rooms.destroy') {
         can('delete', 'Room')
       }
+      if (permName === 'motel.export') {
+        can('export', 'Room')
+      }
+      if (permName === 'motel.import') {
+        can('import', 'Room')
+      }
     }
 
     // Dashboard
