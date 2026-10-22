@@ -10,6 +10,7 @@ import AppExcelTransfer from '@/core/components/AppExcelTransfer.vue'
 import RoomFormModal from '../components/RoomFormModal.vue'
 import RoomBatchModal from '../components/RoomBatchModal.vue'
 import ManageStructureModal from '../components/ManageStructureModal.vue'
+import RoomEquipmentSummary from '../components/RoomEquipmentSummary.vue'
 import { roomService } from '../services/roomService'
 import { RoomStatusOptions, RoomStatusMeta } from '@/core/enums/RoomStatus'
 import { formatCurrency } from '@/core/helpers/formatters'
@@ -226,21 +227,14 @@ watch(
       }
       fetchRooms(false)
     } else if (ev.type === 'created' && ev.equipment?.room_id) {
-      adjustEquipmentCount(ev.equipment.room_id, 1)
+      fetchRooms(false)
     } else if (ev.type === 'deleted' && ev.room_id) {
-      adjustEquipmentCount(ev.room_id, -1)
+      fetchRooms(false)
     } else if (ev.type === 'assigned') {
-      if (ev.equipment?.from_room_id) adjustEquipmentCount(ev.equipment.from_room_id, -1)
-      if (ev.equipment?.to_room_id) adjustEquipmentCount(ev.equipment.to_room_id, 1)
+      fetchRooms(false)
     }
   }
 )
-
-function adjustEquipmentCount(roomId, change) {
-  const room = rooms.value.find(item => Number(item.id) === Number(roomId))
-  if (!room || room.equipments_count == null) return
-  room.equipments_count = Math.max(0, Number(room.equipments_count) + change)
-}
 
 watch(viewMode, () => {
   pagination.currentPage = 1
@@ -959,32 +953,35 @@ function getStatusBadge(status) {
                 </div>
 
                 <!-- Equipment Badge & Actions -->
-                <div class="pt-2 border-t border-slate-200/60 flex items-center justify-between gap-1 mt-2">
-                  <button
-                    class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-md bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 hover:text-primary transition shrink-0"
-                    title="Xem thiết bị gắn trong phòng"
-                    @click="goToRoomEquipments(room.id)"
-                  >
-                    <v-icon icon="mdi-package-variant-closed" size="14" color="primary" />
-                    <span>{{ room.equipments_count ?? 0 }} TB</span>
-                  </button>
+                <div class="pt-2 border-t border-slate-200/60 mt-2">
+                  <div class="flex items-center justify-between gap-1">
+                    <button
+                      class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-md bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 hover:text-primary transition shrink-0"
+                      title="Xem thiết bị gắn trong phòng"
+                      @click="goToRoomEquipments(room.id)"
+                    >
+                      <v-icon icon="mdi-package-variant-closed" size="14" color="primary" />
+                      <span>{{ room.equipments_count ?? 0 }} TB</span>
+                    </button>
 
-                  <div class="flex items-center gap-0.5 shrink-0">
-                    <button
-                      class="p-1 rounded text-slate-400 hover:text-primary hover:bg-slate-100 transition"
-                      title="Chỉnh sửa"
-                      @click="openEditModal(room)"
-                    >
-                      <v-icon icon="mdi-pencil-outline" size="16" />
-                    </button>
-                    <button
-                      class="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"
-                      title="Xóa phòng"
-                      @click="confirmDeleteRoom(room)"
-                    >
-                      <v-icon icon="mdi-trash-can-outline" size="16" />
-                    </button>
+                    <div class="flex items-center gap-0.5 shrink-0">
+                      <button
+                        class="p-1 rounded text-slate-400 hover:text-primary hover:bg-slate-100 transition"
+                        title="Chỉnh sửa"
+                        @click="openEditModal(room)"
+                      >
+                        <v-icon icon="mdi-pencil-outline" size="16" />
+                      </button>
+                      <button
+                        class="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"
+                        title="Xóa phòng"
+                        @click="confirmDeleteRoom(room)"
+                      >
+                        <v-icon icon="mdi-trash-can-outline" size="16" />
+                      </button>
+                    </div>
                   </div>
+                  <RoomEquipmentSummary :room="room" compact />
                 </div>
               </div>
             </div>
@@ -1080,13 +1077,16 @@ function getStatusBadge(status) {
 
           <!-- Thiết bị trong phòng -->
           <template #item.equipments_count="{ item }">
-            <button
-              class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
-              @click="goToRoomEquipments(item.id)"
-            >
-              <v-icon icon="mdi-package-variant-closed" size="14" />
-              {{ item.equipments_count ?? 0 }} thiết bị
-            </button>
+            <div class="min-w-40">
+              <button
+                class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
+                @click="goToRoomEquipments(item.id)"
+              >
+                <v-icon icon="mdi-package-variant-closed" size="14" />
+                {{ item.equipments_count ?? 0 }} thiết bị
+              </button>
+              <RoomEquipmentSummary :room="item" />
+            </div>
           </template>
 
           <!-- Giá -->

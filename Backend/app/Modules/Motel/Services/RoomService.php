@@ -58,11 +58,43 @@ class RoomService
         $sortBy = $filters['sort_by'] ?? 'room_number';
         $sortOrder = strtolower($filters['sort_order'] ?? 'asc') === 'desc' ? 'desc' : 'asc';
 
-        return RoomModel::with(['roomType', 'sharedWifiRoom'])
+        $rooms = RoomModel::with(['roomType', 'sharedWifiRoom'])
             ->withCount('equipments')
             ->filter($filters)
             ->orderBy($sortBy, $sortOrder)
             ->paginate($limit);
+
+        $roomIds = $rooms->getCollection()->pluck('id');
+        $equipmentSummary = $roomIds->isEmpty()
+            ? collect()
+            : DB::table('room_equipments')
+                ->join('equipment_models', 'equipment_models.id', '=', 'room_equipments.equipment_model_id')
+                ->whereIn('room_equipments.room_id', $roomIds)
+                ->whereNull('room_equipments.deleted_at')
+                ->select(
+                    'room_equipments.room_id',
+                    'equipment_models.name as model_name',
+                    DB::raw('COUNT(*) as quantity')
+                )
+                ->groupBy('room_equipments.room_id', 'equipment_models.name')
+                ->orderBy('equipment_models.name')
+                ->get()
+                ->groupBy('room_id');
+
+        $rooms->getCollection()->each(function (RoomModel $room) use ($equipmentSummary) {
+            $room->setAttribute(
+                'equipment_summary',
+                $equipmentSummary->get($room->id, collect())
+                    ->map(fn ($item) => [
+                        'name' => $item->model_name,
+                        'quantity' => (int) $item->quantity,
+                    ])
+                    ->values()
+                    ->all()
+            );
+        });
+
+        return $rooms;
     }
 
     public function getRoomTypes(?int $orgId = null)
