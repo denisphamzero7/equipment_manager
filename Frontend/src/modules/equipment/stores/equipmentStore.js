@@ -2,6 +2,37 @@ import { defineStore } from 'pinia'
 import { equipmentService } from '../services/equipmentService'
 import { toast } from '@/core/helpers/toast'
 
+function extractEquipment(response) {
+  const value = response?.data?.data || response?.data || response
+  return value && typeof value === 'object' && !Array.isArray(value) && value.id ? value : null
+}
+
+function matchesFilters(item, filters) {
+  if (filters.status && item.status !== filters.status) return false
+  if (filters.block === '__stock__' && item.room_id != null) return false
+  if (filters.block && filters.block !== '__stock__' && item.room?.block !== filters.block) return false
+  if (filters.floor != null && filters.floor !== '' && Number(item.room?.floor) !== Number(filters.floor)) return false
+  if (filters.room_id && Number(item.room_id) !== Number(filters.room_id)) return false
+  if (filters.room_number && String(item.room?.room_number || '') !== String(filters.room_number)) return false
+
+  const categoryId = item.equipment_category_id || item.model?.equipment_category_id || item.model?.category_id || item.model?.category?.id
+  if (filters.equipment_category_id && Number(categoryId) !== Number(filters.equipment_category_id)) return false
+
+  const query = String(filters.search || '').trim().toLowerCase()
+  if (query) {
+    const searchableValues = [
+      item.serial_number,
+      item.name,
+      item.model_name,
+      item.model?.name,
+      item.room?.room_number,
+    ]
+    if (!searchableValues.some(value => String(value || '').toLowerCase().includes(query))) return false
+  }
+
+  return true
+}
+
 export const useEquipmentStore = defineStore('equipment', {
   state: () => ({
     items: [],
@@ -83,40 +114,52 @@ export const useEquipmentStore = defineStore('equipment', {
     async createEquipment(payload) {
       const res = await equipmentService.createEquipment(payload)
       toast.success('Thêm thiết bị mới thành công!')
-      await this.fetchEquipments(this.pagination.currentPage)
+      const created = extractEquipment(res)
+      if (!created) {
+        await this.fetchEquipments(this.pagination.currentPage, { silent: true })
+        return res
+      }
+
+      this.addEquipment(created)
       return res
+    },
+
+    addEquipment(equipment) {
+      if (!equipment?.id) return
+      const existingIndex = this.items.findIndex(item => Number(item.id) === Number(equipment.id))
+      if (existingIndex !== -1) {
+        this.items.splice(existingIndex, 1, { ...this.items[existingIndex], ...equipment })
+        return
+      }
+      if (!matchesFilters(equipment, this.filters)) return
+
+      this.pagination.total += 1
+      if (this.pagination.currentPage === 1) {
+        this.items.unshift(equipment)
+        if (this.items.length > this.pagination.perPage) this.items.pop()
+      }
     },
 
     async updateEquipment(id, payload) {
       const res = await equipmentService.updateEquipment(id, payload)
       toast.success('Cập nhật thiết bị thành công!')
 
-      const updated = res?.data?.data || res?.data || res
+      const updated = extractEquipment(res)
       const itemIndex = this.items.findIndex(item => Number(item.id) === Number(id))
-      if (itemIndex !== -1 && updated && typeof updated === 'object') {
+      if (itemIndex !== -1 && updated) {
         const current = this.items[itemIndex]
-        const merged = { ...current, ...updated }
-        if (!updated.photo_url && current.photo_url) merged.photo_url = current.photo_url
-        if (!updated.thumb_url && current.thumb_url) merged.thumb_url = current.thumb_url
-        if (!updated.photos?.length && current.photos?.length) merged.photos = current.photos
+        const changes = { ...updated }
+        if (!updated.photo_url && current.photo_url) changes.photo_url = current.photo_url
+        if (!updated.thumb_url && current.thumb_url) changes.thumb_url = current.thumb_url
+        if (!updated.photos?.length && current.photos?.length) changes.photos = current.photos
         if (!updated.broken_photos?.length && current.broken_photos?.length) {
-          merged.broken_photos = current.broken_photos
+          changes.broken_photos = current.broken_photos
         }
-        this.items.splice(itemIndex, 1, merged)
+        this.patchEquipment(id, changes)
+        await this.refreshEmptyPage()
       }
 
-      const filters = this.filters
-      const hasActiveFilters = Boolean(
-        filters.search ||
-        filters.status ||
-        filters.block ||
-        (filters.floor !== null && filters.floor !== '' && filters.floor !== undefined) ||
-        filters.room_id ||
-        filters.room_number ||
-        filters.equipment_category_id
-      )
-      const hasNewPhoto = payload instanceof FormData && payload.has('photo')
-      if (itemIndex === -1 || hasActiveFilters || hasNewPhoto) {
+      if (itemIndex === -1 || !updated) {
         try {
           await this.fetchEquipments(this.pagination.currentPage, { silent: true })
         } catch (error) {
@@ -130,37 +173,88 @@ export const useEquipmentStore = defineStore('equipment', {
     async deleteEquipment(id) {
       await equipmentService.deleteEquipment(id)
       toast.success('Đã xóa thiết bị thành công.')
-      await this.fetchEquipments(this.pagination.currentPage)
+      await this.removeEquipment(id)
     },
 
     async changeStatus(id, status, note = '') {
-      await equipmentService.changeStatus(id, status, note)
+      const res = await equipmentService.changeStatus(id, status, note)
       toast.success('Cập nhật trạng thái thành công!')
-      await this.fetchEquipments(this.pagination.currentPage)
+      const updated = extractEquipment(res)
+      this.patchEquipment(id, updated || { status, note })
+      await this.refreshEmptyPage()
     },
 
     async bulkUpdateStatus(ids, status, note = '') {
       const res = await equipmentService.bulkUpdateStatus(ids, status, note)
       toast.success(res.message || 'Cập nhật trạng thái hàng loạt thành công!')
-      await this.fetchEquipments(this.pagination.currentPage)
+      ids.forEach(id => this.patchEquipment(id, { status, note }))
+      await this.refreshEmptyPage()
     },
 
     async bulkDestroy(ids) {
       const res = await equipmentService.bulkDestroy(ids)
       toast.success(res.message || 'Xóa các thiết bị đã chọn thành công!')
-      await this.fetchEquipments(this.pagination.currentPage)
+      const idSet = new Set(ids.map(Number))
+      const previousCount = this.items.length
+      this.items = this.items.filter(item => !idSet.has(Number(item.id)))
+      const removedCount = previousCount - this.items.length
+      this.pagination.total = Math.max(0, this.pagination.total - removedCount)
+      if (this.activeItem && idSet.has(Number(this.activeItem.id))) this.activeItem = null
+      if (removedCount) await this.refreshEmptyPage()
     },
 
     async assignRoom(payload) {
       const res = await equipmentService.assignToRoom(payload)
       toast.success(res.message || 'Điều chuyển thiết bị thành công!')
-      await this.fetchEquipments(this.pagination.currentPage)
+      this.patchEquipment(payload.equipment_id, extractEquipment(res))
+      await this.refreshEmptyPage()
     },
 
     async reportBroken(id, payload) {
       const res = await equipmentService.reportBroken(id, payload)
       toast.success('Đã tiếp nhận báo hỏng và tạo phiếu bảo trì!')
-      await this.fetchEquipments(this.pagination.currentPage)
+      this.patchEquipment(id, extractEquipment(res) || { status: 'broken' })
+      await this.refreshEmptyPage()
+    },
+
+    patchEquipment(id, changes) {
+      if (!changes) return
+      const itemIndex = this.items.findIndex(item => Number(item.id) === Number(id))
+      if (itemIndex !== -1) {
+        const updated = { ...this.items[itemIndex], ...changes }
+        if (matchesFilters(updated, this.filters)) {
+          this.items.splice(itemIndex, 1, updated)
+        } else {
+          this.items.splice(itemIndex, 1)
+          this.pagination.total = Math.max(0, this.pagination.total - 1)
+        }
+      }
+      if (Number(this.activeItem?.id) === Number(id)) {
+        this.activeItem = { ...this.activeItem, ...changes }
+      }
+    },
+
+    async removeEquipment(id) {
+      const previousCount = this.items.length
+      this.items = this.items.filter(item => Number(item.id) !== Number(id))
+      const removed = this.items.length < previousCount
+      if (removed) {
+        this.pagination.total = Math.max(0, this.pagination.total - 1)
+      }
+      if (Number(this.activeItem?.id) === Number(id)) this.activeItem = null
+      if (removed) await this.refreshEmptyPage()
+    },
+
+    async refreshEmptyPage() {
+      if (this.items.length || this.pagination.total === 0) return
+      const lastPage = Math.max(1, Math.ceil(this.pagination.total / this.pagination.perPage))
+      const targetPage = Math.min(this.pagination.currentPage, lastPage)
+      try {
+        await this.fetchEquipments(targetPage, { silent: true })
+      } catch (error) {
+        console.error('Equipment changed, but the current list page could not be refreshed:', error)
+        toast.warning('Đã lưu thay đổi nhưng trang danh sách chưa đồng bộ được.')
+      }
     },
 
     setFilter(key, value) {

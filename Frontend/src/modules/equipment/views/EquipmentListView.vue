@@ -32,9 +32,31 @@ const pendingCreations = ref([])
 let creationSequence = 0
 let editingPendingCreation = null
 const modelCreationPromises = new Map()
+const locallyCreatedRequestIds = new Map()
 
 const tableItems = computed(() => [...pendingCreations.value, ...equipmentStore.items])
 const tableTotal = computed(() => equipmentStore.pagination.total + pendingCreations.value.length)
+
+function refreshEquipmentListAfterRealtime() {
+  return equipmentStore.fetchEquipments(equipmentStore.pagination.currentPage, { silent: true })
+    .catch(error => {
+      console.error('Failed to refresh equipment list after a realtime event:', error)
+      toast.warning('Danh sách chưa đồng bộ với thay đổi mới. Vui lòng thử tải lại.')
+    })
+}
+
+function rememberLocalCreation(clientRequestId) {
+  const cutoff = Date.now() - 60000
+  for (const [id, createdAt] of locallyCreatedRequestIds) {
+    if (createdAt < cutoff) locallyCreatedRequestIds.delete(id)
+  }
+  locallyCreatedRequestIds.set(clientRequestId, Date.now())
+}
+
+function extractCreatedEquipment(response) {
+  const equipment = response?.data?.data || response?.data || response
+  return equipment && typeof equipment === 'object' && equipment.id ? equipment : null
+}
 
 watch(formModalOpen, isOpen => {
   if (!isOpen && editingPendingCreation?.state === 'failed') {
@@ -107,8 +129,9 @@ function resetAllFilters() {
 async function loadCategories() {
   try {
     categoryOptions.value = await equipmentService.getCategories()
-  } catch {
-    categoryOptions.value = []
+  } catch (error) {
+    console.error('Failed to load equipment categories:', error)
+    toast.error(error.response?.data?.message || 'Không thể tải danh mục thiết bị.')
   }
 }
 
@@ -157,37 +180,77 @@ watch(
     if (!event) return
 
     if (event.type === 'created') {
+      const clientRequestId = event.equipment?.client_request_id
+      if (clientRequestId && locallyCreatedRequestIds.delete(clientRequestId)) return
+
       const pending = pendingCreations.value.find(
-        item => item.clientRequestId === event.equipment?.client_request_id
+        item => item.clientRequestId === clientRequestId
       )
       if (pending) {
         pending.acknowledgedByEvent = true
         pending.successNotified = true
         pendingCreations.value = pendingCreations.value.filter(item => item !== pending)
-        pending.refreshPromise = refreshAfterCreation(pending)
+        equipmentStore.addEquipment(event.equipment)
+        if (pending.state === 'failed') void refreshAfterCreation(pending)
+      } else if (event.equipment?.id) {
+        void equipmentService.getEquipment(event.equipment?.id)
+          .then(equipmentStore.addEquipment)
+          .catch(error => {
+            console.error('Failed to load a newly created equipment item:', error)
+            toast.warning('Có thiết bị mới nhưng chưa tải được thông tin chi tiết.')
+          })
       } else {
-        void equipmentStore.fetchEquipments(equipmentStore.pagination.currentPage, { silent: true })
+        void refreshEquipmentListAfterRealtime()
       }
     } else if (event.type === 'deleted') {
-      equipmentStore.fetchEquipments(equipmentStore.pagination.currentPage, { silent: true })
+      equipmentStore.removeEquipment(event.equipment_id)
+    } else if (event.type === 'updated') {
+      const equipment = event.equipment
+      const current = equipmentStore.items.find(item => Number(item.id) === Number(equipment?.id))
+      if (current && equipment) {
+        const hasGeographicFilter = Boolean(
+          (equipmentStore.filters.block && equipmentStore.filters.block !== '__stock__') ||
+          (equipmentStore.filters.floor !== null && equipmentStore.filters.floor !== '')
+        )
+        const roomChanged = Number(equipment.room_id ?? 0) !== Number(current.room_id ?? 0)
+        if (hasGeographicFilter && roomChanged) {
+          void refreshEquipmentListAfterRealtime()
+          return
+        }
+        equipmentStore.patchEquipment(equipment.id, {
+          serial_number: equipment.serial_number,
+          status: equipment.status,
+          room_id: equipment.room_id,
+          room: equipment.room_id
+            ? { ...current.room, id: equipment.room_id, room_number: equipment.room_number }
+            : null,
+          position_note: equipment.position_note,
+          note: equipment.note,
+          model: { ...current.model, name: equipment.model_name },
+        })
+      }
     } else if (event.type === 'status_changed') {
-      const target = equipmentStore.items.find(i => i.id === event.equipment?.id)
-      if (target) {
-        target.status = event.equipment?.new_status
-      }
+      equipmentStore.patchEquipment(event.equipment?.id, { status: event.equipment?.new_status })
     } else if (event.type === 'assigned') {
-      const target = equipmentStore.items.find(i => i.id === event.equipment?.id)
-      if (target) {
-        target.room_id = event.equipment?.to_room_id
-        target.room = event.equipment?.to_room_number ? { id: event.equipment.to_room_id, room_number: event.equipment.to_room_number } : null
-        target.position_note = event.equipment?.position_note
-        target.status = event.equipment?.status
+      const current = equipmentStore.items.find(item => Number(item.id) === Number(event.equipment?.id))
+      if (
+        current &&
+        ((equipmentStore.filters.block && equipmentStore.filters.block !== '__stock__') ||
+          (equipmentStore.filters.floor !== null && equipmentStore.filters.floor !== ''))
+      ) {
+        void refreshEquipmentListAfterRealtime()
+        return
       }
+      equipmentStore.patchEquipment(event.equipment?.id, {
+        room_id: event.equipment?.to_room_id,
+        room: event.equipment?.to_room_id
+          ? { id: event.equipment.to_room_id, room_number: event.equipment.to_room_number }
+          : null,
+        position_note: event.equipment?.position_note,
+        status: event.equipment?.status,
+      })
     } else if (event.type === 'broken_reported') {
-      const target = equipmentStore.items.find(i => i.id === event.equipment?.id)
-      if (target) {
-        target.status = 'broken'
-      }
+      equipmentStore.patchEquipment(event.equipment?.id, { status: 'broken' })
     }
   }
 )
@@ -305,16 +368,25 @@ async function persistCreation(pending) {
       payload.client_request_id = pending.clientRequestId
     }
 
-    await equipmentService.createEquipment(payload)
+    const response = await equipmentService.createEquipment(payload)
+    const created = extractCreatedEquipment(response)
+    if (created) {
+      equipmentStore.addEquipment(created)
+      if (!pending.acknowledgedByEvent) rememberLocalCreation(pending.clientRequestId)
+    }
     pendingCreations.value = pendingCreations.value.filter(item => item !== pending)
     pending.acknowledgedByResponse = true
     if (!pending.successNotified) {
       toast.success(`Đã tạo thiết bị "${pending.modelName}" thành công!`)
     }
-    if (pending.refreshPromise) await pending.refreshPromise
-    else await refreshAfterCreation(pending)
+    if (!created && !pending.acknowledgedByEvent) {
+      await refreshAfterCreation(pending)
+    }
   } catch (error) {
-    if (pending.acknowledgedByEvent || pending.acknowledgedByResponse) return
+    if (pending.acknowledgedByEvent || pending.acknowledgedByResponse) {
+      await refreshAfterCreation(pending)
+      return
+    }
     pending.state = 'failed'
     pending.error = error.response?.data?.message || error.message || 'Không thể lưu thiết bị.'
     toast.error(`Tạo thiết bị thất bại: ${pending.error}`)

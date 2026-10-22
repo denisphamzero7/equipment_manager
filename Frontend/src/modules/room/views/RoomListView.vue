@@ -211,9 +211,22 @@ watch(
     if (!ev) return
     if (ev.type && ev.type.startsWith('room_')) {
       fetchRooms(false)
+    } else if (ev.type === 'created' && ev.equipment?.room_id) {
+      adjustEquipmentCount(ev.equipment.room_id, 1)
+    } else if (ev.type === 'deleted' && ev.room_id) {
+      adjustEquipmentCount(ev.room_id, -1)
+    } else if (ev.type === 'assigned') {
+      if (ev.equipment?.from_room_id) adjustEquipmentCount(ev.equipment.from_room_id, -1)
+      if (ev.equipment?.to_room_id) adjustEquipmentCount(ev.equipment.to_room_id, 1)
     }
   }
 )
+
+function adjustEquipmentCount(roomId, change) {
+  const room = rooms.value.find(item => Number(item.id) === Number(roomId))
+  if (!room || room.equipments_count == null) return
+  room.equipments_count = Math.max(0, Number(room.equipments_count) + change)
+}
 
 watch(viewMode, () => {
   pagination.currentPage = 1
@@ -231,6 +244,7 @@ async function fetchRoomTypes() {
     roomTypes.value = Array.isArray(types) ? types : []
   } catch (err) {
     console.error('Fetch room types error:', err)
+    toast.error(err.response?.data?.message || 'Không thể tải danh sách loại phòng.')
   }
 }
 
@@ -304,6 +318,44 @@ function openEditModal(room) {
   formModalOpen.value = true
 }
 
+function handleRoomSaved(savedRoom) {
+  if (!savedRoom?.id) {
+    fetchRooms(false)
+    return
+  }
+
+  const roomIndex = rooms.value.findIndex(room => Number(room.id) === Number(savedRoom.id))
+  if (roomIndex !== -1) {
+    const updatedRoom = { ...rooms.value[roomIndex], ...savedRoom }
+    if (viewMode.value === 'table' && !matchesTableFilters(updatedRoom)) {
+      removeRoomsFromView([savedRoom.id])
+      return
+    }
+    rooms.value.splice(roomIndex, 1, updatedRoom)
+    return
+  }
+
+  if (viewMode.value === 'table' && !matchesTableFilters(savedRoom)) return
+  pagination.totalItems += 1
+  totalRooms.value += 1
+  if (viewMode.value === 'cards' || pagination.currentPage === 1) {
+    rooms.value.unshift(savedRoom)
+  }
+}
+
+function matchesTableFilters(room) {
+  if (filters.block && room.block !== filters.block) return false
+  if (filters.floor !== null && filters.floor !== '' && Number(room.floor) !== Number(filters.floor)) return false
+  if (filters.room_type_id && Number(room.room_type_id) !== Number(filters.room_type_id)) return false
+  if (filters.status && room.status !== filters.status) return false
+  if (filters.search) {
+    const query = filters.search.toLowerCase()
+    if (!String(room.room_number || '').toLowerCase().includes(query) &&
+        !String(room.name || '').toLowerCase().includes(query)) return false
+  }
+  return true
+}
+
 function confirmDeleteRoom(room) {
   roomToDelete.value = room
   deleteDialogOpen.value = true
@@ -313,11 +365,12 @@ async function handleDeleteRoom() {
   if (!roomToDelete.value) return
   deleteLoading.value = true
   try {
-    await roomService.deleteRoom(roomToDelete.value.id, true)
+    const roomId = roomToDelete.value.id
+    await roomService.deleteRoom(roomId, true)
     toast.success(`Đã xóa phòng ${roomToDelete.value.room_number}. Thiết bị đã tự động thu hồi về kho an toàn.`)
     deleteDialogOpen.value = false
     roomToDelete.value = null
-    fetchRooms()
+    removeRoomsFromView([roomId])
   } catch (err) {
     const msg = err.response?.data?.message || err.message || 'Lỗi khi xóa phòng.'
     toast.error(msg)
@@ -339,14 +392,29 @@ async function handleBulkDelete() {
   try {
     const res = await roomService.bulkDeleteRooms(selectedRoomIds.value, true)
     toast.success(res.message || `Đã xóa ${selectedRoomIds.value.length} phòng thành công!`)
+    removeRoomsFromView(selectedRoomIds.value)
     selectedRoomIds.value = []
     bulkDeleteDialogOpen.value = false
-    fetchRooms()
   } catch (err) {
     const msg = err.response?.data?.message || err.message || 'Lỗi khi xóa nhiều phòng.'
     toast.error(msg)
   } finally {
     bulkDeleteLoading.value = false
+  }
+}
+
+function removeRoomsFromView(ids) {
+  const idSet = new Set(ids.map(Number))
+  const previousLength = rooms.value.length
+  rooms.value = rooms.value.filter(room => !idSet.has(Number(room.id)))
+  const removed = previousLength - rooms.value.length
+  pagination.totalItems = Math.max(0, pagination.totalItems - removed)
+  totalRooms.value = Math.max(0, totalRooms.value - removed)
+  selectedRoomIds.value = selectedRoomIds.value.filter(id => !idSet.has(Number(id)))
+
+  if (viewMode.value === 'table' && rooms.value.length === 0 && pagination.currentPage > 1) {
+    pagination.currentPage -= 1
+    fetchRooms()
   }
 }
 
@@ -1006,7 +1074,7 @@ function getStatusBadge(status) {
       :room="selectedRoomForEdit"
       :room-types="roomTypes"
       :existing-blocks="existingBlocks"
-      @saved="fetchRooms"
+      @saved="handleRoomSaved"
     />
 
     <!-- Tạo phòng nhanh hàng loạt -->

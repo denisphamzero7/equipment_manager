@@ -153,16 +153,17 @@ async function handleSubmit() {
       room_type_id: form.value.room_type_id ? parseInt(form.value.room_type_id, 10) : null,
     }
 
+    let savedRoom
     if (isEdit.value) {
-      await roomService.updateRoom(props.room.id, payload)
+      savedRoom = await roomService.updateRoom(props.room.id, payload)
       toast.success(`Cập nhật phòng ${payload.room_number} thành công!`)
     } else {
-      await roomService.createRoom(payload)
+      savedRoom = await roomService.createRoom(payload)
       toast.success(`Tạo mới phòng ${payload.room_number} thành công!`)
     }
 
     emit('update:modelValue', false)
-    emit('saved')
+    emit('saved', savedRoom)
   } catch (err) {
     const errorData = err.response?.data
     let msg = errorData?.message || err.message || 'Thao tác không thành công.'

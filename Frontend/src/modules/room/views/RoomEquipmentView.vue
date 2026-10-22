@@ -26,6 +26,7 @@ const actionLoading = ref(false)
 const rooms = ref([])
 const selectedRoomId = ref(null)
 const roomDetail = ref(null)
+let roomDetailRequestId = 0
 
 // Action Modals State (Reused Components)
 const assignModalOpen = ref(false)
@@ -50,12 +51,15 @@ const editRoomModalOpen = ref(false)
 const roomTypesList = ref([])
 
 onMounted(async () => {
-  await loadRooms()
-  try {
-    roomTypesList.value = await roomService.getRoomTypes()
-  } catch (err) {
-    console.error('Failed to load room types:', err)
-  }
+  await Promise.all([
+    loadRooms(),
+    roomService.getRoomTypes().then(types => {
+      roomTypesList.value = types
+    }).catch(error => {
+      console.error('Failed to load room types:', error)
+      toast.error('Không thể tải danh sách loại phòng.')
+    }),
+  ])
 })
 
 function openEditRoomModal() {
@@ -63,8 +67,14 @@ function openEditRoomModal() {
   editRoomModalOpen.value = true
 }
 
-async function handleRoomSaved() {
-  await loadRooms()
+async function handleRoomSaved(savedRoom) {
+  if (savedRoom?.id) {
+    rooms.value = rooms.value.map(room =>
+      Number(room.id) === Number(savedRoom.id) ? { ...room, ...savedRoom } : room
+    )
+  } else {
+    await loadRooms()
+  }
   if (selectedRoomId.value) {
     await loadRoomDetail(selectedRoomId.value)
   }
@@ -83,7 +93,7 @@ watch(
 
 async function loadRooms() {
   try {
-    const data = await equipmentService.getMapView().catch(() => [])
+    const data = await equipmentService.getMapView()
     rooms.value = data || []
     
     // Nếu có query param room_id từ URL thì ưu tiên chọn phòng đó
@@ -99,18 +109,25 @@ async function loadRooms() {
     }
   } catch (e) {
     console.error('Failed to load rooms:', e)
+    toast.error(e.response?.data?.message || 'Không thể tải danh sách phòng.')
   }
 }
 
 async function loadRoomDetail(id) {
   if (!id) return
+  const requestId = ++roomDetailRequestId
+  if (Number(roomDetail.value?.id) !== Number(id)) roomDetail.value = null
   loading.value = true
   try {
-    roomDetail.value = await roomService.getRoomEquipmentDetail(id)
+    const detail = await roomService.getRoomEquipmentDetail(id)
+    if (requestId === roomDetailRequestId) roomDetail.value = detail
   } catch (err) {
     console.error('Failed to load room detail:', err)
+    if (requestId === roomDetailRequestId) {
+      toast.error(err.response?.data?.message || 'Không thể tải chi tiết thiết bị của phòng.')
+    }
   } finally {
-    loading.value = false
+    if (requestId === roomDetailRequestId) loading.value = false
   }
 }
 
@@ -225,6 +242,7 @@ async function openWarehouseModal() {
     warehouseEquipments.value = res.data || res || []
   } catch (err) {
     console.error('Failed to load in-stock equipments:', err)
+    toast.error(err.response?.data?.message || 'Không thể tải danh sách thiết bị trong kho.')
   } finally {
     warehouseLoading.value = false
   }
@@ -362,7 +380,7 @@ async function handleCreateSubmit({ data }) {
       <!-- Right: Detailed Audit Card -->
       <div class="lg:col-span-3">
         <!-- Room Detail Skeleton Loader -->
-        <div v-if="loading" class="space-y-6">
+        <div v-if="loading && !roomDetail" class="space-y-6">
           <!-- Room Header Skeleton -->
           <div class="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-pulse">
             <div class="space-y-2">
@@ -395,6 +413,11 @@ async function handleCreateSubmit({ data }) {
         </div>
 
         <div v-else-if="roomDetail" class="space-y-6">
+          <div v-if="loading" class="flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs text-blue-800">
+            <v-progress-circular indeterminate color="primary" size="16" />
+            <span>Đang đồng bộ thông tin phòng...</span>
+          </div>
+
           <!-- Room Header & Compliance Badge -->
           <div class="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>

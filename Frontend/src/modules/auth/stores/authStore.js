@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { authService } from '../services/authService'
 import { storage, StorageKeys } from '@/core/helpers/storage'
 import { updateAbility } from '@/core/casl/ability'
+import { clearRequestCache } from '@/core/services/requestCache'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -30,6 +31,7 @@ export const useAuthStore = defineStore('auth', {
       try {
         const res = await authService.login(credentials)
         const data = res.data || {}
+        clearRequestCache()
 
         // Sửa lỗi lấy access_token chuẩn xác từ backend
         const token = data.access_token || data.token || res.access_token || res.token
@@ -67,6 +69,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       try {
         const res = await authService.switchOrganization(orgId)
+        clearRequestCache()
         const data = res.data || {}
 
         this.organizationId = Number(orgId)
@@ -116,6 +119,7 @@ export const useAuthStore = defineStore('auth', {
 
     logout() {
       authService.logout()
+      clearRequestCache()
       this.token = null
       this.user = null
       this.permissions = []

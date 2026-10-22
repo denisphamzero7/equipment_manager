@@ -4,6 +4,7 @@ import { getEcho, disconnectEcho } from '../services/echoService'
 import { playNotificationSound } from '../services/audioNotification'
 import { toast } from '../helpers/toast'
 import { storage, StorageKeys } from '../helpers/storage'
+import { invalidateRequestCache } from '../services/requestCache'
 
 export const useRealtimeStore = defineStore('realtime', () => {
   const connected = ref(false)
@@ -60,6 +61,18 @@ export const useRealtimeStore = defineStore('realtime', () => {
     soundEnabled.value = !soundEnabled.value
   }
 
+  function invalidateChangedData(isRoomChange = false, roomEquipmentCountsChanged = false) {
+    invalidateRequestCache(
+      'equipment-list',
+      'equipment-detail',
+      'equipment-map',
+      'equipment-room-detail',
+      'dashboard-stats',
+      ...(isRoomChange ? ['room-list', 'room-detail', 'equipment-room-options'] : []),
+      ...(roomEquipmentCountsChanged ? ['room-list'] : [])
+    )
+  }
+
   function initRealtime(orgId) {
     const targetOrgId = Number(orgId || storage.get(StorageKeys.ORGANIZATION_ID, 22))
     if (!targetOrgId) return
@@ -87,6 +100,7 @@ export const useRealtimeStore = defineStore('realtime', () => {
 
     // 1. Thiết bị mới được tạo
     channel.listen('.equipment.created', (event) => {
+      invalidateChangedData(false, true)
       lastEvent.value = { type: 'created', ...event }
       addNotification({
         type: 'created',
@@ -99,6 +113,7 @@ export const useRealtimeStore = defineStore('realtime', () => {
 
     // 2. Thiết bị được cập nhật
     channel.listen('.equipment.updated', (event) => {
+      invalidateChangedData()
       lastEvent.value = { type: 'updated', ...event }
       addNotification({
         type: 'updated',
@@ -110,6 +125,7 @@ export const useRealtimeStore = defineStore('realtime', () => {
 
     // 3. Thiết bị bị xóa
     channel.listen('.equipment.deleted', (event) => {
+      invalidateChangedData(false, true)
       lastEvent.value = { type: 'deleted', ...event }
       addNotification({
         type: 'deleted',
@@ -122,6 +138,7 @@ export const useRealtimeStore = defineStore('realtime', () => {
 
     // 4. Trạng thái thiết bị thay đổi (Tốt / Hỏng / Bảo trì / Trong kho)
     channel.listen('.equipment.status_changed', (event) => {
+      invalidateChangedData()
       lastEvent.value = { type: 'status_changed', ...event }
       addNotification({
         type: 'status_changed',
@@ -134,6 +151,7 @@ export const useRealtimeStore = defineStore('realtime', () => {
 
     // 5. Điều chuyển phòng / Thu hồi về kho
     channel.listen('.equipment.assigned', (event) => {
+      invalidateChangedData(false, true)
       lastEvent.value = { type: 'assigned', ...event }
       addNotification({
         type: 'assigned',
@@ -146,6 +164,7 @@ export const useRealtimeStore = defineStore('realtime', () => {
 
     // 6. Báo hỏng khẩn cấp
     channel.listen('.equipment.broken_reported', (event) => {
+      invalidateChangedData()
       lastEvent.value = { type: 'broken_reported', ...event }
       addNotification({
         type: 'broken_reported',
@@ -159,6 +178,7 @@ export const useRealtimeStore = defineStore('realtime', () => {
 
     // 7. Thay đổi phòng, tầng, block (Room CRUD)
     channel.listen('.room.changed', (event) => {
+      invalidateChangedData(true)
       lastEvent.value = { type: 'room_' + (event.type || event.action), ...event }
       addNotification({
         type: 'room_changed',

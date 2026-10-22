@@ -32,8 +32,10 @@ const searchQuery = ref('')
 
 // Detail room modal
 const selectedRoomDetail = ref(null)
+const selectedRoomSummary = ref(null)
 const roomDetailModalOpen = ref(false)
 const roomDetailLoading = ref(false)
+let roomDetailRequestId = 0
 
 // Edit room modal directly from Map View
 const editRoomModalOpen = ref(false)
@@ -78,6 +80,7 @@ onMounted(async () => {
     roomTypesList.value = await roomService.getRoomTypes()
   } catch (err) {
     console.error('Failed to load room types:', err)
+    toast.error(err.response?.data?.message || 'Không thể tải danh sách loại phòng.')
   }
 })
 
@@ -90,12 +93,18 @@ function openEditRoomModal() {
   editRoomModalOpen.value = true
 }
 
-async function handleRoomSaved() {
-  await loadMapViewData(true)
-  if (selectedRoomDetail.value?.id) {
-    await openRoomDetail({ id: selectedRoomDetail.value.id })
+async function handleRoomSaved(savedRoom) {
+  if (!savedRoom?.id) {
+    await loadMapViewData(true)
+    return
   }
-  toast.success('Cập nhật cơ cấu phòng thành công!')
+
+  rawRooms.value = rawRooms.value.map(room =>
+    Number(room.id) === Number(savedRoom.id) ? { ...room, ...savedRoom } : room
+  )
+  if (selectedRoomDetail.value?.id) {
+    await openRoomDetail(rawRooms.value.find(room => Number(room.id) === Number(savedRoom.id)) || savedRoom)
+  }
 }
 
 // Tự động cập nhật sơ đồ phòng Real-time khi có sự kiện từ WebSocket
@@ -116,6 +125,7 @@ async function loadMapViewData(silent = false) {
     rawRooms.value = Array.isArray(data) ? data : []
   } catch (e) {
     console.error('Failed to load map view rooms:', e)
+    toast.error(e.response?.data?.message || 'Không thể tải sơ đồ phòng.')
   } finally {
     if (!silent) {
       loading.value = false
@@ -299,13 +309,23 @@ const totalFilteredRooms = computed(() => {
 
 async function openRoomDetail(room) {
   roomDetailModalOpen.value = true
+  selectedRoomSummary.value = room
+  selectedRoomDetail.value = null
   roomDetailLoading.value = true
+  const requestId = ++roomDetailRequestId
   try {
-    selectedRoomDetail.value = await equipmentService.getRoomDetail(room.id)
-  } catch {
-    selectedRoomDetail.value = null
+    const detail = await equipmentService.getRoomDetail(room.id)
+    if (requestId === roomDetailRequestId) {
+      selectedRoomDetail.value = detail
+    }
+  } catch (error) {
+    if (requestId === roomDetailRequestId) {
+      toast.error(error.response?.data?.message || 'Không thể tải chi tiết thiết bị của phòng.')
+    }
   } finally {
-    roomDetailLoading.value = false
+    if (requestId === roomDetailRequestId) {
+      roomDetailLoading.value = false
+    }
   }
 }
 
@@ -652,16 +672,24 @@ function getBadgeIndicatorClass(room) {
     <!-- Room Equipment Detail Modal -->
     <AppModal
       v-model="roomDetailModalOpen"
-      :title="`Chi tiết Phòng ${selectedRoomDetail?.room_number || ''}`"
-      :subtitle="selectedRoomDetail?.room_type ? `Loại phòng: ${selectedRoomDetail.room_type}` : 'Đối soát định mức trang thiết bị tiêu chuẩn'"
+      :title="`Chi tiết Phòng ${selectedRoomDetail?.room_number || selectedRoomSummary?.room_number || ''}`"
+      :subtitle="selectedRoomDetail?.room_type || selectedRoomSummary?.room_type ? `Loại phòng: ${selectedRoomDetail?.room_type || selectedRoomSummary?.room_type}` : 'Đối soát định mức trang thiết bị tiêu chuẩn'"
       max-width="640"
     >
-      <div v-if="roomDetailLoading" class="text-center py-12">
-        <v-progress-circular indeterminate color="primary" size="36" />
-        <p class="text-xs text-slate-400 mt-3 font-medium">Đang tải đối soát thiết bị...</p>
+      <div v-if="roomDetailLoading" class="mb-4 rounded-xl border border-blue-200 bg-blue-50 p-3.5">
+        <div class="flex items-center gap-2 text-xs font-semibold text-blue-800">
+          <v-progress-circular indeterminate color="primary" size="18" />
+          <span>Đang tải danh sách thiết bị đầy đủ...</span>
+        </div>
+        <div v-if="selectedRoomSummary" class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600">
+          <span>{{ selectedRoomSummary.block }} • Tầng {{ selectedRoomSummary.floor }}</span>
+          <span>{{ selectedRoomSummary.stats?.total_equipments ?? 0 }} thiết bị</span>
+          <span v-if="selectedRoomSummary.stats?.missing_count">Thiếu {{ selectedRoomSummary.stats.missing_count }}</span>
+          <span v-if="selectedRoomSummary.stats?.broken_count">Hỏng {{ selectedRoomSummary.stats.broken_count }}</span>
+        </div>
       </div>
 
-      <div v-else-if="selectedRoomDetail" class="space-y-6">
+      <div v-if="selectedRoomDetail" class="space-y-6">
         <!-- Compliance Status Banner -->
         <div
           class="p-4 rounded-xl border flex items-center justify-between text-xs"
