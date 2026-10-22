@@ -558,16 +558,31 @@ async function handleDelete() {
 
                 <!-- Thumbnails Strip (if multiple photos) -->
                 <div v-if="equipmentPhotos.length > 1" class="flex items-center gap-2 overflow-x-auto pb-1">
-                  <button
+                  <div
                     v-for="(p, idx) in equipmentPhotos"
                     :key="p.id || idx"
-                    type="button"
-                    class="relative w-14 h-14 shrink-0 rounded-lg overflow-hidden border-2 transition-all"
-                    :class="selectedPhotoIndex === idx ? 'border-primary ring-2 ring-primary/20 shadow-xs' : 'border-slate-200 opacity-70 hover:opacity-100'"
-                    @click="selectedPhotoIndex = idx; imageLoadError = false"
+                    class="relative w-14 h-14 shrink-0"
                   >
-                    <img :src="p.url" alt="Thumbnail" class="w-full h-full object-cover" />
-                  </button>
+                    <button
+                      type="button"
+                      class="w-full h-full rounded-lg overflow-hidden border-2 transition-all"
+                      :class="selectedPhotoIndex === idx ? 'border-primary ring-2 ring-primary/20 shadow-xs' : 'border-slate-200 opacity-70 hover:opacity-100'"
+                      :aria-label="`Chọn ảnh ${idx + 1}`"
+                      @click="selectedPhotoIndex = idx; imageLoadError = false"
+                    >
+                      <img :src="p.url" alt="Thumbnail" class="w-full h-full object-cover" />
+                    </button>
+                    <button
+                      v-if="$can('update', 'Equipment') && p.id && p.id !== 'main'"
+                      type="button"
+                      class="absolute -top-1.5 -right-1.5 z-10 w-5 h-5 rounded-full bg-rose-600 text-white border-2 border-white shadow-sm flex items-center justify-center hover:bg-rose-700 transition-colors"
+                      :aria-label="`Xóa ảnh ${idx + 1}`"
+                      title="Xóa ảnh"
+                      @click.stop="confirmDeletePhoto(p)"
+                    >
+                      <v-icon icon="mdi-close" size="12" />
+                    </button>
+                  </div>
 
                   <!-- Add more thumbnail button -->
                   <button
