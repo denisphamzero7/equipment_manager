@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import AppModal from '@/core/components/AppModal.vue'
 import AppButton from '@/core/components/AppButton.vue'
 import AppConfirmDialog from '@/core/components/AppConfirmDialog.vue'
@@ -40,10 +40,6 @@ const form = ref({
 // Delete Dialog
 const deleteDialogOpen = ref(false)
 const modelToDelete = ref(null)
-
-onMounted(async () => {
-  await Promise.all([loadModels(), loadCategories()])
-})
 
 watch(
   () => props.modelValue,

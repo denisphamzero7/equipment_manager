@@ -90,7 +90,40 @@ export const useEquipmentStore = defineStore('equipment', {
     async updateEquipment(id, payload) {
       const res = await equipmentService.updateEquipment(id, payload)
       toast.success('Cập nhật thiết bị thành công!')
-      await this.fetchEquipments(this.pagination.currentPage)
+
+      const updated = res?.data?.data || res?.data || res
+      const itemIndex = this.items.findIndex(item => Number(item.id) === Number(id))
+      if (itemIndex !== -1 && updated && typeof updated === 'object') {
+        const current = this.items[itemIndex]
+        const merged = { ...current, ...updated }
+        if (!updated.photo_url && current.photo_url) merged.photo_url = current.photo_url
+        if (!updated.thumb_url && current.thumb_url) merged.thumb_url = current.thumb_url
+        if (!updated.photos?.length && current.photos?.length) merged.photos = current.photos
+        if (!updated.broken_photos?.length && current.broken_photos?.length) {
+          merged.broken_photos = current.broken_photos
+        }
+        this.items.splice(itemIndex, 1, merged)
+      }
+
+      const filters = this.filters
+      const hasActiveFilters = Boolean(
+        filters.search ||
+        filters.status ||
+        filters.block ||
+        (filters.floor !== null && filters.floor !== '' && filters.floor !== undefined) ||
+        filters.room_id ||
+        filters.room_number ||
+        filters.equipment_category_id
+      )
+      const hasNewPhoto = payload instanceof FormData && payload.has('photo')
+      if (itemIndex === -1 || hasActiveFilters || hasNewPhoto) {
+        try {
+          await this.fetchEquipments(this.pagination.currentPage, { silent: true })
+        } catch (error) {
+          console.error('Equipment updated, but refreshing the list failed:', error)
+          toast.warning('Đã lưu thay đổi nhưng danh sách chưa đồng bộ. Vui lòng làm mới trang.')
+        }
+      }
       return res
     },
 

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import AppModal from '@/core/components/AppModal.vue'
 import AppButton from '@/core/components/AppButton.vue'
 import RoomCascaderSelect from '@/core/components/RoomCascaderSelect.vue'
@@ -41,10 +41,6 @@ const categories = ref([])
 const manageModelsModalOpen = ref(false)
 const prefillModelName = ref('')
 const modelSearchQuery = ref('')
-
-onMounted(async () => {
-  await Promise.all([loadModels(), loadCategories()])
-})
 
 async function loadModels() {
   try {
@@ -177,9 +173,10 @@ watch(
 watch(
   () => props.modelValue,
   isOpen => {
-    if (!isOpen || props.equipment) return
+    if (!isOpen) return
     void loadModels()
     void loadCategories()
+    if (props.equipment) return
     const initial = props.initialData
     form.value = {
       equipment_model_id: initial?.equipment_model_id ?? '',
@@ -351,6 +348,7 @@ async function handleSubmit(continueAdding = false) {
         <!-- Room Cascader (Bậc thang: Block -> Tầng -> Phòng) -->
         <div class="md:col-span-2">
           <RoomCascaderSelect
+            v-if="modelValue"
             v-model="form.room_id"
             label="Phòng / Vị trí đặt thiết bị"
             :allow-warehouse="true"
