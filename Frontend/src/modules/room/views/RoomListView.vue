@@ -25,9 +25,12 @@ const viewMode = ref('cards')
 const loading = ref(false)
 const roomsLoadError = ref('')
 const rooms = ref([])
+const roomSummary = ref([])
+const roomSummaryLoaded = ref(false)
 const roomTypes = ref([])
 const totalRooms = ref(0)
 const selectedRoomIds = ref([])
+let roomsRequestSequence = 0
 
 // Modals
 const formModalOpen = ref(false)
@@ -78,7 +81,7 @@ const tableHeaders = [
 const hotelBlockOrder = ['Block A', 'Block B', 'Block C', 'Block D', 'Condos 1', 'Condos 2', 'Penthouse-spa+Villa']
 
 const existingBlocks = computed(() => {
-  const set = new Set(rooms.value.map(r => r.block).filter(Boolean))
+  const set = new Set(roomSummary.value.map(r => r.block).filter(Boolean))
   // Merge standard blocks with any custom ones
   hotelBlockOrder.forEach(b => set.add(b))
   return Array.from(set).sort((a, b) => {
@@ -93,8 +96,8 @@ const existingBlocks = computed(() => {
 
 // Count rooms in each block for the quick-filter pills
 const blockCounts = computed(() => {
-  const counts = { total: rooms.value.length }
-  rooms.value.forEach(r => {
+  const counts = { total: roomSummary.value.length }
+  roomSummary.value.forEach(r => {
     const b = r.block || 'Khu vực chung'
     counts[b] = (counts[b] || 0) + 1
   })
@@ -103,8 +106,8 @@ const blockCounts = computed(() => {
 
 const existingFloors = computed(() => {
   const targetRooms = filters.block
-    ? rooms.value.filter(r => r.block === filters.block)
-    : rooms.value
+    ? roomSummary.value.filter(r => r.block === filters.block)
+    : roomSummary.value
   const set = new Set(targetRooms.map(r => r.floor).filter(f => f !== null && f !== undefined))
   return Array.from(set).sort((a, b) => a - b)
 })
@@ -192,13 +195,14 @@ const groupedRooms = computed(() => {
 // Statistics counter
 const stats = computed(() => {
   let ready = 0, occupied = 0, notReady = 0, maintenance = 0
-  rooms.value.forEach(r => {
+  const summaryRooms = roomSummaryLoaded.value ? roomSummary.value : rooms.value
+  summaryRooms.forEach(r => {
     if (r.status === 'ready' || r.status === 'available') ready++
     else if (r.status === 'occupied') occupied++
     else if (r.status === 'not_ready' || r.status === 'cleaning' || r.status === 'dirty') notReady++
     else if (r.status === 'maintenance') maintenance++
   })
-  return { total: rooms.value.length, ready, occupied, notReady, maintenance }
+  return { total: summaryRooms.length, ready, occupied, notReady, maintenance }
 })
 
 onMounted(async () => {
@@ -211,6 +215,14 @@ watch(
   (ev) => {
     if (!ev) return
     if (ev.type && ev.type.startsWith('room_')) {
+      const room = ev.room
+      if (room?.id) {
+        if (ev.type.endsWith('_deleted')) {
+          updateRoomSummary(room, true)
+        } else {
+          updateRoomSummary(room)
+        }
+      }
       fetchRooms(false)
     } else if (ev.type === 'created' && ev.equipment?.room_id) {
       adjustEquipmentCount(ev.equipment.room_id, 1)
@@ -250,7 +262,8 @@ async function fetchRoomTypes() {
 }
 
 async function fetchRooms(showLoading = true) {
-  if (showLoading) loading.value = true
+  const requestSequence = ++roomsRequestSequence
+  loading.value = showLoading
   try {
     const params = {
       limit: viewMode.value === 'table' ? pagination.perPage : 500,
@@ -259,7 +272,12 @@ async function fetchRooms(showLoading = true) {
     }
     const res = await roomService.getRooms(params)
     const items = Array.isArray(res) ? res : (res?.data || [])
+    if (requestSequence !== roomsRequestSequence) return
     rooms.value = Array.isArray(items) ? items : []
+    if (viewMode.value === 'cards') {
+      roomSummary.value = [...rooms.value]
+      roomSummaryLoaded.value = true
+    }
     roomsLoadError.value = ''
 
     const total = res?.total ?? (Array.isArray(res) ? res.length : rooms.value.length)
@@ -267,10 +285,11 @@ async function fetchRooms(showLoading = true) {
     pagination.totalPages = res?.last_page || 1
     totalRooms.value = total
   } catch (err) {
+    if (requestSequence !== roomsRequestSequence) return
     console.error('Fetch rooms error:', err)
     roomsLoadError.value = err.response?.data?.message || err.message || 'Không thể tải danh sách phòng.'
   } finally {
-    if (showLoading) loading.value = false
+    if (requestSequence === roomsRequestSequence) loading.value = false
   }
 }
 
@@ -326,6 +345,7 @@ function handleRoomSaved(savedRoom) {
     return
   }
 
+  updateRoomSummary(savedRoom)
   const roomIndex = rooms.value.findIndex(room => Number(room.id) === Number(savedRoom.id))
   if (roomIndex !== -1) {
     const updatedRoom = { ...rooms.value[roomIndex], ...savedRoom }
@@ -372,7 +392,7 @@ async function handleDeleteRoom() {
     toast.success(`Đã xóa phòng ${roomToDelete.value.room_number}. Thiết bị đã tự động thu hồi về kho an toàn.`)
     deleteDialogOpen.value = false
     roomToDelete.value = null
-    removeRoomsFromView([roomId])
+    removeRoomsFromView([roomId], true)
   } catch (err) {
     const msg = err.response?.data?.message || err.message || 'Lỗi khi xóa phòng.'
     toast.error(msg)
@@ -394,7 +414,7 @@ async function handleBulkDelete() {
   try {
     const res = await roomService.bulkDeleteRooms(selectedRoomIds.value, true)
     toast.success(res.message || `Đã xóa ${selectedRoomIds.value.length} phòng thành công!`)
-    removeRoomsFromView(selectedRoomIds.value)
+    removeRoomsFromView(selectedRoomIds.value, true)
     selectedRoomIds.value = []
     bulkDeleteDialogOpen.value = false
   } catch (err) {
@@ -405,10 +425,27 @@ async function handleBulkDelete() {
   }
 }
 
-function removeRoomsFromView(ids) {
+function updateRoomSummary(room, remove = false) {
+  if (!room?.id) return
+  const index = roomSummary.value.findIndex(item => Number(item.id) === Number(room.id))
+  if (remove) {
+    if (index !== -1) roomSummary.value.splice(index, 1)
+    return
+  }
+  if (index === -1) {
+    roomSummary.value.unshift(room)
+  } else {
+    roomSummary.value.splice(index, 1, { ...roomSummary.value[index], ...room })
+  }
+}
+
+function removeRoomsFromView(ids, removeFromSummary = false) {
   const idSet = new Set(ids.map(Number))
   const previousLength = rooms.value.length
   rooms.value = rooms.value.filter(room => !idSet.has(Number(room.id)))
+  if (removeFromSummary) {
+    roomSummary.value = roomSummary.value.filter(room => !idSet.has(Number(room.id)))
+  }
   const removed = previousLength - rooms.value.length
   pagination.totalItems = Math.max(0, pagination.totalItems - removed)
   totalRooms.value = Math.max(0, totalRooms.value - removed)

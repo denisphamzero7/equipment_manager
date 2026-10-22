@@ -185,7 +185,7 @@ export const useRealtimeStore = defineStore('realtime', () => {
     // 7. Thay đổi phòng, tầng, block (Room CRUD)
     channel.listen('.room.changed', (event) => {
       invalidateChangedData(true)
-      lastEvent.value = { type: 'room_' + (event.type || event.action), ...event }
+      lastEvent.value = { ...event, type: 'room_' + (event.type || event.action) }
       addNotification({
         type: 'room_changed',
         title: 'Cập nhật phòng',
