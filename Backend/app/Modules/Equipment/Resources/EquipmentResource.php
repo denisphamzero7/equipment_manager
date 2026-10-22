@@ -14,6 +14,9 @@ class EquipmentResource extends JsonResource
         $brPhotos = $mediaCollection->where('collection_name', 'broken_photos');
         $firstPhoto = $eqPhotos->first();
         $photoUrl = $firstPhoto ? str_replace('/laravel_hq/quandh-core/public', '', $firstPhoto->getUrl()) : null;
+        $thumbUrl = ($firstPhoto && $firstPhoto->hasGeneratedConversion('thumb'))
+            ? str_replace('/laravel_hq/quandh-core/public', '', $firstPhoto->getUrl('thumb'))
+            : $photoUrl;
 
         return [
             'id' => $this->id,
@@ -25,6 +28,7 @@ class EquipmentResource extends JsonResource
             'note' => $this->note,
             'installed_at' => $this->installed_at?->format('Y-m-d H:i:s'),
             'photo_url' => $photoUrl,
+            'thumb_url' => $thumbUrl,
             'photos' => $eqPhotos->map(fn ($m) => [
                 'id' => $m->id,
                 'url' => str_replace('/laravel_hq/quandh-core/public', '', $m->getUrl()),

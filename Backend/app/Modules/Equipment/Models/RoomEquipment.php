@@ -82,4 +82,15 @@ class RoomEquipment extends Model implements HasMedia
         $this->addMediaCollection('equipment_photos');
         $this->addMediaCollection('broken_photos');
     }
+
+    /**
+     * Tự động tạo ảnh Thumbnail kích thước nhỏ phục vụ hiển thị danh sách bảng nhanh chóng.
+     */
+    public function registerMediaConversions(?\Spatie\MediaLibrary\MediaCollections\Models\Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->width(200)
+            ->height(200)
+            ->nonQueued();
+    }
 }

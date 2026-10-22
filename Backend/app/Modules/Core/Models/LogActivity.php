@@ -4,13 +4,22 @@ namespace App\Modules\Core\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
 
 /**
  * Model LogActivity – nhật ký truy cập của người dùng.
  */
 class LogActivity extends Model
 {
-    use HasFactory;
+    use HasFactory, Prunable;
+
+    /**
+     * Xác định query dọn dẹp các log cũ hơn 30 ngày.
+     */
+    public function prunable()
+    {
+        return static::where('created_at', '<=', now()->subDays(30));
+    }
 
     protected static function newFactory()
     {

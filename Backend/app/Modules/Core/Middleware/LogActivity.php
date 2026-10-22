@@ -26,20 +26,30 @@ class LogActivity
         'api_firebase_token', 'api_google_maps_token',
     ];
 
-    /** Đường dẫn không ghi log (vd: health check). */
-    protected static array $excludedPaths = ['/up'];
+    /** Đường dẫn không ghi log (vd: health check, broadcasting auth, static options). */
+    protected static array $excludedPaths = [
+        '/up',
+        'api/broadcasting/auth',
+        'broadcasting/auth',
+        'api/settings/public',
+        'api/motel/rooms/room-types',
+    ];
 
     public function handle(Request $request, Closure $next): Response
     {
-        $response = $next($request);
+        return $next($request);
+    }
 
+    /**
+     * Ghi nhật ký sau khi response đã được gửi tới người dùng (Asynchronous Terminable Middleware).
+     */
+    public function terminate(Request $request, Response $response): void
+    {
         if (! $this->shouldLog($request)) {
-            return $response;
+            return;
         }
 
         $this->log($request, $response->getStatusCode());
-
-        return $response;
     }
 
     protected function shouldLog(Request $request): bool

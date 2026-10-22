@@ -484,55 +484,91 @@ class EquipmentService
     {
         $cacheKey = 'hotel_stats_' . ($organizationId ?? 'all') . '_' . ($block ?? 'all');
 
-        return cache()->remember($cacheKey, 30, function () use ($organizationId, $block) {
-            $query = RoomEquipment::with(['model.category']);
+        return cache()->remember($cacheKey, 60, function () use ($organizationId, $block) {
+            $baseQuery = DB::table('room_equipments')
+                ->whereNull('room_equipments.deleted_at');
+
             if ($organizationId) {
-                $query->where('organization_id', $organizationId);
+                $baseQuery->where('room_equipments.organization_id', $organizationId);
             }
+
             if (!empty($block)) {
-                $query->whereHas('room', fn ($q) => $q->where('block', $block));
+                $baseQuery->join('rooms', 'rooms.id', '=', 'room_equipments.room_id')
+                    ->where('rooms.block', $block);
             }
-            $allEquipments = $query->get();
 
-            $totalCount = $allEquipments->count();
-            $goodCount = $allEquipments->where('status', EquipmentStatusEnum::Good)->count();
-            $brokenCount = $allEquipments->where('status', EquipmentStatusEnum::Broken)->count();
-            $maintenanceCount = $allEquipments->where('status', EquipmentStatusEnum::Maintenance)->count();
+            // 1. Status aggregation in 1 fast query
+            $statusCounts = (clone $baseQuery)
+                ->select('room_equipments.status', DB::raw('count(*) as count'))
+                ->groupBy('room_equipments.status')
+                ->pluck('count', 'status')
+                ->all();
+
+            $totalCount = array_sum($statusCounts);
+            $goodCount = (int) ($statusCounts[EquipmentStatusEnum::Good->value] ?? 0);
+            $brokenCount = (int) ($statusCounts[EquipmentStatusEnum::Broken->value] ?? 0);
+            $maintenanceCount = (int) ($statusCounts[EquipmentStatusEnum::Maintenance->value] ?? 0);
+            $lostCount = (int) ($statusCounts[EquipmentStatusEnum::Lost->value] ?? 0);
+
             $inStockCount = empty($block)
-                ? $allEquipments->where('status', EquipmentStatusEnum::InStock)->count()
-                : RoomEquipment::whereNull('room_id')->where('status', EquipmentStatusEnum::InStock)->count();
-            $lostCount = $allEquipments->where('status', EquipmentStatusEnum::Lost)->count();
+                ? (int) ($statusCounts[EquipmentStatusEnum::InStock->value] ?? 0)
+                : (int) DB::table('room_equipments')
+                    ->whereNull('deleted_at')
+                    ->whereNull('room_id')
+                    ->where('status', EquipmentStatusEnum::InStock->value)
+                    ->when($organizationId, fn($q) => $q->where('organization_id', $organizationId))
+                    ->count();
 
-            // Thống kê chi tiết theo từng loại (TV, Remote, Box, Wifi...)
-            $byCategory = [];
+            // 2. Category + Status breakdown in 1 query
+            $catStatusCounts = (clone $baseQuery)
+                ->join('equipment_models', 'equipment_models.id', '=', 'room_equipments.equipment_model_id')
+                ->select(
+                    'equipment_models.equipment_category_id',
+                    'room_equipments.status',
+                    DB::raw('count(*) as count')
+                )
+                ->groupBy('equipment_models.equipment_category_id', 'room_equipments.status')
+                ->get();
+
+            $catGrouped = [];
+            foreach ($catStatusCounts as $row) {
+                $catId = $row->equipment_category_id;
+                $status = $row->status;
+                $cnt = (int) $row->count;
+
+                if (!isset($catGrouped[$catId])) {
+                    $catGrouped[$catId] = ['total' => 0, 'good' => 0, 'broken' => 0, 'maintenance' => 0, 'in_stock' => 0, 'lost' => 0];
+                }
+                $catGrouped[$catId]['total'] += $cnt;
+                if (isset($catGrouped[$catId][$status])) {
+                    $catGrouped[$catId][$status] += $cnt;
+                }
+            }
+
             $categories = EquipmentCategory::orderBy('sort_order')->get();
-
+            $byCategory = [];
             foreach ($categories as $cat) {
-                $items = $allEquipments->filter(fn ($e) => $e->model?->equipment_category_id === $cat->id);
+                $stat = $catGrouped[$cat->id] ?? ['total' => 0, 'good' => 0, 'broken' => 0, 'maintenance' => 0, 'in_stock' => 0, 'lost' => 0];
                 $byCategory[] = [
                     'category_id' => $cat->id,
                     'category_name' => $cat->name,
                     'category_code' => $cat->code,
                     'icon' => $cat->icon,
-                    'total' => $items->count(),
-                    'good' => $items->where('status', EquipmentStatusEnum::Good)->count(),
-                    'broken' => $items->where('status', EquipmentStatusEnum::Broken)->count(),
-                    'maintenance' => $items->where('status', EquipmentStatusEnum::Maintenance)->count(),
-                    'in_stock' => $items->where('status', EquipmentStatusEnum::InStock)->count(),
-                    'lost' => $items->where('status', EquipmentStatusEnum::Lost)->count(),
+                    'total' => $stat['total'],
+                    'good' => $stat['good'],
+                    'broken' => $stat['broken'],
+                    'maintenance' => $stat['maintenance'],
+                    'in_stock' => $stat['in_stock'],
+                    'lost' => $stat['lost'],
                 ];
             }
 
-            // Đếm số phòng có vấn đề (thiết bị hỏng)
-            $brokenQuery = RoomEquipment::where('status', EquipmentStatusEnum::Broken)
-                ->whereNotNull('room_id');
-            if ($organizationId) {
-                $brokenQuery->where('organization_id', $organizationId);
-            }
-            if (!empty($block)) {
-                $brokenQuery->whereHas('room', fn ($q) => $q->where('block', $block));
-            }
-            $roomsWithBroken = $brokenQuery->distinct('room_id')->count('room_id');
+            // 3. Đếm số phòng có vấn đề (thiết bị hỏng)
+            $brokenRoomsCount = (clone $baseQuery)
+                ->where('room_equipments.status', EquipmentStatusEnum::Broken->value)
+                ->whereNotNull('room_equipments.room_id')
+                ->distinct()
+                ->count('room_equipments.room_id');
 
             $statusData = [
                 'good' => $goodCount,
@@ -546,7 +582,7 @@ class EquipmentService
                 'total_equipments' => $totalCount,
                 'summary' => $statusData,
                 'by_status' => $statusData,
-                'rooms_with_issues_count' => $roomsWithBroken,
+                'rooms_with_issues_count' => $brokenRoomsCount,
                 'by_category' => $byCategory,
             ];
         });

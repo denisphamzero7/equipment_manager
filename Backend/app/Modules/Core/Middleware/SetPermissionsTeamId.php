@@ -31,12 +31,14 @@ class SetPermissionsTeamId
                 ]);
             }
 
-            $organization = Organization::query()
-                ->whereKey($organizationId)
-                ->where('status', 'active')
-                ->first();
+            $isOrgActive = cache()->remember("org_active_{$organizationId}", 300, function () use ($organizationId) {
+                return Organization::query()
+                    ->whereKey($organizationId)
+                    ->where('status', 'active')
+                    ->exists();
+            });
 
-            if (! $organization) {
+            if (! $isOrgActive) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Tổ chức không hợp lệ hoặc đã ngừng hoạt động.',
@@ -44,7 +46,11 @@ class SetPermissionsTeamId
                 ], 403);
             }
 
-            if (! $this->userHasOrganizationAccess((int) $user->id, (int) $organization->id)) {
+            $hasAccess = cache()->remember("user_org_access_{$user->id}_{$organizationId}", 120, function () use ($user, $organizationId) {
+                return $this->userHasOrganizationAccess($user, (int) $organizationId);
+            });
+
+            if (! $hasAccess) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Bạn không có quyền truy cập tổ chức đã chọn.',
@@ -52,7 +58,7 @@ class SetPermissionsTeamId
                 ], 403);
             }
 
-            setPermissionsTeamId((int) $organization->id);
+            setPermissionsTeamId((int) $organizationId);
         }
 
         return $next($request);
@@ -74,13 +80,13 @@ class SetPermissionsTeamId
         return (int) $value;
     }
 
-    protected function userHasOrganizationAccess(int $userId, int $organizationId): bool
+    protected function userHasOrganizationAccess(User $user, int $organizationId): bool
     {
-        $user = User::find($userId);
-        if ($user && ($user->hasRole('Super Admin') || $user->hasRole('Admin'))) {
+        if ($user->hasRole('Super Admin') || $user->hasRole('Admin')) {
             return true;
         }
 
+        $userId = (int) $user->id;
         $tableNames = config('permission.table_names');
         $columnNames = config('permission.column_names');
         $modelMorphKey = $columnNames['model_morph_key'] ?? 'model_id';

@@ -482,7 +482,7 @@ async function handleQuickStatusChange(item, newStatus) {
           >
             <img
               v-if="item.photo_url || item.photos?.[0]?.url"
-              :src="resolveMediaUrl(item.photo_url || item.photos?.[0]?.url)"
+              :src="resolveMediaUrl(item.thumb_url || item.photo_url || item.photos?.[0]?.url)"
               :alt="item.model?.name || 'Thiết bị'"
               class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
               loading="lazy"
