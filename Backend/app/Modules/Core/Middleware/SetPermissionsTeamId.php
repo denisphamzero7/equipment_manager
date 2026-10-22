@@ -46,6 +46,10 @@ class SetPermissionsTeamId
                 ], 403);
             }
 
+            setPermissionsTeamId((int) $organizationId);
+            $user->unsetRelation('roles');
+            $user->unsetRelation('permissions');
+
             $hasAccess = cache()->remember("user_org_access_{$user->id}_{$organizationId}", 120, function () use ($user, $organizationId) {
                 return $this->userHasOrganizationAccess($user, (int) $organizationId);
             });
@@ -57,8 +61,6 @@ class SetPermissionsTeamId
                     'code' => 'FORBIDDEN',
                 ], 403);
             }
-
-            setPermissionsTeamId((int) $organizationId);
         }
 
         return $next($request);
