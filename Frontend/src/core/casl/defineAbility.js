@@ -73,7 +73,13 @@ export function defineRulesFor(user = null, permissions = []) {
 
     // Module Phòng (Rooms / Motel)
     if (permName.startsWith('rooms.') || permName.startsWith('motel.')) {
-      can('read', 'Room')
+      if (permName === 'motel.index' || permName === 'rooms.index') {
+        can('read', 'Room')
+        can('index', 'Room')
+      }
+      if (permName === 'motel.show' || permName === 'rooms.show') {
+        can('read', 'Room')
+      }
       if (permName === 'motel.store' || permName === 'rooms.create' || permName === 'rooms.store') {
         can('create', 'Room')
       }

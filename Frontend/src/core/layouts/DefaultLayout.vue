@@ -71,7 +71,7 @@ const navItems = [
     title: 'Quản lý phòng & tầng',
     to: '/rooms',
     icon: 'mdi-home-city-outline',
-    action: 'read',
+    action: 'index',
     subject: 'Room',
   },
   {

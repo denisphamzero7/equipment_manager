@@ -35,4 +35,15 @@ describe('CASL Ability Definition', () => {
     expect(ability.can('manage', 'all')).toBe(false)
     expect(ability.can('read', 'Equipment')).toBe(false)
   })
+
+  it('requires the room index permission to access the room listing', () => {
+    const updater = defineRulesFor({ id: 3, roles: ['Staff'] }, ['motel.update'])
+    const viewer = defineRulesFor({ id: 4, roles: ['Staff'] }, ['motel.index'])
+
+    expect(updater.can('index', 'Room')).toBe(false)
+    expect(updater.can('read', 'Room')).toBe(false)
+    expect(updater.can('update', 'Room')).toBe(true)
+    expect(viewer.can('index', 'Room')).toBe(true)
+    expect(viewer.can('read', 'Room')).toBe(true)
+  })
 })

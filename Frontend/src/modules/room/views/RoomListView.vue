@@ -23,6 +23,7 @@ const viewMode = ref('cards')
 
 // Data states
 const loading = ref(false)
+const roomsLoadError = ref('')
 const rooms = ref([])
 const roomTypes = ref([])
 const totalRooms = ref(0)
@@ -259,6 +260,7 @@ async function fetchRooms(showLoading = true) {
     const res = await roomService.getRooms(params)
     const items = Array.isArray(res) ? res : (res?.data || [])
     rooms.value = Array.isArray(items) ? items : []
+    roomsLoadError.value = ''
 
     const total = res?.total ?? (Array.isArray(res) ? res.length : rooms.value.length)
     pagination.totalItems = total
@@ -266,7 +268,7 @@ async function fetchRooms(showLoading = true) {
     totalRooms.value = total
   } catch (err) {
     console.error('Fetch rooms error:', err)
-    toast.error('Không thể tải danh sách phòng.')
+    roomsLoadError.value = err.response?.data?.message || err.message || 'Không thể tải danh sách phòng.'
   } finally {
     if (showLoading) loading.value = false
   }
@@ -470,6 +472,18 @@ function getStatusBadge(status) {
           </div>
         </template>
       </AppPageHeader>
+
+      <div
+        v-if="roomsLoadError"
+        role="alert"
+        class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800"
+      >
+        <span>{{ roomsLoadError }}</span>
+        <AppButton variant="secondary" :disabled="loading" @click="fetchRooms()">
+          <v-icon start icon="mdi-refresh" />
+          Thử tải lại
+        </AppButton>
+      </div>
 
       <!-- Stat Badges Cards -->
       <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -765,7 +779,7 @@ function getStatusBadge(status) {
         </div>
 
         <!-- Empty State -->
-        <div v-else-if="groupedRooms.length === 0" class="py-16 text-center bg-white rounded-2xl border border-slate-200/80 p-8">
+        <div v-else-if="!roomsLoadError && groupedRooms.length === 0" class="py-16 text-center bg-white rounded-2xl border border-slate-200/80 p-8">
           <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
             <v-icon icon="mdi-door-closed" size="32" />
           </div>

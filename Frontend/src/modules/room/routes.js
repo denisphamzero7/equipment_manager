@@ -5,7 +5,7 @@ export default [
     component: () => import('./views/RoomListView.vue'),
     meta: {
       requiresAuth: true,
-      action: 'read',
+      action: 'index',
       subject: 'Room',
     },
   },
