@@ -37,13 +37,23 @@ watch(
   newVal => {
     if (newVal) {
       roomId.value = newVal.room_id || null
-      targetMode.value = newVal.room_id ? 'room' : 'warehouse'
+      targetMode.value = 'room'
       positionNote.value = newVal.position_note || ''
       quotaResult.value = null
       confirmOverQuota.value = false
     }
   },
   { immediate: true }
+)
+
+watch(
+  () => props.modelValue,
+  isOpen => {
+    if (isOpen) {
+      targetMode.value = 'room'
+      confirmOverQuota.value = false
+    }
+  }
 )
 
 // When roomId or targetMode changes, check quota

@@ -274,7 +274,10 @@ class EquipmentController extends Controller
      */
     public function getRoomOptions(Request $request): JsonResponse
     {
-        $orgId = $request->user()?->organization_id;
+        $orgId = $request->header('X-Organization-Id') 
+            ?? (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : null)
+            ?? $request->user()?->organization_id;
+        $orgId = $orgId ? (int) $orgId : null;
         $cacheKey = 'equipment_room_options_' . ($orgId ?: 'all');
 
         $rooms = cache()->remember($cacheKey, 300, function () use ($orgId) {

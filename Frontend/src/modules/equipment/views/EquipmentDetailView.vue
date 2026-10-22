@@ -88,6 +88,10 @@ async function loadDetail() {
   }
 }
 
+function openAssignModal() {
+  assignModalOpen.value = true
+}
+
 function triggerPhotoUpload() {
   if (photoInputRef.value) {
     photoInputRef.value.value = ''
