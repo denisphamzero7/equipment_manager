@@ -74,6 +74,18 @@ function selectBlock(b) {
   equipmentStore.fetchEquipments(1)
 }
 
+let debounceTimer = null
+function handleDebouncedFetch(val) {
+  if (debounceTimer) clearTimeout(debounceTimer)
+  if (!val) {
+    equipmentStore.fetchEquipments(1)
+    return
+  }
+  debounceTimer = setTimeout(() => {
+    equipmentStore.fetchEquipments(1)
+  }, 350)
+}
+
 function resetAllFilters() {
   equipmentStore.resetFilters()
 }
@@ -333,7 +345,7 @@ async function handleQuickStatusChange(item, newStatus) {
             hide-details
             density="compact"
             variant="outlined"
-            @update:model-value="equipmentStore.fetchEquipments(1)"
+            @update:model-value="handleDebouncedFetch"
           />
         </div>
 
@@ -390,7 +402,7 @@ async function handleQuickStatusChange(item, newStatus) {
             density="compact"
             variant="outlined"
             :disabled="equipmentStore.filters.block === '__stock__'"
-            @update:model-value="equipmentStore.fetchEquipments(1)"
+            @update:model-value="handleDebouncedFetch"
           />
         </div>
 

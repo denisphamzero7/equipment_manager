@@ -1,6 +1,9 @@
 import axiosClient from '@/core/api/axiosClient'
 import { Endpoints } from '@/core/api/endpoints'
 
+let cachedRoomTypes = null
+let roomTypesPromise = null
+
 export const roomService = {
   /**
    * Lấy danh sách phòng có phân trang và bộ lọc
@@ -13,9 +16,27 @@ export const roomService = {
   /**
    * Lấy danh mục hạng phòng (Standard, Deluxe, VIP...)
    */
-  async getRoomTypes() {
-    const response = await axiosClient.get(Endpoints.ROOM.ROOM_TYPES)
-    return response.data?.data || response.data
+  async getRoomTypes(forceRefresh = false) {
+    if (!forceRefresh && cachedRoomTypes) {
+      return cachedRoomTypes
+    }
+    if (!forceRefresh && roomTypesPromise) {
+      return roomTypesPromise
+    }
+
+    roomTypesPromise = axiosClient
+      .get(Endpoints.ROOM.ROOM_TYPES)
+      .then((response) => {
+        cachedRoomTypes = response.data?.data || response.data
+        roomTypesPromise = null
+        return cachedRoomTypes
+      })
+      .catch((err) => {
+        roomTypesPromise = null
+        throw err
+      })
+
+    return roomTypesPromise
   },
 
   /**

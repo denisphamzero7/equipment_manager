@@ -9,6 +9,12 @@ class EquipmentResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $mediaCollection = $this->relationLoaded('media') ? $this->media : collect();
+        $eqPhotos = $mediaCollection->where('collection_name', 'equipment_photos');
+        $brPhotos = $mediaCollection->where('collection_name', 'broken_photos');
+        $firstPhoto = $eqPhotos->first();
+        $photoUrl = $firstPhoto ? str_replace('/laravel_hq/quandh-core/public', '', $firstPhoto->getUrl()) : null;
+
         return [
             'id' => $this->id,
             'serial_number' => $this->serial_number,
@@ -18,17 +24,17 @@ class EquipmentResource extends JsonResource
             'position_note' => $this->position_note,
             'note' => $this->note,
             'installed_at' => $this->installed_at?->format('Y-m-d H:i:s'),
-            'photo_url' => $this->getFirstMediaUrl('equipment_photos') ? str_replace('/laravel_hq/quandh-core/public', '', $this->getFirstMediaUrl('equipment_photos')) : null,
-            'photos' => $this->getMedia('equipment_photos')->map(fn ($m) => [
+            'photo_url' => $photoUrl,
+            'photos' => $eqPhotos->map(fn ($m) => [
                 'id' => $m->id,
                 'url' => str_replace('/laravel_hq/quandh-core/public', '', $m->getUrl()),
                 'file_name' => $m->file_name,
-            ]),
-            'broken_photos' => $this->getMedia('broken_photos')->map(fn ($m) => [
+            ])->values()->all(),
+            'broken_photos' => $brPhotos->map(fn ($m) => [
                 'id' => $m->id,
                 'url' => str_replace('/laravel_hq/quandh-core/public', '', $m->getUrl()),
                 'file_name' => $m->file_name,
-            ]),
+            ])->values()->all(),
             'model' => $this->whenLoaded('model', fn () => [
                 'id' => $this->model->id,
                 'name' => $this->model->name,

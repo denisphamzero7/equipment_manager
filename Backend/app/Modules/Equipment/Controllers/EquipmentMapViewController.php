@@ -67,8 +67,13 @@ class EquipmentMapViewController extends Controller
             $params['organization_id'] = $orgId;
         }
 
-        $rooms = $this->mapViewService->getMapViewRooms($params);
-        $data = EquipmentMapViewResource::collection($rooms);
+        $version = cache()->get('equipment_map_view_version_' . ($orgId ?? 'all'), 1);
+        $cacheKey = 'equipment_map_view_' . ($orgId ?? 'all') . '_v' . $version . '_' . md5(json_encode($params));
+
+        $data = cache()->remember($cacheKey, 300, function () use ($params) {
+            $rooms = $this->mapViewService->getMapViewRooms($params);
+            return EquipmentMapViewResource::collection($rooms)->resolve();
+        });
 
         return $this->success($data, 'Lấy dữ liệu Map View thành công');
     }

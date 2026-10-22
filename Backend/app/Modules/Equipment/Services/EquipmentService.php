@@ -22,6 +22,22 @@ use Illuminate\Support\Facades\DB;
 class EquipmentService
 {
     /**
+     * Xóa cache liên quan khi thiết bị thay đổi (stats, map view).
+     */
+    public function invalidateCache(?int $orgId = null): void
+    {
+        $orgId = $orgId ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 22);
+
+        cache()->forget('hotel_stats_' . $orgId . '_all');
+        cache()->forget('hotel_stats_all_all');
+
+        $v = (int) cache()->get('equipment_map_view_version_' . $orgId, 1);
+        cache()->put('equipment_map_view_version_' . $orgId, $v + 1, 86400 * 30);
+        $vAll = (int) cache()->get('equipment_map_view_version_all', 1);
+        cache()->put('equipment_map_view_version_all', $vAll + 1, 86400 * 30);
+    }
+
+    /**
      * Lấy danh sách thiết bị có phân trang và bộ lọc.
      */
     public function paginate(array $filters = []): LengthAwarePaginator
@@ -106,6 +122,7 @@ class EquipmentService
 
         // Phát Broadcast Real-time
         event(new EquipmentCreated($item));
+        $this->invalidateCache($item->organization_id);
 
         return $item;
     }
@@ -128,6 +145,7 @@ class EquipmentService
 
         // Phát Broadcast Real-time
         event(new EquipmentUpdated($item));
+        $this->invalidateCache($item->organization_id);
 
         return $item;
     }
@@ -143,6 +161,7 @@ class EquipmentService
         if ($deleted) {
             // Phát Broadcast Real-time
             event(new EquipmentDeleted($id, $roomId, $orgId));
+            $this->invalidateCache($orgId);
         }
 
         return $deleted;
@@ -150,9 +169,13 @@ class EquipmentService
 
     public function bulkDestroy(array $ids): int
     {
-        return DB::transaction(function () use ($ids) {
+        $count = DB::transaction(function () use ($ids) {
             return RoomEquipment::whereIn('id', $ids)->delete();
         });
+
+        $this->invalidateCache();
+
+        return $count;
     }
 
     /**
@@ -178,6 +201,7 @@ class EquipmentService
 
         // Phát Broadcast Real-time
         event(new EquipmentStatusChanged($item, $oldStatus));
+        $this->invalidateCache($item->organization_id);
 
         return $item;
     }
@@ -187,7 +211,7 @@ class EquipmentService
      */
     public function bulkUpdateStatus(array $ids, string $status, ?string $note = null): int
     {
-        return DB::transaction(function () use ($ids, $status, $note) {
+        $count = DB::transaction(function () use ($ids, $status, $note) {
             $updateData = ['status' => $status];
             if ($note) {
                 $updateData['note'] = $note;
@@ -198,6 +222,10 @@ class EquipmentService
 
             return RoomEquipment::whereIn('id', $ids)->update($updateData);
         });
+
+        $this->invalidateCache();
+
+        return $count;
     }
 
     /**
@@ -231,6 +259,7 @@ class EquipmentService
 
         // Phát Broadcast Real-time
         event(new EquipmentAssigned($item, $fromRoomId));
+        $this->invalidateCache($item->organization_id);
 
         return $item;
     }
@@ -420,6 +449,7 @@ class EquipmentService
 
         // Phát Broadcast Real-time
         event(new EquipmentBrokenReported($item, $issueDescription, auth()->user()?->name));
+        $this->invalidateCache($item->organization_id);
 
         return $item;
     }

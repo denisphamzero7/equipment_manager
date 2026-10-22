@@ -8,6 +8,23 @@ use Illuminate\Support\Collection;
 class EquipmentMapViewService
 {
     /**
+     * Xóa cache sơ đồ Map View khi có phòng hoặc thiết bị thay đổi.
+     */
+    public function invalidateMapCache(?int $organizationId = null): void
+    {
+        $orgId = $organizationId ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 22);
+        cache()->forget('hotel_blocks_' . $orgId);
+        cache()->forget('hotel_blocks_all');
+        cache()->forget('hotel_floors_' . $orgId . '_all');
+        cache()->forget('hotel_floors_all_all');
+
+        $v = (int) cache()->get('equipment_map_view_version_' . $orgId, 1);
+        cache()->put('equipment_map_view_version_' . $orgId, $v + 1, 86400 * 30);
+        $vAll = (int) cache()->get('equipment_map_view_version_all', 1);
+        cache()->put('equipment_map_view_version_all', $vAll + 1, 86400 * 30);
+    }
+
+    /**
      * Lấy danh sách các Block / Khu vực hiện có của khách sạn.
      */
     public function getAvailableBlocks(?int $organizationId = null): array

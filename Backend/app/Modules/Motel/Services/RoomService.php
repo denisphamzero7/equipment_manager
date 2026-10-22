@@ -27,6 +27,13 @@ class RoomService
         cache()->forget('hotel_floors_all_all');
         cache()->forget('equipment_room_options_' . $orgId);
         cache()->forget('equipment_room_options_all');
+        cache()->forget('motel_room_types_' . $orgId);
+        cache()->forget('motel_room_types_all');
+
+        $v = (int) cache()->get('equipment_map_view_version_' . $orgId, 1);
+        cache()->put('equipment_map_view_version_' . $orgId, $v + 1, 86400 * 30);
+        $vAll = (int) cache()->get('equipment_map_view_version_all', 1);
+        cache()->put('equipment_map_view_version_all', $vAll + 1, 86400 * 30);
     }
 
     public function stats(array $filters = []): array
@@ -61,10 +68,12 @@ class RoomService
     public function getRoomTypes(?int $orgId = null)
     {
         $activeOrg = $this->getActiveOrgId($orgId);
-        return RoomTypeModel::where('organization_id', $activeOrg)
-            ->orWhereNull('organization_id')
-            ->orderBy('name', 'asc')
-            ->get();
+        return cache()->remember("motel_room_types_{$activeOrg}", 600, function () use ($activeOrg) {
+            return RoomTypeModel::where('organization_id', $activeOrg)
+                ->orWhereNull('organization_id')
+                ->orderBy('name', 'asc')
+                ->get();
+        });
     }
 
     public function getRoomById(int $id): RoomModel

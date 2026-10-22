@@ -258,6 +258,22 @@ async function fetchRooms(showLoading = true) {
   }
 }
 
+let searchDebounceTimer = null
+function handleSearchInput(val) {
+  if (viewMode.value === 'table') {
+    if (searchDebounceTimer) clearTimeout(searchDebounceTimer)
+    if (!val) {
+      pagination.currentPage = 1
+      fetchRooms()
+      return
+    }
+    searchDebounceTimer = setTimeout(() => {
+      pagination.currentPage = 1
+      fetchRooms()
+    }, 350)
+  }
+}
+
 function handleSearch() {
   if (viewMode.value === 'table') {
     pagination.currentPage = 1
@@ -516,7 +532,7 @@ function getStatusBadge(status) {
                 prepend-inner-icon="mdi-magnify"
                 clearable
                 bg-color="slate-50"
-                @update:model-value="handleSearch"
+                @update:model-value="handleSearchInput"
               />
             </div>
 
