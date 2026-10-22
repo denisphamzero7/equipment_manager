@@ -27,8 +27,8 @@ export const useEquipmentStore = defineStore('equipment', {
   }),
 
   actions: {
-    async fetchEquipments(page = 1) {
-      this.loading = true
+    async fetchEquipments(page = 1, { silent = false } = {}) {
+      if (!silent) this.loading = true
       try {
         const params = {
           page,
@@ -65,7 +65,7 @@ export const useEquipmentStore = defineStore('equipment', {
 
         return res
       } finally {
-        this.loading = false
+        if (!silent) this.loading = false
       }
     },
 

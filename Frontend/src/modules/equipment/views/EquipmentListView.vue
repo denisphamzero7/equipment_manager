@@ -156,8 +156,20 @@ watch(
   (event) => {
     if (!event) return
 
-    if (event.type === 'created' || event.type === 'deleted') {
-      equipmentStore.fetchEquipments(equipmentStore.pagination.currentPage)
+    if (event.type === 'created') {
+      const pending = pendingCreations.value.find(
+        item => item.clientRequestId === event.equipment?.client_request_id
+      )
+      if (pending) {
+        pending.acknowledgedByEvent = true
+        pending.successNotified = true
+        pendingCreations.value = pendingCreations.value.filter(item => item !== pending)
+        pending.refreshPromise = refreshAfterCreation(pending)
+      } else {
+        void equipmentStore.fetchEquipments(equipmentStore.pagination.currentPage, { silent: true })
+      }
+    } else if (event.type === 'deleted') {
+      equipmentStore.fetchEquipments(equipmentStore.pagination.currentPage, { silent: true })
     } else if (event.type === 'status_changed') {
       const target = equipmentStore.items.find(i => i.id === event.equipment?.id)
       if (target) {
@@ -225,6 +237,7 @@ async function handleFormSubmit({ isEdit, id, data, modelDraft, continueAdding, 
 
   const pending = {
     id: `pending-${++creationSequence}`,
+    clientRequestId: `equipment-create-${Date.now()}-${creationSequence}`,
     isOptimistic: true,
     state: 'saving',
     modelName: modelName || 'Thiết bị mới',
@@ -275,23 +288,36 @@ async function persistCreation(pending) {
       : { ...pending.data }
     if (payload instanceof FormData) {
       payload.set('equipment_model_id', pending.modelId)
+      payload.set('client_request_id', pending.clientRequestId)
     } else if (pending.modelId) {
       payload.equipment_model_id = pending.modelId
+    }
+    if (!(payload instanceof FormData)) {
+      payload.client_request_id = pending.clientRequestId
     }
 
     await equipmentService.createEquipment(payload)
     pendingCreations.value = pendingCreations.value.filter(item => item !== pending)
-    toast.success(`Đã tạo thiết bị "${pending.modelName}" thành công!`)
-    try {
-      await equipmentStore.fetchEquipments(equipmentStore.pagination.currentPage)
-    } catch (error) {
-      console.error('Equipment created, but refreshing the list failed:', error)
-      toast.warning('Thiết bị đã được tạo nhưng danh sách chưa tải lại. Vui lòng làm mới trang.')
+    pending.acknowledgedByResponse = true
+    if (!pending.successNotified) {
+      toast.success(`Đã tạo thiết bị "${pending.modelName}" thành công!`)
     }
+    if (pending.refreshPromise) await pending.refreshPromise
+    else await refreshAfterCreation(pending)
   } catch (error) {
+    if (pending.acknowledgedByEvent || pending.acknowledgedByResponse) return
     pending.state = 'failed'
     pending.error = error.response?.data?.message || error.message || 'Không thể lưu thiết bị.'
     toast.error(`Tạo thiết bị thất bại: ${pending.error}`)
+  }
+}
+
+async function refreshAfterCreation(pending) {
+  try {
+    await equipmentStore.fetchEquipments(equipmentStore.pagination.currentPage, { silent: true })
+  } catch (error) {
+    console.error('Equipment created, but refreshing the list failed:', error)
+    toast.warning('Thiết bị đã được tạo nhưng danh sách chưa tải lại. Vui lòng làm mới trang.')
   }
 }
 

@@ -23,6 +23,7 @@ class StoreEquipmentRequest extends FormRequest
             'note' => 'nullable|string|max:1000',
             'installed_at' => 'nullable|date',
             'photo' => 'nullable|image|max:10240', // Cho phép upload ảnh lúc tạo mới
+            'client_request_id' => 'nullable|string|max:100',
         ];
     }
 

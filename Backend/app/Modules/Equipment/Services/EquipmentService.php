@@ -95,7 +95,7 @@ class EquipmentService
         return RoomEquipment::with(['model.category', 'room', 'maintenanceLogs', 'media'])->findOrFail($id);
     }
 
-    public function create(array $data): RoomEquipment
+    public function create(array $data, ?string $clientRequestId = null): RoomEquipment
     {
         $item = DB::transaction(function () use ($data) {
             $photo = $data['photo'] ?? null;
@@ -121,7 +121,7 @@ class EquipmentService
         });
 
         // Phát Broadcast Real-time
-        event(new EquipmentCreated($item));
+        event(new EquipmentCreated($item, $clientRequestId));
         $this->invalidateCache($item->organization_id);
 
         return $item;

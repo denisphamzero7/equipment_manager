@@ -60,11 +60,13 @@ class EquipmentController extends Controller
     public function store(StoreEquipmentRequest $request): JsonResponse
     {
         $data = $request->validated();
+        $clientRequestId = $data['client_request_id'] ?? null;
+        unset($data['client_request_id']);
         if ($request->hasFile('photo')) {
             $data['photo'] = $request->file('photo');
         }
 
-        $item = $this->service->create($data);
+        $item = $this->service->create($data, $clientRequestId);
         return $this->successResource(new EquipmentResource($item), 'Thêm thiết bị mới thành công', 201);
     }
 

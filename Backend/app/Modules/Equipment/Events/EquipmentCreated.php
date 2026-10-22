@@ -16,7 +16,7 @@ class EquipmentCreated implements ShouldBroadcastNow
     public int $organizationId;
     public array $equipment;
 
-    public function __construct(RoomEquipment $item)
+    public function __construct(RoomEquipment $item, ?string $clientRequestId = null)
     {
         $this->organizationId = (int) ($item->organization_id ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 22));
         $this->equipment = [
@@ -29,6 +29,7 @@ class EquipmentCreated implements ShouldBroadcastNow
             'status' => $item->status instanceof \BackedEnum ? $item->status->value : (string) $item->status,
             'position_note' => $item->position_note,
             'created_at' => $item->created_at?->toIso8601String(),
+            'client_request_id' => $clientRequestId,
         ];
     }
 
