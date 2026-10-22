@@ -1,10 +1,22 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useRealtimeStore } from '@/core/stores/realtimeStore'
+
+const { getEchoMock, disconnectEchoMock } = vi.hoisted(() => ({
+  getEchoMock: vi.fn(),
+  disconnectEchoMock: vi.fn(),
+}))
+
+vi.mock('@/core/services/echoService', () => ({
+  getEcho: getEchoMock,
+  disconnectEcho: disconnectEchoMock,
+}))
 
 describe('realtimeStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
+    getEchoMock.mockReset()
+    disconnectEchoMock.mockReset()
   })
 
   it('initializes with default state', () => {
@@ -61,5 +73,44 @@ describe('realtimeStore', () => {
     expect(store.soundEnabled).toBe(false)
     store.toggleSound()
     expect(store.soundEnabled).toBe(true)
+  })
+
+  it('ignores realtime initialization that finishes after cleanup', async () => {
+    let resolveEcho
+    getEchoMock.mockReturnValue(new Promise(resolve => {
+      resolveEcho = resolve
+    }))
+
+    const store = useRealtimeStore()
+    const initialization = store.initRealtime(7)
+    store.cleanup()
+
+    const echo = { private: vi.fn() }
+    resolveEcho(echo)
+    await initialization
+
+    expect(echo.private).not.toHaveBeenCalled()
+    expect(store.connected).toBe(false)
+    expect(store.currentOrgId).toBe(null)
+  })
+
+  it('shares an in-progress realtime initialization for the same organization', async () => {
+    const channel = { listen: vi.fn() }
+    const echo = {
+      private: vi.fn(() => channel),
+      leave: vi.fn(),
+    }
+    getEchoMock.mockResolvedValue(echo)
+
+    const store = useRealtimeStore()
+    const firstInitialization = store.initRealtime(7)
+    const secondInitialization = store.initRealtime(7)
+
+    await Promise.all([firstInitialization, secondInitialization])
+
+    expect(getEchoMock).toHaveBeenCalledTimes(1)
+    expect(echo.private).toHaveBeenCalledTimes(1)
+    expect(echo.private).toHaveBeenCalledWith('organization.7')
+    expect(store.connected).toBe(true)
   })
 })

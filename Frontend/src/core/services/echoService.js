@@ -1,21 +1,31 @@
-import Echo from 'laravel-echo'
-import Pusher from 'pusher-js'
 import { storage, StorageKeys } from '@/core/helpers/storage'
 
-window.Pusher = Pusher
-
 let echoInstance = null
+let echoInitialization = null
+let initializationGeneration = 0
 
-export function initEcho() {
+export async function initEcho() {
   if (echoInstance) {
     return echoInstance
   }
+  if (echoInitialization) {
+    return echoInitialization
+  }
+
+  const generation = initializationGeneration
+  const initialization = (async () => {
+    const [{ default: Echo }, { default: Pusher }] = await Promise.all([
+      import('laravel-echo'),
+      import('pusher-js'),
+    ])
+    if (generation !== initializationGeneration) return null
+    window.Pusher = Pusher
 
   const host = import.meta.env.VITE_REVERB_HOST || window.location.hostname
   const port = Number(import.meta.env.VITE_REVERB_PORT) || 8090
   const scheme = import.meta.env.VITE_REVERB_SCHEME || 'http'
 
-  echoInstance = new Echo({
+  const instance = new Echo({
     broadcaster: 'reverb',
     key: import.meta.env.VITE_REVERB_APP_KEY || 'pnhau_core_reverb_key',
     wsHost: host,
@@ -55,7 +65,22 @@ export function initEcho() {
     },
   })
 
-  return echoInstance
+    if (generation !== initializationGeneration) {
+      instance.disconnect()
+      return null
+    }
+    echoInstance = instance
+    return echoInstance
+  })()
+
+  echoInitialization = initialization
+  try {
+    return await initialization
+  } finally {
+    if (echoInitialization === initialization) {
+      echoInitialization = null
+    }
+  }
 }
 
 export function getEcho() {
@@ -63,6 +88,9 @@ export function getEcho() {
 }
 
 export function disconnectEcho() {
+  initializationGeneration += 1
+  echoInitialization = null
+
   if (echoInstance) {
     try {
       echoInstance.disconnect()

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, defineAsyncComponent } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useEquipmentStore } from '../stores/equipmentStore'
 import { equipmentService } from '../services/equipmentService'
@@ -13,10 +13,11 @@ import AppDataTable from '@/core/components/AppDataTable.vue'
 import AppStatusBadge from '@/core/components/AppStatusBadge.vue'
 import AppButton from '@/core/components/AppButton.vue'
 import AppConfirmDialog from '@/core/components/AppConfirmDialog.vue'
-import EquipmentFormModal from '../components/EquipmentFormModal.vue'
-import AssignRoomModal from '../components/AssignRoomModal.vue'
-import ReportBrokenModal from '../components/ReportBrokenModal.vue'
-import ManageEquipmentModelsModal from '../components/ManageEquipmentModelsModal.vue'
+
+const EquipmentFormModal = defineAsyncComponent(() => import('../components/EquipmentFormModal.vue'))
+const AssignRoomModal = defineAsyncComponent(() => import('../components/AssignRoomModal.vue'))
+const ReportBrokenModal = defineAsyncComponent(() => import('../components/ReportBrokenModal.vue'))
+const ManageEquipmentModelsModal = defineAsyncComponent(() => import('../components/ManageEquipmentModelsModal.vue'))
 
 const router = useRouter()
 const route = useRoute()
@@ -900,6 +901,7 @@ async function handleQuickStatusChange(item, newStatus) {
 
     <!-- Modals -->
     <EquipmentFormModal
+      v-if="formModalOpen"
       v-model="formModalOpen"
       :equipment="selectedEquipmentForEdit"
       :initial-data="formInitialData"
@@ -908,6 +910,7 @@ async function handleQuickStatusChange(item, newStatus) {
     />
 
     <AssignRoomModal
+      v-if="assignModalOpen"
       v-model="assignModalOpen"
       :equipment="selectedEquipmentForAssign"
       :loading="actionLoading"
@@ -915,6 +918,7 @@ async function handleQuickStatusChange(item, newStatus) {
     />
 
     <ReportBrokenModal
+      v-if="reportBrokenModalOpen"
       v-model="reportBrokenModalOpen"
       :equipment="selectedEquipmentForReport"
       :loading="actionLoading"
@@ -922,6 +926,7 @@ async function handleQuickStatusChange(item, newStatus) {
     />
 
     <ManageEquipmentModelsModal
+      v-if="manageModelsModalOpen"
       v-model="manageModelsModalOpen"
     />
 

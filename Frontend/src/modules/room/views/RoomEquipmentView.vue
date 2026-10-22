@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, defineAsyncComponent } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { roomService } from '../services/roomService'
 import { equipmentService } from '@/modules/equipment/services/equipmentService'
@@ -12,10 +12,11 @@ import AppButton from '@/core/components/AppButton.vue'
 import AppStatusBadge from '@/core/components/AppStatusBadge.vue'
 import AppModal from '@/core/components/AppModal.vue'
 import AppConfirmDialog from '@/core/components/AppConfirmDialog.vue'
-import AssignRoomModal from '@/modules/equipment/components/AssignRoomModal.vue'
-import ReportBrokenModal from '@/modules/equipment/components/ReportBrokenModal.vue'
-import EquipmentFormModal from '@/modules/equipment/components/EquipmentFormModal.vue'
-import RoomFormModal from '../components/RoomFormModal.vue'
+
+const AssignRoomModal = defineAsyncComponent(() => import('@/modules/equipment/components/AssignRoomModal.vue'))
+const ReportBrokenModal = defineAsyncComponent(() => import('@/modules/equipment/components/ReportBrokenModal.vue'))
+const EquipmentFormModal = defineAsyncComponent(() => import('@/modules/equipment/components/EquipmentFormModal.vue'))
+const RoomFormModal = defineAsyncComponent(() => import('../components/RoomFormModal.vue'))
 
 const route = useRoute()
 const router = useRouter()
@@ -643,6 +644,7 @@ async function handleCreateSubmit({ data }) {
 
     <!-- REUSED MODAL 1: Điều chuyển phòng -->
     <AssignRoomModal
+      v-if="assignModalOpen"
       v-model="assignModalOpen"
       :equipment="selectedEquipmentForAssign"
       :loading="actionLoading"
@@ -651,6 +653,7 @@ async function handleCreateSubmit({ data }) {
 
     <!-- REUSED MODAL 2: Báo hỏng -->
     <ReportBrokenModal
+      v-if="reportBrokenModalOpen"
       v-model="reportBrokenModalOpen"
       :equipment="selectedEquipmentForReport"
       :loading="actionLoading"
@@ -659,6 +662,7 @@ async function handleCreateSubmit({ data }) {
 
     <!-- REUSED MODAL 3: Tạo thiết bị mới cho phòng -->
     <EquipmentFormModal
+      v-if="createModalOpen"
       v-model="createModalOpen"
       :loading="actionLoading"
       @submit="handleCreateSubmit"
@@ -778,6 +782,7 @@ async function handleCreateSubmit({ data }) {
 
     <!-- Modal Chỉnh sửa thông tin & cơ cấu phòng -->
     <RoomFormModal
+      v-if="editRoomModalOpen"
       v-model="editRoomModalOpen"
       :room="roomDetail ? { ...roomDetail, ...(roomDetail.room || {}) } : null"
       :room-types="roomTypesList"

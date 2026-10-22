@@ -1,13 +1,14 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, defineAsyncComponent } from 'vue'
 import AppModal from '@/core/components/AppModal.vue'
 import AppButton from '@/core/components/AppButton.vue'
 import RoomCascaderSelect from '@/core/components/RoomCascaderSelect.vue'
-import ManageEquipmentModelsModal from './ManageEquipmentModelsModal.vue'
 import { equipmentService } from '../services/equipmentService'
 import { EquipmentStatus, EquipmentStatusOptions } from '@/core/enums/EquipmentStatus'
 import { rules } from '@/core/helpers/validators'
 import { resolveMediaUrl } from '@/core/helpers/formatters'
+
+const ManageEquipmentModelsModal = defineAsyncComponent(() => import('./ManageEquipmentModelsModal.vue'))
 
 const props = defineProps({
   modelValue: {
@@ -477,6 +478,7 @@ async function handleSubmit(continueAdding = false) {
 
   <!-- Sub-modal: Manage Equipment Models -->
   <ManageEquipmentModelsModal
+    v-if="manageModelsModalOpen"
     v-model="manageModelsModalOpen"
     :initial-name="prefillModelName"
     @model-created="handleModelCreated"

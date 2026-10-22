@@ -17,6 +17,9 @@ export const useRealtimeStore = defineStore('realtime', () => {
 
   let lastNotificationFingerprint = ''
   let lastNotificationTime = 0
+  let initializationSequence = 0
+  let pendingOrgId = null
+  let initializationPromise = null
 
   function addNotification(notification) {
     const fingerprint = `${notification.type}_${notification.title}_${notification.message}`
@@ -81,22 +84,25 @@ export const useRealtimeStore = defineStore('realtime', () => {
     if (isListening.value && currentOrgId.value === targetOrgId) {
       return
     }
-
-    const echo = getEcho()
-
-    // Rời kênh cũ nếu đang lắng nghe để tránh gắn đè listeners
-    if (currentOrgId.value) {
-      try {
-        echo.leave(`organization.${currentOrgId.value}`)
-      } catch (e) {
-        console.warn('Error leaving old channel:', e)
-      }
+    if (initializationPromise && pendingOrgId === targetOrgId) {
+      return initializationPromise
     }
 
-    currentOrgId.value = targetOrgId
-    const channelName = `organization.${targetOrgId}`
+    const sequence = ++initializationSequence
+    pendingOrgId = targetOrgId
+    const initialization = (async () => {
+      const echo = await getEcho()
+      if (!echo || sequence !== initializationSequence) return
 
-    const channel = echo.private(channelName)
+      // Rời kênh cũ nếu đang lắng nghe để tránh gắn đè listeners
+      if (currentOrgId.value) {
+        echo.leave(`organization.${currentOrgId.value}`)
+      }
+
+      currentOrgId.value = targetOrgId
+      const channelName = `organization.${targetOrgId}`
+
+      const channel = echo.private(channelName)
 
     // 1. Thiết bị mới được tạo
     channel.listen('.equipment.created', (event) => {
@@ -189,20 +195,35 @@ export const useRealtimeStore = defineStore('realtime', () => {
       toast.info(event.message || 'Dữ liệu phòng vừa được cập nhật.')
     })
 
-    isListening.value = true
-    connected.value = true
+      isListening.value = true
+      connected.value = true
+    })()
+
+    initializationPromise = initialization
+      .catch((error) => {
+        if (sequence === initializationSequence) {
+          console.error('Failed to initialize realtime connection:', error)
+          toast.warning('Không thể khởi tạo kết nối cập nhật trực tiếp. Vui lòng tải lại trang.')
+          connected.value = false
+          isListening.value = false
+          currentOrgId.value = null
+        }
+      })
+      .finally(() => {
+        if (sequence === initializationSequence) {
+          initializationPromise = null
+          pendingOrgId = null
+        }
+      })
+
+    return initializationPromise
   }
 
   function cleanup() {
-    if (currentOrgId.value) {
-      try {
-        const echo = getEcho()
-        echo.leave(`organization.${currentOrgId.value}`)
-      } catch (e) {
-        console.warn('Leave channel error:', e)
-      }
-      currentOrgId.value = null
-    }
+    initializationSequence += 1
+    initializationPromise = null
+    pendingOrgId = null
+    currentOrgId.value = null
     isListening.value = false
     connected.value = false
     disconnectEcho()
