@@ -9,7 +9,7 @@ Route::delete('/structure/delete-block', [Motel::class, 'deleteBlock'])->middlew
 
 // Batch generation & Room types
 Route::post('/batch-generate', [Motel::class, 'batchGenerate'])->middleware('permission:motel.store,web');
-Route::get('/room-types', [Motel::class, 'getRoomTypes'])->middleware('permission:motel.index,web');
+Route::get('/room-types', [Motel::class, 'getRoomTypes'])->middleware('permission:motel.index|motel.update,web');
 
 Route::get('/export', [Motel::class, 'export'])->middleware('permission:motel.export,web');
 Route::post('/import', [Motel::class, 'import'])->middleware('permission:motel.import,web');
@@ -26,7 +26,7 @@ Route::prefix('rooms')->group(function () {
     Route::get('/', [Motel::class, 'index'])->middleware('permission:motel.index,web');
     Route::post('/', [Motel::class, 'store'])->middleware('permission:motel.store,web');
     Route::post('/batch-generate', [Motel::class, 'batchGenerate'])->middleware('permission:motel.store,web');
-    Route::get('/room-types', [Motel::class, 'getRoomTypes'])->middleware('permission:motel.index,web');
+    Route::get('/room-types', [Motel::class, 'getRoomTypes'])->middleware('permission:motel.index|motel.update,web');
     Route::post('/bulk-delete', [Motel::class, 'bulkDestroy'])->middleware('permission:motel.bulkDestroy,web');
     Route::get('/{room}', [Motel::class, 'show'])->middleware('permission:motel.show,web');
     Route::put('/{room}', [Motel::class, 'update'])->middleware('permission:motel.update,web');

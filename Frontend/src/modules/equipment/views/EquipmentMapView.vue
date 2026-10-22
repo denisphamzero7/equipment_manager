@@ -76,16 +76,16 @@ function getCategoryIcon(code) {
 
 onMounted(async () => {
   loadMapViewData()
-  try {
-    roomTypesList.value = await roomService.getRoomTypes()
-  } catch (err) {
-    console.error('Failed to load room types:', err)
-    toast.error(err.response?.data?.message || 'Không thể tải danh sách loại phòng.')
-  }
 })
 
-function openEditRoomModal() {
+async function openEditRoomModal() {
   if (!selectedRoomDetail.value) return
+  try {
+    roomTypesList.value = await roomService.getRoomTypes()
+  } catch (error) {
+    console.error('Failed to load room types for editing:', error)
+    return
+  }
   roomForEdit.value = {
     ...selectedRoomDetail.value,
     ...(selectedRoomDetail.value.room || {}),
@@ -750,6 +750,7 @@ function getBadgeIndicatorClass(room) {
           </div>
 
           <button
+            v-if="$can('update', 'Room')"
             type="button"
             class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs flex items-center gap-1 shrink-0 transition shadow-2xs cursor-pointer"
             title="Chỉnh sửa số phòng ngủ, phòng khách hoặc chế độ Wifi"

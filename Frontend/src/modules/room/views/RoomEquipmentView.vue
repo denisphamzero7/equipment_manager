@@ -51,19 +51,17 @@ const editRoomModalOpen = ref(false)
 const roomTypesList = ref([])
 
 onMounted(async () => {
-  await Promise.all([
-    loadRooms(),
-    roomService.getRoomTypes().then(types => {
-      roomTypesList.value = types
-    }).catch(error => {
-      console.error('Failed to load room types:', error)
-      toast.error('Không thể tải danh sách loại phòng.')
-    }),
-  ])
+  await loadRooms()
 })
 
-function openEditRoomModal() {
+async function openEditRoomModal() {
   if (!roomDetail.value) return
+  try {
+    roomTypesList.value = await roomService.getRoomTypes()
+  } catch (error) {
+    console.error('Failed to load room types for editing:', error)
+    return
+  }
   editRoomModalOpen.value = true
 }
 
@@ -457,6 +455,7 @@ async function handleCreateSubmit({ data }) {
 
             <div class="flex items-center gap-2 flex-wrap self-start sm:self-auto">
               <button
+                v-if="$can('update', 'Room')"
                 type="button"
                 class="px-3 py-2 rounded-xl text-xs font-semibold border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 flex items-center gap-1.5 transition shadow-2xs cursor-pointer"
                 title="Chỉnh sửa số phòng ngủ, phòng khách hoặc chế độ Wifi"
