@@ -205,7 +205,8 @@ watch(
     isEdit.value = false
     photoFile.value = initial?.photoFile || null
     photoPreview.value = photoFile.value ? URL.createObjectURL(photoFile.value) : null
-  }
+  },
+  { immediate: true }
 )
 
 function handlePhotoChange(event) {
