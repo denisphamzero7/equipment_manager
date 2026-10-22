@@ -22,6 +22,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  initialData: {
+    type: Object,
+    default: null,
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'submit'])
@@ -31,6 +35,7 @@ const isEdit = ref(false)
 const photoFile = ref(null)
 const photoPreview = ref(null)
 const models = ref([])
+const categories = ref([])
 
 // Manage models modal
 const manageModelsModalOpen = ref(false)
@@ -38,24 +43,30 @@ const prefillModelName = ref('')
 const modelSearchQuery = ref('')
 
 onMounted(async () => {
-  await loadModels()
+  await Promise.all([loadModels(), loadCategories()])
 })
 
 async function loadModels() {
   try {
     models.value = await equipmentService.getModels()
-  } catch (err) {
-    console.error('Failed to load equipment models:', err)
+  } catch (error) {
+    console.error('Failed to load equipment models:', error)
+  }
+}
+
+async function loadCategories() {
+  try {
+    categories.value = await equipmentService.getCategories()
+    if (!quickCreateCategoryId.value && categories.value.length) {
+      quickCreateCategoryId.value = categories.value[0].id
+    }
+  } catch (error) {
+    console.error('Failed to load equipment categories:', error)
   }
 }
 
 function openManageModelsModal() {
   prefillModelName.value = ''
-  manageModelsModalOpen.value = true
-}
-
-function openManageModelsModalWithQuery(name) {
-  prefillModelName.value = name || ''
   manageModelsModalOpen.value = true
 }
 
@@ -69,6 +80,11 @@ function handleModelCreated(created) {
   }
 }
 
+const quickCreateCategoryId = ref(null)
+const isNewModel = computed(() =>
+  typeof form.value.equipment_model_id === 'string' && form.value.equipment_model_id.trim().length > 0
+)
+
 const modelOptions = computed(() => {
   return models.value.map(m => ({
     id: m.id,
@@ -77,7 +93,7 @@ const modelOptions = computed(() => {
 })
 
 const form = ref({
-  equipment_model_id: 1,
+  equipment_model_id: '',
   serial_number: '',
   room_id: null,
   status: EquipmentStatus.GOOD,
@@ -94,7 +110,7 @@ watch(
       isEdit.value = true
       photoPreview.value = resolveMediaUrl(newVal.photo_url || newVal.photos?.[0]?.url || null)
       form.value = {
-        equipment_model_id: newVal.equipment_model_id || newVal.model?.id || 1,
+        equipment_model_id: newVal.equipment_model_id || newVal.model?.id || '',
         serial_number: newVal.serial_number || '',
         room_id: newVal.room_id || null,
         status: newVal.status || EquipmentStatus.GOOD,
@@ -106,7 +122,7 @@ watch(
       isEdit.value = false
       photoPreview.value = null
       form.value = {
-        equipment_model_id: 1,
+        equipment_model_id: '',
         serial_number: '',
         room_id: null,
         status: EquipmentStatus.GOOD,
@@ -117,6 +133,29 @@ watch(
     }
   },
   { immediate: true }
+)
+
+watch(
+  () => props.modelValue,
+  isOpen => {
+    if (!isOpen || props.equipment) return
+    void loadModels()
+    void loadCategories()
+    const initial = props.initialData
+    form.value = {
+      equipment_model_id: initial?.equipment_model_id ?? '',
+      serial_number: initial?.serial_number || '',
+      room_id: initial?.room_id || null,
+      status: initial?.status || EquipmentStatus.GOOD,
+      position_note: initial?.position_note || '',
+      note: initial?.note || '',
+      installed_at: initial?.installed_at || new Date().toISOString().substring(0, 10),
+    }
+    quickCreateCategoryId.value = initial?.quickCreateCategoryId || categories.value[0]?.id || null
+    isEdit.value = false
+    photoFile.value = initial?.photoFile || null
+    photoPreview.value = photoFile.value ? URL.createObjectURL(photoFile.value) : null
+  }
 )
 
 function handlePhotoChange(event) {
@@ -132,11 +171,21 @@ function removePhoto() {
   photoPreview.value = null
 }
 
-async function handleSubmit() {
+async function handleSubmit(continueAdding = false) {
   const { valid } = await formRef.value.validate()
   if (!valid) return
+  if (isNewModel.value && !quickCreateCategoryId.value) return
 
   const payloadData = { ...form.value }
+  const modelDraft = isNewModel.value
+    ? {
+        name: payloadData.equipment_model_id.trim(),
+        equipment_category_id: quickCreateCategoryId.value,
+        brand: '',
+        model_code: '',
+      }
+    : null
+  if (modelDraft && !modelDraft.name) return
   let dataToSend = payloadData
   if (photoFile.value) {
     const fd = new FormData()
@@ -153,7 +202,20 @@ async function handleSubmit() {
     isEdit: isEdit.value,
     id: props.equipment?.id,
     data: dataToSend,
+    modelDraft,
+    continueAdding,
+    formValues: { ...form.value, quickCreateCategoryId: quickCreateCategoryId.value },
+    modelName: modelDraft?.name || modelOptions.value.find(option => option.id === form.value.equipment_model_id)?.title || '',
   })
+
+  if (continueAdding && !isEdit.value) {
+    form.value.serial_number = ''
+    form.value.note = ''
+    photoFile.value = null
+    photoPreview.value = null
+    return
+  }
+  if (!isEdit.value) emit('update:modelValue', false)
 }
 </script>
 
@@ -165,7 +227,7 @@ async function handleSubmit() {
     max-width="600"
     @update:model-value="val => emit('update:modelValue', val)"
   >
-    <v-form ref="formRef" @submit.prevent="handleSubmit">
+    <v-form ref="formRef" @submit.prevent="handleSubmit()">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Model Select -->
         <div>
@@ -184,13 +246,12 @@ async function handleSubmit() {
             </button>
           </div>
 
-          <v-autocomplete
-            v-if="modelOptions.length > 0"
-            v-model.number="form.equipment_model_id"
+          <v-combobox
+            v-model="form.equipment_model_id"
             :items="modelOptions"
             item-title="title"
             item-value="id"
-            placeholder="Tìm & chọn mẫu thiết bị..."
+            placeholder="Tìm mẫu hoặc nhập tên mẫu mới..."
             :rules="[rules.required]"
             density="compact"
             variant="outlined"
@@ -199,36 +260,31 @@ async function handleSubmit() {
           >
             <template #no-data>
               <div class="p-3 text-center text-xs">
-                <p class="text-slate-600 mb-2 font-medium">
-                  Chưa có mẫu nào khớp với "<strong>{{ modelSearchQuery }}</strong>"
+                <p class="text-slate-600 mb-1 font-medium">
+                  Dùng tên mới "<strong>{{ modelSearchQuery }}</strong>"
                 </p>
-                <AppButton
-                  size="small"
-                  color="primary"
-                  @click="openManageModelsModalWithQuery(modelSearchQuery)"
-                >
-                  <v-icon start icon="mdi-plus" />
-                  Tạo mẫu mới: "{{ modelSearchQuery }}"
-                </AppButton>
+                <p class="text-slate-500">
+                  Nhấn Enter để chọn tên này; mẫu sẽ được tạo cùng thiết bị.
+                </p>
               </div>
             </template>
-          </v-autocomplete>
-          <div v-else class="flex items-center gap-2">
-            <v-text-field
-              v-model.number="form.equipment_model_id"
-              type="number"
-              placeholder="1"
-              :rules="[rules.required]"
-              density="compact"
-              variant="outlined"
-              hide-details="auto"
-              class="flex-1"
-            />
-            <AppButton size="small" color="primary" @click="openManageModelsModal">
-              <v-icon start icon="mdi-plus" />
-              Thêm
-            </AppButton>
-          </div>
+          </v-combobox>
+          <v-select
+            v-if="isNewModel"
+            v-model="quickCreateCategoryId"
+            :items="categories"
+            item-title="name"
+            item-value="id"
+            label="Danh mục cho mẫu mới *"
+            :rules="[rules.required]"
+            density="compact"
+            variant="outlined"
+            hide-details="auto"
+            class="mt-2"
+          />
+          <p v-if="isNewModel && !categories.length" class="mt-1 text-xs text-rose-600">
+            Chưa có danh mục để tạo mẫu thiết bị mới.
+          </p>
         </div>
 
         <!-- Serial Number -->
@@ -357,11 +413,20 @@ async function handleSubmit() {
         Hủy bỏ
       </v-btn>
       <AppButton
+        v-if="!isEdit"
+        color="secondary"
+        variant="tonal"
+        :disabled="loading"
+        @click="handleSubmit(true)"
+      >
+        Lưu & tiếp tục tạo
+      </AppButton>
+      <AppButton
         color="primary"
         :loading="loading"
-        @click="handleSubmit"
+        @click="handleSubmit()"
       >
-        {{ isEdit ? 'Lưu thay đổi' : 'Tạo thiết bị' }}
+        {{ isEdit ? 'Lưu thay đổi' : 'Lưu & đóng' }}
       </AppButton>
     </template>
   </AppModal>

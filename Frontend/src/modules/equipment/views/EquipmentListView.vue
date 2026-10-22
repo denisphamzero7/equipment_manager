@@ -25,8 +25,22 @@ const realtimeStore = useRealtimeStore()
 
 // Modals state
 const formModalOpen = ref(false)
+const formInitialData = ref(null)
 const manageModelsModalOpen = ref(false)
 const selectedEquipmentForEdit = ref(null)
+const pendingCreations = ref([])
+let creationSequence = 0
+let editingPendingCreation = null
+const modelCreationPromises = new Map()
+
+const tableItems = computed(() => [...pendingCreations.value, ...equipmentStore.items])
+const tableTotal = computed(() => equipmentStore.pagination.total + pendingCreations.value.length)
+
+watch(formModalOpen, isOpen => {
+  if (!isOpen && editingPendingCreation?.state === 'failed') {
+    editingPendingCreation = null
+  }
+})
 
 const assignModalOpen = ref(false)
 const selectedEquipmentForAssign = ref(null)
@@ -168,6 +182,7 @@ watch(
 
 function openCreateModal() {
   selectedEquipmentForEdit.value = null
+  formInitialData.value = null
   formModalOpen.value = true
 }
 
@@ -191,18 +206,112 @@ function openDeleteDialog(item) {
   deleteDialogOpen.value = true
 }
 
-async function handleFormSubmit({ isEdit, id, data }) {
-  actionLoading.value = true
-  try {
-    if (isEdit) {
+async function handleFormSubmit({ isEdit, id, data, modelDraft, continueAdding, formValues, modelName }) {
+  if (isEdit) {
+    actionLoading.value = true
+    try {
       await equipmentStore.updateEquipment(id, data)
-    } else {
-      await equipmentStore.createEquipment(data)
+      formModalOpen.value = false
+    } finally {
+      actionLoading.value = false
     }
-    formModalOpen.value = false
-  } finally {
-    actionLoading.value = false
+    return
   }
+
+  if (editingPendingCreation) {
+    pendingCreations.value = pendingCreations.value.filter(item => item !== editingPendingCreation)
+    editingPendingCreation = null
+  }
+
+  const pending = {
+    id: `pending-${++creationSequence}`,
+    isOptimistic: true,
+    state: 'saving',
+    modelName: modelName || 'Thiết bị mới',
+    category: modelDraft
+      ? categoryOptions.value.find(category => category.id === modelDraft.equipment_category_id) || null
+      : null,
+    serial_number: formValues.serial_number,
+    room_id: formValues.room_id,
+    position_note: formValues.position_note,
+    installed_at: formValues.installed_at,
+    formValues,
+    photoFile: data instanceof FormData ? data.get('photo') : null,
+    data,
+    modelDraft,
+    modelId: typeof formValues.equipment_model_id === 'number' ? formValues.equipment_model_id : null,
+    error: '',
+  }
+  pendingCreations.value.unshift(pending)
+  toast.info(`Đang tạo thiết bị "${pending.modelName}"...`, 2500)
+  void persistCreation(pending)
+
+  if (!continueAdding) {
+    formModalOpen.value = false
+    selectedEquipmentForEdit.value = null
+  }
+}
+
+async function persistCreation(pending) {
+  pending.state = 'saving'
+  pending.error = ''
+  try {
+    if (pending.modelDraft && !pending.modelId) {
+      const key = `${pending.modelDraft.equipment_category_id}:${pending.modelDraft.name.trim().toLocaleLowerCase()}`
+      if (!modelCreationPromises.has(key)) {
+        const creation = equipmentService.createModel(pending.modelDraft).catch(error => {
+          modelCreationPromises.delete(key)
+          throw error
+        })
+        modelCreationPromises.set(key, creation)
+      }
+      const createdModel = await modelCreationPromises.get(key)
+      pending.modelId = createdModel.id
+      pending.modelDraft = null
+    }
+
+    const payload = pending.data instanceof FormData
+      ? pending.data
+      : { ...pending.data }
+    if (payload instanceof FormData) {
+      payload.set('equipment_model_id', pending.modelId)
+    } else if (pending.modelId) {
+      payload.equipment_model_id = pending.modelId
+    }
+
+    await equipmentService.createEquipment(payload)
+    pendingCreations.value = pendingCreations.value.filter(item => item !== pending)
+    toast.success(`Đã tạo thiết bị "${pending.modelName}" thành công!`)
+    try {
+      await equipmentStore.fetchEquipments(equipmentStore.pagination.currentPage)
+    } catch (error) {
+      console.error('Equipment created, but refreshing the list failed:', error)
+      toast.warning('Thiết bị đã được tạo nhưng danh sách chưa tải lại. Vui lòng làm mới trang.')
+    }
+  } catch (error) {
+    pending.state = 'failed'
+    pending.error = error.response?.data?.message || error.message || 'Không thể lưu thiết bị.'
+    toast.error(`Tạo thiết bị thất bại: ${pending.error}`)
+  }
+}
+
+function retryCreation(pending) {
+  void persistCreation(pending)
+}
+
+function reopenFailedCreation(pending) {
+  editingPendingCreation = pending
+  selectedEquipmentForEdit.value = null
+  formInitialData.value = {
+    ...pending.formValues,
+    equipment_model_id: pending.modelId || pending.modelDraft?.name || pending.formValues.equipment_model_id,
+    photoFile: pending.photoFile,
+  }
+  formModalOpen.value = true
+}
+
+function handleRowClick(item) {
+  if (!item.isOptimistic) router.push(`/equipments/${item.id}`)
 }
 
 async function handleAssignSubmit(payload) {
@@ -459,17 +568,20 @@ async function handleQuickStatusChange(item, newStatus) {
     <!-- Data Table -->
     <AppDataTable
       :headers="headers"
-      :items="equipmentStore.items"
+      :items="tableItems"
       :loading="equipmentStore.loading"
-      :total-items="equipmentStore.pagination.total"
+      :total-items="tableTotal"
       :page="equipmentStore.pagination.currentPage"
       :items-per-page="equipmentStore.pagination.perPage"
       @update:page="p => equipmentStore.fetchEquipments(p)"
-      @click:row="item => router.push(`/equipments/${item.id}`)"
+      @click:row="handleRowClick"
     >
       <!-- Custom item: ID -->
       <template #item.id="{ item }">
-        <span class="font-mono text-xs font-bold text-slate-500">#{{ item.id }}</span>
+        <span v-if="item.isOptimistic" class="text-[11px] font-semibold text-slate-400">
+          Đang lưu
+        </span>
+        <span v-else class="font-mono text-xs font-bold text-slate-500">#{{ item.id }}</span>
       </template>
 
       <!-- Custom item: Serial & Name -->
@@ -502,7 +614,7 @@ async function handleQuickStatusChange(item, newStatus) {
           </div>
           <div class="min-w-0">
             <p class="font-bold text-slate-800 text-xs truncate">
-              {{ item.model?.name || item.name || 'Thiết bị không tên' }}
+              {{ item.model?.name || item.modelName || item.name || 'Thiết bị không tên' }}
             </p>
             <p class="text-[11px] font-mono text-blue-600 font-semibold mt-0.5 truncate">
               {{ item.serial_number || '— Chưa gắn Serial —' }}
@@ -574,7 +686,15 @@ async function handleQuickStatusChange(item, newStatus) {
 
       <!-- Custom item: Status -->
       <template #item.status="{ item }">
-        <AppStatusBadge :status="item.status" />
+        <v-chip
+          v-if="item.isOptimistic"
+          size="x-small"
+          :color="item.state === 'failed' ? 'error' : 'info'"
+          variant="tonal"
+        >
+          {{ item.state === 'failed' ? 'Lưu thất bại' : 'Đang lưu...' }}
+        </v-chip>
+        <AppStatusBadge v-else :status="item.status" />
       </template>
 
       <!-- Custom item: Installed At -->
@@ -584,7 +704,29 @@ async function handleQuickStatusChange(item, newStatus) {
 
       <!-- Custom item: Actions -->
       <template #item.actions="{ item }">
-        <div class="flex items-center justify-end gap-1" @click.stop>
+        <div v-if="item.isOptimistic" class="flex items-center justify-end gap-1" @click.stop>
+          <v-btn
+            v-if="item.state === 'failed'"
+            variant="text"
+            density="compact"
+            size="small"
+            color="primary"
+            @click="retryCreation(item)"
+          >
+            Thử lại
+          </v-btn>
+          <v-btn
+            v-if="item.state === 'failed'"
+            variant="text"
+            density="compact"
+            size="small"
+            color="secondary"
+            @click="reopenFailedCreation(item)"
+          >
+            Mở lại form
+          </v-btn>
+        </div>
+        <div v-else class="flex items-center justify-end gap-1" @click.stop>
           <v-menu location="bottom end">
             <template #activator="{ props: menuProps }">
               <v-btn
@@ -653,6 +795,7 @@ async function handleQuickStatusChange(item, newStatus) {
     <EquipmentFormModal
       v-model="formModalOpen"
       :equipment="selectedEquipmentForEdit"
+      :initial-data="formInitialData"
       :loading="actionLoading"
       @submit="handleFormSubmit"
     />
