@@ -20,6 +20,7 @@ class EquipmentResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'room_id' => $this->room_id,
             'serial_number' => $this->serial_number,
             'status' => $this->status?->value ?? $this->status,
             'status_label' => $this->status?->label() ?? $this->status,

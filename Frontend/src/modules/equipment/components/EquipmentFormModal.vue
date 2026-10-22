@@ -109,7 +109,7 @@ watch(
       form.value = {
         equipment_model_id: newVal.equipment_model_id || newVal.model?.id || '',
         serial_number: newVal.serial_number || '',
-        room_id: newVal.room_id || null,
+        room_id: newVal.room_id ?? newVal.room?.id ?? null,
         status: newVal.status || EquipmentStatus.GOOD,
         position_note: newVal.position_note || '',
         note: newVal.note || '',
