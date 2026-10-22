@@ -237,7 +237,11 @@ export const equipmentService = {
   async getCategories(forceRefresh = false) {
     return getCachedRequest('equipment-categories', 'all', async () => {
       const response = await axiosClient.get(Endpoints.EQUIPMENT.CATEGORIES)
-      return response.data?.data || []
+      const categories = response.data?.data
+      if (!Array.isArray(categories)) {
+        throw new Error('Dữ liệu nhóm danh mục thiết bị không hợp lệ.')
+      }
+      return categories
     }, { ttl: 600000, force: forceRefresh })
   },
 

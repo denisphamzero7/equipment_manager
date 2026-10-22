@@ -37,6 +37,8 @@ const photoFile = ref(null)
 const photoPreview = ref(null)
 const models = ref([])
 const categories = ref([])
+const categoriesLoading = ref(false)
+const categoriesLoadError = ref('')
 
 // Manage models modal
 const manageModelsModalOpen = ref(false)
@@ -51,11 +53,16 @@ async function loadModels() {
   }
 }
 
-async function loadCategories() {
+async function loadCategories(forceRefresh = false) {
+  categoriesLoading.value = true
+  categoriesLoadError.value = ''
   try {
-    categories.value = await equipmentService.getCategories()
+    categories.value = await equipmentService.getCategories(forceRefresh)
   } catch (error) {
     console.error('Failed to load equipment categories:', error)
+    categoriesLoadError.value = error.response?.data?.message || error.message || 'Không thể tải nhóm danh mục thiết bị.'
+  } finally {
+    categoriesLoading.value = false
   }
 }
 
@@ -320,13 +327,27 @@ async function handleSubmit(continueAdding = false) {
             item-title="name"
             item-value="id"
             label="Danh mục cho mẫu mới *"
+            :loading="categoriesLoading"
+            :disabled="categoriesLoading || Boolean(categoriesLoadError)"
+            :no-data-text="categoriesLoading ? 'Đang tải nhóm danh mục...' : 'Chưa có nhóm danh mục thiết bị.'"
             :rules="[rules.required]"
             density="compact"
             variant="outlined"
             hide-details="auto"
             class="mt-2"
           />
-          <p v-if="isNewModel && !categories.length" class="mt-1 text-xs text-rose-600">
+          <div v-if="isNewModel && categoriesLoadError" class="mt-1 flex items-center justify-between gap-2 text-xs text-rose-600">
+            <span>{{ categoriesLoadError }}</span>
+            <button
+              type="button"
+              class="shrink-0 font-semibold underline"
+              :disabled="categoriesLoading"
+              @click="loadCategories(true)"
+            >
+              Thử lại
+            </button>
+          </div>
+          <p v-else-if="isNewModel && !categoriesLoading && !categories.length" class="mt-1 text-xs text-amber-600">
             Chưa có danh mục để tạo mẫu thiết bị mới.
           </p>
         </div>

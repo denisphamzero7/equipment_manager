@@ -24,6 +24,8 @@ const loading = ref(false)
 const actionLoading = ref(false)
 const models = ref([])
 const categories = ref([])
+const categoriesLoading = ref(false)
+const categoriesLoadError = ref('')
 const searchQuery = ref('')
 
 // Form state (Add / Edit)
@@ -65,11 +67,16 @@ async function loadModels() {
   }
 }
 
-async function loadCategories() {
+async function loadCategories(forceRefresh = false) {
+  categoriesLoading.value = true
+  categoriesLoadError.value = ''
   try {
-    categories.value = await equipmentService.getCategories()
+    categories.value = await equipmentService.getCategories(forceRefresh)
   } catch (err) {
     console.error('Failed to load categories:', err)
+    categoriesLoadError.value = err.response?.data?.message || err.message || 'Không thể tải nhóm danh mục thiết bị.'
+  } finally {
+    categoriesLoading.value = false
   }
 }
 
@@ -240,11 +247,28 @@ async function handleDeleteModel() {
                   item-title="name"
                   item-value="id"
                   placeholder="Chọn nhóm danh mục"
+                  :loading="categoriesLoading"
+                  :disabled="categoriesLoading || Boolean(categoriesLoadError)"
+                  :no-data-text="categoriesLoading ? 'Đang tải nhóm danh mục...' : 'Chưa có nhóm danh mục thiết bị.'"
                   :rules="[rules.required]"
                   density="compact"
                   variant="outlined"
                   hide-details="auto"
                 />
+                <div v-if="categoriesLoadError" class="mt-1 flex items-center justify-between gap-2 text-xs text-rose-600">
+                  <span>{{ categoriesLoadError }}</span>
+                  <button
+                    type="button"
+                    class="shrink-0 font-semibold underline"
+                    :disabled="categoriesLoading"
+                    @click="loadCategories(true)"
+                  >
+                    Thử lại
+                  </button>
+                </div>
+                <p v-else-if="!categoriesLoading && !categories.length" class="mt-1 text-xs text-amber-600">
+                  Chưa có nhóm danh mục thiết bị. Vui lòng kiểm tra dữ liệu danh mục.
+                </p>
               </div>
 
               <!-- Brand -->
