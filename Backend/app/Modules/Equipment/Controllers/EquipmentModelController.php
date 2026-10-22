@@ -5,6 +5,7 @@ namespace App\Modules\Equipment\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Equipment\Models\EquipmentCategory;
 use App\Modules\Equipment\Models\EquipmentModel;
+use App\Modules\Equipment\Services\EquipmentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -15,6 +16,10 @@ use Illuminate\Http\Request;
  */
 class EquipmentModelController extends Controller
 {
+    public function __construct(
+        protected EquipmentService $equipmentService
+    ) {}
+
     /**
      * Danh sách toàn bộ mẫu thiết bị
      */
@@ -68,6 +73,7 @@ class EquipmentModelController extends Controller
         $model = EquipmentModel::create($validated);
         $model->load('category');
         $model->loadCount('equipments');
+        $this->equipmentService->invalidateCache($model->organization_id);
 
         return $this->success($model, 'Thêm mẫu thiết bị mới thành công', 201);
     }
@@ -94,6 +100,7 @@ class EquipmentModelController extends Controller
         $model->update($validated);
         $model->load('category');
         $model->loadCount('equipments');
+        $this->equipmentService->invalidateCache($model->organization_id);
 
         return $this->success($model, 'Cập nhật mẫu thiết bị thành công');
     }
@@ -112,7 +119,9 @@ class EquipmentModelController extends Controller
             );
         }
 
+        $organizationId = $model->organization_id;
         $model->delete();
+        $this->equipmentService->invalidateCache($organizationId);
 
         return $this->success(null, "Đã xóa mẫu thiết bị '{$model->name}' thành công");
     }

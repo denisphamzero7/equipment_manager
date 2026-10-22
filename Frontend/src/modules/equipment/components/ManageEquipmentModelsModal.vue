@@ -92,7 +92,7 @@ function openCreateForm(prefilledName = '') {
   editingModelId.value = null
   form.value = {
     name: prefilledName,
-    equipment_category_id: categories.value[0]?.id || null,
+    equipment_category_id: null,
     brand: '',
     model_code: '',
   }

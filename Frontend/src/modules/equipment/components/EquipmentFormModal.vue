@@ -57,9 +57,6 @@ async function loadModels() {
 async function loadCategories() {
   try {
     categories.value = await equipmentService.getCategories()
-    if (!quickCreateCategoryId.value && categories.value.length) {
-      quickCreateCategoryId.value = categories.value[0].id
-    }
   } catch (error) {
     console.error('Failed to load equipment categories:', error)
   }
@@ -151,7 +148,7 @@ watch(
       note: initial?.note || '',
       installed_at: initial?.installed_at || new Date().toISOString().substring(0, 10),
     }
-    quickCreateCategoryId.value = initial?.quickCreateCategoryId || categories.value[0]?.id || null
+    quickCreateCategoryId.value = initial?.quickCreateCategoryId || null
     isEdit.value = false
     photoFile.value = initial?.photoFile || null
     photoPreview.value = photoFile.value ? URL.createObjectURL(photoFile.value) : null
