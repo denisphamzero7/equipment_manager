@@ -80,11 +80,13 @@ export function defineRulesFor(user = null, permissions = []) {
       if (permName === 'motel.show' || permName === 'rooms.show') {
         can('read', 'Room')
       }
+      if (permName === 'motel.update' || permName === 'rooms.edit' || permName === 'rooms.update') {
+        can('read', 'Room')
+        can('index', 'Room')
+        can('update', 'Room')
+      }
       if (permName === 'motel.store' || permName === 'rooms.create' || permName === 'rooms.store') {
         can('create', 'Room')
-      }
-      if (permName === 'motel.update' || permName === 'rooms.edit' || permName === 'rooms.update') {
-        can('update', 'Room')
       }
       if (permName === 'motel.destroy' || permName === 'rooms.delete' || permName === 'rooms.destroy') {
         can('delete', 'Room')

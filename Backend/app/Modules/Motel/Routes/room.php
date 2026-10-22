@@ -18,12 +18,12 @@ Route::patch('/bulk-status', [Motel::class, 'bulkUpdateStatus'])->middleware('pe
 Route::get('/stats', [Motel::class, 'stats'])->middleware('permission:motel.stats,web');
 
 // Base routes for motel
-Route::get('/', [Motel::class, 'index'])->middleware('permission:motel.index,web');
+Route::get('/', [Motel::class, 'index'])->middleware('permission:motel.index|motel.update,web');
 Route::post('/', [Motel::class, 'store'])->middleware('permission:motel.store,web');
 
 // Subgroup /rooms for API consistency
 Route::prefix('rooms')->group(function () {
-    Route::get('/', [Motel::class, 'index'])->middleware('permission:motel.index,web');
+    Route::get('/', [Motel::class, 'index'])->middleware('permission:motel.index|motel.update,web');
     Route::post('/', [Motel::class, 'store'])->middleware('permission:motel.store,web');
     Route::post('/batch-generate', [Motel::class, 'batchGenerate'])->middleware('permission:motel.store,web');
     Route::get('/room-types', [Motel::class, 'getRoomTypes'])->middleware('permission:motel.index|motel.update,web');
