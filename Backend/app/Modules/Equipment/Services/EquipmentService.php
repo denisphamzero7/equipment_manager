@@ -83,7 +83,7 @@ class EquipmentService
             });
         }
 
-        $perPage = (int) ($filters['per_page'] ?? 15);
+        $perPage = (int) ($filters['per_page'] ?? $filters['limit'] ?? 15);
         $sortBy = $filters['sort_by'] ?? 'id';
         $sortOrder = strtolower($filters['sort_order'] ?? 'desc') === 'asc' ? 'asc' : 'desc';
 
