@@ -136,14 +136,28 @@ class AuthService
 
     protected function getAccessibleOrganizations(User $user): array
     {
-        $organizationIds = $this->getAccessibleOrganizationIds((int) $user->id);
-        if (empty($organizationIds)) {
-            return [];
-        }
+        $tableNames = config('permission.table_names');
+        $columnNames = config('permission.column_names');
+        $modelMorphKey = $columnNames['model_morph_key'] ?? 'model_id';
+        $teamForeignKey = $columnNames['team_foreign_key'] ?? 'organization_id';
+        $modelType = User::class;
+        $userId = (int) $user->id;
 
         return Organization::query()
-            ->whereIn('id', $organizationIds)
             ->where('status', 'active')
+            ->where(function ($query) use ($tableNames, $modelMorphKey, $teamForeignKey, $modelType, $userId) {
+                foreach (['model_has_roles', 'model_has_permissions'] as $membershipTable) {
+                    $queryMethod = $membershipTable === 'model_has_roles' ? 'whereExists' : 'orWhereExists';
+                    $query->{$queryMethod}(function ($membershipQuery) use ($tableNames, $membershipTable, $modelMorphKey, $teamForeignKey, $modelType, $userId) {
+                        $membershipQuery
+                            ->selectRaw('1')
+                            ->from($tableNames[$membershipTable] ?? $membershipTable)
+                            ->whereColumn($teamForeignKey, 'organizations.id')
+                            ->where($modelMorphKey, $userId)
+                            ->where('model_type', $modelType);
+                    });
+                }
+            })
             ->orderBy('name')
             ->get(['id', 'name', 'description'])
             ->map(fn (Organization $organization) => [
@@ -167,19 +181,20 @@ class AuthService
             ->where($modelMorphKey, $userId)
             ->where('model_type', $modelType)
             ->whereNotNull($teamForeignKey)
-            ->pluck($teamForeignKey)
-            ->map(fn ($id) => (int) $id)
-            ->all();
+            ->select($teamForeignKey.' as organization_id');
 
         $permissionOrgIds = DB::table($tableNames['model_has_permissions'] ?? 'model_has_permissions')
             ->where($modelMorphKey, $userId)
             ->where('model_type', $modelType)
             ->whereNotNull($teamForeignKey)
-            ->pluck($teamForeignKey)
-            ->map(fn ($id) => (int) $id)
-            ->all();
+            ->select($teamForeignKey.' as organization_id');
 
-        return array_values(array_unique(array_merge($roleOrgIds, $permissionOrgIds)));
+        return $roleOrgIds
+            ->union($permissionOrgIds)
+            ->pluck('organization_id')
+            ->map(fn ($id) => (int) $id)
+            ->values()
+            ->all();
     }
 
     protected function hasOrganizationAccess(int $userId, int $organizationId): bool
