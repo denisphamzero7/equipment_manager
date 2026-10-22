@@ -78,9 +78,6 @@ function handleModelCreated(created) {
 }
 
 const quickCreateCategoryId = ref(null)
-const isNewModel = computed(() =>
-  typeof form.value.equipment_model_id === 'string' && form.value.equipment_model_id.trim().length > 0
-)
 
 const modelOptions = computed(() => {
   return models.value.map(m => ({
@@ -88,6 +85,51 @@ const modelOptions = computed(() => {
     title: `${m.name}${m.brand ? ' — ' + m.brand : ''}${m.category?.name ? ' (' + m.category.name + ')' : ''}`,
   }))
 })
+
+function findExistingModel(value) {
+  if (value && typeof value === 'object') {
+    if (value.id !== undefined && value.id !== null) {
+      return modelOptions.value.find(option => Number(option.id) === Number(value.id)) || {
+        id: Number(value.id),
+        title: value.title || value.name || '',
+      }
+    }
+    value = value.title || value.name || ''
+  }
+
+  if (typeof value === 'number' || (typeof value === 'string' && /^\d+$/.test(value.trim()))) {
+    return modelOptions.value.find(option => Number(option.id) === Number(value)) || {
+      id: Number(value),
+      title: '',
+    }
+  }
+
+  if (typeof value === 'string') {
+    const name = value.trim()
+    const exactOption = modelOptions.value.find(option => option.title === name)
+    if (exactOption) return exactOption
+
+    const matchingModel = models.value.find(model => model.name === name)
+    if (matchingModel) {
+      return modelOptions.value.find(option => Number(option.id) === Number(matchingModel.id)) || {
+        id: Number(matchingModel.id),
+        title: matchingModel.name,
+      }
+    }
+  }
+
+  return null
+}
+
+const selectedExistingModel = computed(() => findExistingModel(form.value.equipment_model_id))
+const newModelName = computed(() => {
+  if (selectedExistingModel.value) return ''
+  const value = form.value.equipment_model_id
+  if (typeof value === 'string') return value.trim()
+  if (value && typeof value === 'object') return (value.title || value.name || '').trim()
+  return ''
+})
+const isNewModel = computed(() => newModelName.value.length > 0)
 
 const form = ref({
   equipment_model_id: '',
@@ -176,13 +218,16 @@ async function handleSubmit(continueAdding = false) {
   const payloadData = { ...form.value }
   const modelDraft = isNewModel.value
     ? {
-        name: payloadData.equipment_model_id.trim(),
+        name: newModelName.value,
         equipment_category_id: quickCreateCategoryId.value,
         brand: '',
         model_code: '',
       }
     : null
   if (modelDraft && !modelDraft.name) return
+  if (selectedExistingModel.value) {
+    payloadData.equipment_model_id = Number(selectedExistingModel.value.id)
+  }
   let dataToSend = payloadData
   if (photoFile.value) {
     const fd = new FormData()
@@ -201,8 +246,12 @@ async function handleSubmit(continueAdding = false) {
     data: dataToSend,
     modelDraft,
     continueAdding,
-    formValues: { ...form.value, quickCreateCategoryId: quickCreateCategoryId.value },
-    modelName: modelDraft?.name || modelOptions.value.find(option => option.id === form.value.equipment_model_id)?.title || '',
+    formValues: {
+      ...form.value,
+      equipment_model_id: modelDraft?.name || Number(selectedExistingModel.value?.id || form.value.equipment_model_id),
+      quickCreateCategoryId: quickCreateCategoryId.value,
+    },
+    modelName: modelDraft?.name || selectedExistingModel.value?.title || '',
   })
 
   if (continueAdding && !isEdit.value) {

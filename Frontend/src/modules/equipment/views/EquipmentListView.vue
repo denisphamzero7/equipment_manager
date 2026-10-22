@@ -222,7 +222,16 @@ async function handleFormSubmit({ isEdit, id, data, modelDraft, continueAdding, 
   if (isEdit) {
     actionLoading.value = true
     try {
-      await equipmentStore.updateEquipment(id, data)
+      let payload = data instanceof FormData ? data : { ...data }
+      if (modelDraft) {
+        const createdModel = await equipmentService.createModel(modelDraft)
+        if (payload instanceof FormData) {
+          payload.set('equipment_model_id', createdModel.id)
+        } else {
+          payload.equipment_model_id = createdModel.id
+        }
+      }
+      await equipmentStore.updateEquipment(id, payload)
       formModalOpen.value = false
     } finally {
       actionLoading.value = false
