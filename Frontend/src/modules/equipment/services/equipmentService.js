@@ -245,6 +245,13 @@ export const equipmentService = {
     }, { ttl: 600000, force: forceRefresh })
   },
 
+  async createCategory(data) {
+    return runEquipmentConfigurationMutation(async () => {
+      const response = await axiosClient.post(Endpoints.EQUIPMENT.CREATE_CATEGORY, data)
+      return response.data?.data || response.data
+    })
+  },
+
   // 20. Danh sách phòng cho bộ chọn bậc thang (Room Options)
   async getRoomOptions(forceRefresh = false) {
     return getCachedRequest('equipment-room-options', 'all', async () => {

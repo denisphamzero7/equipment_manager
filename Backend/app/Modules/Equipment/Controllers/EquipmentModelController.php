@@ -8,6 +8,8 @@ use App\Modules\Equipment\Models\EquipmentModel;
 use App\Modules\Equipment\Services\EquipmentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 /**
  * @group Quản lý Mẫu / Tên Thiết bị (Equipment Models)
@@ -49,6 +51,45 @@ class EquipmentModelController extends Controller
             ->get();
 
         return $this->success($categories, 'Lấy danh mục nhóm thiết bị thành công');
+    }
+
+    /**
+     * Tạo nhóm danh mục thiết bị.
+     */
+    public function storeCategory(Request $request): JsonResponse
+    {
+        if (is_string($request->input('name'))) {
+            $request->merge(['name' => trim($request->input('name'))]);
+        }
+
+        $validated = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('equipment_categories', 'name')->whereNull('deleted_at'),
+            ],
+        ], [
+            'name.required' => 'Vui lòng nhập tên nhóm danh mục.',
+            'name.unique' => 'Tên nhóm danh mục này đã tồn tại.',
+        ]);
+
+        $baseCode = substr(Str::slug($validated['name']) ?: 'category', 0, 240);
+        $code = $baseCode;
+        $suffix = 2;
+        while (EquipmentCategory::withTrashed()->where('code', $code)->exists()) {
+            $code = "{$baseCode}-{$suffix}";
+            $suffix++;
+        }
+
+        $category = EquipmentCategory::create([
+            'name' => $validated['name'],
+            'code' => $code,
+            'sort_order' => (int) EquipmentCategory::max('sort_order') + 1,
+            'organization_id' => $request->user()?->organization_id,
+        ]);
+
+        return $this->success($category, 'Thêm nhóm danh mục thiết bị thành công', 201);
     }
 
     /**

@@ -34,6 +34,7 @@ export const Endpoints = Object.freeze({
     MODELS: '/api/equipments/models',
     MODEL_DETAIL: id => `/api/equipments/models/${id}`,
     CATEGORIES: '/api/equipments/categories',
+    CREATE_CATEGORY: '/api/equipments/categories',
     ROOM_OPTIONS: '/api/equipments/room-options',
   },
   ROOM: {

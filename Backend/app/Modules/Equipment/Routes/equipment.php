@@ -44,6 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('models/{id}', [EquipmentModelController::class, 'update']);
     Route::delete('models/{id}', [EquipmentModelController::class, 'destroy']);
     Route::get('categories', [EquipmentModelController::class, 'categories']);
+    Route::post('categories', [EquipmentModelController::class, 'storeCategory']);
 
     // 7. Danh sách phòng phục vụ chọn lựa (Cascader)
     Route::get('room-options', [EquipmentController::class, 'getRoomOptions']);
