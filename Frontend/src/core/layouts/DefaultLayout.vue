@@ -81,6 +81,27 @@ const navItems = [
     action: 'read',
     subject: 'Room',
   },
+  {
+    title: 'Quản lý người dùng',
+    to: '/admin/users',
+    icon: 'mdi-account-group-outline',
+    action: 'read',
+    subject: 'Users',
+  },
+  {
+    title: 'Quản lý vai trò',
+    to: '/admin/roles',
+    icon: 'mdi-shield-account-outline',
+    action: 'read',
+    subject: 'Roles',
+  },
+  {
+    title: 'Quản lý quyền',
+    to: '/admin/permissions',
+    icon: 'mdi-key-chain-variant',
+    action: 'tree',
+    subject: 'Permissions',
+  },
 ]
 
 async function switchOrg(orgId) {

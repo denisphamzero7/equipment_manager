@@ -52,6 +52,18 @@ export const Endpoints = Object.freeze({
     DELETE_BLOCK: '/api/motel/structure/delete-block',
   },
   ORGANIZATION: {
+    INDEX: '/api/organizations',
     PUBLIC_OPTIONS: '/api/organizations/public-options',
+  },
+  CORE: {
+    USERS: '/api/users',
+    USER: id => `/api/users/${id}`,
+    USER_STATS: '/api/users/stats',
+    USER_STATUS: id => `/api/users/${id}/status`,
+    ROLES: '/api/roles',
+    ROLE: id => `/api/roles/${id}`,
+    PERMISSIONS: '/api/permissions',
+    PERMISSION: id => `/api/permissions/${id}`,
+    PERMISSION_TREE: '/api/permissions/tree',
   },
 })

@@ -3,7 +3,9 @@
 namespace App\Modules\Core\Requests;
 
 use App\Modules\Core\Enums\UserStatusEnum;
+use App\Modules\Core\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -21,10 +23,22 @@ class UpdateUserRequest extends FormRequest
 
     public function rules(): array
     {
+        $user = $this->route('user');
+        $userId = $user instanceof User
+            ? $user->getKey()
+            : $user;
+
         return [
             'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|email|unique:users,email,'.$this->route('user'),
-            'user_name' => 'sometimes|nullable|string|max:100|unique:users,user_name,'.$this->route('user').'|regex:/^[a-zA-Z0-9._-]*$/',
+            'email' => ['sometimes', 'email', Rule::unique('users', 'email')->ignore($userId)],
+            'user_name' => [
+                'sometimes',
+                'nullable',
+                'string',
+                'max:100',
+                Rule::unique('users', 'user_name')->ignore($userId),
+                'regex:/^[a-zA-Z0-9._-]*$/',
+            ],
             'password' => 'sometimes|string|min:6|confirmed',
             'status' => ['sometimes', 'in:'.implode(',', UserStatusEnum::values())],
             'assignments' => 'sometimes|array',

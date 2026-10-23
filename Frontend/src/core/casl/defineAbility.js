@@ -101,6 +101,31 @@ export function defineRulesFor(user = null, permissions = []) {
 
     // Dashboard
     can('read', 'Dashboard')
+
+  })
+
+  const permissionNames = new Set(permissions.map(permission =>
+    typeof permission === 'string' ? permission : permission?.name
+  ).filter(Boolean))
+  const accessPermissions = [
+    ['users', 'Users'],
+    ['roles', 'Roles'],
+    ['permissions', 'Permissions'],
+  ]
+  accessPermissions.forEach(([prefix, subject]) => {
+    if (
+      permissionNames.has(`${prefix}.index`) ||
+      permissionNames.has(`${prefix}.show`) ||
+      (prefix === 'permissions' && permissionNames.has('permissions.tree'))
+    ) {
+      can('read', subject)
+    }
+    if (prefix === 'permissions' && permissionNames.has('permissions.tree')) {
+      can('tree', subject)
+    }
+    if (permissionNames.has(`${prefix}.store`)) can('create', subject)
+    if (permissionNames.has(`${prefix}.update`)) can('update', subject)
+    if (permissionNames.has(`${prefix}.destroy`)) can('delete', subject)
   })
 
   return build()

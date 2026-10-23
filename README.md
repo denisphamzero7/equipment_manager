@@ -2,6 +2,8 @@
 
 Hệ thống quản lý vòng đời thiết bị, tài sản, định mức chuẩn và sơ đồ mặt bằng trực quan (Interactive Map View) dành cho Khách sạn, Resort, Căn hộ dịch vụ, Ký túc xá và Tòa nhà văn phòng.
 
+> **Dành cho AI và người phát triển:** Xem [Hướng dẫn phát triển tính năng](docs/AI_FEATURE_DEVELOPMENT_GUIDE.md) trước khi mở rộng dự án để kế thừa pattern hiện có, giữ phạm vi thay đổi gọn và thiết kế giao diện nhất quán.
+
 ---
 
 ## 📌 1. Giới thiệu tổng quan
@@ -61,6 +63,13 @@ Hệ thống quản lý vòng đời thiết bị, tài sản, định mức chu
 - Tách biệt dữ liệu theo tổ chức / chi nhánh (`organization_id`).
 - Phân quyền theo vai trò (Role-Based Access Control) với `spatie/laravel-permission`.
 - Xác thực API bảo mật thông qua `Laravel Sanctum`.
+
+### 👥 Quản trị người dùng, vai trò và quyền
+- Tìm kiếm, lọc trạng thái, tạo, cập nhật và xóa tài khoản người dùng.
+- Gán nhiều vai trò theo từng tổ chức; mật khẩu chỉ thay đổi khi nhập mật khẩu mới.
+- Tạo, chỉnh sửa và xóa vai trò; chọn quyền theo nhóm để dễ kiểm soát phạm vi truy cập.
+- Quản lý mã quyền và nhóm quyền; cảnh báo tác động khi đổi/xóa quyền đang dùng.
+- Các màn hình quản trị chỉ hiển thị theo permission tương ứng; API tiếp tục áp dụng middleware phân quyền hiện có.
 
 ---
 

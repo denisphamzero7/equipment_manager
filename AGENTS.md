@@ -19,3 +19,6 @@
 ## 🔒 2. Quy tắc An toàn & Bảo mật
 - Luôn kiểm tra `.gitignore` để đảm bảo các file nhạy cảm (`.env`, `storage/`, `vendor/`, `node_modules/`, tokens) không bị lộ.
 - Giữ vững tính toàn vẹn của code và các tài liệu liên quan trong dự án.
+
+## 📚 3. Hướng dẫn phát triển tính năng bằng AI
+- Trước khi thêm/sửa tính năng, đọc [docs/AI_FEATURE_DEVELOPMENT_GUIDE.md](docs/AI_FEATURE_DEVELOPMENT_GUIDE.md) để theo đúng kiến trúc, quy ước UI, hiệu năng và phạm vi thay đổi của dự án.

@@ -7,6 +7,7 @@ use App\Modules\Core\Exports\UsersExport;
 use App\Modules\Core\Imports\UsersImport;
 use App\Modules\Core\Models\Role;
 use App\Modules\Core\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -28,7 +29,14 @@ class UserService
 
     public function index(array $filters, int $limit)
     {
-        return User::filter($filters)->paginate($limit);
+        $users = User::query()
+            ->with(['creator:id,name', 'editor:id,name'])
+            ->filter($filters)
+            ->paginate($limit);
+
+        $this->loadRoleAssignments($users->getCollection());
+
+        return $users;
     }
 
     public function store(array $data): User
@@ -187,6 +195,66 @@ class UserService
 
         if (! empty($rows)) {
             DB::table($modelHasRolesTable)->insert($rows);
+        }
+    }
+
+    protected function loadRoleAssignments(Collection $users): void
+    {
+        if ($users->isEmpty()) {
+            return;
+        }
+
+        $tableNames = config('permission.table_names');
+        $columnNames = config('permission.column_names');
+        $modelHasRolesTable = $tableNames['model_has_roles'] ?? 'model_has_roles';
+        $rolePivotKey = $columnNames['role_pivot_key'] ?? 'role_id';
+        $modelMorphKey = $columnNames['model_morph_key'] ?? 'model_id';
+        $teamForeignKey = $columnNames['team_foreign_key'] ?? 'organization_id';
+        $userIds = $users->pluck('id')->map(fn ($id) => (int) $id)->all();
+
+        $rows = DB::table($modelHasRolesTable.' as user_roles')
+            ->leftJoin(($tableNames['roles'] ?? 'roles').' as roles', 'roles.id', '=', 'user_roles.'.$rolePivotKey)
+            ->leftJoin('organizations', 'organizations.id', '=', 'user_roles.'.$teamForeignKey)
+            ->whereIn('user_roles.'.$modelMorphKey, $userIds)
+            ->where('user_roles.model_type', User::class)
+            ->select([
+                'user_roles.'.$modelMorphKey.' as user_id',
+                'user_roles.'.$teamForeignKey.' as organization_id',
+                'user_roles.'.$rolePivotKey.' as role_id',
+                'roles.name as role_name',
+                'organizations.name as organization_name',
+            ])
+            ->get()
+            ->groupBy('user_id');
+
+        foreach ($users as $user) {
+            $assignments = $rows->get($user->id, collect())
+                ->groupBy('role_id')
+                ->map(function ($roleRows, $roleId) {
+                    $organizations = $roleRows
+                        ->unique('organization_id')
+                        ->values()
+                        ->map(fn ($item) => [
+                            'id' => (int) $item->organization_id,
+                            'name' => $item->organization_name,
+                        ]);
+
+                    return [
+                        'role_id' => (int) $roleId,
+                        'role_name' => $roleRows->first()->role_name,
+                        'organization_ids' => $roleRows
+                            ->pluck('organization_id')
+                            ->map(fn ($id) => (int) $id)
+                            ->unique()
+                            ->values()
+                            ->all(),
+                        'organizations' => $organizations->all(),
+                    ];
+                })
+                ->values()
+                ->all();
+
+            $user->setAttribute('role_assignments_data', $assignments);
         }
     }
 }

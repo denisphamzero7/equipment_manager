@@ -10,9 +10,12 @@ class UserResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $auditUserNames = DB::table('users')
-            ->whereIn('id', array_filter([$this->created_by, $this->updated_by]))
-            ->pluck('name', 'id');
+        $auditUserNames = collect();
+        if (! $this->resource->relationLoaded('creator') || ! $this->resource->relationLoaded('editor')) {
+            $auditUserNames = DB::table('users')
+                ->whereIn('id', array_filter([$this->created_by, $this->updated_by]))
+                ->pluck('name', 'id');
+        }
 
         return [
             'id' => $this->id,
@@ -20,8 +23,12 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'user_name' => $this->user_name,
             'status' => $this->status,
-            'created_by' => $auditUserNames->get($this->created_by) ?? 'N/A',
-            'updated_by' => $auditUserNames->get($this->updated_by) ?? 'N/A',
+            'created_by' => $this->resource->relationLoaded('creator')
+                ? ($this->creator?->name ?? 'N/A')
+                : ($auditUserNames->get($this->created_by) ?? 'N/A'),
+            'updated_by' => $this->resource->relationLoaded('editor')
+                ? ($this->editor?->name ?? 'N/A')
+                : ($auditUserNames->get($this->updated_by) ?? 'N/A'),
             'assignments' => $this->roleAssignments(),
             'created_at' => $this->created_at?->format('d/m/Y H:i:s'),
             'updated_at' => $this->updated_at?->format('d/m/Y H:i:s'),
@@ -30,6 +37,10 @@ class UserResource extends JsonResource
 
     protected function roleAssignments(): array
     {
+        if (array_key_exists('role_assignments_data', $this->resource->getAttributes())) {
+            return $this->role_assignments_data;
+        }
+
         $tableNames = config('permission.table_names');
         $columnNames = config('permission.column_names');
         $modelHasRolesTable = $tableNames['model_has_roles'] ?? 'model_has_roles';

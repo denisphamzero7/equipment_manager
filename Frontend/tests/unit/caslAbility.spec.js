@@ -59,4 +59,33 @@ describe('CASL Ability Definition', () => {
     expect(exporter.can('export', 'Room')).toBe(true)
     expect(exporter.can('import', 'Room')).toBe(false)
   })
+
+  it('maps user, role and permission CRUD to their management actions', () => {
+    const manager = defineRulesFor(
+      { id: 8, roles: ['Staff'] },
+      [
+        'users.index',
+        'users.store',
+        'users.update',
+        'users.destroy',
+        'roles.index',
+        'roles.store',
+        'permissions.tree',
+        'permissions.store',
+        'permissions.update',
+        'permissions.destroy',
+      ]
+    )
+
+    expect(manager.can('read', 'Users')).toBe(true)
+    expect(manager.can('create', 'Users')).toBe(true)
+    expect(manager.can('update', 'Users')).toBe(true)
+    expect(manager.can('delete', 'Users')).toBe(true)
+    expect(manager.can('read', 'Roles')).toBe(true)
+    expect(manager.can('create', 'Roles')).toBe(true)
+    expect(manager.can('update', 'Roles')).toBe(false)
+    expect(manager.can('tree', 'Permissions')).toBe(true)
+    expect(manager.can('create', 'Permissions')).toBe(true)
+    expect(manager.can('delete', 'Permissions')).toBe(true)
+  })
 })
