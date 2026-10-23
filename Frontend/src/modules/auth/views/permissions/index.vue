@@ -8,7 +8,7 @@ import AppDataTable from '@/core/components/AppDataTable.vue'
 import AppModal from '@/core/components/AppModal.vue'
 import AppPageHeader from '@/core/components/AppPageHeader.vue'
 import DefaultLayout from '@/core/layouts/DefaultLayout.vue'
-import { accessManagementService } from '../services/accessManagementService'
+import { accessManagementService } from '../../services/accessManagementService'
 
 const canCreate = computed(() => ability.can('create', 'Permissions'))
 const canUpdate = computed(() => ability.can('update', 'Permissions'))

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { dashboardService } from '../services/dashboardService'
+import { dashboardService } from '../../services/dashboardService'
 import { equipmentService } from '@/modules/equipment/services/equipmentService'
 import { useRealtimeStore } from '@/core/stores/realtimeStore'
 import DefaultLayout from '@/core/layouts/DefaultLayout.vue'
@@ -10,8 +10,8 @@ import AppStatCard from '@/core/components/AppStatCard.vue'
 import AppButton from '@/core/components/AppButton.vue'
 import AppModal from '@/core/components/AppModal.vue'
 import AppStatusBadge from '@/core/components/AppStatusBadge.vue'
-import EquipmentOverviewChart from '../components/EquipmentOverviewChart.vue'
-import RoomAlertList from '../components/RoomAlertList.vue'
+import EquipmentOverviewChart from '../../components/EquipmentOverviewChart.vue'
+import RoomAlertList from '../../components/RoomAlertList.vue'
 import { toast } from '@/core/helpers/toast'
 
 const router = useRouter()

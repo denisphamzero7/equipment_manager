@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { equipmentService } from '../services/equipmentService'
+import { equipmentService } from '../../services/equipmentService'
 import { formatDate, formatCurrencyVND, resolveMediaUrl } from '@/core/helpers/formatters'
 import { toast } from '@/core/helpers/toast'
 import DefaultLayout from '@/core/layouts/DefaultLayout.vue'
@@ -9,9 +9,9 @@ import AppPageHeader from '@/core/components/AppPageHeader.vue'
 import AppStatusBadge from '@/core/components/AppStatusBadge.vue'
 import AppButton from '@/core/components/AppButton.vue'
 import AppConfirmDialog from '@/core/components/AppConfirmDialog.vue'
-import AssignRoomModal from '../components/AssignRoomModal.vue'
-import ReportBrokenModal from '../components/ReportBrokenModal.vue'
-import EquipmentFormModal from '../components/EquipmentFormModal.vue'
+import AssignRoomModal from '../../components/AssignRoomModal.vue'
+import ReportBrokenModal from '../../components/ReportBrokenModal.vue'
+import EquipmentFormModal from '../../components/EquipmentFormModal.vue'
 
 const route = useRoute()
 const router = useRouter()

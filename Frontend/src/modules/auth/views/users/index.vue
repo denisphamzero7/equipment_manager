@@ -9,8 +9,8 @@ import AppModal from '@/core/components/AppModal.vue'
 import AppPageHeader from '@/core/components/AppPageHeader.vue'
 import AppStatCard from '@/core/components/AppStatCard.vue'
 import DefaultLayout from '@/core/layouts/DefaultLayout.vue'
-import { useAuthStore } from '../stores/authStore'
-import { accessManagementService } from '../services/accessManagementService'
+import { useAuthStore } from '../../stores/authStore'
+import { accessManagementService } from '../../services/accessManagementService'
 
 const authStore = useAuthStore()
 const canCreate = computed(() => ability.can('create', 'Users'))

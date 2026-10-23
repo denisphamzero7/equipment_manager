@@ -1,8 +1,8 @@
 <script setup>
 import { ref, computed, onMounted, watch, defineAsyncComponent } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useEquipmentStore } from '../stores/equipmentStore'
-import { equipmentService } from '../services/equipmentService'
+import { useEquipmentStore } from '../../stores/equipmentStore'
+import { equipmentService } from '../../services/equipmentService'
 import { useRealtimeStore } from '@/core/stores/realtimeStore'
 import { EquipmentStatus, EquipmentStatusOptions } from '@/core/enums/EquipmentStatus'
 import { formatDate, resolveMediaUrl } from '@/core/helpers/formatters'
@@ -15,10 +15,10 @@ import AppButton from '@/core/components/AppButton.vue'
 import AppConfirmDialog from '@/core/components/AppConfirmDialog.vue'
 import AppExcelTransfer from '@/core/components/AppExcelTransfer.vue'
 
-const EquipmentFormModal = defineAsyncComponent(() => import('../components/EquipmentFormModal.vue'))
-const AssignRoomModal = defineAsyncComponent(() => import('../components/AssignRoomModal.vue'))
-const ReportBrokenModal = defineAsyncComponent(() => import('../components/ReportBrokenModal.vue'))
-const ManageEquipmentModelsModal = defineAsyncComponent(() => import('../components/ManageEquipmentModelsModal.vue'))
+const EquipmentFormModal = defineAsyncComponent(() => import('../../components/EquipmentFormModal.vue'))
+const AssignRoomModal = defineAsyncComponent(() => import('../../components/AssignRoomModal.vue'))
+const ReportBrokenModal = defineAsyncComponent(() => import('../../components/ReportBrokenModal.vue'))
+const ManageEquipmentModelsModal = defineAsyncComponent(() => import('../../components/ManageEquipmentModelsModal.vue'))
 
 const router = useRouter()
 const route = useRoute()

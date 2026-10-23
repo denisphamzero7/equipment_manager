@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '../stores/authStore'
+import { useAuthStore } from '../../stores/authStore'
 import { rules } from '@/core/helpers/validators'
 import { toast } from '@/core/helpers/toast'
 import AuthLayout from '@/core/layouts/AuthLayout.vue'

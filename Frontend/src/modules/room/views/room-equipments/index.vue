@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, watch, defineAsyncComponent } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { roomService } from '../services/roomService'
+import { roomService } from '../../services/roomService'
 import { equipmentService } from '@/modules/equipment/services/equipmentService'
 import { useRealtimeStore } from '@/core/stores/realtimeStore'
 import { toast } from '@/core/helpers/toast'
@@ -16,7 +16,7 @@ import AppConfirmDialog from '@/core/components/AppConfirmDialog.vue'
 const AssignRoomModal = defineAsyncComponent(() => import('@/modules/equipment/components/AssignRoomModal.vue'))
 const ReportBrokenModal = defineAsyncComponent(() => import('@/modules/equipment/components/ReportBrokenModal.vue'))
 const EquipmentFormModal = defineAsyncComponent(() => import('@/modules/equipment/components/EquipmentFormModal.vue'))
-const RoomFormModal = defineAsyncComponent(() => import('../components/RoomFormModal.vue'))
+const RoomFormModal = defineAsyncComponent(() => import('../../components/RoomFormModal.vue'))
 
 const route = useRoute()
 const router = useRouter()

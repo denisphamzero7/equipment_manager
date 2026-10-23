@@ -2,7 +2,7 @@ export default [
   {
     path: '/rooms',
     name: 'rooms.index',
-    component: () => import('./views/RoomListView.vue'),
+    component: () => import('./views/room-list/index.vue'),
     meta: {
       requiresAuth: true,
       action: 'index',
@@ -12,7 +12,7 @@ export default [
   {
     path: '/rooms/equipments',
     name: 'rooms.equipments',
-    component: () => import('./views/RoomEquipmentView.vue'),
+    component: () => import('./views/room-equipments/index.vue'),
     meta: {
       requiresAuth: true,
       action: 'read',
