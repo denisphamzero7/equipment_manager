@@ -315,7 +315,7 @@ class EquipmentController extends Controller
             if ($orgId) {
                 $query->where('organization_id', $orgId);
             }
-            return $query->select(['id', 'room_number', 'block', 'floor', 'room_type_id', 'bedroom_count', 'living_room_count', 'wifi_mode', 'shared_wifi_note'])
+            return $query->select(['id', 'room_number', 'block', 'floor', 'room_type_id', 'bedroom_count', 'living_room_count', 'wifi_mode', 'wifi_router_count', 'shared_wifi_note'])
                 ->orderBy('block', 'asc')
                 ->orderBy('floor', 'asc')
                 ->orderBy('room_number', 'asc')
@@ -329,6 +329,7 @@ class EquipmentController extends Controller
                     'bedroom_count' => $r->bedroom_count ?? 1,
                     'living_room_count' => $r->living_room_count ?? 0,
                     'wifi_mode' => $r->wifi_mode ?? 'dedicated',
+                    'wifi_router_count' => (int) ($r->wifi_router_count ?? 1),
                     'shared_wifi_note' => $r->shared_wifi_note,
                 ])
                 ->values()

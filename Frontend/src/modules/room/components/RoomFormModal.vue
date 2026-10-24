@@ -93,6 +93,7 @@ watch(
         bedroom_count: val.bedroom_count ?? 1,
         living_room_count: val.living_room_count ?? 0,
         wifi_mode: val.wifi_mode || 'dedicated',
+        wifi_router_count: val.wifi_router_count ?? 1,
         shared_wifi_room_id: val.shared_wifi_room_id || null,
         shared_wifi_note: val.shared_wifi_note || '',
         grid_row: val.grid_row ?? val.floor ?? 1,
@@ -111,6 +112,7 @@ watch(
         bedroom_count: 1,
         living_room_count: 0,
         wifi_mode: 'dedicated',
+        wifi_router_count: 1,
         shared_wifi_room_id: null,
         shared_wifi_note: '',
         grid_row: 1,
@@ -145,6 +147,7 @@ async function handleSubmit() {
       bedroom_count: Math.max(0, parseInt(form.value.bedroom_count, 10) || 0),
       living_room_count: Math.max(0, parseInt(form.value.living_room_count, 10) || 0),
       wifi_mode: form.value.wifi_mode || 'dedicated',
+      wifi_router_count: form.value.wifi_mode === 'dedicated' ? Math.max(1, parseInt(form.value.wifi_router_count, 10) || 1) : 0,
       shared_wifi_room_id: form.value.wifi_mode === 'shared' ? (form.value.shared_wifi_room_id ? parseInt(form.value.shared_wifi_room_id, 10) : null) : null,
       shared_wifi_note: form.value.wifi_mode === 'shared' ? (form.value.shared_wifi_note || '') : null,
       grid_row: parseInt(form.value.grid_row, 10) || parseInt(form.value.floor, 10) || 1,
@@ -459,7 +462,7 @@ async function handleSubmit() {
               >
                 <input type="radio" v-model="form.wifi_mode" value="dedicated" class="hidden" />
                 <v-icon icon="mdi-wifi" size="18" :color="form.wifi_mode === 'dedicated' ? 'primary' : 'secondary'" />
-                <span>Router riêng (1 bộ)</span>
+                <span>Router riêng ({{ form.wifi_router_count || 1 }} bộ)</span>
               </label>
 
               <label
@@ -479,6 +482,41 @@ async function handleSubmit() {
                 <v-icon icon="mdi-wifi-off" size="18" :color="form.wifi_mode === 'none' ? 'slate' : 'secondary'" />
                 <span>Không có Wifi</span>
               </label>
+            </div>
+
+            <!-- Tùy chỉnh số lượng Wifi khi có router riêng (phòng lớn 1-2 hoặc nhiều hơn) -->
+            <div v-if="form.wifi_mode === 'dedicated'" class="mt-2.5 p-3 rounded-lg bg-blue-50/70 border border-blue-200 flex items-center justify-between">
+              <div>
+                <span class="block text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                  <v-icon icon="mdi-router-wireless" size="16" class="text-primary" />
+                  Số lượng Router Wifi định mức
+                </span>
+                <span class="text-[11px] text-slate-500">Phòng lớn / căn hộ nhiều gian có thể trang bị từ 1 đến 2 bộ Wifi</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <button
+                  type="button"
+                  class="w-7 h-7 rounded border border-slate-200 bg-white hover:bg-slate-100 text-slate-600 font-bold flex items-center justify-center transition active:scale-95 disabled:opacity-40 cursor-pointer"
+                  :disabled="form.wifi_router_count <= 1"
+                  @click="form.wifi_router_count = Math.max(1, (form.wifi_router_count || 1) - 1)"
+                >
+                  -
+                </button>
+                <input
+                  v-model.number="form.wifi_router_count"
+                  type="number"
+                  min="1"
+                  max="10"
+                  class="w-10 text-center font-bold text-slate-800 text-sm border-0 focus:outline-none focus:ring-1 focus:ring-primary rounded bg-white"
+                />
+                <button
+                  type="button"
+                  class="w-7 h-7 rounded border border-slate-200 bg-white hover:bg-slate-100 text-slate-600 font-bold flex items-center justify-center transition active:scale-95 cursor-pointer"
+                  @click="form.wifi_router_count = (form.wifi_router_count || 1) + 1"
+                >
+                  +
+                </button>
+              </div>
             </div>
 
             <!-- Trường chọn phòng dùng ké khi wifi_mode === 'shared' -->

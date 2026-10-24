@@ -30,6 +30,7 @@ class UpdateRoomRequest extends FormRequest
             'bedroom_count' => 'nullable|integer|min:0|max:20',
             'living_room_count' => 'nullable|integer|min:0|max:20',
             'wifi_mode' => 'nullable|string|in:dedicated,shared,none',
+            'wifi_router_count' => 'nullable|integer|min:0|max:10',
             'shared_wifi_room_id' => 'nullable|integer|exists:rooms,id',
             'shared_wifi_note' => 'nullable|string|max:255',
             'block' => 'nullable|string|max:100',

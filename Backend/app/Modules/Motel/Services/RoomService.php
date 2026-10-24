@@ -228,6 +228,7 @@ class RoomService
         $bedroomCount = isset($data['bedroom_count']) ? (int) $data['bedroom_count'] : 1;
         $livingRoomCount = isset($data['living_room_count']) ? (int) $data['living_room_count'] : 0;
         $wifiMode = $data['wifi_mode'] ?? 'dedicated';
+        $wifiRouterCount = isset($data['wifi_router_count']) ? (int) $data['wifi_router_count'] : 1;
 
         if ($endNum < $startNum) {
             throw new \InvalidArgumentException('Số phòng kết thúc phải lớn hơn hoặc bằng số bắt đầu.');
@@ -236,7 +237,7 @@ class RoomService
         $created = [];
         $colIndex = 1;
 
-        DB::transaction(function () use ($orgId, $block, $floor, $startNum, $endNum, $prefix, $roomTypeId, $price, $status, $bedroomCount, $livingRoomCount, $wifiMode, &$created, &$colIndex) {
+        DB::transaction(function () use ($orgId, $block, $floor, $startNum, $endNum, $prefix, $roomTypeId, $price, $status, $bedroomCount, $livingRoomCount, $wifiMode, $wifiRouterCount, &$created, &$colIndex) {
             for ($num = $startNum; $num <= $endNum; $num++) {
                 // Kiểm tra nếu số phòng đã tồn tại trong tổ chức thì bỏ qua
                 $exists = RoomModel::where('organization_id', $orgId)
@@ -260,6 +261,7 @@ class RoomService
                     'bedroom_count' => $bedroomCount,
                     'living_room_count' => $livingRoomCount,
                     'wifi_mode' => $wifiMode,
+                    'wifi_router_count' => $wifiRouterCount,
                     'organization_id' => $orgId,
                 ]);
 

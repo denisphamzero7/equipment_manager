@@ -20,11 +20,12 @@ class EquipmentMapViewResource extends JsonResource
 
         // Định mức động theo cơ cấu phòng:
         // - TV, Remote: max(1, bedroom_count + living_room_count)
-        // - Wifi Router: 0 nếu dùng ké wifi (shared) hoặc không dùng (none); 1 nếu dedicated
+        // - Wifi Router: 0 nếu dùng ké wifi (shared) hoặc không dùng (none); wifi_router_count (mặc định 1) nếu dedicated
         $bedroomCount = (int) ($room->bedroom_count ?? 1);
         $livingRoomCount = (int) ($room->living_room_count ?? 0);
         $tvSpaces = max(1, $bedroomCount + $livingRoomCount);
         $wifiMode = $room->wifi_mode ?? 'dedicated';
+        $requiredWifi = ($wifiMode === 'shared' || $wifiMode === 'none') ? 0 : max(1, (int) ($room->wifi_router_count ?? 1));
 
         $equipmentsByCat = $equipments->groupBy(fn ($item) => $item->model?->category?->code ?? 'other')->map->count();
         $modelCounts = $equipments->groupBy('equipment_model_id')->map->count();
@@ -50,12 +51,12 @@ class EquipmentMapViewResource extends JsonResource
         }
 
         // 3. Kiểm tra Wifi Router
-        if ($wifiMode !== 'shared' && $wifiMode !== 'none') {
+        if ($requiredWifi > 0) {
             $hasWifiStandard = $standardAllocations->contains(fn ($std) => ($std->model?->category?->code ?? '') === 'wifi');
             if ($hasWifiStandard || $standardAllocations->isNotEmpty()) {
                 $actualWifi = $equipmentsByCat['wifi'] ?? 0;
-                if ($actualWifi < 1) {
-                    $missingCount += (1 - $actualWifi);
+                if ($actualWifi < $requiredWifi) {
+                    $missingCount += ($requiredWifi - $actualWifi);
                 }
             }
         }
@@ -132,6 +133,7 @@ class EquipmentMapViewResource extends JsonResource
             'bedroom_count' => $bedroomCount,
             'living_room_count' => $livingRoomCount,
             'wifi_mode' => $wifiMode,
+            'wifi_router_count' => (int) ($room->wifi_router_count ?? 1),
             'shared_wifi_room_id' => $room->shared_wifi_room_id,
             'shared_wifi_room' => $room->sharedWifiRoom ? [
                 'id' => $room->sharedWifiRoom->id,

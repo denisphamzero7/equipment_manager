@@ -39,6 +39,7 @@ const form = ref({
   bedroom_count: 1,
   living_room_count: 0,
   wifi_mode: 'dedicated',
+  wifi_router_count: 1,
 })
 
 // Quick calculation of rooms to generate
@@ -98,6 +99,7 @@ async function handleSubmit() {
       bedroom_count: Math.max(0, parseInt(form.value.bedroom_count, 10) || 1),
       living_room_count: Math.max(0, parseInt(form.value.living_room_count, 10) || 0),
       wifi_mode: form.value.wifi_mode || 'dedicated',
+      wifi_router_count: form.value.wifi_mode === 'dedicated' ? Math.max(1, parseInt(form.value.wifi_router_count, 10) || 1) : 0,
     }
 
     const res = await roomService.batchGenerate(payload)
@@ -328,6 +330,19 @@ async function handleSubmit() {
                 density="compact"
                 variant="outlined"
                 hide-details
+              />
+            </div>
+            <div v-if="form.wifi_mode === 'dedicated'">
+              <span class="block text-slate-500 mb-1 font-semibold">Số lượng Wifi / phòng:</span>
+              <v-text-field
+                v-model.number="form.wifi_router_count"
+                type="number"
+                min="1"
+                max="10"
+                density="compact"
+                variant="outlined"
+                hide-details
+                prepend-inner-icon="mdi-router-wireless"
               />
             </div>
           </div>

@@ -933,6 +933,13 @@ function getStatusBadge(status) {
                     >
                       <v-icon icon="mdi-wifi-off" size="11" /> Không Wifi
                     </span>
+                    <span
+                      v-else-if="room.wifi_router_count && room.wifi_router_count > 1"
+                      class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-blue-50 border border-blue-200 text-blue-700 text-[10px] font-semibold"
+                      :title="`${room.wifi_router_count} Router Wifi riêng`"
+                    >
+                      <v-icon icon="mdi-wifi" size="11" /> {{ room.wifi_router_count }} Wifi
+                    </span>
                   </div>
                 </div>
 
@@ -1070,7 +1077,7 @@ function getStatusBadge(status) {
                 <v-icon icon="mdi-wifi-off" size="12" /> Không Wifi
               </span>
               <span v-else class="text-[11px] text-emerald-600 flex items-center gap-0.5">
-                <v-icon icon="mdi-wifi" size="12" /> Router riêng
+                <v-icon icon="mdi-wifi" size="12" /> {{ (item.wifi_router_count && item.wifi_router_count > 1) ? `${item.wifi_router_count} Router Wifi` : 'Router riêng' }}
               </span>
             </div>
           </template>

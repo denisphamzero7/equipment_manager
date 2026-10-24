@@ -868,7 +868,7 @@ async function handleCreateSubmit({ data }) {
                     <v-icon icon="mdi-wifi-off" size="14" /> Không Wifi
                   </span>
                   <span v-else class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold">
-                    <v-icon icon="mdi-wifi" size="14" /> Router riêng (1 bộ)
+                    <v-icon icon="mdi-wifi" size="14" /> Router riêng ({{ roomDetail.wifi_router_count || 1 }} bộ)
                   </span>
                 </div>
               </div>
