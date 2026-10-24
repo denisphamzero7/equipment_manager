@@ -92,7 +92,13 @@ class EquipmentService
 
     public function find(int $id): RoomEquipment
     {
-        return RoomEquipment::with(['model.category', 'room', 'maintenanceLogs', 'media'])->findOrFail($id);
+        return RoomEquipment::with([
+            'model.category',
+            'room',
+            'maintenanceLogs.reportedByUser',
+            'maintenanceLogs.resolvedByUser',
+            'media'
+        ])->findOrFail($id);
     }
 
     public function create(array $data, ?string $clientRequestId = null): RoomEquipment

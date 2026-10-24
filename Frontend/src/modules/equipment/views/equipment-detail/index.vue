@@ -457,54 +457,253 @@ async function handleDelete() {
             </div>
           </div>
 
-          <!-- Maintenance Logs History Card -->
+          <!-- Maintenance Logs History Card with Timeline -->
           <div class="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200/80 shadow-xs">
-            <h3 class="text-base font-bold text-slate-800 mb-4 flex items-center justify-between">
-              <span>Lịch sử Bảo trì & Sự cố</span>
-              <span class="text-xs text-slate-400 font-normal">
-                {{ equipment.maintenance_logs?.length || 0 }} lần sửa chữa
-              </span>
-            </h3>
-
-            <div v-if="equipment.maintenance_logs && equipment.maintenance_logs.length" class="space-y-3">
-              <div
-                v-for="log in equipment.maintenance_logs"
-                :key="log.id"
-                class="p-4 rounded-xl border border-slate-100 bg-slate-50/60 text-xs space-y-1.5"
-              >
-                <div class="flex items-center justify-between">
-                  <span class="font-bold text-slate-800 text-sm">
-                    {{ log.issue_description || 'Báo hỏng thiết bị' }}
-                  </span>
-                  <span class="text-slate-400">
-                    {{ formatDate(log.created_at, 'DD/MM/YYYY HH:mm') }}
-                  </span>
+            <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-100">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                  <v-icon icon="mdi-timeline-clock-outline" size="20" />
                 </div>
+                <div>
+                  <h3 class="text-base font-bold text-slate-800">
+                    Lịch sử Bảo trì & Tiến trình Xử lý
+                  </h3>
+                  <p class="text-[11px] text-slate-400">
+                    Theo dõi toàn bộ chu trình xử lý sự cố từ lúc báo hỏng đến khi nghiệm thu
+                  </p>
+                </div>
+              </div>
+              <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
+                {{ equipment.maintenance_logs?.length || 0 }} đợt xử lý
+              </span>
+            </div>
 
-                <div class="flex items-center justify-between text-slate-500 pt-1">
-                  <span>Chi phí sửa chữa: <strong class="text-slate-800">{{ formatCurrencyVND(log.cost) }}</strong></span>
+            <div v-if="equipment.maintenance_logs && equipment.maintenance_logs.length" class="space-y-6">
+              <div
+                v-for="(log, idx) in equipment.maintenance_logs"
+                :key="log.id"
+                class="rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-slate-50/50 p-4 sm:p-5 shadow-xs"
+              >
+                <!-- Log Header -->
+                <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-4 border-b border-slate-100">
                   <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-200 text-slate-700">
+                      #{{ equipment.maintenance_logs.length - idx }}
+                    </span>
+                    <span class="font-bold text-slate-800 text-sm">
+                      {{ log.issue_description || 'Ghi nhận báo hỏng / bảo trì' }}
+                    </span>
+                  </div>
+
+                  <div class="flex items-center gap-2">
+                    <!-- Status Badge -->
                     <span
-                      class="px-2 py-0.5 rounded text-[11px] font-semibold"
+                      class="px-2.5 py-1 rounded-lg text-xs font-bold inline-flex items-center gap-1.5"
                       :class="{
-                        'bg-emerald-100 text-emerald-800': log.status === 'completed',
-                        'bg-blue-100 text-blue-800': log.status === 'in_progress',
-                        'bg-amber-100 text-amber-800': log.status === 'pending',
-                        'bg-rose-100 text-rose-800': log.status === 'unfixable',
+                        'bg-emerald-100 text-emerald-800 border border-emerald-200': log.status === 'completed',
+                        'bg-blue-100 text-blue-800 border border-blue-200': log.status === 'in_progress',
+                        'bg-amber-100 text-amber-800 border border-amber-200': log.status === 'pending',
+                        'bg-rose-100 text-rose-800 border border-rose-200': log.status === 'unfixable',
                       }"
                     >
-                      {{ log.status_label || (log.status === 'completed' ? 'Đã hoàn thành' : 'Đang xử lý') }}
+                      <v-icon
+                        :icon="
+                          log.status === 'completed'
+                            ? 'mdi-check-circle'
+                            : log.status === 'in_progress'
+                              ? 'mdi-wrench'
+                              : log.status === 'unfixable'
+                                ? 'mdi-alert-octagon'
+                                : 'mdi-clock-alert-outline'
+                        "
+                        size="14"
+                      />
+                      <span>{{ log.status_label || (log.status === 'completed' ? 'Đã khắc phục xong' : 'Đang xử lý') }}</span>
                     </span>
+
+                    <!-- Update button -->
                     <button
                       v-if="$can('update', 'Equipment')"
                       type="button"
-                      class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 hover:bg-primary/10 text-slate-700 hover:text-primary border border-slate-200 transition-colors flex items-center gap-1"
+                      class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white hover:bg-primary/10 text-slate-700 hover:text-primary border border-slate-300 transition-colors flex items-center gap-1 shadow-2xs"
                       title="Cập nhật tiến độ xử lý hoặc chi phí"
                       @click="openUpdateLogModal(log)"
                     >
-                      <v-icon icon="mdi-pencil-outline" size="13" />
+                      <v-icon icon="mdi-pencil-outline" size="14" />
                       Cập nhật
                     </button>
+                  </div>
+                </div>
+
+                <!-- Visual Step Timeline -->
+                <div class="relative pl-6 sm:pl-8 space-y-6 before:absolute before:left-3 sm:before:left-4 before:top-2 before:bottom-3 before:w-0.5 before:bg-slate-200">
+                  <!-- Step 1: Báo hỏng / Tiếp nhận -->
+                  <div class="relative">
+                    <!-- Dot 1 -->
+                    <div class="absolute -left-6 sm:-left-8 top-0.5 w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center ring-4 ring-white shadow-xs">
+                      <v-icon icon="mdi-flag" size="13" />
+                    </div>
+                    <div class="space-y-1">
+                      <div class="flex flex-wrap items-center justify-between gap-1">
+                        <span class="text-xs font-bold text-slate-800 uppercase tracking-wide">
+                          1. Tiếp nhận sự cố & Báo hỏng
+                        </span>
+                        <span class="text-[11px] font-medium text-slate-400">
+                          {{ formatDate(log.created_at, 'DD/MM/YYYY HH:mm') }}
+                        </span>
+                      </div>
+                      <div class="text-xs text-slate-600 bg-white p-2.5 rounded-xl border border-slate-100 shadow-2xs">
+                        <div class="flex items-center gap-2 text-slate-500">
+                          <v-icon icon="mdi-account" size="14" class="text-slate-400" />
+                          <span>Người ghi nhận: <strong class="text-slate-700">{{ log.reported_by_name || 'Hệ thống / Quản lý' }}</strong></span>
+                        </div>
+                        <div v-if="log.issue_description" class="mt-1.5 pt-1.5 border-t border-slate-50 text-slate-700 font-medium">
+                          "{{ log.issue_description }}"
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Step 2: Xử lý kỹ thuật -->
+                  <div class="relative">
+                    <!-- Dot 2 -->
+                    <div
+                      class="absolute -left-6 sm:-left-8 top-0.5 w-6 h-6 rounded-full flex items-center justify-center ring-4 ring-white shadow-xs"
+                      :class="{
+                        'bg-blue-600 text-white animate-pulse': log.status === 'in_progress',
+                        'bg-emerald-600 text-white': log.status === 'completed',
+                        'bg-slate-400 text-white': log.status === 'unfixable',
+                        'bg-slate-200 text-slate-500': log.status === 'pending',
+                      }"
+                    >
+                      <v-icon
+                        :icon="log.status === 'in_progress' ? 'mdi-wrench' : (log.status === 'pending' ? 'mdi-clock-outline' : 'mdi-check')"
+                        size="13"
+                      />
+                    </div>
+                    <div class="space-y-1">
+                      <div class="flex flex-wrap items-center justify-between gap-1">
+                        <span
+                          class="text-xs font-bold uppercase tracking-wide"
+                          :class="{
+                            'text-blue-700': log.status === 'in_progress',
+                            'text-slate-800': log.status === 'completed' || log.status === 'unfixable',
+                            'text-slate-400': log.status === 'pending',
+                          }"
+                        >
+                          2. Xử lý kỹ thuật & Sửa chữa
+                        </span>
+                        <span v-if="log.status !== 'pending' && log.updated_at" class="text-[11px] font-medium text-slate-400">
+                          {{ formatDate(log.updated_at, 'DD/MM/YYYY HH:mm') }}
+                        </span>
+                      </div>
+                      <div
+                        class="text-xs p-2.5 rounded-xl border shadow-2xs"
+                        :class="{
+                          'bg-blue-50/70 border-blue-200 text-blue-900': log.status === 'in_progress',
+                          'bg-white border-slate-100 text-slate-600': log.status !== 'in_progress',
+                        }"
+                      >
+                        <p v-if="log.status === 'pending'" class="text-slate-400 italic">
+                          Chờ kỹ thuật viên tiếp nhận và khảo sát linh kiện...
+                        </p>
+                        <p v-else-if="log.status === 'in_progress'" class="font-semibold text-blue-800 flex items-center gap-1.5">
+                          <v-icon icon="mdi-progress-wrench" size="15" class="animate-spin text-blue-600" />
+                          <span>Kỹ thuật viên đang tiến hành kiểm tra, sửa chữa và thay thế linh kiện.</span>
+                        </p>
+                        <p v-else class="text-slate-600">
+                          Đã hoàn thành khâu sửa chữa, chuyển sang bước nghiệm thu kết quả.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Step 3: Nghiệm thu & Hoàn tất -->
+                  <div class="relative">
+                    <!-- Dot 3 -->
+                    <div
+                      class="absolute -left-6 sm:-left-8 top-0.5 w-6 h-6 rounded-full flex items-center justify-center ring-4 ring-white shadow-xs"
+                      :class="{
+                        'bg-emerald-600 text-white': log.status === 'completed',
+                        'bg-rose-600 text-white': log.status === 'unfixable',
+                        'bg-slate-200 text-slate-400': log.status === 'pending' || log.status === 'in_progress',
+                      }"
+                    >
+                      <v-icon
+                        :icon="
+                          log.status === 'completed'
+                            ? 'mdi-check-decagram'
+                            : log.status === 'unfixable'
+                              ? 'mdi-close'
+                              : 'mdi-progress-clock'
+                        "
+                        size="13"
+                      />
+                    </div>
+                    <div class="space-y-1">
+                      <div class="flex flex-wrap items-center justify-between gap-1">
+                        <span
+                          class="text-xs font-bold uppercase tracking-wide"
+                          :class="{
+                            'text-emerald-700': log.status === 'completed',
+                            'text-rose-700': log.status === 'unfixable',
+                            'text-slate-400': log.status === 'pending' || log.status === 'in_progress',
+                          }"
+                        >
+                          3. Nghiệm thu & Hoàn tất
+                        </span>
+                        <span v-if="log.resolved_at || (log.status === 'completed' && log.updated_at)" class="text-[11px] font-medium text-slate-400">
+                          {{ formatDate(log.resolved_at || log.updated_at, 'DD/MM/YYYY HH:mm') }}
+                        </span>
+                      </div>
+
+                      <!-- Step 3 Content by status -->
+                      <div
+                        v-if="log.status === 'completed'"
+                        class="p-3 bg-emerald-50/70 border border-emerald-200 rounded-xl text-xs space-y-1.5"
+                      >
+                        <div class="flex items-center gap-1.5 font-bold text-emerald-800">
+                          <v-icon icon="mdi-check-circle-outline" size="16" class="text-emerald-600" />
+                          <span>Đã khắc phục hoàn toàn — Thiết bị sẵn sàng vận hành</span>
+                        </div>
+                        <div class="flex flex-wrap items-center justify-between gap-2 text-slate-600 pt-1 border-t border-emerald-100">
+                          <span v-if="log.resolved_by_name">
+                            Người nghiệm thu: <strong class="text-slate-800">{{ log.resolved_by_name }}</strong>
+                          </span>
+                          <span>
+                            Chi phí sửa chữa: <strong class="text-emerald-700 text-sm font-black">{{ formatCurrencyVND(log.cost) }}</strong>
+                          </span>
+                        </div>
+                      </div>
+
+                      <div
+                        v-else-if="log.status === 'unfixable'"
+                        class="p-3 bg-rose-50/70 border border-rose-200 rounded-xl text-xs space-y-1.5"
+                      >
+                        <div class="flex items-center gap-1.5 font-bold text-rose-800">
+                          <v-icon icon="mdi-alert-octagon-outline" size="16" class="text-rose-600" />
+                          <span>Không thể sửa chữa — Đề xuất thanh lý / thay thế mới</span>
+                        </div>
+                        <div class="flex flex-wrap items-center justify-between gap-2 text-slate-600 pt-1 border-t border-rose-100">
+                          <span v-if="log.resolved_by_name">
+                            Người kết luận: <strong class="text-slate-800">{{ log.resolved_by_name }}</strong>
+                          </span>
+                          <span v-if="log.cost > 0">
+                            Chi phí phát sinh: <strong class="text-rose-700 font-bold">{{ formatCurrencyVND(log.cost) }}</strong>
+                          </span>
+                        </div>
+                      </div>
+
+                      <div
+                        v-else
+                        class="p-2.5 bg-slate-50 border border-dashed border-slate-200 rounded-xl text-xs text-slate-400 italic flex items-center justify-between"
+                      >
+                        <span>Đang chờ hoàn tất xử lý để tiến hành nghiệm thu...</span>
+                        <span v-if="log.cost > 0" class="not-italic text-slate-600">
+                          Dự toán chi phí: <strong class="text-slate-700">{{ formatCurrencyVND(log.cost) }}</strong>
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -512,7 +711,7 @@ async function handleDelete() {
 
             <div v-else class="text-center py-8 text-slate-400 text-xs">
               <v-icon icon="mdi-shield-check-outline" size="36" class="text-emerald-500 mb-1 block mx-auto" />
-              Thiết bị chưa có ghi nhận sự cố hỏng hóc nào.
+              Thiết bị chưa có ghi nhận sự cố hỏng hóc nào. Hoạt động ổn định.
             </div>
           </div>
         </div>
