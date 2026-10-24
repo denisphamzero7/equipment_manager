@@ -91,8 +91,10 @@ const parentOptions = computed(() => {
   ]
 })
 
-async function loadPermissions() {
-  loading.value = true
+async function loadPermissions({ silent = false } = {}) {
+  if (!silent) {
+    loading.value = true
+  }
   errorMessage.value = ''
   try {
     const response = await accessManagementService.getPermissionTree()
@@ -100,9 +102,11 @@ async function loadPermissions() {
   } catch (error) {
     console.error('Failed to load permission tree:', error)
     errorMessage.value = error.response?.data?.message || 'Không thể tải danh sách quyền.'
-    toast.error(errorMessage.value)
+    if (!silent) toast.error(errorMessage.value)
   } finally {
-    loading.value = false
+    if (!silent) {
+      loading.value = false
+    }
   }
 }
 
@@ -139,7 +143,7 @@ async function savePermission() {
       toast.success('Đã tạo quyền.')
     }
     modalOpen.value = false
-    await loadPermissions()
+    await loadPermissions({ silent: true })
   } catch (error) {
     console.error('Failed to save permission:', error)
     toast.error(error.response?.data?.message || 'Không thể lưu quyền.')
@@ -161,7 +165,7 @@ async function deletePermission() {
     toast.success('Đã xóa quyền.')
     deleteOpen.value = false
     pendingDelete.value = null
-    await loadPermissions()
+    await loadPermissions({ silent: true })
   } catch (error) {
     console.error('Failed to delete permission:', error)
     toast.error(error.response?.data?.message || 'Không thể xóa quyền.')

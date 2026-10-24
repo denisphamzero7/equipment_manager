@@ -81,8 +81,10 @@ function userParams(targetPage = page.value) {
   }
 }
 
-async function loadUsers(targetPage = page.value) {
-  loading.value = true
+async function loadUsers(targetPage = page.value, { silent = false } = {}) {
+  if (!silent) {
+    loading.value = true
+  }
   loadError.value = ''
   try {
     const [listResponse, statsResponse] = await Promise.all([
@@ -105,7 +107,7 @@ async function loadUsers(targetPage = page.value) {
     loadError.value = error.response?.data?.message || 'Không thể tải danh sách người dùng.'
     toast.error(loadError.value)
   } finally {
-    loading.value = false
+    if (!silent) loading.value = false
   }
 }
 
@@ -201,14 +203,40 @@ async function saveUser() {
   saving.value = true
   try {
     if (selectedUser.value) {
-      await accessManagementService.updateUser(selectedUser.value.id, payload)
+      const res = await accessManagementService.updateUser(selectedUser.value.id, payload)
+      const updated = res?.data || res
+      const idx = items.value.findIndex(u => Number(u.id) === Number(selectedUser.value.id))
+      if (idx !== -1) {
+        const oldUser = items.value[idx]
+        if (oldUser.status !== payload.status) {
+          if (oldUser.status === 'active') stats.value.active = Math.max(0, stats.value.active - 1)
+          else stats.value.inactive = Math.max(0, stats.value.inactive - 1)
+
+          if (payload.status === 'active') stats.value.active += 1
+          else stats.value.inactive += 1
+        }
+        items.value.splice(idx, 1, { ...oldUser, ...payload, ...(updated?.id ? updated : {}) })
+      }
+      modalOpen.value = false
       toast.success('Đã cập nhật tài khoản.')
+      await loadUsers(page.value, { silent: true })
     } else {
-      await accessManagementService.createUser(payload)
+      const res = await accessManagementService.createUser(payload)
+      const created = res?.data || res
+      if (created?.id) {
+        if (page.value === 1) {
+          items.value.unshift(created)
+          if (items.value.length > perPage) items.value.pop()
+        }
+        total.value += 1
+        stats.value.total += 1
+        if (created.status === 'active') stats.value.active += 1
+        else stats.value.inactive += 1
+      }
+      modalOpen.value = false
       toast.success('Đã tạo tài khoản mới.')
+      await loadUsers(1, { silent: true })
     }
-    modalOpen.value = false
-    await loadUsers(selectedUser.value ? page.value : 1)
   } catch (error) {
     console.error('Failed to save user:', error)
     toast.error(error.response?.data?.message || 'Không thể lưu tài khoản.')
@@ -224,13 +252,22 @@ function confirmDelete(user) {
 
 async function deleteUser() {
   if (!pendingDelete.value) return
+  const deletedId = pendingDelete.value.id
+  const oldUser = items.value.find(u => Number(u.id) === Number(deletedId))
   saving.value = true
   try {
-    await accessManagementService.deleteUser(pendingDelete.value.id)
+    await accessManagementService.deleteUser(deletedId)
+    if (oldUser) {
+      items.value = items.value.filter(u => Number(u.id) !== Number(deletedId))
+      total.value = Math.max(0, total.value - 1)
+      stats.value.total = Math.max(0, stats.value.total - 1)
+      if (oldUser.status === 'active') stats.value.active = Math.max(0, stats.value.active - 1)
+      else stats.value.inactive = Math.max(0, stats.value.inactive - 1)
+    }
     toast.success('Đã xóa tài khoản.')
     deleteOpen.value = false
     pendingDelete.value = null
-    await loadUsers(page.value)
+    await loadUsers(page.value, { silent: true })
   } catch (error) {
     console.error('Failed to delete user:', error)
     toast.error(error.response?.data?.message || 'Không thể xóa tài khoản.')

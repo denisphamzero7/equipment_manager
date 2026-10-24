@@ -180,6 +180,32 @@ watch(
   () => realtimeStore.lastEvent,
   (event) => {
     if (!event) return
+
+    // Cập nhật số liệu KPI tại chỗ (in-place) ngay lập tức
+    if (event.type === 'status_changed' && event.equipment) {
+      const oldSt = event.equipment.old_status
+      const newSt = event.equipment.new_status
+      if (oldSt && stats.value.by_status && stats.value.by_status[oldSt] !== undefined) {
+        stats.value.by_status[oldSt] = Math.max(0, (stats.value.by_status[oldSt] || 0) - 1)
+      }
+      if (newSt && stats.value.by_status) {
+        stats.value.by_status[newSt] = (stats.value.by_status[newSt] || 0) + 1
+      }
+    } else if (event.type === 'created') {
+      stats.value.total_equipments += 1
+      const st = event.equipment?.status || 'in_stock'
+      if (stats.value.by_status) {
+        stats.value.by_status[st] = (stats.value.by_status[st] || 0) + 1
+      }
+    } else if (event.type === 'deleted') {
+      stats.value.total_equipments = Math.max(0, stats.value.total_equipments - 1)
+    } else if (event.type === 'broken_reported') {
+      if (stats.value.by_status) {
+        stats.value.by_status.broken = (stats.value.by_status.broken || 0) + 1
+      }
+    }
+
+    // Tự động đồng bộ số liệu chuẩn xác ngầm từ máy chủ (không bật vòng quay loading)
     loadDashboardData(true)
   }
 )

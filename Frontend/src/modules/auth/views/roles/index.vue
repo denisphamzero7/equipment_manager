@@ -56,8 +56,10 @@ const permissionGroups = computed(() => permissionTree.value.map(group => ({
   })),
 })))
 
-async function loadData(targetPage = page.value) {
-  loading.value = true
+async function loadData(targetPage = page.value, { silent = false } = {}) {
+  if (!silent) {
+    loading.value = true
+  }
   errorMessage.value = ''
   try {
     const params = {
@@ -74,9 +76,11 @@ async function loadData(targetPage = page.value) {
   } catch (error) {
     console.error('Failed to load role management data:', error)
     errorMessage.value = error.response?.data?.message || 'Không thể tải dữ liệu vai trò.'
-    toast.error(errorMessage.value)
+    if (!silent) toast.error(errorMessage.value)
   } finally {
-    loading.value = false
+    if (!silent) {
+      loading.value = false
+    }
   }
 }
 
@@ -122,14 +126,26 @@ async function saveRole() {
   saving.value = true
   try {
     if (selectedRole.value) {
-      await accessManagementService.updateRole(selectedRole.value.id, payload)
+      const res = await accessManagementService.updateRole(selectedRole.value.id, payload)
+      const updated = res?.data || res
+      const idx = items.value.findIndex(r => Number(r.id) === Number(selectedRole.value.id))
+      if (idx !== -1) {
+        items.value.splice(idx, 1, { ...items.value[idx], ...payload, ...(updated?.id ? updated : {}) })
+      }
+      modalOpen.value = false
       toast.success('Đã cập nhật vai trò và quyền được cấp.')
+      await loadData(page.value, { silent: true })
     } else {
-      await accessManagementService.createRole(payload)
+      const res = await accessManagementService.createRole(payload)
+      const created = res?.data || res
+      if (created?.id) {
+        items.value.unshift(created)
+        total.value += 1
+      }
+      modalOpen.value = false
       toast.success('Đã tạo vai trò.')
+      await loadData(1, { silent: true })
     }
-    modalOpen.value = false
-    await loadData(selectedRole.value ? page.value : 1)
   } catch (error) {
     console.error('Failed to save role:', error)
     toast.error(error.response?.data?.message || 'Không thể lưu vai trò.')
@@ -145,13 +161,16 @@ function confirmDelete(role) {
 
 async function deleteRole() {
   if (!pendingDelete.value) return
+  const roleId = pendingDelete.value.id
   saving.value = true
   try {
-    await accessManagementService.deleteRole(pendingDelete.value.id)
+    await accessManagementService.deleteRole(roleId)
+    items.value = items.value.filter(r => Number(r.id) !== Number(roleId))
+    total.value = Math.max(0, total.value - 1)
     toast.success('Đã xóa vai trò.')
     deleteOpen.value = false
     pendingDelete.value = null
-    await loadData(page.value)
+    await loadData(page.value, { silent: true })
   } catch (error) {
     console.error('Failed to delete role:', error)
     toast.error(error.response?.data?.message || 'Không thể xóa vai trò.')
