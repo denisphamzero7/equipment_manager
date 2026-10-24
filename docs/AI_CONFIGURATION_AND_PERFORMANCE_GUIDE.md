@@ -192,6 +192,13 @@ Mọi cấu hình tối ưu hiệu năng phải đảm bảo tính tương thíc
    - Do container Docker vẫn đang bật (`docker ps`), hoặc Apache của XAMPP đang chạy, hoặc IIS của Windows.
    - *Cách xử lý*: Chạy `docker compose down` trước khi chạy `php artisan serve --port=80`, hoặc chạy trên cổng thay thế `php artisan serve --port=8000`.
 
+4. **Lỗi đứt Storage Symlink giữa Windows và Docker**:
+   - Khi chạy `php artisan storage:link` trên Windows, Windows tạo Junction chứa đường dẫn tuyệt đối `C:\xampp\...` $\rightarrow$ Docker Linux không hiểu ổ đĩa `C:\`.
+   - Ngược lại khi tạo trong Docker, Linux tạo symlink `/var/www/html/...` $\rightarrow$ Windows không hiểu đường dẫn Linux.
+   - *Giải pháp triệt để 2 lớp:*
+     1. Dùng Symlink tương đối: `public/storage` $\rightarrow$ `../storage/app/public` (Cả Linux và Windows đều hiểu và trỏ đúng thư mục).
+     2. Bổ sung Fallback Route `Route::get('/storage/{path}')` trong `routes/web.php` sử dụng `storage_path('app/public/' . $path)`. Dù symlink có bị lỗi thì ảnh vẫn được trả về chính xác 100% với HTTP 200 trên cả 2 môi trường.
+
 ### 📋 Hướng dẫn Khởi chạy:
 
 #### Cách 1: Chạy bằng Docker (Khuyên dùng khi cần đầy đủ Redis & Reverb)
