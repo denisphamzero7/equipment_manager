@@ -22,6 +22,7 @@ export const Endpoints = Object.freeze({
     ASSIGN_ROOM: '/api/equipments/assign-to-room',
     CHECK_ASSIGN_TARGET: id => `/api/equipments/${id}/check-assign-target`,
     REPORT_BROKEN: id => `/api/equipments/${id}/report-broken`,
+    UPDATE_MAINTENANCE_LOG: logId => `/api/equipments/maintenance-logs/${logId}`,
     UPLOAD_PHOTO: id => `/api/equipments/${id}/upload-photo`,
     DELETE_PHOTO: (id, mediaId) => `/api/equipments/${id}/photos/${mediaId}`,
     STATS: '/api/equipments/stats',

@@ -138,6 +138,14 @@ export const equipmentService = {
     })
   },
 
+  // 10.1 Cập nhật tiến độ xử lý và chi phí phiếu bảo trì
+  async updateMaintenanceLog(logId, data) {
+    return runEquipmentMutation(async () => {
+      const response = await axiosClient.patch(Endpoints.EQUIPMENT.UPDATE_MAINTENANCE_LOG(logId), data)
+      return response.data?.data || response.data
+    })
+  },
+
   // 11. Tải ảnh thiết bị
   async uploadPhoto(id, formData) {
     return runEquipmentMutation(async () => {

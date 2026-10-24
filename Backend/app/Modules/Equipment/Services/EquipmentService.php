@@ -136,6 +136,11 @@ class EquipmentService
 
             $item->update($data);
 
+            if (!empty($data['status'])) {
+                $statusVal = $data['status'] instanceof \BackedEnum ? $data['status']->value : (string) $data['status'];
+                $this->syncOpenMaintenanceLogs($item, $statusVal);
+            }
+
             if ($photo) {
                 $item->addMedia($photo)->toMediaCollection('equipment_photos');
             }
@@ -196,6 +201,8 @@ class EquipmentService
             }
             $item->save();
 
+            $this->syncOpenMaintenanceLogs($item, $status);
+
             return $item->load(['model.category', 'room']);
         });
 
@@ -253,6 +260,8 @@ class EquipmentService
             }
 
             $item->save();
+
+            $this->syncOpenMaintenanceLogs($item, $status);
 
             return $item->load(['model.category', 'room']);
         });
@@ -452,6 +461,87 @@ class EquipmentService
         $this->invalidateCache($item->organization_id);
 
         return $item;
+    }
+
+    /**
+     * Đồng bộ trạng thái phiếu bảo trì đang mở khi trạng thái thiết bị thay đổi.
+     */
+    protected function syncOpenMaintenanceLogs(RoomEquipment $equipment, string $newStatus): void
+    {
+        if ($newStatus === EquipmentStatusEnum::Good->value) {
+            EquipmentMaintenanceLog::where('room_equipment_id', $equipment->id)
+                ->whereIn('status', [MaintenanceStatusEnum::Pending->value, MaintenanceStatusEnum::InProgress->value])
+                ->update([
+                    'status' => MaintenanceStatusEnum::Completed->value,
+                    'resolved_at' => now(),
+                    'resolved_by' => auth()->id(),
+                ]);
+        } elseif ($newStatus === EquipmentStatusEnum::Maintenance->value) {
+            EquipmentMaintenanceLog::where('room_equipment_id', $equipment->id)
+                ->where('status', MaintenanceStatusEnum::Pending->value)
+                ->update([
+                    'status' => MaintenanceStatusEnum::InProgress->value,
+                ]);
+        } elseif ($newStatus === EquipmentStatusEnum::Disposed->value) {
+            EquipmentMaintenanceLog::where('room_equipment_id', $equipment->id)
+                ->whereIn('status', [MaintenanceStatusEnum::Pending->value, MaintenanceStatusEnum::InProgress->value])
+                ->update([
+                    'status' => MaintenanceStatusEnum::Unfixable->value,
+                    'resolved_at' => now(),
+                    'resolved_by' => auth()->id(),
+                ]);
+        }
+    }
+
+    /**
+     * Cập nhật tiến độ xử lý và chi phí phiếu bảo trì.
+     */
+    public function updateMaintenanceLog(int $logId, array $data): EquipmentMaintenanceLog
+    {
+        return DB::transaction(function () use ($logId, $data) {
+            $log = EquipmentMaintenanceLog::findOrFail($logId);
+            $updateFields = [];
+
+            if (isset($data['status'])) {
+                $statusEnum = $data['status'] instanceof MaintenanceStatusEnum ? $data['status'] : MaintenanceStatusEnum::from($data['status']);
+                $updateFields['status'] = $statusEnum;
+                if (in_array($statusEnum->value, [MaintenanceStatusEnum::Completed->value, MaintenanceStatusEnum::Unfixable->value], true)) {
+                    $updateFields['resolved_at'] = now();
+                    $updateFields['resolved_by'] = auth()->id();
+                }
+            }
+
+            if (isset($data['cost'])) {
+                $updateFields['cost'] = (float) $data['cost'];
+            }
+
+            if (isset($data['issue_description'])) {
+                $updateFields['issue_description'] = $data['issue_description'];
+            }
+
+            $log->update($updateFields);
+
+            // Tự động đồng bộ trạng thái thiết bị tương ứng
+            if (!empty($data['status'])) {
+                $equipment = $log->equipment;
+                if ($equipment) {
+                    $statusVal = $data['status'] instanceof MaintenanceStatusEnum ? $data['status']->value : (string) $data['status'];
+                    if ($statusVal === MaintenanceStatusEnum::Completed->value) {
+                        $equipment->status = EquipmentStatusEnum::Good;
+                        $equipment->save();
+                    } elseif ($statusVal === MaintenanceStatusEnum::InProgress->value && $equipment->status === EquipmentStatusEnum::Broken) {
+                        $equipment->status = EquipmentStatusEnum::Maintenance;
+                        $equipment->save();
+                    } elseif ($statusVal === MaintenanceStatusEnum::Unfixable->value) {
+                        $equipment->status = EquipmentStatusEnum::Disposed;
+                        $equipment->save();
+                    }
+                    $this->invalidateCache($equipment->organization_id);
+                }
+            }
+
+            return $log->load(['equipment', 'reportedByUser', 'resolvedByUser']);
+        });
     }
 
     /**

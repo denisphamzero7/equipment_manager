@@ -181,6 +181,22 @@ class EquipmentController extends Controller
     }
 
     /**
+     * Cập nhật tiến độ xử lý và chi phí phiếu bảo trì
+     */
+    public function updateMaintenanceLog(Request $request, int $logId): JsonResponse
+    {
+        $validated = $request->validate([
+            'status' => 'nullable|string|in:pending,in_progress,completed,unfixable',
+            'cost' => 'nullable|numeric|min:0',
+            'issue_description' => 'nullable|string|max:1000',
+        ]);
+
+        $log = $this->service->updateMaintenanceLog($logId, $validated);
+
+        return $this->success($log, 'Cập nhật tiến độ bảo trì thành công');
+    }
+
+    /**
      * Tải ảnh cho thiết bị
      */
     public function uploadPhoto(Request $request, int $id): JsonResponse

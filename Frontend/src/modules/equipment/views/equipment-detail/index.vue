@@ -39,6 +39,47 @@ const reportBrokenModalOpen = ref(false)
 const deleteDialogOpen = ref(false)
 const actionLoading = ref(false)
 
+// Maintenance log update modal
+const updateLogModalOpen = ref(false)
+const selectedLog = ref(null)
+const logForm = ref({
+  status: 'pending',
+  cost: 0,
+  issue_description: '',
+})
+
+const maintenanceStatusOptions = [
+  { value: 'pending', title: '🟡 Chờ tiếp nhận (Mới báo hỏng)' },
+  { value: 'in_progress', title: '🔵 Đang sửa chữa (Kỹ thuật đang xử lý)' },
+  { value: 'completed', title: '🟢 Đã khắc phục xong (Hoạt động tốt)' },
+  { value: 'unfixable', title: '🔴 Không thể sửa (Đề xuất thanh lý)' },
+]
+
+function openUpdateLogModal(log) {
+  selectedLog.value = log
+  logForm.value = {
+    status: log.status || 'pending',
+    cost: log.cost || 0,
+    issue_description: log.issue_description || '',
+  }
+  updateLogModalOpen.value = true
+}
+
+async function handleUpdateLogSubmit() {
+  if (!selectedLog.value) return
+  actionLoading.value = true
+  try {
+    await equipmentService.updateMaintenanceLog(selectedLog.value.id, logForm.value)
+    updateLogModalOpen.value = false
+    toast.success('Cập nhật tiến độ bảo trì thành công!')
+    await loadDetail()
+  } catch (err) {
+    toast.error(err.response?.data?.message || err.message || 'Cập nhật thất bại.')
+  } finally {
+    actionLoading.value = false
+  }
+}
+
 const equipmentPhotos = computed(() => {
   if (!equipment.value) return []
   const list = []
@@ -442,17 +483,29 @@ async function handleDelete() {
 
                 <div class="flex items-center justify-between text-slate-500 pt-1">
                   <span>Chi phí sửa chữa: <strong class="text-slate-800">{{ formatCurrencyVND(log.cost) }}</strong></span>
-                  <span
-                    class="px-2 py-0.5 rounded text-[11px] font-semibold"
-                    :class="{
-                      'bg-emerald-100 text-emerald-800': log.status === 'completed',
-                      'bg-blue-100 text-blue-800': log.status === 'in_progress',
-                      'bg-amber-100 text-amber-800': log.status === 'pending',
-                      'bg-rose-100 text-rose-800': log.status === 'unfixable',
-                    }"
-                  >
-                    {{ log.status_label || (log.status === 'completed' ? 'Đã hoàn thành' : 'Đang xử lý') }}
-                  </span>
+                  <div class="flex items-center gap-2">
+                    <span
+                      class="px-2 py-0.5 rounded text-[11px] font-semibold"
+                      :class="{
+                        'bg-emerald-100 text-emerald-800': log.status === 'completed',
+                        'bg-blue-100 text-blue-800': log.status === 'in_progress',
+                        'bg-amber-100 text-amber-800': log.status === 'pending',
+                        'bg-rose-100 text-rose-800': log.status === 'unfixable',
+                      }"
+                    >
+                      {{ log.status_label || (log.status === 'completed' ? 'Đã hoàn thành' : 'Đang xử lý') }}
+                    </span>
+                    <button
+                      v-if="$can('update', 'Equipment')"
+                      type="button"
+                      class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 hover:bg-primary/10 text-slate-700 hover:text-primary border border-slate-200 transition-colors flex items-center gap-1"
+                      title="Cập nhật tiến độ xử lý hoặc chi phí"
+                      @click="openUpdateLogModal(log)"
+                    >
+                      <v-icon icon="mdi-pencil-outline" size="13" />
+                      Cập nhật
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -717,6 +770,92 @@ async function handleDelete() {
       :loading="actionLoading"
       @submit="handleAssignSubmit"
     />
+
+    <!-- Modal cập nhật tiến độ xử lý phiếu bảo trì -->
+    <v-dialog v-model="updateLogModalOpen" max-width="520">
+      <div class="bg-white rounded-2xl p-6 shadow-xl space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+              <v-icon icon="mdi-wrench-cog" size="18" />
+            </div>
+            <h3 class="text-sm font-bold text-slate-800">
+              Cập nhật Tiến độ Bảo trì & Sự cố
+            </h3>
+          </div>
+          <button
+            type="button"
+            class="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+            @click="updateLogModalOpen = false"
+          >
+            <v-icon icon="mdi-close" size="18" />
+          </button>
+        </div>
+
+        <div class="space-y-4 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Trạng thái xử lý sự cố *</label>
+            <v-select
+              v-model="logForm.status"
+              :items="maintenanceStatusOptions"
+              item-value="value"
+              item-title="title"
+              density="compact"
+              variant="outlined"
+              hide-details
+            />
+            <p v-if="logForm.status === 'completed'" class="text-[11px] text-emerald-600 mt-1">
+              ✓ Khi chuyển sang "Đã khắc phục xong", trạng thái thiết bị sẽ tự động chuyển về "Hoạt động tốt".
+            </p>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Chi phí sửa chữa (VNĐ)</label>
+            <v-text-field
+              v-model.number="logForm.cost"
+              type="number"
+              min="0"
+              step="1000"
+              density="compact"
+              variant="outlined"
+              placeholder="0"
+              hide-details
+            />
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Mô tả sự cố / Ghi chú khắc phục</label>
+            <v-textarea
+              v-model="logForm.issue_description"
+              rows="3"
+              density="compact"
+              variant="outlined"
+              placeholder="Nhập ghi chú sửa chữa, linh kiện đã thay..."
+              hide-details
+            />
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+          <AppButton
+            variant="tonal"
+            color="secondary"
+            :disabled="actionLoading"
+            @click="updateLogModalOpen = false"
+          >
+            Hủy bỏ
+          </AppButton>
+          <AppButton
+            variant="elevated"
+            color="primary"
+            :loading="actionLoading"
+            @click="handleUpdateLogSubmit"
+          >
+            Lưu cập nhật
+          </AppButton>
+        </div>
+      </div>
+    </v-dialog>
 
     <ReportBrokenModal
       v-model="reportBrokenModalOpen"

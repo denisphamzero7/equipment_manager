@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('assign-to-room', [EquipmentController::class, 'assignToRoom']);
     Route::get('{id}/check-assign-target', [EquipmentController::class, 'checkAssignTarget']);
     Route::post('{id}/report-broken', [EquipmentController::class, 'reportBroken']);
+    Route::patch('maintenance-logs/{logId}', [EquipmentController::class, 'updateMaintenanceLog']);
     Route::post('{id}/upload-photo', [EquipmentController::class, 'uploadPhoto']);
     Route::delete('{id}/photos/{mediaId}', [EquipmentController::class, 'deletePhoto']);
 
