@@ -156,47 +156,44 @@ function handleNavClick() {
       :permanent="!mobile"
       elevation="0"
       color="white"
-      class="border-r border-slate-200/80 select-none shadow-xs"
-      :width="270"
+      class="border-r border-slate-200/80 select-none"
+      :width="265"
     >
-      <!-- Logo / Header phong cách Portal -->
+      <!-- Logo / Header đồng bộ Royal Blue của hệ thống -->
       <div
         class="h-16 border-b border-slate-100 flex items-center transition-all overflow-hidden"
-        :class="!mobile && rail ? 'justify-center px-2' : 'justify-between px-5'"
+        :class="!mobile && rail ? 'justify-center px-2' : 'justify-between px-4'"
       >
         <div v-if="mobile || !rail" class="flex items-center gap-3 overflow-hidden min-w-0">
-          <!-- Logo Cyan/Teal hiện đại như trong ảnh -->
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-teal-400 flex items-center justify-center flex-shrink-0 text-white shadow-md shadow-cyan-500/25">
-            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-            </svg>
+          <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center flex-shrink-0 text-white shadow-sm shadow-blue-500/20">
+            <v-icon icon="mdi-shield-home" size="20" />
           </div>
           <div class="overflow-hidden">
-            <h2 class="text-base font-extrabold text-slate-800 tracking-tight flex items-center gap-1.5 truncate">
-              Portal <span class="text-[10px] font-semibold text-cyan-600 bg-cyan-50 px-1.5 py-0.5 rounded-full border border-cyan-100">PRO</span>
+            <h2 class="text-sm font-bold text-slate-800 tracking-tight truncate">
+              Equipment Manager
             </h2>
             <p class="text-[11px] font-medium text-slate-400 truncate">
-              Quản lý Khách sạn
+              Hệ thống Quản lý Khách sạn
             </p>
           </div>
         </div>
 
-        <!-- Toggle Button dạng tròn tinh tế như ảnh (icon chấm tròn & mũi tên) -->
+        <!-- Toggle Button khi mở rộng -->
         <button
           v-if="!mobile && !rail"
           type="button"
-          class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:text-cyan-600 hover:border-cyan-300 hover:bg-cyan-50/50 flex items-center justify-center transition cursor-pointer"
+          class="w-7 h-7 rounded-lg border border-slate-200/80 text-slate-400 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50/60 flex items-center justify-center transition cursor-pointer"
           title="Thu gọn menu"
           @click="rail = true"
         >
-          <v-icon icon="mdi-circle-slice-8" size="14" />
+          <v-icon icon="mdi-chevron-left" size="18" />
         </button>
 
-        <!-- Centered Expand Button when collapsed (rail mode) -->
+        <!-- Toggle Button khi thu gọn (rail mode) -->
         <button
           v-else-if="!mobile && rail"
           type="button"
-          class="w-9 h-9 rounded-xl hover:bg-cyan-50 text-slate-400 hover:text-cyan-600 flex items-center justify-center transition cursor-pointer"
+          class="w-9 h-9 rounded-xl hover:bg-blue-50 text-slate-500 hover:text-blue-600 flex items-center justify-center transition cursor-pointer"
           title="Mở rộng menu"
           @click="rail = false"
         >
@@ -215,14 +212,14 @@ function handleNavClick() {
         />
       </div>
 
-      <!-- Navigation Links theo Section phong cách Portal -->
-      <div class="py-3 px-3 space-y-5 overflow-y-auto max-h-[calc(100vh-8rem)]">
+      <!-- Navigation Links phân nhóm tinh tế, chuẩn tông màu Royal Blue -->
+      <div class="py-3 px-3 space-y-4 overflow-y-auto max-h-[calc(100vh-8rem)]">
         <template v-for="(section, sIndex) in navSections" :key="sIndex">
           <div class="space-y-1">
             <!-- Heading nhóm -->
             <div
               v-if="mobile || !rail"
-              class="px-3 pt-1 pb-1 text-[11px] font-bold text-slate-400/90 tracking-wider uppercase"
+              class="px-3 pt-1 pb-1 text-[11px] font-semibold text-slate-400 uppercase tracking-wider"
             >
               {{ section.heading }}
             </div>
@@ -233,37 +230,37 @@ function handleNavClick() {
               <router-link
                 v-if="$can(item.action, item.subject)"
                 :to="item.to"
-                class="group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200"
+                class="group flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-all"
                 :class="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to))
-                  ? 'bg-gradient-to-r from-cyan-500 to-teal-400 text-white font-semibold shadow-md shadow-cyan-500/25' 
-                  : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'"
+                  ? 'bg-blue-50 text-blue-600 font-semibold' 
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
                 @click="handleNavClick"
               >
-                <div class="flex items-center gap-3 overflow-hidden min-w-0">
+                <div class="flex items-center gap-2.5 overflow-hidden min-w-0">
                   <div
-                    class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
+                    class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
                     :class="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to))
-                      ? 'bg-white/20 text-white' 
-                      : 'bg-slate-100 text-slate-500 group-hover:bg-cyan-50 group-hover:text-cyan-600'"
+                      ? 'bg-blue-600 text-white shadow-xs' 
+                      : 'text-slate-500 group-hover:text-blue-600'"
                   >
                     <v-icon
                       :icon="item.icon"
                       size="18"
-                      :color="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to)) ? 'white' : undefined"
+                      :color="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to)) ? 'white' : 'secondary'"
                     />
                   </div>
-                  <span v-if="mobile || !rail" class="truncate font-medium text-[13px] tracking-tight">
+                  <span v-if="mobile || !rail" class="truncate text-[13px]">
                     {{ item.title }}
                   </span>
                 </div>
 
-                <!-- Mũi tên nhẹ bên phải cho item đang xem hoặc hover (như ảnh mẫu) -->
+                <!-- Dấu chỉ báo nhẹ bên phải -->
                 <v-icon
                   v-if="(mobile || !rail)"
                   icon="mdi-chevron-right"
-                  size="16"
+                  size="15"
                   class="transition-transform group-hover:translate-x-0.5"
-                  :class="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to)) ? 'text-white/80' : 'text-slate-300 group-hover:text-slate-400'"
+                  :class="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to)) ? 'text-blue-500' : 'text-slate-300 opacity-0 group-hover:opacity-100'"
                 />
               </router-link>
             </template>
@@ -273,15 +270,15 @@ function handleNavClick() {
 
       <!-- Organization badge in Sidebar Bottom -->
       <template #append>
-        <div v-if="mobile || !rail" class="p-3.5 border-t border-slate-100 bg-slate-50/70">
+        <div v-if="mobile || !rail" class="p-3.5 border-t border-slate-100 bg-slate-50/60">
           <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
             <span class="font-medium text-[11px] text-slate-400 uppercase tracking-wider">Tổ chức:</span>
-            <span class="px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 text-[10px] font-bold">
-              ID #{{ organizationId }}
+            <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-[10px] font-bold">
+              #{{ organizationId }}
             </span>
           </div>
           <div class="flex items-center gap-2">
-            <div class="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></div>
+            <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
             <p class="text-xs font-bold text-slate-700 truncate">{{ currentOrg.name }}</p>
           </div>
         </div>
