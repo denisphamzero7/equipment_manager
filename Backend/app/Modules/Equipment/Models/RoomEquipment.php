@@ -71,7 +71,7 @@ class RoomEquipment extends Model implements HasMedia
 
     public function maintenanceLogs(): HasMany
     {
-        return $this->hasMany(EquipmentMaintenanceLog::class, 'room_equipment_id');
+        return $this->hasMany(EquipmentMaintenanceLog::class, 'room_equipment_id')->latest('id');
     }
 
     /**

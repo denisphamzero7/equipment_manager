@@ -60,6 +60,17 @@ class EquipmentResource extends JsonResource
                 'block' => $this->room->block,
                 'floor' => $this->room->floor,
             ]),
+            'maintenance_logs' => $this->whenLoaded('maintenanceLogs', fn () => $this->maintenanceLogs->map(fn ($log) => [
+                'id' => $log->id,
+                'issue_description' => $log->issue_description,
+                'status' => $log->status?->value ?? $log->status,
+                'status_label' => $log->status instanceof \App\Modules\Equipment\Enums\MaintenanceStatusEnum ? $log->status->label() : ($log->status ?? 'Chờ tiếp nhận'),
+                'cost' => (float) ($log->cost ?? 0),
+                'reported_by' => $log->reported_by,
+                'resolved_by' => $log->resolved_by,
+                'resolved_at' => $log->resolved_at?->format('Y-m-d H:i:s'),
+                'created_at' => $log->created_at?->format('Y-m-d H:i:s'),
+            ])->values()->all()),
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
         ];

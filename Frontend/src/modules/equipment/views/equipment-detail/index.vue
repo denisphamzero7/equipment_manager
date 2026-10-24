@@ -442,8 +442,16 @@ async function handleDelete() {
 
                 <div class="flex items-center justify-between text-slate-500 pt-1">
                   <span>Chi phí sửa chữa: <strong class="text-slate-800">{{ formatCurrencyVND(log.cost) }}</strong></span>
-                  <span class="px-2 py-0.5 rounded text-[11px] font-semibold" :class="log.status === 'completed' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'">
-                    {{ log.status === 'completed' ? 'Đã hoàn thành' : 'Đang xử lý' }}
+                  <span
+                    class="px-2 py-0.5 rounded text-[11px] font-semibold"
+                    :class="{
+                      'bg-emerald-100 text-emerald-800': log.status === 'completed',
+                      'bg-blue-100 text-blue-800': log.status === 'in_progress',
+                      'bg-amber-100 text-amber-800': log.status === 'pending',
+                      'bg-rose-100 text-rose-800': log.status === 'unfixable',
+                    }"
+                  >
+                    {{ log.status_label || (log.status === 'completed' ? 'Đã hoàn thành' : 'Đang xử lý') }}
                   </span>
                 </div>
               </div>
