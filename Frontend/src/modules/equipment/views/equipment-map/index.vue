@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { equipmentService } from '../../services/equipmentService'
 import { useRealtimeStore } from '@/core/stores/realtimeStore'
 import DefaultLayout from '@/core/layouts/DefaultLayout.vue'
@@ -14,6 +14,7 @@ import { roomService } from '@/modules/room/services/roomService'
 import { toast } from '@/core/helpers/toast'
 
 const router = useRouter()
+const route = useRoute()
 const realtimeStore = useRealtimeStore()
 
 // Master hotel block order matching hotel layout
@@ -75,6 +76,15 @@ function getCategoryIcon(code) {
 }
 
 onMounted(async () => {
+  if (route.query.block) {
+    selectedBlock.value = String(route.query.block)
+  }
+  if (route.query.floor) {
+    selectedFloor.value = Number(route.query.floor)
+  }
+  if (route.query.status) {
+    selectedStatus.value = String(route.query.status)
+  }
   loadMapViewData()
 })
 
@@ -361,6 +371,13 @@ function getBadgeIndicatorClass(room) {
       ]"
     >
       <template #actions>
+        <AppButton
+          variant="secondary"
+          icon="mdi-door"
+          @click="router.push({ path: '/rooms', query: selectedBlock ? { block: selectedBlock } : {} })"
+        >
+          Quản lý phòng
+        </AppButton>
         <AppButton
           variant="tonal"
           color="secondary"

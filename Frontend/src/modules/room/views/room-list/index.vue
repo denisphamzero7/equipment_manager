@@ -1,6 +1,6 @@
 <script setup>
 import { ref, reactive, computed, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import DefaultLayout from '@/core/layouts/DefaultLayout.vue'
 import AppPageHeader from '@/core/components/AppPageHeader.vue'
 import AppDataTable from '@/core/components/AppDataTable.vue'
@@ -18,6 +18,7 @@ import { toast } from '@/core/helpers/toast'
 import { useRealtimeStore } from '@/core/stores/realtimeStore'
 
 const router = useRouter()
+const route = useRoute()
 const realtimeStore = useRealtimeStore()
 
 // View mode: 'cards' (Thẻ theo tầng) | 'table' (Dạng bảng)
@@ -123,10 +124,18 @@ const hasActiveFilters = computed(() => {
 
 function selectBlock(b) {
   filters.block = b
+  filters.floor = null // Tự động reset tầng khi đổi Block, đồng bộ hoàn toàn với Sơ đồ Map View
   if (viewMode.value === 'table') {
     handleSearch()
   }
 }
+
+const totalFilteredRooms = computed(() => {
+  if (viewMode.value === 'cards') {
+    return groupedRooms.value.reduce((sum, b) => sum + b.totalRooms, 0)
+  }
+  return pagination.totalItems
+})
 
 // Group rooms by Block and then Floor for Grid Cards view
 const groupedRooms = computed(() => {
@@ -208,6 +217,15 @@ const stats = computed(() => {
 })
 
 onMounted(async () => {
+  if (route.query.block) {
+    filters.block = String(route.query.block)
+  }
+  if (route.query.floor) {
+    filters.floor = Number(route.query.floor)
+  }
+  if (route.query.status) {
+    filters.status = String(route.query.status)
+  }
   await Promise.all([fetchRoomTypes(), fetchRooms()])
 })
 
@@ -505,8 +523,8 @@ function getStatusBadge(status) {
               Quản lý Block
             </AppButton>
 
-            <!-- Link Map View -->
-            <router-link to="/equipments/map-view">
+            <!-- Link Map View (Đồng bộ phân khu đang chọn) -->
+            <router-link :to="{ path: '/equipments/map-view', query: filters.block ? { block: filters.block } : {} }">
               <AppButton variant="secondary">
                 <v-icon start icon="mdi-floor-plan" />
                 Sơ đồ Map View
@@ -644,10 +662,10 @@ function getStatusBadge(status) {
         </div>
 
         <!-- Bottom Section: Search, Filters & View Toggle -->
-        <div class="p-4">
+        <div class="p-4 space-y-3.5">
           <div class="flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3.5">
             <!-- Search Input (Spacious) -->
-            <div class="flex-1 min-w-[260px]">
+            <div class="flex-1 min-w-[240px]">
               <v-text-field
                 v-model="filters.search"
                 placeholder="Tìm nhanh theo số phòng, tên phòng..."
@@ -661,10 +679,10 @@ function getStatusBadge(status) {
               />
             </div>
 
-            <!-- Filters Group (Fixed Comfortable Widths - No Wrapping) -->
-            <div class="flex flex-wrap sm:flex-nowrap items-center gap-2.5">
+            <!-- Filters Group (Đồng bộ chuẩn phân khu, tầng, trạng thái, loại phòng) -->
+            <div class="flex flex-wrap items-center gap-2.5">
               <!-- Filter Floor -->
-              <div class="w-full sm:w-36 shrink-0">
+              <div class="w-36 shrink-0">
                 <v-select
                   v-model="filters.floor"
                   :items="[{ value: null, title: 'Tất cả Tầng' }, ...existingFloors.map(f => ({ value: f, title: `Tầng ${f}` }))]"
@@ -691,7 +709,7 @@ function getStatusBadge(status) {
               </button>
 
               <!-- Filter Status -->
-              <div class="w-full sm:w-48 shrink-0">
+              <div class="w-48 shrink-0">
                 <v-select
                   v-model="filters.status"
                   :items="[{ value: '', label: 'Tất cả trạng thái' }, ...RoomStatusOptions]"
@@ -706,7 +724,7 @@ function getStatusBadge(status) {
               </div>
 
               <!-- Filter Room Type -->
-              <div class="w-full sm:w-44 shrink-0">
+              <div class="w-44 shrink-0">
                 <v-select
                   v-model="filters.room_type_id"
                   :items="[{ id: null, name: 'Tất cả loại phòng' }, ...roomTypes]"
@@ -732,24 +750,30 @@ function getStatusBadge(status) {
               </button>
             </div>
 
-            <!-- View Switcher -->
-            <div class="flex items-center gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200/80 shrink-0 self-end xl:self-center">
-              <button
-                class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-150 flex items-center gap-1.5 cursor-pointer"
-                :class="viewMode === 'cards' ? 'bg-white text-primary shadow-xs' : 'text-slate-600 hover:text-slate-900'"
-                @click="viewMode = 'cards'"
-              >
-                <v-icon icon="mdi-view-grid-outline" size="16" />
-                <span>Thẻ theo tầng</span>
-              </button>
-              <button
-                class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-150 flex items-center gap-1.5 cursor-pointer"
-                :class="viewMode === 'table' ? 'bg-white text-primary shadow-xs' : 'text-slate-600 hover:text-slate-900'"
-                @click="viewMode = 'table'"
-              >
-                <v-icon icon="mdi-table" size="16" />
-                <span>Dạng bảng</span>
-              </button>
+            <!-- Counter & View Switcher -->
+            <div class="flex items-center gap-3 shrink-0 self-end xl:self-center">
+              <div class="text-xs text-slate-500 font-medium whitespace-nowrap">
+                Tìm thấy <strong class="text-slate-800 text-sm font-bold">{{ totalFilteredRooms }}</strong> / {{ totalRooms }} phòng
+              </div>
+
+              <div class="flex items-center gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200/80">
+                <button
+                  class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-150 flex items-center gap-1.5 cursor-pointer"
+                  :class="viewMode === 'cards' ? 'bg-white text-primary shadow-xs' : 'text-slate-600 hover:text-slate-900'"
+                  @click="viewMode = 'cards'"
+                >
+                  <v-icon icon="mdi-view-grid-outline" size="16" />
+                  <span>Thẻ theo tầng</span>
+                </button>
+                <button
+                  class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-150 flex items-center gap-1.5 cursor-pointer"
+                  :class="viewMode === 'table' ? 'bg-white text-primary shadow-xs' : 'text-slate-600 hover:text-slate-900'"
+                  @click="viewMode = 'table'"
+                >
+                  <v-icon icon="mdi-table" size="16" />
+                  <span>Dạng bảng</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
