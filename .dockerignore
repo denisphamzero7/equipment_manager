@@ -11,6 +11,7 @@ Backend/storage/framework/cache/*
 Backend/storage/framework/sessions/*
 Backend/storage/framework/views/*
 Backend/public/storage
+Backend/bootstrap/cache/*.php
 Backend/.env
 Backend/.env.*
 Backend/.phpunit.result.cache
