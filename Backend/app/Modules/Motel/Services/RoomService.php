@@ -18,6 +18,18 @@ class RoomService
         return (int) ($orgId ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 22));
     }
 
+    /**
+     * Phát broadcast an toàn (không làm sập request nếu server websocket/reverb chưa bật hoặc host không kết nối được).
+     */
+    protected function safeBroadcast(object $event): void
+    {
+        try {
+            event($event);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Room broadcast failed safely: ' . $e->getMessage());
+        }
+    }
+
     public function invalidateMapCache(?int $orgId = null): void
     {
         $orgId = $this->getActiveOrgId($orgId);
@@ -135,7 +147,7 @@ class RoomService
         $this->invalidateMapCache($room->organization_id);
 
         // Phát Broadcast Real-time
-        event(new RoomChanged('created', $room, "Phòng {$room->room_number} ({$room->block} - Tầng {$room->floor}) vừa được tạo mới."));
+        $this->safeBroadcast(new RoomChanged('created', $room, "Phòng {$room->room_number} ({$room->block} - Tầng {$room->floor}) vừa được tạo mới."));
 
         return $room;
     }
@@ -149,7 +161,7 @@ class RoomService
         $this->invalidateMapCache($room->organization_id);
 
         // Phát Broadcast Real-time
-        event(new RoomChanged('updated', $room, "Thông tin Phòng {$room->room_number} vừa được cập nhật."));
+        $this->safeBroadcast(new RoomChanged('updated', $room, "Thông tin Phòng {$room->room_number} vừa được cập nhật."));
 
         return $room;
     }
@@ -176,7 +188,7 @@ class RoomService
             $this->invalidateMapCache($orgId);
 
             // Phát Broadcast Real-time
-            event(new RoomChanged('deleted', ['id' => $id, 'room_number' => $roomNumber], "Phòng {$roomNumber} đã được xóa khỏi hệ thống.", $orgId));
+            $this->safeBroadcast(new RoomChanged('deleted', ['id' => $id, 'room_number' => $roomNumber], "Phòng {$roomNumber} đã được xóa khỏi hệ thống.", $orgId));
 
             return $deleted;
         });
@@ -197,7 +209,7 @@ class RoomService
 
             $this->invalidateMapCache();
 
-            event(new RoomChanged('bulk_deleted', ['ids' => $ids], "Đã xóa {$count} phòng khỏi hệ thống."));
+            $this->safeBroadcast(new RoomChanged('bulk_deleted', ['ids' => $ids], "Đã xóa {$count} phòng khỏi hệ thống."));
 
             return $count;
         });
@@ -207,7 +219,7 @@ class RoomService
     {
         $count = RoomModel::whereIn('id', $ids)->update(['status' => $status]);
         $this->invalidateMapCache();
-        event(new RoomChanged('bulk_status_updated', ['ids' => $ids, 'status' => $status], "Đã cập nhật trạng thái {$count} phòng thành công."));
+        $this->safeBroadcast(new RoomChanged('bulk_status_updated', ['ids' => $ids, 'status' => $status], "Đã cập nhật trạng thái {$count} phòng thành công."));
         return $count;
     }
 
@@ -271,7 +283,7 @@ class RoomService
 
         $count = count($created);
         $this->invalidateMapCache($orgId);
-        event(new RoomChanged('batch_generated', ['count' => $count, 'block' => $block, 'floor' => $floor], "Đã tạo nhanh {$count} phòng mới cho {$block} - Tầng {$floor}.", $orgId));
+        $this->safeBroadcast(new RoomChanged('batch_generated', ['count' => $count, 'block' => $block, 'floor' => $floor], "Đã tạo nhanh {$count} phòng mới cho {$block} - Tầng {$floor}.", $orgId));
 
         return [
             'created_count' => $count,
@@ -291,7 +303,7 @@ class RoomService
 
         $this->invalidateMapCache($activeOrg);
 
-        event(new RoomChanged('block_renamed', ['old_block' => $oldBlock, 'new_block' => $newBlock], "Đã đổi tên khu vực từ '{$oldBlock}' thành '{$newBlock}' ({$count} phòng).", $activeOrg));
+        $this->safeBroadcast(new RoomChanged('block_renamed', ['old_block' => $oldBlock, 'new_block' => $newBlock], "Đã đổi tên khu vực từ '{$oldBlock}' thành '{$newBlock}' ({$count} phòng).", $activeOrg));
 
         return $count;
     }
@@ -324,7 +336,7 @@ class RoomService
 
             $this->invalidateMapCache($activeOrg);
 
-            event(new RoomChanged('block_deleted', ['block' => $block], "Đã xóa toàn bộ các phòng thuộc khu '{$block}'.", $activeOrg));
+            $this->safeBroadcast(new RoomChanged('block_deleted', ['block' => $block], "Đã xóa toàn bộ các phòng thuộc khu '{$block}'.", $activeOrg));
 
             return $count;
         });
