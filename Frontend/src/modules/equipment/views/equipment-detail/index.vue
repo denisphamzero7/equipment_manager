@@ -122,6 +122,7 @@ onMounted(async () => {
 
 async function loadDetail() {
   loading.value = true
+  imageLoadError.value = false
   try {
     equipment.value = await equipmentService.getEquipment(equipmentId)
   } finally {
