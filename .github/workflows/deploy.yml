@@ -1,0 +1,136 @@
+name: CI/CD Pipeline - Build & Deploy Equipment Hub
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  # =========================================================================
+  # 1. BUILD & TEST JOB
+  # =========================================================================
+  build-and-test:
+    name: Build Frontend & Validate Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # --- FRONTEND BUILD ---
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: 'Frontend/package-lock.json'
+
+      - name: Install Frontend Dependencies
+        run: npm ci --prefix Frontend
+
+      - name: Build Frontend Production Artifacts
+        run: npm run build --prefix Frontend
+
+      - name: Upload Frontend Dist Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: Frontend/dist
+          retention-days: 7
+
+      # --- BACKEND VALIDATION ---
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, gd, exif, sockets, redis
+          coverage: none
+
+      - name: Validate Composer JSON
+        run: composer validate --strict --working-dir=Backend
+
+      - name: Cache Composer Dependencies
+        uses: actions/cache@v4
+        with:
+          path: Backend/vendor
+          key: composer-${{ runner.os }}-${{ hashFiles('Backend/composer.lock') }}
+          restore-keys: |
+            composer-${{ runner.os }}-
+
+  # =========================================================================
+  # 2. DEPLOY TO PRODUCTION SERVER VIA SSH
+  # =========================================================================
+  deploy:
+    name: Deploy to Production Server
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Download Frontend Dist Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: dist
+
+      - name: Sync Frontend Build to Server via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          source: 'dist/*'
+          target: '${{ secrets.DEPLOY_PATH }}/Frontend/dist'
+          strip_components: 1
+
+      - name: Execute Remote Deployment Commands via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            set -e
+            echo "🚀 Starting Deployment on Server..."
+            cd ${{ secrets.DEPLOY_PATH }}
+
+            # 1. Kéo mã nguồn mới nhất từ nhánh main
+            git fetch origin main
+            git reset --hard origin/main
+
+            # 2. Cài đặt các gói PHP Production (tối ưu hóa Autoloader)
+            cd Backend
+            composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+            # 3. Chạy cập nhật cấu trúc CSDL (Database Migrations)
+            php artisan migrate --force
+
+            # 4. Tối ưu hóa Cache hệ thống Laravel
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan event:cache
+
+            # 5. Phân quyền thư mục lưu trữ (Storage & Cache)
+            chown -R www-data:www-data storage bootstrap/cache
+            chmod -R 775 storage bootstrap/cache
+
+            # 6. Khởi động lại Hàng đợi (Queue) và WebSocket Reverb
+            php artisan queue:restart || true
+            
+            # Khởi động lại dịch vụ qua Supervisor (nếu có cài đặt)
+            if command -v supervisorctl >/dev/null 2>&1; then
+                sudo supervisorctl restart all || true
+            fi
+
+            # 7. Nạp lại Nginx để cập nhật giao diện mới
+            sudo systemctl reload nginx || sudo service nginx reload || true
+
+            echo "✅ Deployment completed successfully!"
