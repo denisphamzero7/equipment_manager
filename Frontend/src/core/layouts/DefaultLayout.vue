@@ -230,7 +230,8 @@ function handleNavClick() {
               <router-link
                 v-if="$can(item.action, item.subject)"
                 :to="item.to"
-                class="group flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-all"
+                class="group flex items-center px-3 py-2 rounded-xl text-sm font-medium transition-all no-underline"
+                style="text-decoration: none !important;"
                 :class="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to))
                   ? 'bg-blue-50 text-blue-600 font-semibold' 
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
@@ -249,19 +250,10 @@ function handleNavClick() {
                       :color="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to)) ? 'white' : 'secondary'"
                     />
                   </div>
-                  <span v-if="mobile || !rail" class="truncate text-[13px]">
+                  <span v-if="mobile || !rail" class="truncate text-[13px] no-underline">
                     {{ item.title }}
                   </span>
                 </div>
-
-                <!-- Dấu chỉ báo nhẹ bên phải -->
-                <v-icon
-                  v-if="(mobile || !rail)"
-                  icon="mdi-chevron-right"
-                  size="15"
-                  class="transition-transform group-hover:translate-x-0.5"
-                  :class="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to)) ? 'text-blue-500' : 'text-slate-300 opacity-0 group-hover:opacity-100'"
-                />
               </router-link>
             </template>
           </div>

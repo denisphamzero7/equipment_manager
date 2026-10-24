@@ -12,6 +12,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+a {
+  text-decoration: none;
+}
+
 /* Vuetify Typography Override */
 .v-application {
   font-family: var(--app-font-family) !important;
