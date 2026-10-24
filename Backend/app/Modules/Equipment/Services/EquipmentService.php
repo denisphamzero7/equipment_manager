@@ -147,10 +147,19 @@ class EquipmentService
 
     public function update(int $id, array $data): RoomEquipment
     {
-        $item = DB::transaction(function () use ($id, $data) {
+        $oldStatus = null;
+        $statusChanged = false;
+
+        $item = DB::transaction(function () use ($id, $data, &$oldStatus, &$statusChanged) {
             $item = RoomEquipment::findOrFail($id);
             $photo = $data['photo'] ?? null;
             unset($data['photo']);
+
+            $oldStatus = $item->status instanceof \BackedEnum ? $item->status->value : (string) $item->status;
+            $newStatus = isset($data['status']) ? ($data['status'] instanceof \BackedEnum ? $data['status']->value : (string) $data['status']) : null;
+            if ($newStatus && $newStatus !== $oldStatus) {
+                $statusChanged = true;
+            }
 
             $item->update($data);
 
@@ -167,7 +176,11 @@ class EquipmentService
         });
 
         // Phát Broadcast Real-time
-        $this->safeBroadcast(new EquipmentUpdated($item));
+        if ($statusChanged) {
+            $this->safeBroadcast(new EquipmentStatusChanged($item, $oldStatus));
+        } else {
+            $this->safeBroadcast(new EquipmentUpdated($item));
+        }
         $this->invalidateCache($item->organization_id);
 
         return $item;
@@ -558,7 +571,11 @@ class EquipmentService
      */
     public function updateMaintenanceLog(int $logId, array $data): EquipmentMaintenanceLog
     {
-        return DB::transaction(function () use ($logId, $data) {
+        $equipmentToBroadcast = null;
+        $oldStatus = null;
+        $statusChanged = false;
+
+        $log = DB::transaction(function () use ($logId, $data, &$equipmentToBroadcast, &$oldStatus, &$statusChanged) {
             $log = EquipmentMaintenanceLog::findOrFail($logId);
             $updateFields = [];
 
@@ -585,23 +602,39 @@ class EquipmentService
             if (!empty($data['status'])) {
                 $equipment = $log->equipment;
                 if ($equipment) {
+                    $oldStatus = $equipment->status instanceof \BackedEnum ? $equipment->status->value : (string) $equipment->status;
                     $statusVal = $data['status'] instanceof MaintenanceStatusEnum ? $data['status']->value : (string) $data['status'];
                     if ($statusVal === MaintenanceStatusEnum::Completed->value) {
                         $equipment->status = EquipmentStatusEnum::Good;
                         $equipment->save();
+                        $statusChanged = ($oldStatus !== EquipmentStatusEnum::Good->value);
                     } elseif ($statusVal === MaintenanceStatusEnum::InProgress->value && $equipment->status === EquipmentStatusEnum::Broken) {
                         $equipment->status = EquipmentStatusEnum::Maintenance;
                         $equipment->save();
+                        $statusChanged = ($oldStatus !== EquipmentStatusEnum::Maintenance->value);
                     } elseif ($statusVal === MaintenanceStatusEnum::Unfixable->value) {
                         $equipment->status = EquipmentStatusEnum::Disposed;
                         $equipment->save();
+                        $statusChanged = ($oldStatus !== EquipmentStatusEnum::Disposed->value);
                     }
                     $this->invalidateCache($equipment->organization_id);
+                    $equipmentToBroadcast = $equipment->load(['model.category', 'room']);
                 }
             }
 
             return $log->load(['equipment', 'reportedByUser', 'resolvedByUser']);
         });
+
+        // Phát Broadcast Real-time thông báo cập nhật tiến độ / trạng thái
+        if ($equipmentToBroadcast) {
+            if ($statusChanged) {
+                $this->safeBroadcast(new EquipmentStatusChanged($equipmentToBroadcast, $oldStatus));
+            } else {
+                $this->safeBroadcast(new EquipmentUpdated($equipmentToBroadcast));
+            }
+        }
+
+        return $log;
     }
 
     /**

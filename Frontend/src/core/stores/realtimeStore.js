@@ -131,12 +131,15 @@ export const useRealtimeStore = defineStore('realtime', () => {
     channel.listen('.equipment.updated', (event) => {
       invalidateChangedData()
       lastEvent.value = { type: 'updated', ...event }
+      const modelName = event.equipment?.model_name || 'Thiết bị'
+      const msg = event.message || `Thiết bị #${event.equipment?.id} (${modelName}) vừa được cập nhật tiến độ.`
       addNotification({
         type: 'updated',
         title: 'Cập nhật thiết bị',
-        message: event.message || `Thiết bị #${event.equipment?.id} vừa được cập nhật`,
+        message: msg,
         equipment: event.equipment,
       })
+      toast.info(msg)
     })
 
     // 3. Thiết bị bị xóa
@@ -146,23 +149,36 @@ export const useRealtimeStore = defineStore('realtime', () => {
       addNotification({
         type: 'deleted',
         title: 'Xóa thiết bị',
-        message: event.message || `Thiết bị #${event.equipment_id} đã bị xóa`,
+        message: event.message || `Thiết bị #${event.equipment_id} đã bị xóa khỏi hệ thống.`,
         equipment_id: event.equipment_id,
         room_id: event.room_id,
       })
+      toast.warning(event.message || `Thiết bị #${event.equipment_id} đã bị xóa.`)
     })
 
     // 4. Trạng thái thiết bị thay đổi (Tốt / Hỏng / Bảo trì / Trong kho)
     channel.listen('.equipment.status_changed', (event) => {
       invalidateChangedData()
       lastEvent.value = { type: 'status_changed', ...event }
+      const statusLabels = {
+        good: 'Hoạt động tốt',
+        broken: 'Hư hỏng',
+        maintenance: 'Đang bảo trì / sửa chữa',
+        in_stock: 'Lưu trong kho',
+        disposed: 'Đã thanh lý',
+      }
+      const rawStatus = event.equipment?.new_status
+      const label = statusLabels[rawStatus] || rawStatus || 'mới'
+      const modelName = event.equipment?.model_name || 'Thiết bị'
+      const msg = `Thiết bị #${event.equipment?.id} (${modelName}) chuyển sang trạng thái: "${label}".`
+
       addNotification({
         type: 'status_changed',
         title: 'Đổi trạng thái thiết bị',
-        message: event.message || `Thiết bị #${event.equipment?.id} đã đổi trạng thái`,
+        message: event.message || msg,
         equipment: event.equipment,
       })
-      toast.info(`Thiết bị #${event.equipment?.id} vừa chuyển sang trạng thái "${event.equipment?.new_status}"`)
+      toast.info(msg)
     })
 
     // 5. Điều chuyển phòng / Thu hồi về kho
