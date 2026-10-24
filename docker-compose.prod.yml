@@ -8,18 +8,18 @@ services:
         VITE_API_BASE_URL: ""
         VITE_REVERB_APP_KEY: "${REVERB_APP_KEY:-pnhau_core_reverb_key}"
         VITE_REVERB_HOST: "${DOMAIN:-localhost}"
-        VITE_REVERB_PORT: "${APP_PORT:-8080}"
+        VITE_REVERB_PORT: "${APP_PORT:-8088}"
         VITE_REVERB_SCHEME: "${APP_SCHEME:-http}"
     image: equipment-manager:latest
     restart: unless-stopped
     ports:
-      - "${APP_PORT:-8080}:80"
+      - "${APP_PORT:-8088}:80"
     environment:
       APP_NAME: "Equipment Manager"
       APP_ENV: production
       APP_KEY: "${APP_KEY:-base64:XG8y8v7u8VzCdfk1z3V0Y9hL9tQ4b0OqUq+v5c7c2bM=}"
       APP_DEBUG: "false"
-      APP_URL: "${APP_SCHEME:-http}://${DOMAIN:-localhost}:${APP_PORT:-8080}"
+      APP_URL: "${APP_SCHEME:-http}://${DOMAIN:-localhost}:${APP_PORT:-8088}"
       
       DB_CONNECTION: mysql
       DB_HOST: db

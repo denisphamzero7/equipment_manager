@@ -11,7 +11,7 @@ class HotelRoomSeeder extends Seeder
 {
     public function run(): void
     {
-        $orgId = 22;
+        $orgId = \App\Modules\Core\Models\Organization::value('id') ?? 1;
 
         // Dữ liệu sơ đồ toàn bộ phòng Olalani Hotel (Block A, B, C, D, Condos 1, Condos 2, Penthouse-spa+Villa)
         $blocks = [
