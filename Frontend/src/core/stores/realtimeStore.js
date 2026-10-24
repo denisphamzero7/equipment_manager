@@ -77,7 +77,7 @@ export const useRealtimeStore = defineStore('realtime', () => {
   }
 
   function initRealtime(orgId) {
-    const targetOrgId = Number(orgId || storage.get(StorageKeys.ORGANIZATION_ID, 22))
+    const targetOrgId = Number(orgId || storage.get(StorageKeys.ORGANIZATION_ID) || 1)
     if (!targetOrgId) return
 
     // Nếu đã đăng ký listener cho chính xác tổ chức này, không đăng ký trùng lặp

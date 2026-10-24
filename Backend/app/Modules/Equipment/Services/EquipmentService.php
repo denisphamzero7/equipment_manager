@@ -38,7 +38,7 @@ class EquipmentService
      */
     public function invalidateCache(?int $orgId = null): void
     {
-        $orgId = $orgId ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 22);
+        $orgId = $orgId ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : (\\App\\Modules\\Core\\Models\\Organization::value('id') ?? 1);
 
         cache()->forget('hotel_stats_' . $orgId . '_all');
         cache()->forget('hotel_stats_all_all');
