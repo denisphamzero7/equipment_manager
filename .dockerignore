@@ -1,0 +1,17 @@
+.git
+.github
+.vscode
+docs
+node_modules
+Frontend/node_modules
+Frontend/dist
+Backend/vendor
+Backend/storage/logs/*.log
+Backend/storage/framework/cache/*
+Backend/storage/framework/sessions/*
+Backend/storage/framework/views/*
+Backend/public/storage
+Backend/.env
+Backend/.env.*
+Backend/.phpunit.result.cache
+*.tar
