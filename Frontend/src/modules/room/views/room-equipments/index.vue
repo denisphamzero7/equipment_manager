@@ -214,10 +214,10 @@ async function handleRoomSaved(savedRoom) {
       Number(room.id) === Number(savedRoom.id) ? { ...room, ...savedRoom } : room
     )
   } else {
-    await loadRooms()
+    await loadRooms({ silent: true })
   }
   if (selectedRoomId.value) {
-    await loadRoomDetail(selectedRoomId.value)
+    await loadRoomDetail(selectedRoomId.value, { silent: true })
   }
 }
 
@@ -227,48 +227,76 @@ watch(
   async (event) => {
     if (!event) return
     if (selectedRoomId.value) {
-      await loadRoomDetail(selectedRoomId.value)
+      await loadRoomDetail(selectedRoomId.value, { silent: true })
     }
+    void loadRooms({ silent: true })
   }
 )
 
-async function loadRooms() {
+async function loadRooms({ silent = false } = {}) {
   try {
     const data = await equipmentService.getMapView()
     rooms.value = data || []
     
     // Nếu có query param room_id từ URL thì ưu tiên chọn phòng đó
     const queryRoomId = Number(route.query.room_id)
-    if (queryRoomId && rooms.value.some(r => r.id === queryRoomId)) {
-      selectedRoomId.value = queryRoomId
-    } else if (rooms.value.length > 0) {
-      selectedRoomId.value = rooms.value[0].id
-    }
+    if (!selectedRoomId.value) {
+      if (queryRoomId && rooms.value.some(r => r.id === queryRoomId)) {
+        selectedRoomId.value = queryRoomId
+      } else if (rooms.value.length > 0) {
+        selectedRoomId.value = rooms.value[0].id
+      }
 
-    if (selectedRoomId.value) {
-      await loadRoomDetail(selectedRoomId.value)
+      if (selectedRoomId.value) {
+        await loadRoomDetail(selectedRoomId.value, { silent })
+      }
     }
   } catch (e) {
     console.error('Failed to load rooms:', e)
-    toast.error(e.response?.data?.message || 'Không thể tải danh sách phòng.')
+    if (!silent) toast.error(e.response?.data?.message || 'Không thể tải danh sách phòng.')
   }
 }
 
-async function loadRoomDetail(id) {
+function syncRoomStatsInPlace(id, detail) {
+  if (!detail) return
+  const r = rooms.value.find(item => Number(item.id) === Number(id))
+  if (!r) return
+
+  r.badge_color = detail.compliance_status === 'compliant'
+    ? 'green'
+    : (detail.missing_equipments?.length > 0 ? 'red' : 'yellow')
+
+  if (!r.stats) r.stats = {}
+  
+  const missingCount = detail.missing_equipments?.reduce((acc, m) => acc + (m.missing_count || 1), 0) || 0
+  r.stats.missing_count = missingCount
+  
+  const allItems = detail.categories?.flatMap(c => c.items || []) || []
+  r.stats.total_equipments = allItems.length
+  r.stats.broken_count = allItems.filter(i => i.status === 'broken').length
+  r.stats.maintenance_count = allItems.filter(i => i.status === 'maintenance').length
+}
+
+async function loadRoomDetail(id, { silent = false } = {}) {
   if (!id) return
   const requestId = ++roomDetailRequestId
-  if (Number(roomDetail.value?.id) !== Number(id)) roomDetail.value = null
-  loading.value = true
+  if (!silent) {
+    if (Number(roomDetail.value?.id) !== Number(id)) roomDetail.value = null
+    loading.value = true
+  }
   try {
     const detail = await roomService.getRoomEquipmentDetail(id)
-    if (requestId === roomDetailRequestId) roomDetail.value = detail
+    if (requestId === roomDetailRequestId) {
+      roomDetail.value = detail
+      syncRoomStatsInPlace(id, detail)
+    }
   } catch (err) {
     console.error('Failed to load room detail:', err)
-    if (requestId === roomDetailRequestId) {
+    if (requestId === roomDetailRequestId && !silent) {
       toast.error(err.response?.data?.message || 'Không thể tải chi tiết thiết bị của phòng.')
     }
   } finally {
-    if (requestId === roomDetailRequestId) loading.value = false
+    if (requestId === roomDetailRequestId && !silent) loading.value = false
   }
 }
 
@@ -319,7 +347,8 @@ async function handleAssignSubmit(payload) {
     await equipmentService.assignToRoom(payload)
     toast.success('Điều chuyển thiết bị thành công!')
     assignModalOpen.value = false
-    await loadRoomDetail(selectedRoomId.value)
+    await loadRoomDetail(selectedRoomId.value, { silent: true })
+    void loadRooms({ silent: true })
   } catch (err) {
     toast.error(err.response?.data?.message || err.message || 'Điều chuyển thất bại.')
   } finally {
@@ -339,7 +368,8 @@ async function handleReportBrokenSubmit({ id, formData }) {
     await equipmentService.reportBroken(id, formData)
     toast.success('Báo hỏng thiết bị thành công! Đã gửi thông báo bảo trì.')
     reportBrokenModalOpen.value = false
-    await loadRoomDetail(selectedRoomId.value)
+    await loadRoomDetail(selectedRoomId.value, { silent: true })
+    void loadRooms({ silent: true })
   } catch (err) {
     toast.error(err.response?.data?.message || err.message || 'Báo hỏng thất bại.')
   } finally {
@@ -365,7 +395,8 @@ async function handleRetract() {
     toast.success(`Đã thu hồi thiết bị #${equipmentToRetract.value.id} về kho thành công!`)
     retractDialogOpen.value = false
     equipmentToRetract.value = null
-    await loadRoomDetail(selectedRoomId.value)
+    await loadRoomDetail(selectedRoomId.value, { silent: true })
+    void loadRooms({ silent: true })
   } catch (err) {
     toast.error(err.response?.data?.message || err.message || 'Thu hồi thất bại.')
   } finally {
@@ -421,7 +452,8 @@ async function handleAssignFromWarehouse() {
     })
     toast.success('Đã gán thiết bị từ kho vào phòng thành công!')
     warehouseModalOpen.value = false
-    await loadRoomDetail(selectedRoomId.value)
+    await loadRoomDetail(selectedRoomId.value, { silent: true })
+    void loadRooms({ silent: true })
   } catch (err) {
     toast.error(err.response?.data?.message || err.message || 'Gán thiết bị thất bại.')
   } finally {
@@ -439,7 +471,8 @@ async function handleCreateSubmit({ data }) {
     })
     toast.success('Đã tạo thiết bị mới và gán vào phòng thành công!')
     createModalOpen.value = false
-    await loadRoomDetail(selectedRoomId.value)
+    await loadRoomDetail(selectedRoomId.value, { silent: true })
+    void loadRooms({ silent: true })
   } catch (err) {
     toast.error(err.response?.data?.message || err.message || 'Thêm thiết bị thất bại.')
   } finally {

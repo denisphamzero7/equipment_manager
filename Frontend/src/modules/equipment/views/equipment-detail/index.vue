@@ -1,7 +1,8 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { equipmentService } from '../../services/equipmentService'
+import { useRealtimeStore } from '@/core/stores/realtimeStore'
 import { formatDate, formatCurrencyVND, resolveMediaUrl } from '@/core/helpers/formatters'
 import { toast } from '@/core/helpers/toast'
 import DefaultLayout from '@/core/layouts/DefaultLayout.vue'
@@ -15,6 +16,7 @@ import EquipmentFormModal from '../../components/EquipmentFormModal.vue'
 
 const route = useRoute()
 const router = useRouter()
+const realtimeStore = useRealtimeStore()
 const equipmentId = Number(route.params.id)
 
 const loading = ref(true)
@@ -70,9 +72,27 @@ async function handleUpdateLogSubmit() {
   actionLoading.value = true
   try {
     await equipmentService.updateMaintenanceLog(selectedLog.value.id, logForm.value)
+    
+    // Cập nhật trạng thái tại chỗ (in-place) ngay lập tức không chớp giật màn hình
+    if (selectedLog.value) {
+      selectedLog.value.status = logForm.value.status
+      selectedLog.value.cost = logForm.value.cost
+      selectedLog.value.issue_description = logForm.value.issue_description
+      selectedLog.value.updated_at = new Date().toISOString()
+    }
+    if (equipment.value) {
+      if (logForm.value.status === 'completed') {
+        equipment.value.status = equipment.value.room_id ? 'in_use' : 'in_stock'
+      } else if (logForm.value.status === 'in_progress') {
+        equipment.value.status = 'maintenance'
+      } else if (logForm.value.status === 'unfixable') {
+        equipment.value.status = 'broken'
+      }
+    }
+
     updateLogModalOpen.value = false
     toast.success('Cập nhật tiến độ bảo trì thành công!')
-    await loadDetail()
+    await loadDetail({ silent: true })
   } catch (err) {
     toast.error(err.response?.data?.message || err.message || 'Cập nhật thất bại.')
   } finally {
@@ -120,15 +140,46 @@ onMounted(async () => {
   await loadDetail()
 })
 
-async function loadDetail() {
-  loading.value = true
+async function loadDetail({ silent = false } = {}) {
+  if (!silent) {
+    loading.value = true
+  }
   imageLoadError.value = false
   try {
-    equipment.value = await equipmentService.getEquipment(equipmentId)
+    const data = await equipmentService.getEquipment(equipmentId)
+    equipment.value = data
   } finally {
-    loading.value = false
+    if (!silent) {
+      loading.value = false
+    }
   }
 }
+
+// Lắng nghe sự kiện Real-time qua WebSocket Reverb để tự động nhảy số / trạng thái
+watch(
+  () => realtimeStore.lastEvent,
+  async (event) => {
+    if (!event) return
+    const evEquipId = Number(event.equipment?.id || event.equipment_id || event.id)
+    if (evEquipId !== equipmentId) return
+
+    if (event.type === 'deleted') {
+      toast.warning('Thiết bị này vừa bị xóa khỏi hệ thống.')
+      router.push('/equipments')
+      return
+    }
+
+    // Cập nhật trạng thái in-place ngay lập tức
+    if (event.type === 'status_changed' && event.equipment?.new_status && equipment.value) {
+      equipment.value.status = event.equipment.new_status
+    } else if (event.type === 'broken_reported' && equipment.value) {
+      equipment.value.status = 'broken'
+    }
+
+    // Đồng bộ chi tiết mới nhất trong nền (không chớp màn hình)
+    await loadDetail({ silent: true })
+  }
+)
 
 function openAssignModal() {
   assignModalOpen.value = true
@@ -163,7 +214,7 @@ async function handlePhotoUpload(event) {
   try {
     await equipmentService.uploadPhoto(equipmentId, formData)
     toast.success('Tải ảnh thiết bị lên thành công!')
-    await loadDetail()
+    await loadDetail({ silent: true })
     selectedPhotoIndex.value = Math.max(0, (equipment.value?.photos?.length || 1) - 1)
   } catch (err) {
     toast.error(err.response?.data?.message || err.message || 'Tải ảnh lên thất bại.')
@@ -200,7 +251,7 @@ async function handleDeletePhoto() {
     toast.success('Đã xóa ảnh thiết bị thành công!')
     deletePhotoDialogOpen.value = false
     selectedPhotoIndex.value = 0
-    await loadDetail()
+    await loadDetail({ silent: true })
   } catch (err) {
     toast.error(err.response?.data?.message || err.message || 'Xóa ảnh thất bại.')
   } finally {
@@ -215,7 +266,7 @@ async function handleEditSubmit({ id, data }) {
     await equipmentService.updateEquipment(id, data)
     editModalOpen.value = false
     toast.success('Cập nhật thông tin thiết bị thành công!')
-    await loadDetail()
+    await loadDetail({ silent: true })
   } catch (err) {
     toast.error(err.response?.data?.message || err.message || 'Cập nhật thất bại.')
   } finally {
@@ -229,7 +280,7 @@ async function handleAssignSubmit(payload) {
     await equipmentService.assignToRoom(payload)
     assignModalOpen.value = false
     toast.success('Điều chuyển thiết bị thành công!')
-    await loadDetail()
+    await loadDetail({ silent: true })
   } catch (err) {
     toast.error(err.response?.data?.message || err.message || 'Điều chuyển thất bại.')
   } finally {
@@ -241,9 +292,12 @@ async function handleReportBrokenSubmit({ id, formData }) {
   actionLoading.value = true
   try {
     await equipmentService.reportBroken(id, formData)
+    if (equipment.value) {
+      equipment.value.status = 'broken'
+    }
     reportBrokenModalOpen.value = false
     toast.success('Báo hỏng thiết bị thành công!')
-    await loadDetail()
+    await loadDetail({ silent: true })
   } catch (err) {
     toast.error(err.response?.data?.message || err.message || 'Báo hỏng thất bại.')
   } finally {
