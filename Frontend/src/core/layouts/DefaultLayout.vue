@@ -119,6 +119,37 @@ const navSections = [
   },
 ]
 
+function isItemActive(item) {
+  if (route.path === item.to) return true
+
+  // Với trang Sơ đồ mặt bằng
+  if (item.to === '/equipments/map-view') {
+    return route.path === '/equipments/map-view'
+  }
+
+  // Với trang Danh sách thiết bị (loại trừ /equipments/map-view)
+  if (item.to === '/equipments') {
+    return route.path.startsWith('/equipments') && route.path !== '/equipments/map-view'
+  }
+
+  // Với trang Định mức thiết bị phòng
+  if (item.to === '/rooms/equipments') {
+    return route.path.startsWith('/rooms/equipments')
+  }
+
+  // Với trang Quản lý phòng & tầng (loại trừ /rooms/equipments)
+  if (item.to === '/rooms') {
+    return route.path.startsWith('/rooms') && !route.path.startsWith('/rooms/equipments')
+  }
+
+  // Với Dashboard
+  if (item.to === '/dashboard') {
+    return route.path === '/dashboard'
+  }
+
+  return route.path.startsWith(item.to)
+}
+
 async function switchOrg(orgId) {
   if (orgId === organizationId.value) return
   try {
@@ -232,7 +263,7 @@ function handleNavClick() {
                 :to="item.to"
                 class="group flex items-center px-3 py-2 rounded-xl text-sm font-medium transition-all no-underline"
                 style="text-decoration: none !important;"
-                :class="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to))
+                :class="isItemActive(item)
                   ? 'bg-blue-50 text-blue-600 font-semibold' 
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
                 @click="handleNavClick"
@@ -240,14 +271,14 @@ function handleNavClick() {
                 <div class="flex items-center gap-2.5 overflow-hidden min-w-0">
                   <div
                     class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
-                    :class="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to))
+                    :class="isItemActive(item)
                       ? 'bg-blue-600 text-white shadow-xs' 
                       : 'text-slate-500 group-hover:text-blue-600'"
                   >
                     <v-icon
                       :icon="item.icon"
                       size="18"
-                      :color="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to)) ? 'white' : 'secondary'"
+                      :color="isItemActive(item) ? 'white' : 'secondary'"
                     />
                   </div>
                   <span v-if="mobile || !rail" class="truncate text-[13px] no-underline">
