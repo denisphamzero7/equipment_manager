@@ -21,7 +21,7 @@ class RoomChanged implements ShouldBroadcastNow
     public function __construct(string $action, $room = null, ?string $message = null, ?int $organizationId = null)
     {
         $this->action = $action;
-        $this->organizationId = (int) ($organizationId ?: ($room?->organization_id ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : (\\App\\Modules\\Core\\Models\\Organization::value('id') ?? 1))););
+        $this->organizationId = (int) ($organizationId ?: ($room?->organization_id ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : (\App\Modules\Core\Models\Organization::value('id') ?? 1))));
         $this->message = $message ?: "Dữ liệu phòng vừa được cập nhật ($action).";
 
         if ($room instanceof Room) {

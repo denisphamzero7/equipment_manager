@@ -12,7 +12,7 @@ class EquipmentMapViewService
      */
     public function invalidateMapCache(?int $organizationId = null): void
     {
-        $orgId = $organizationId ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : (\\App\\Modules\\Core\\Models\\Organization::value('id') ?? 1);
+        $orgId = $organizationId ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : (\App\Modules\Core\Models\Organization::value('id') ?? 1));
         cache()->forget('hotel_blocks_' . $orgId);
         cache()->forget('hotel_blocks_all');
         cache()->forget('hotel_floors_' . $orgId . '_all');

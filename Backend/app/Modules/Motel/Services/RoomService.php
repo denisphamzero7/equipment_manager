@@ -15,7 +15,7 @@ class RoomService
 {
     protected function getActiveOrgId(?int $orgId = null): int
     {
-        return (int) ($orgId ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : (\\App\\Modules\\Core\\Models\\Organization::value('id') ?? 1)));;
+        return (int) ($orgId ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : (\App\Modules\Core\Models\Organization::value('id') ?? 1)));
     }
 
     /**
