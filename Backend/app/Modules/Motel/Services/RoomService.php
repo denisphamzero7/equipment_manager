@@ -39,14 +39,18 @@ class RoomService
     public function stats(array $filters = []): array
     {
         $orgId = $this->getActiveOrgId($filters['organization_id'] ?? null);
-        $base = RoomModel::where('organization_id', $orgId);
+        $counts = RoomModel::where('organization_id', $orgId)
+            ->select('status', DB::raw('count(*) as count'))
+            ->groupBy('status')
+            ->pluck('count', 'status')
+            ->all();
 
         return [
-            'total' => (clone $base)->count(),
-            'ready' => (clone $base)->where('status', RoomStatusEnum::Ready->value)->count(),
-            'occupied' => (clone $base)->where('status', RoomStatusEnum::Occupied->value)->count(),
-            'not_ready' => (clone $base)->where('status', RoomStatusEnum::NotReady->value)->count(),
-            'maintenance' => (clone $base)->where('status', RoomStatusEnum::Maintenance->value)->count(),
+            'total' => array_sum($counts),
+            'ready' => (int) ($counts[RoomStatusEnum::Ready->value] ?? 0),
+            'occupied' => (int) ($counts[RoomStatusEnum::Occupied->value] ?? 0),
+            'not_ready' => (int) ($counts[RoomStatusEnum::NotReady->value] ?? 0),
+            'maintenance' => (int) ($counts[RoomStatusEnum::Maintenance->value] ?? 0),
         ];
     }
 

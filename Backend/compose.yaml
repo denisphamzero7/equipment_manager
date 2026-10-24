@@ -15,7 +15,7 @@ services:
         environment:
             WWWUSER: '${WWWUSER:-1000}'
             LARAVEL_SAIL: 1
-            PHP_CLI_SERVER_WORKERS: 8
+            PHP_CLI_SERVER_WORKERS: 2
             XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
             XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
@@ -25,6 +25,7 @@ services:
             REVERB_HOST: 'reverb'
         volumes:
             - '.:/var/www/html'
+            - './docker/php/custom.ini:/etc/php/8.5/cli/conf.d/99-custom.ini:ro'
         networks:
             - sail
         depends_on:
@@ -61,6 +62,7 @@ services:
             REVERB_HOST: 'reverb'
         volumes:
             - '.:/var/www/html'
+            - './docker/php/custom.ini:/etc/php/8.5/cli/conf.d/99-custom.ini:ro'
         command: php artisan reverb:start --host=0.0.0.0 --port=8090
         networks:
             - sail
@@ -79,6 +81,7 @@ services:
             REVERB_HOST: 'reverb'
         volumes:
             - '.:/var/www/html'
+            - './docker/php/custom.ini:/etc/php/8.5/cli/conf.d/99-custom.ini:ro'
         command: php artisan horizon
         networks:
             - sail
@@ -98,6 +101,7 @@ services:
             REVERB_HOST: 'reverb'
         volumes:
             - '.:/var/www/html'
+            - './docker/php/custom.ini:/etc/php/8.5/cli/conf.d/99-custom.ini:ro'
         command: sh -c "while true; do php artisan schedule:run; sleep 60; done"
         networks:
             - sail

@@ -33,6 +33,12 @@ class LogActivity
         'broadcasting/auth',
         'api/settings/public',
         'api/motel/rooms/room-types',
+        'api/motel/rooms/stats',
+        'api/equipments/stats',
+        'api/equipments/map-view',
+        'api/equipments/room-options',
+        'api/equipments/map-view/blocks',
+        'api/equipments/map-view/floors',
     ];
 
     public function handle(Request $request, Closure $next): Response
