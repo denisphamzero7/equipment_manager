@@ -60,8 +60,8 @@ WORKDIR /var/www/html
 # Copy toàn bộ mã nguồn Backend trước
 COPY Backend/ ./
 
-# Cài đặt PHP dependencies với autoloader chuẩn
-RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs
+# Cài đặt PHP dependencies không chạy scripts trong lúc build image (tránh lỗi khi chưa có DB/Env)
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts --ignore-platform-reqs
 
 # Copy build Frontend từ Giai đoạn 1 vào thư mục public của Laravel
 COPY --from=frontend-builder /app/frontend/dist /var/www/html/public

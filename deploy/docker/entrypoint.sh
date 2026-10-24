@@ -28,7 +28,8 @@ if [ "$RUN_MIGRATIONS" = "true" ]; then
     php /var/www/html/artisan migrate --force
 fi
 
-# Tối ưu cache Laravel
+# Khám phá packages và cache Laravel
+php /var/www/html/artisan package:discover --ansi || true
 php /var/www/html/artisan config:cache || true
 php /var/www/html/artisan route:cache || true
 php /var/www/html/artisan view:cache || true
