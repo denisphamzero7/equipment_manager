@@ -18,7 +18,7 @@ class EquipmentCreated implements ShouldBroadcastNow
 
     public function __construct(RoomEquipment $item, ?string $clientRequestId = null)
     {
-        $this->organizationId = (int) ($item->organization_id ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 22));
+        $this->organizationId = (int) ($item->organization_id ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 1));
         $this->equipment = [
             'id' => $item->id,
             'serial_number' => $item->serial_number,

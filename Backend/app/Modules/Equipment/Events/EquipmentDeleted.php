@@ -20,7 +20,7 @@ class EquipmentDeleted implements ShouldBroadcastNow
     {
         $this->equipmentId = $equipmentId;
         $this->roomId = $roomId;
-        $this->organizationId = (int) ($organizationId ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 22));
+        $this->organizationId = (int) ($organizationId ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 1));
     }
 
     public function broadcastOn(): array

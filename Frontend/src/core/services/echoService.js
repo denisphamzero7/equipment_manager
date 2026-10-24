@@ -37,7 +37,7 @@ export async function initEcho() {
       return {
         authorize: (socketId, callback) => {
           const currentToken = storage.get(StorageKeys.TOKEN)
-          const currentOrg = storage.get(StorageKeys.ORGANIZATION_ID, 22)
+          const currentOrg = storage.get(StorageKeys.ORGANIZATION_ID, 1)
 
           fetch('/api/broadcasting/auth', {
             method: 'POST',

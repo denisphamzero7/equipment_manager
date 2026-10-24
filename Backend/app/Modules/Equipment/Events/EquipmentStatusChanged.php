@@ -18,7 +18,7 @@ class EquipmentStatusChanged implements ShouldBroadcastNow
 
     public function __construct(RoomEquipment $item, ?string $oldStatus = null)
     {
-        $this->organizationId = (int) ($item->organization_id ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 22));
+        $this->organizationId = (int) ($item->organization_id ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 1));
         $newStatus = $item->status instanceof \BackedEnum ? $item->status->value : (string) $item->status;
 
         $this->payload = [
