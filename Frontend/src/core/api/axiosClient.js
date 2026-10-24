@@ -41,11 +41,13 @@ axiosClient.interceptors.response.use(
       const message = response.data?.message || 'Có lỗi xảy ra, vui lòng thử lại.'
 
       if (status === 401) {
-        // Hết hạn phiên đăng nhập
+        // Hết hạn phiên đăng nhập hoặc thông tin đăng nhập sai
         storage.clearAuth()
         if (window.location.pathname !== '/login') {
           toast.warning('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.')
           window.location.href = '/login'
+        } else {
+          toast.error(message || 'Thông tin tài khoản hoặc mật khẩu không chính xác.')
         }
       } else if (status === 403) {
         toast.error(message || 'Bạn không có quyền thực hiện hành động này.')

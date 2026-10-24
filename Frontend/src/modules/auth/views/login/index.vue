@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../stores/authStore'
 import { rules } from '@/core/helpers/validators'
@@ -18,25 +18,53 @@ const email = ref('admin@example.com')
 const password = ref('quandcore**11')
 const showPassword = ref(false)
 const remember = ref(true)
+const errorMessage = ref('')
 
 // Step 2: Organizations
 const availableOrgs = ref([])
 const selectedOrgId = ref(null)
 const selectingOrg = ref(false)
 
+// Custom validation rules
+const accountRules = [
+  v => !!(v && String(v).trim()) || 'Vui lòng nhập Email hoặc Tên đăng nhập.',
+  v => {
+    if (!v) return true
+    const val = String(v).trim()
+    if (val.includes('@')) {
+      const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+      return pattern.test(val) || 'Định dạng email không hợp lệ.'
+    }
+    return val.length >= 3 || 'Tên đăng nhập phải có ít nhất 3 ký tự.'
+  },
+]
+
+const passwordRules = [
+  v => !!(v && String(v).trim()) || 'Vui lòng nhập mật khẩu.',
+  v => !v || String(v).length >= 6 || 'Mật khẩu phải có ít nhất 6 ký tự.',
+]
+
+// Xóa thông báo lỗi khi người dùng thay đổi email hoặc mật khẩu
+watch([email, password], () => {
+  if (errorMessage.value) {
+    errorMessage.value = ''
+  }
+})
+
 async function handleLogin() {
+  errorMessage.value = ''
   const { valid } = await formRef.value.validate()
   if (!valid) return
 
   try {
     const result = await authStore.login({
-      email: email.value,
+      email: email.value.trim(),
       password: password.value,
     })
 
     const orgs = result.availableOrganizations || []
     availableOrgs.value = orgs
-    selectedOrgId.value = result.currentOrganizationId || orgs[0]?.id || 22
+    selectedOrgId.value = result.currentOrganizationId || orgs[0]?.id || 1
 
     if (orgs.length > 0) {
       // Chuyển sang Bước 2: Hiển thị danh sách tổ chức để người dùng chọn
@@ -48,7 +76,22 @@ async function handleLogin() {
       router.push('/dashboard')
     }
   } catch (e) {
-    // Error notification handled by axios interceptor
+    const status = e.response?.status
+    const serverMsg = e.response?.data?.message
+
+    if (status === 401) {
+      errorMessage.value = serverMsg || 'Email/tài khoản hoặc mật khẩu không chính xác. Vui lòng thử lại!'
+    } else if (status === 403) {
+      errorMessage.value = serverMsg || 'Tài khoản của bạn đã bị khóa hoặc chưa được kích hoạt.'
+    } else if (status === 422) {
+      const errors = e.response?.data?.errors
+      const firstError = errors ? Object.values(errors)[0]?.[0] : null
+      errorMessage.value = firstError || serverMsg || 'Thông tin nhập vào chưa hợp lệ.'
+    } else if (status >= 500) {
+      errorMessage.value = 'Lỗi máy chủ nội bộ. Vui lòng liên hệ quản trị hệ thống.'
+    } else {
+      errorMessage.value = serverMsg || e.message || 'Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại mạng.'
+    }
   }
 }
 
@@ -78,6 +121,7 @@ function handleBackToCredentials() {
 function fillDemoAccount() {
   email.value = 'admin@example.com'
   password.value = 'quandcore**11'
+  errorMessage.value = ''
 }
 </script>
 
@@ -114,6 +158,28 @@ function fillDemoAccount() {
           </button>
         </div>
 
+        <!-- Error Alert Banner -->
+        <div
+          v-if="errorMessage"
+          class="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-700 text-sm rounded-2xl flex items-start gap-3 shadow-sm transition-all"
+        >
+          <div class="w-8 h-8 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 mt-0.5">
+            <v-icon icon="mdi-alert-circle" size="20" />
+          </div>
+          <div class="flex-1">
+            <p class="font-bold text-rose-800 text-sm">Đăng nhập không thành công</p>
+            <p class="mt-0.5 text-xs text-rose-600 leading-relaxed">{{ errorMessage }}</p>
+          </div>
+          <button
+            type="button"
+            class="text-rose-400 hover:text-rose-600 transition p-1 cursor-pointer"
+            title="Đóng thông báo"
+            @click="errorMessage = ''"
+          >
+            <v-icon icon="mdi-close" size="18" />
+          </button>
+        </div>
+
         <v-form ref="formRef" @submit.prevent="handleLogin">
           <div class="space-y-4">
             <div>
@@ -122,9 +188,10 @@ function fillDemoAccount() {
               </label>
               <v-text-field
                 v-model="email"
-                placeholder="admin@example.com"
-                prepend-inner-icon="mdi-email-outline"
-                :rules="[rules.required, rules.email]"
+                placeholder="admin@example.com hoặc tên tài khoản"
+                prepend-inner-icon="mdi-account-outline"
+                :rules="accountRules"
+                :error="!!errorMessage"
                 hide-details="auto"
               />
             </div>
@@ -139,7 +206,8 @@ function fillDemoAccount() {
                 placeholder="••••••••"
                 prepend-inner-icon="mdi-lock-outline"
                 :append-inner-icon="showPassword ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
-                :rules="[rules.required, rules.minLength(6)]"
+                :rules="passwordRules"
+                :error="!!errorMessage"
                 hide-details="auto"
                 @click:append-inner="showPassword = !showPassword"
               />
