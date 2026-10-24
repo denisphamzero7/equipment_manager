@@ -227,7 +227,24 @@ class EquipmentService
                 $updateData['room_id'] = null;
             }
 
-            return RoomEquipment::whereIn('id', $ids)->update($updateData);
+            $affected = RoomEquipment::whereIn('id', $ids)->update($updateData);
+
+            if ($status === EquipmentStatusEnum::Good->value) {
+                EquipmentMaintenanceLog::whereIn('room_equipment_id', $ids)
+                    ->whereIn('status', [MaintenanceStatusEnum::Pending->value, MaintenanceStatusEnum::InProgress->value])
+                    ->update([
+                        'status' => MaintenanceStatusEnum::Completed->value,
+                        'resolved_at' => now(),
+                        'resolved_by' => auth()->id(),
+                    ]);
+            } elseif (in_array($status, [EquipmentStatusEnum::Broken->value, EquipmentStatusEnum::Maintenance->value, EquipmentStatusEnum::Disposed->value], true)) {
+                $equipments = RoomEquipment::whereIn('id', $ids)->get();
+                foreach ($equipments as $eq) {
+                    $this->syncOpenMaintenanceLogs($eq, $status);
+                }
+            }
+
+            return $affected;
         });
 
         $this->invalidateCache();
@@ -468,19 +485,44 @@ class EquipmentService
      */
     protected function syncOpenMaintenanceLogs(RoomEquipment $equipment, string $newStatus): void
     {
-        if ($newStatus === EquipmentStatusEnum::Good->value) {
+        if ($newStatus === EquipmentStatusEnum::Broken->value) {
+            // Khi thiết bị chuyển sang Hư hỏng, đảm bảo có một phiếu sự cố đang mở
+            $hasOpenLog = EquipmentMaintenanceLog::where('room_equipment_id', $equipment->id)
+                ->whereIn('status', [MaintenanceStatusEnum::Pending->value, MaintenanceStatusEnum::InProgress->value])
+                ->exists();
+
+            if (! $hasOpenLog) {
+                EquipmentMaintenanceLog::create([
+                    'room_equipment_id' => $equipment->id,
+                    'room_id' => $equipment->room_id,
+                    'issue_description' => $equipment->note ?: 'Báo hỏng thiết bị (Chuyển trạng thái sang Hư hỏng)',
+                    'status' => MaintenanceStatusEnum::Pending,
+                    'reported_by' => auth()->id(),
+                ]);
+            }
+        } elseif ($newStatus === EquipmentStatusEnum::Maintenance->value) {
+            $openLog = EquipmentMaintenanceLog::where('room_equipment_id', $equipment->id)
+                ->whereIn('status', [MaintenanceStatusEnum::Pending->value, MaintenanceStatusEnum::InProgress->value])
+                ->first();
+
+            if ($openLog) {
+                $openLog->update(['status' => MaintenanceStatusEnum::InProgress]);
+            } else {
+                EquipmentMaintenanceLog::create([
+                    'room_equipment_id' => $equipment->id,
+                    'room_id' => $equipment->room_id,
+                    'issue_description' => $equipment->note ?: 'Bảo trì thiết bị (Chuyển trạng thái sang Đang bảo trì)',
+                    'status' => MaintenanceStatusEnum::InProgress,
+                    'reported_by' => auth()->id(),
+                ]);
+            }
+        } elseif ($newStatus === EquipmentStatusEnum::Good->value) {
             EquipmentMaintenanceLog::where('room_equipment_id', $equipment->id)
                 ->whereIn('status', [MaintenanceStatusEnum::Pending->value, MaintenanceStatusEnum::InProgress->value])
                 ->update([
                     'status' => MaintenanceStatusEnum::Completed->value,
                     'resolved_at' => now(),
                     'resolved_by' => auth()->id(),
-                ]);
-        } elseif ($newStatus === EquipmentStatusEnum::Maintenance->value) {
-            EquipmentMaintenanceLog::where('room_equipment_id', $equipment->id)
-                ->where('status', MaintenanceStatusEnum::Pending->value)
-                ->update([
-                    'status' => MaintenanceStatusEnum::InProgress->value,
                 ]);
         } elseif ($newStatus === EquipmentStatusEnum::Disposed->value) {
             EquipmentMaintenanceLog::where('room_equipment_id', $equipment->id)
