@@ -140,7 +140,8 @@ const auditStats = computed(() => {
   const compliant = rooms.value.filter(r => r.badge_color === 'green').length
   const missing = rooms.value.filter(r => r.badge_color === 'red' || (r.stats?.missing_count > 0)).length
   const maintenance = rooms.value.filter(r => r.badge_color === 'yellow' || (r.stats?.maintenance_count > 0)).length
-  const rate = total > 0 ? Math.round((compliant / total) * 100) : 0
+  const rawRate = total > 0 ? (compliant / total) * 100 : 0
+  const rate = rawRate === 0 || rawRate === 100 ? rawRate.toFixed(0) : rawRate.toFixed(1)
   return { total, compliant, missing, maintenance, rate }
 })
 
@@ -502,14 +503,16 @@ async function handleCreateSubmit({ data }) {
           </div>
         </div>
 
-        <!-- Đạt chuẩn 100% -->
+        <!-- Đạt chuẩn định mức -->
         <div class="bg-white border border-emerald-200/80 rounded-2xl p-4 flex items-center gap-3.5 shadow-xs">
           <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
             <v-icon icon="mdi-check-decagram" size="24" />
           </div>
           <div>
-            <div class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Đạt chuẩn 100%</div>
-            <div class="text-2xl font-black text-emerald-700 mt-0.5">{{ auditStats.compliant }}</div>
+            <div class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Số phòng đủ chuẩn</div>
+            <div class="text-2xl font-black text-emerald-700 mt-0.5">
+              {{ auditStats.compliant }} <span class="text-xs font-normal text-slate-400">/ {{ auditStats.total }} phòng</span>
+            </div>
           </div>
         </div>
 
@@ -519,8 +522,10 @@ async function handleCreateSubmit({ data }) {
             <v-icon icon="mdi-alert-decagram" size="24" />
           </div>
           <div>
-            <div class="text-xs font-bold text-rose-600 uppercase tracking-wider">Chưa đạt định mức</div>
-            <div class="text-2xl font-black text-rose-700 mt-0.5">{{ auditStats.missing }}</div>
+            <div class="text-xs font-bold text-rose-600 uppercase tracking-wider">Phòng thiếu thiết bị</div>
+            <div class="text-2xl font-black text-rose-700 mt-0.5">
+              {{ auditStats.missing }} <span class="text-xs font-normal text-slate-400">phòng</span>
+            </div>
           </div>
         </div>
 
@@ -530,7 +535,7 @@ async function handleCreateSubmit({ data }) {
             <v-icon icon="mdi-percent-outline" size="24" />
           </div>
           <div>
-            <div class="text-xs font-bold text-blue-600 uppercase tracking-wider">Tỷ lệ đạt chuẩn</div>
+            <div class="text-xs font-bold text-blue-600 uppercase tracking-wider">Tỷ lệ phủ định mức</div>
             <div class="text-2xl font-black text-blue-700 mt-0.5">{{ auditStats.rate }}%</div>
           </div>
         </div>
