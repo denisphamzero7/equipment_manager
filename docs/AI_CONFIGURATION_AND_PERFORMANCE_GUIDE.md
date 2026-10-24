@@ -178,11 +178,58 @@ Mọi cấu hình tối ưu hiệu năng phải đảm bảo tính tương thíc
 
 ---
 
-## 🛠️ 6. Checklist Tự kiểm tra Dành cho AI (Self-Verification Checklist)
+## 🚀 7. Chạy Song Song: Chế độ Docker vs Chế độ Không Docker (Dual-Mode Running)
+
+Để linh hoạt tối đa khi phát triển, hệ thống được cấu hình để có thể chạy **hoàn toàn bằng Docker** hoặc **hoàn toàn Native trên Windows (không cần Docker)**:
+
+### ⚠️ Bản chất các lỗi thường gặp khi chạy Native Windows (`php artisan serve`):
+1. **Lỗi `Call to undefined function imagecreatefromstring()`**: Do PHP XAMPP chưa mở extension `gd`.
+   - *Cách xử lý*: Mở `C:\xampp\php\php.ini`, bỏ dấu `;` ở các dòng `extension=gd`, `extension=exif`, `extension=sockets`.
+2. **Lỗi `Pusher error: cURL error 6: Could not resolve host: reverb`**: Do file `.env` để `REVERB_HOST=reverb`.
+   - *Cách xử lý*: Đặt trong `.env` là `REVERB_HOST=127.0.0.1`. Khi chạy Docker, file `compose.yaml` đã tự động ghi đè biến này thành `reverb` (`environment: REVERB_HOST: reverb`), nên cả 2 môi trường cùng dùng chung 1 file `.env` hoàn hảo!
+   - Đồng thời, trong code Backend, mọi lệnh phát broadcast đều được bọc qua `safeBroadcast()` để nếu chưa bật Reverb thì request vẫn thực thi thành công, không làm sập giao diện người dùng.
+3. **Lỗi chiếm cổng 80 (`Address already in use / Permission denied`)**:
+   - Do container Docker vẫn đang bật (`docker ps`), hoặc Apache của XAMPP đang chạy, hoặc IIS của Windows.
+   - *Cách xử lý*: Chạy `docker compose down` trước khi chạy `php artisan serve --port=80`, hoặc chạy trên cổng thay thế `php artisan serve --port=8000`.
+
+### 📋 Hướng dẫn Khởi chạy:
+
+#### Cách 1: Chạy bằng Docker (Khuyên dùng khi cần đầy đủ Redis & Reverb)
+```bash
+cd Backend
+docker compose up -d
+```
+- Web backend chạy tại: `http://localhost` (port 80)
+- WebSocket Reverb: `port 8090`
+- Redis: `port 6379`
+- Frontend: `npm run dev --prefix Frontend` (truy cập `http://localhost:3000`)
+
+#### Cách 2: Chạy Native Windows không cần Docker (Tốc độ phản hồi cực nhanh, nhẹ máy)
+```bash
+# 1. Tắt Docker nếu đang chạy để giải phóng port 80
+cd Backend
+docker compose down
+
+# 2. Khởi động MySQL trên XAMPP Control Panel (Port 3306)
+
+# 3. Chạy Backend Laravel Native
+php artisan serve --port=80
+# (Hoặc nếu port 80 bị Apache XAMPP chiếm, có thể dùng --port=8000)
+
+# 4. Khởi động Frontend
+cd ../Frontend
+npm run dev
+```
+
+---
+
+## 🛠️ 8. Checklist Tự kiểm tra Dành cho AI (Self-Verification Checklist)
 
 Trước khi hoàn tất bất kỳ tác vụ nào liên quan đến backend và cấu hình, AI phải kiểm tra:
 
 - [ ] File `.env` không bị stage hay commit lên Git.
+- [ ] Extension `gd`, `exif`, `sockets` đã được bật trong PHP local.
+- [ ] Broadcast events được phát qua `safeBroadcast()` để an toàn khi Reverb không chạy.
 - [ ] Không có query N+1 trong Controller hoặc Resource mới tạo.
 - [ ] API tra cứu dữ liệu mới đã được thêm vào danh sách loại trừ của `LogActivity` nếu tần suất gọi cao.
 - [ ] Các câu lệnh đếm trạng thái đã được gom nhóm bằng `GROUP BY`.

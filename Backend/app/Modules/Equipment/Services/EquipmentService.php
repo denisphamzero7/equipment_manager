@@ -22,6 +22,18 @@ use Illuminate\Support\Facades\DB;
 class EquipmentService
 {
     /**
+     * Phát broadcast an toàn (không làm sập request nếu server websocket/reverb chưa bật hoặc host không kết nối được).
+     */
+    protected function safeBroadcast(object $event): void
+    {
+        try {
+            event($event);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Broadcast failed safely: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Xóa cache liên quan khi thiết bị thay đổi (stats, map view).
      */
     public function invalidateCache(?int $orgId = null): void
@@ -127,7 +139,7 @@ class EquipmentService
         });
 
         // Phát Broadcast Real-time
-        event(new EquipmentCreated($item, $clientRequestId));
+        $this->safeBroadcast(new EquipmentCreated($item, $clientRequestId));
         $this->invalidateCache($item->organization_id);
 
         return $item;
@@ -155,7 +167,7 @@ class EquipmentService
         });
 
         // Phát Broadcast Real-time
-        event(new EquipmentUpdated($item));
+        $this->safeBroadcast(new EquipmentUpdated($item));
         $this->invalidateCache($item->organization_id);
 
         return $item;
@@ -171,7 +183,7 @@ class EquipmentService
 
         if ($deleted) {
             // Phát Broadcast Real-time
-            event(new EquipmentDeleted($id, $roomId, $orgId));
+            $this->safeBroadcast(new EquipmentDeleted($id, $roomId, $orgId));
             $this->invalidateCache($orgId);
         }
 
@@ -213,7 +225,7 @@ class EquipmentService
         });
 
         // Phát Broadcast Real-time
-        event(new EquipmentStatusChanged($item, $oldStatus));
+        $this->safeBroadcast(new EquipmentStatusChanged($item, $oldStatus));
         $this->invalidateCache($item->organization_id);
 
         return $item;
@@ -290,7 +302,7 @@ class EquipmentService
         });
 
         // Phát Broadcast Real-time
-        event(new EquipmentAssigned($item, $fromRoomId));
+        $this->safeBroadcast(new EquipmentAssigned($item, $fromRoomId));
         $this->invalidateCache($item->organization_id);
 
         return $item;
@@ -480,7 +492,7 @@ class EquipmentService
         });
 
         // Phát Broadcast Real-time
-        event(new EquipmentBrokenReported($item, $issueDescription, auth()->user()?->name));
+        $this->safeBroadcast(new EquipmentBrokenReported($item, $issueDescription, auth()->user()?->name));
         $this->invalidateCache($item->organization_id);
 
         return $item;

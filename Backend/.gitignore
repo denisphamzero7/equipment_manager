@@ -18,6 +18,9 @@
 /public/storage
 /storage/*.key
 /storage/pail
+/storage/media-library
+/storage/app/public/*
+!/storage/app/public/.gitignore
 /vendor
 
 # MaxMind GeoLite2 database (tải bằng sail artisan location:update)
