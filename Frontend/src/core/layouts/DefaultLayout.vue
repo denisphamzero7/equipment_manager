@@ -45,62 +45,77 @@ watch(mobile, isMobile => {
   }
 })
 
-const navItems = [
+const navSections = [
   {
-    title: 'Bảng điều khiển',
-    to: '/dashboard',
-    icon: 'mdi-view-dashboard-outline',
-    action: 'read',
-    subject: 'Dashboard',
+    heading: 'BẢNG ĐIỀU KHIỂN',
+    items: [
+      {
+        title: 'Tổng quan Dashboard',
+        to: '/dashboard',
+        icon: 'mdi-chart-pie-outline',
+        action: 'read',
+        subject: 'Dashboard',
+      },
+      {
+        title: 'Sơ đồ mặt bằng (Map)',
+        to: '/equipments/map-view',
+        icon: 'mdi-map-marker-radius-outline',
+        action: 'read',
+        subject: 'Equipment',
+      },
+    ],
   },
   {
-    title: 'Sơ đồ mặt bằng (Map)',
-    to: '/equipments/map-view',
-    icon: 'mdi-floor-plan',
-    action: 'read',
-    subject: 'Equipment',
+    heading: 'NGHIỆP VỤ QUẢN LÝ',
+    items: [
+      {
+        title: 'Danh sách thiết bị',
+        to: '/equipments',
+        icon: 'mdi-cube-outline',
+        action: 'read',
+        subject: 'Equipment',
+      },
+      {
+        title: 'Quản lý phòng & tầng',
+        to: '/rooms',
+        icon: 'mdi-home-city-outline',
+        action: 'index',
+        subject: 'Room',
+      },
+      {
+        title: 'Định mức thiết bị phòng',
+        to: '/rooms/equipments',
+        icon: 'mdi-clipboard-check-outline',
+        action: 'read',
+        subject: 'Room',
+      },
+    ],
   },
   {
-    title: 'Danh sách thiết bị',
-    to: '/equipments',
-    icon: 'mdi-devices',
-    action: 'read',
-    subject: 'Equipment',
-  },
-  {
-    title: 'Quản lý phòng & tầng',
-    to: '/rooms',
-    icon: 'mdi-home-city-outline',
-    action: 'index',
-    subject: 'Room',
-  },
-  {
-    title: 'Định mức thiết bị phòng',
-    to: '/rooms/equipments',
-    icon: 'mdi-door-sliding',
-    action: 'read',
-    subject: 'Room',
-  },
-  {
-    title: 'Quản lý người dùng',
-    to: '/admin/users',
-    icon: 'mdi-account-group-outline',
-    action: 'read',
-    subject: 'Users',
-  },
-  {
-    title: 'Quản lý vai trò',
-    to: '/admin/roles',
-    icon: 'mdi-shield-account-outline',
-    action: 'read',
-    subject: 'Roles',
-  },
-  {
-    title: 'Quản lý quyền',
-    to: '/admin/permissions',
-    icon: 'mdi-key-chain-variant',
-    action: 'tree',
-    subject: 'Permissions',
+    heading: 'HỆ THỐNG & PHÂN QUYỀN',
+    items: [
+      {
+        title: 'Quản lý người dùng',
+        to: '/admin/users',
+        icon: 'mdi-account-group-outline',
+        action: 'read',
+        subject: 'Users',
+      },
+      {
+        title: 'Vai trò & Phân quyền',
+        to: '/admin/roles',
+        icon: 'mdi-shield-check-outline',
+        action: 'read',
+        subject: 'Roles',
+      },
+      {
+        title: 'Cây danh mục quyền',
+        to: '/admin/permissions',
+        icon: 'mdi-key-variant',
+        action: 'tree',
+        subject: 'Permissions',
+      },
+    ],
   },
 ]
 
@@ -136,54 +151,56 @@ function handleNavClick() {
     <v-navigation-drawer
       v-model="drawer"
       :rail="!mobile && rail"
-      :rail-width="68"
+      :rail-width="72"
       :temporary="mobile"
       :permanent="!mobile"
       elevation="0"
       color="white"
-      class="border-r border-slate-200/80"
-      :width="260"
+      class="border-r border-slate-200/80 select-none shadow-xs"
+      :width="270"
     >
-      <!-- Logo / Header -->
+      <!-- Logo / Header phong cách Portal -->
       <div
         class="h-16 border-b border-slate-100 flex items-center transition-all overflow-hidden"
-        :class="!mobile && rail ? 'justify-center px-2' : 'justify-between px-4'"
+        :class="!mobile && rail ? 'justify-center px-2' : 'justify-between px-5'"
       >
         <div v-if="mobile || !rail" class="flex items-center gap-3 overflow-hidden min-w-0">
-          <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center flex-shrink-0 text-white shadow-sm shadow-blue-500/20">
-            <v-icon icon="mdi-shield-home" size="20" />
+          <!-- Logo Cyan/Teal hiện đại như trong ảnh -->
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-teal-400 flex items-center justify-center flex-shrink-0 text-white shadow-md shadow-cyan-500/25">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+            </svg>
           </div>
           <div class="overflow-hidden">
-            <h2 class="text-sm font-bold text-slate-800 tracking-tight truncate">
-              Equipment Hub
+            <h2 class="text-base font-extrabold text-slate-800 tracking-tight flex items-center gap-1.5 truncate">
+              Portal <span class="text-[10px] font-semibold text-cyan-600 bg-cyan-50 px-1.5 py-0.5 rounded-full border border-cyan-100">PRO</span>
             </h2>
-            <p class="text-[11px] text-slate-400 truncate">
+            <p class="text-[11px] font-medium text-slate-400 truncate">
               Quản lý Khách sạn
             </p>
           </div>
         </div>
 
-        <!-- Toggle Button when expanded -->
-        <v-btn
+        <!-- Toggle Button dạng tròn tinh tế như ảnh (icon chấm tròn & mũi tên) -->
+        <button
           v-if="!mobile && !rail"
-          icon="mdi-chevron-left"
-          variant="text"
-          density="comfortable"
-          size="small"
-          color="secondary"
+          type="button"
+          class="w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:text-cyan-600 hover:border-cyan-300 hover:bg-cyan-50/50 flex items-center justify-center transition cursor-pointer"
           title="Thu gọn menu"
           @click="rail = true"
-        />
+        >
+          <v-icon icon="mdi-circle-slice-8" size="14" />
+        </button>
 
         <!-- Centered Expand Button when collapsed (rail mode) -->
         <button
           v-else-if="!mobile && rail"
           type="button"
-          class="w-10 h-10 rounded-xl hover:bg-slate-100 text-slate-500 hover:text-blue-600 flex items-center justify-center transition cursor-pointer"
+          class="w-9 h-9 rounded-xl hover:bg-cyan-50 text-slate-400 hover:text-cyan-600 flex items-center justify-center transition cursor-pointer"
           title="Mở rộng menu"
           @click="rail = false"
         >
-          <v-icon icon="mdi-chevron-right" size="22" />
+          <v-icon icon="mdi-chevron-right" size="20" />
         </button>
 
         <!-- Close Button on Mobile -->
@@ -198,39 +215,75 @@ function handleNavClick() {
         />
       </div>
 
-      <!-- Navigation Links -->
-      <div class="p-3 space-y-1">
-        <template v-for="item in navItems" :key="item.to">
-          <!-- CASL ability check -->
-          <router-link
-            v-if="$can(item.action, item.subject)"
-            :to="item.to"
-            class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all"
-            :class="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to))
-              ? 'bg-blue-50 text-blue-600 font-semibold shadow-xs' 
-              : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
-            @click="handleNavClick"
-          >
-            <v-icon
-              :icon="item.icon"
-              size="20"
-              :color="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to)) ? 'primary' : 'secondary'"
-            />
-            <span v-if="mobile || !rail" class="truncate">{{ item.title }}</span>
-          </router-link>
+      <!-- Navigation Links theo Section phong cách Portal -->
+      <div class="py-3 px-3 space-y-5 overflow-y-auto max-h-[calc(100vh-8rem)]">
+        <template v-for="(section, sIndex) in navSections" :key="sIndex">
+          <div class="space-y-1">
+            <!-- Heading nhóm -->
+            <div
+              v-if="mobile || !rail"
+              class="px-3 pt-1 pb-1 text-[11px] font-bold text-slate-400/90 tracking-wider uppercase"
+            >
+              {{ section.heading }}
+            </div>
+            <div v-else class="h-2"></div>
+
+            <!-- Items trong nhóm -->
+            <template v-for="item in section.items" :key="item.to">
+              <router-link
+                v-if="$can(item.action, item.subject)"
+                :to="item.to"
+                class="group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200"
+                :class="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to))
+                  ? 'bg-gradient-to-r from-cyan-500 to-teal-400 text-white font-semibold shadow-md shadow-cyan-500/25' 
+                  : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'"
+                @click="handleNavClick"
+              >
+                <div class="flex items-center gap-3 overflow-hidden min-w-0">
+                  <div
+                    class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
+                    :class="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to))
+                      ? 'bg-white/20 text-white' 
+                      : 'bg-slate-100 text-slate-500 group-hover:bg-cyan-50 group-hover:text-cyan-600'"
+                  >
+                    <v-icon
+                      :icon="item.icon"
+                      size="18"
+                      :color="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to)) ? 'white' : undefined"
+                    />
+                  </div>
+                  <span v-if="mobile || !rail" class="truncate font-medium text-[13px] tracking-tight">
+                    {{ item.title }}
+                  </span>
+                </div>
+
+                <!-- Mũi tên nhẹ bên phải cho item đang xem hoặc hover (như ảnh mẫu) -->
+                <v-icon
+                  v-if="(mobile || !rail)"
+                  icon="mdi-chevron-right"
+                  size="16"
+                  class="transition-transform group-hover:translate-x-0.5"
+                  :class="route.path === item.to || (item.to !== '/dashboard' && route.path.startsWith(item.to)) ? 'text-white/80' : 'text-slate-300 group-hover:text-slate-400'"
+                />
+              </router-link>
+            </template>
+          </div>
         </template>
       </div>
 
       <!-- Organization badge in Sidebar Bottom -->
       <template #append>
-        <div v-if="mobile || !rail" class="p-4 border-t border-slate-100 bg-slate-50/50">
+        <div v-if="mobile || !rail" class="p-3.5 border-t border-slate-100 bg-slate-50/70">
           <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
-            <span class="font-medium">Tổ chức hiện tại:</span>
-            <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-700 font-bold">
-              #{{ organizationId }}
+            <span class="font-medium text-[11px] text-slate-400 uppercase tracking-wider">Tổ chức:</span>
+            <span class="px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 text-[10px] font-bold">
+              ID #{{ organizationId }}
             </span>
           </div>
-          <p class="text-xs font-bold text-slate-700 truncate">{{ currentOrg.name }}</p>
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></div>
+            <p class="text-xs font-bold text-slate-700 truncate">{{ currentOrg.name }}</p>
+          </div>
         </div>
       </template>
     </v-navigation-drawer>
