@@ -57,11 +57,11 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Thiết lập thư mục làm việc
 WORKDIR /var/www/html
 
-# Copy mã nguồn Backend
-COPY Backend/composer*.json ./
-RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
-
+# Copy toàn bộ mã nguồn Backend trước
 COPY Backend/ ./
+
+# Cài đặt PHP dependencies với autoloader chuẩn
+RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs
 
 # Copy build Frontend từ Giai đoạn 1 vào thư mục public của Laravel
 COPY --from=frontend-builder /app/frontend/dist /var/www/html/public
