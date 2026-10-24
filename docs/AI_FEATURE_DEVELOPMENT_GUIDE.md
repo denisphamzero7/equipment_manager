@@ -156,4 +156,5 @@ Tối thiểu nên có test cho:
 
 - [README dự án](../README.md): mục tiêu, module và cách khởi chạy.
 - [Hướng dẫn Docker](./DOCKER_GUIDE.md): chạy dịch vụ và xem log.
+- [Hướng dẫn Cấu hình & Tối ưu Hiệu năng](./AI_CONFIGURATION_AND_PERFORMANCE_GUIDE.md): kiến trúc hybrid, tối ưu OPcache, CSDL và xử lý nghẽn I/O.
 - [AGENTS.md](../AGENTS.md) và [GEMINI.md](../GEMINI.md): quy tắc làm việc của coding agent.

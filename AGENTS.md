@@ -22,3 +22,4 @@
 
 ## 📚 3. Hướng dẫn phát triển tính năng bằng AI
 - Trước khi thêm/sửa tính năng, đọc [docs/AI_FEATURE_DEVELOPMENT_GUIDE.md](docs/AI_FEATURE_DEVELOPMENT_GUIDE.md) để theo đúng kiến trúc, quy ước UI, hiệu năng và phạm vi thay đổi của dự án.
+- Khi cấu hình môi trường, xử lý sự cố hiệu năng (tốc độ tải dữ liệu < 1s), tham khảo [docs/AI_CONFIGURATION_AND_PERFORMANCE_GUIDE.md](docs/AI_CONFIGURATION_AND_PERFORMANCE_GUIDE.md).
