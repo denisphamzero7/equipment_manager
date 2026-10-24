@@ -1,6 +1,6 @@
 <script setup>
 import { ref, reactive, computed, onMounted, watch } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import DefaultLayout from '@/core/layouts/DefaultLayout.vue'
 import AppPageHeader from '@/core/components/AppPageHeader.vue'
 import AppDataTable from '@/core/components/AppDataTable.vue'
@@ -18,7 +18,6 @@ import { toast } from '@/core/helpers/toast'
 import { useRealtimeStore } from '@/core/stores/realtimeStore'
 
 const router = useRouter()
-const route = useRoute()
 const realtimeStore = useRealtimeStore()
 
 // View mode: 'cards' (Thẻ theo tầng) | 'table' (Dạng bảng)
@@ -84,7 +83,8 @@ const tableHeaders = [
 const hotelBlockOrder = ['Block A', 'Block B', 'Block C', 'Block D', 'Condos 1', 'Condos 2', 'Penthouse-spa+Villa']
 
 const existingBlocks = computed(() => {
-  const set = new Set(roomSummary.value.map(r => r.block).filter(Boolean))
+  const source = roomSummary.value.length > 0 ? roomSummary.value : rooms.value
+  const set = new Set(source.map(r => r.block).filter(Boolean))
   // Merge standard blocks with any custom ones
   hotelBlockOrder.forEach(b => set.add(b))
   return Array.from(set).sort((a, b) => {
@@ -99,8 +99,9 @@ const existingBlocks = computed(() => {
 
 // Count rooms in each block for the quick-filter pills
 const blockCounts = computed(() => {
-  const counts = { total: roomSummary.value.length }
-  roomSummary.value.forEach(r => {
+  const source = roomSummary.value.length > 0 ? roomSummary.value : rooms.value
+  const counts = { total: source.length }
+  source.forEach(r => {
     const b = r.block || 'Khu vực chung'
     counts[b] = (counts[b] || 0) + 1
   })
@@ -108,15 +109,25 @@ const blockCounts = computed(() => {
 })
 
 const existingFloors = computed(() => {
+  const source = roomSummary.value.length > 0 ? roomSummary.value : rooms.value
   const targetRooms = filters.block
-    ? roomSummary.value.filter(r => r.block === filters.block)
-    : roomSummary.value
+    ? source.filter(r => r.block === filters.block)
+    : source
   const set = new Set(targetRooms.map(r => r.floor).filter(f => f !== null && f !== undefined))
   return Array.from(set).sort((a, b) => a - b)
 })
 
-// Sắp xếp tầng: mặc định 'asc' (Tầng 1 -> 7)
+// Sắp xếp tầng: mặc định 'asc'
 const floorSortOrder = ref('asc')
+
+// Chuỗi hiển thị khoảng tầng thực tế của Block (ví dụ: Tầng 1 → 7)
+const floorRangeText = computed(() => {
+  if (existingFloors.value.length === 0) return 'Tầng'
+  const min = Math.min(...existingFloors.value)
+  const max = Math.max(...existingFloors.value)
+  if (min === max) return `Tầng ${min}`
+  return floorSortOrder.value === 'asc' ? `Tầng ${min} → ${max}` : `Tầng ${max} → ${min}`
+})
 
 const hasActiveFilters = computed(() => {
   return !!(filters.search || filters.block || (filters.floor !== null && filters.floor !== '') || filters.room_type_id || filters.status || floorSortOrder.value !== 'asc')
@@ -124,18 +135,12 @@ const hasActiveFilters = computed(() => {
 
 function selectBlock(b) {
   filters.block = b
-  filters.floor = null // Tự động reset tầng khi đổi Block, đồng bộ hoàn toàn với Sơ đồ Map View
+  filters.floor = null // Đồng bộ với Sơ đồ mặt bằng: Luôn reset Tầng khi đổi Block
+  pagination.currentPage = 1
   if (viewMode.value === 'table') {
     handleSearch()
   }
 }
-
-const totalFilteredRooms = computed(() => {
-  if (viewMode.value === 'cards') {
-    return groupedRooms.value.reduce((sum, b) => sum + b.totalRooms, 0)
-  }
-  return pagination.totalItems
-})
 
 // Group rooms by Block and then Floor for Grid Cards view
 const groupedRooms = computed(() => {
@@ -203,6 +208,14 @@ const groupedRooms = computed(() => {
     })
 })
 
+// Total rooms matching current filters
+const totalFilteredRooms = computed(() => {
+  if (viewMode.value === 'cards') {
+    return groupedRooms.value.reduce((sum, b) => sum + b.totalRooms, 0)
+  }
+  return pagination.totalItems
+})
+
 // Statistics counter
 const stats = computed(() => {
   let ready = 0, occupied = 0, notReady = 0, maintenance = 0
@@ -216,17 +229,21 @@ const stats = computed(() => {
   return { total: summaryRooms.length, ready, occupied, notReady, maintenance }
 })
 
+async function fetchRoomSummaryIfNeeded() {
+  if (!roomSummaryLoaded.value) {
+    try {
+      const all = await roomService.getRooms({ limit: 500, page: 1 })
+      const items = Array.isArray(all) ? all : (all?.data || [])
+      roomSummary.value = Array.isArray(items) ? items : []
+      roomSummaryLoaded.value = true
+    } catch (e) {
+      console.warn('Failed to load room summary:', e)
+    }
+  }
+}
+
 onMounted(async () => {
-  if (route.query.block) {
-    filters.block = String(route.query.block)
-  }
-  if (route.query.floor) {
-    filters.floor = Number(route.query.floor)
-  }
-  if (route.query.status) {
-    filters.status = String(route.query.status)
-  }
-  await Promise.all([fetchRoomTypes(), fetchRooms()])
+  await Promise.all([fetchRoomTypes(), fetchRooms(), fetchRoomSummaryIfNeeded()])
 })
 
 // Watch real-time changes
@@ -523,8 +540,8 @@ function getStatusBadge(status) {
               Quản lý Block
             </AppButton>
 
-            <!-- Link Map View (Đồng bộ phân khu đang chọn) -->
-            <router-link :to="{ path: '/equipments/map-view', query: filters.block ? { block: filters.block } : {} }">
+            <!-- Link Map View -->
+            <router-link to="/equipments/map-view">
               <AppButton variant="secondary">
                 <v-icon start icon="mdi-floor-plan" />
                 Sơ đồ Map View
@@ -661,11 +678,12 @@ function getStatusBadge(status) {
           </div>
         </div>
 
-        <!-- Bottom Section: Search, Filters & View Toggle -->
+        <!-- Bottom Section: Search, Filters & View Toggle (Clean 2-Row Synchronized with Map View) -->
         <div class="p-4 space-y-3.5">
-          <div class="flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3.5">
-            <!-- Search Input (Spacious) -->
-            <div class="flex-1 min-w-[240px]">
+          <!-- Row 1: Search Box & View Mode Switcher -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <!-- Search Input -->
+            <div class="flex-1 max-w-xl">
               <v-text-field
                 v-model="filters.search"
                 placeholder="Tìm nhanh theo số phòng, tên phòng..."
@@ -679,10 +697,40 @@ function getStatusBadge(status) {
               />
             </div>
 
-            <!-- Filters Group (Đồng bộ chuẩn phân khu, tầng, trạng thái, loại phòng) -->
-            <div class="flex flex-wrap items-center gap-2.5">
+            <!-- View Switcher & Counter -->
+            <div class="flex items-center gap-3 self-end sm:self-center">
+              <span class="text-xs text-slate-500 font-medium whitespace-nowrap hidden md:inline-block">
+                Tìm thấy <strong class="text-slate-800 text-sm font-bold">{{ totalFilteredRooms }}</strong> / {{ totalRooms }} phòng
+              </span>
+
+              <div class="flex items-center gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200/80 shrink-0">
+                <button
+                  type="button"
+                  class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-150 flex items-center gap-1.5 cursor-pointer"
+                  :class="viewMode === 'cards' ? 'bg-white text-primary shadow-xs' : 'text-slate-600 hover:text-slate-900'"
+                  @click="viewMode = 'cards'"
+                >
+                  <v-icon icon="mdi-view-grid-outline" size="16" />
+                  <span>Thẻ theo tầng</span>
+                </button>
+                <button
+                  type="button"
+                  class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-150 flex items-center gap-1.5 cursor-pointer"
+                  :class="viewMode === 'table' ? 'bg-white text-primary shadow-xs' : 'text-slate-600 hover:text-slate-900'"
+                  @click="viewMode = 'table'"
+                >
+                  <v-icon icon="mdi-table" size="16" />
+                  <span>Dạng bảng</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 2: Filter Controls Group (Spacious & No Truncation) -->
+          <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2.5">
+            <div class="flex flex-wrap items-center gap-2.5 flex-1">
               <!-- Filter Floor -->
-              <div class="w-36 shrink-0">
+              <div class="min-w-[145px] max-w-[170px] flex-1 sm:flex-initial">
                 <v-select
                   v-model="filters.floor"
                   :items="[{ value: null, title: 'Tất cả Tầng' }, ...existingFloors.map(f => ({ value: f, title: `Tầng ${f}` }))]"
@@ -696,20 +744,20 @@ function getStatusBadge(status) {
                 />
               </div>
 
-              <!-- Floor Sort Direction Toggle Button (Only in Cards view) -->
+              <!-- Floor Sort Direction Toggle Button (Only in Cards view when multiple floors) -->
               <button
-                v-if="viewMode === 'cards'"
+                v-if="viewMode === 'cards' && existingFloors.length > 1"
                 type="button"
-                class="px-2.5 py-2 text-xs font-semibold rounded-lg border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 transition flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs"
-                :title="floorSortOrder === 'asc' ? 'Đang sắp xếp Tầng 1 → 7 (Bấm để đảo 7 → 1)' : 'Đang sắp xếp Tầng 7 → 1 (Bấm để đảo 1 → 7)'"
+                class="px-3 py-2 text-xs font-semibold rounded-lg border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 transition flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs"
+                :title="floorSortOrder === 'asc' ? 'Đang sắp xếp tầng tăng dần (Bấm để đảo ngược)' : 'Đang sắp xếp tầng giảm dần (Bấm để đảo ngược)'"
                 @click="floorSortOrder = floorSortOrder === 'asc' ? 'desc' : 'asc'"
               >
                 <v-icon :icon="floorSortOrder === 'asc' ? 'mdi-sort-numeric-ascending' : 'mdi-sort-numeric-descending'" size="16" color="primary" />
-                <span>Tầng {{ floorSortOrder === 'asc' ? '1 → 7' : '7 → 1' }}</span>
+                <span>{{ floorRangeText }}</span>
               </button>
 
               <!-- Filter Status -->
-              <div class="w-48 shrink-0">
+              <div class="min-w-[175px] max-w-[210px] flex-1 sm:flex-initial">
                 <v-select
                   v-model="filters.status"
                   :items="[{ value: '', label: 'Tất cả trạng thái' }, ...RoomStatusOptions]"
@@ -724,7 +772,7 @@ function getStatusBadge(status) {
               </div>
 
               <!-- Filter Room Type -->
-              <div class="w-44 shrink-0">
+              <div class="min-w-[175px] max-w-[220px] flex-1 sm:flex-initial">
                 <v-select
                   v-model="filters.room_type_id"
                   :items="[{ id: null, name: 'Tất cả loại phòng' }, ...roomTypes]"
@@ -741,6 +789,7 @@ function getStatusBadge(status) {
               <!-- Reset Button -->
               <button
                 v-if="hasActiveFilters"
+                type="button"
                 class="px-3 py-2 text-xs font-semibold rounded-lg border border-slate-200 text-slate-600 bg-slate-50 hover:bg-slate-100 hover:text-slate-900 transition flex items-center gap-1 shrink-0 cursor-pointer"
                 title="Xóa tất cả bộ lọc đang áp dụng"
                 @click="resetFilters"
@@ -750,30 +799,9 @@ function getStatusBadge(status) {
               </button>
             </div>
 
-            <!-- Counter & View Switcher -->
-            <div class="flex items-center gap-3 shrink-0 self-end xl:self-center">
-              <div class="text-xs text-slate-500 font-medium whitespace-nowrap">
-                Tìm thấy <strong class="text-slate-800 text-sm font-bold">{{ totalFilteredRooms }}</strong> / {{ totalRooms }} phòng
-              </div>
-
-              <div class="flex items-center gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200/80">
-                <button
-                  class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-150 flex items-center gap-1.5 cursor-pointer"
-                  :class="viewMode === 'cards' ? 'bg-white text-primary shadow-xs' : 'text-slate-600 hover:text-slate-900'"
-                  @click="viewMode = 'cards'"
-                >
-                  <v-icon icon="mdi-view-grid-outline" size="16" />
-                  <span>Thẻ theo tầng</span>
-                </button>
-                <button
-                  class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-150 flex items-center gap-1.5 cursor-pointer"
-                  :class="viewMode === 'table' ? 'bg-white text-primary shadow-xs' : 'text-slate-600 hover:text-slate-900'"
-                  @click="viewMode = 'table'"
-                >
-                  <v-icon icon="mdi-table" size="16" />
-                  <span>Dạng bảng</span>
-                </button>
-              </div>
+            <!-- Mobile counter -->
+            <div class="text-xs text-slate-500 font-medium md:hidden w-full text-right">
+              Tìm thấy <strong class="text-slate-800 text-sm font-bold">{{ totalFilteredRooms }}</strong> / {{ totalRooms }} phòng
             </div>
           </div>
         </div>
