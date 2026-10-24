@@ -19,8 +19,8 @@ axiosClient.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`
     }
 
-    // Gắn X-Organization-Id (mặc định 22 hoặc tổ chức đang chọn)
-    const orgId = storage.get(StorageKeys.ORGANIZATION_ID, 22)
+    // Gắn X-Organization-Id của tổ chức người dùng đang làm việc
+    const orgId = storage.get(StorageKeys.ORGANIZATION_ID)
     if (orgId) {
       config.headers['X-Organization-Id'] = orgId
     }

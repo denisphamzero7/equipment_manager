@@ -77,8 +77,11 @@ export const useRealtimeStore = defineStore('realtime', () => {
   }
 
   function initRealtime(orgId) {
-    const targetOrgId = Number(orgId || storage.get(StorageKeys.ORGANIZATION_ID) || 1)
-    if (!targetOrgId) return
+    const targetOrgId = Number(orgId || storage.get(StorageKeys.ORGANIZATION_ID))
+    if (!targetOrgId) {
+      console.warn('Realtime: Chưa xác định được ID tổ chức để lắng nghe sự kiện.')
+      return
+    }
 
     // Nếu đã đăng ký listener cho chính xác tổ chức này, không đăng ký trùng lặp
     if (isListening.value && currentOrgId.value === targetOrgId) {

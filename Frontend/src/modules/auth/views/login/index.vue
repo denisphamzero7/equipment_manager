@@ -64,7 +64,7 @@ async function handleLogin() {
 
     const orgs = result.availableOrganizations || []
     availableOrgs.value = orgs
-    selectedOrgId.value = result.currentOrganizationId || orgs[0]?.id || 1
+    selectedOrgId.value = result.currentOrganizationId || orgs[0]?.id || null
 
     if (orgs.length > 0) {
       // Chuyển sang Bước 2: Hiển thị danh sách tổ chức để người dùng chọn

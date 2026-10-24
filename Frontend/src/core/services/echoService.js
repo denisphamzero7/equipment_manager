@@ -37,16 +37,20 @@ export async function initEcho() {
       return {
         authorize: (socketId, callback) => {
           const currentToken = storage.get(StorageKeys.TOKEN)
-          const currentOrg = storage.get(StorageKeys.ORGANIZATION_ID) || 1
+          const currentOrg = storage.get(StorageKeys.ORGANIZATION_ID)
+
+          const authHeaders = {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            Authorization: `Bearer ${currentToken}`,
+          }
+          if (currentOrg) {
+            authHeaders['X-Organization-Id'] = String(currentOrg)
+          }
 
           fetch('/api/broadcasting/auth', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-              Authorization: `Bearer ${currentToken}`,
-              'X-Organization-Id': String(currentOrg),
-            },
+            headers: authHeaders,
             body: JSON.stringify({
               socket_id: socketId,
               channel_name: channel.name,

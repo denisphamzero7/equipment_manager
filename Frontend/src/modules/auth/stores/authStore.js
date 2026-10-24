@@ -9,7 +9,7 @@ export const useAuthStore = defineStore('auth', {
     token: storage.get(StorageKeys.TOKEN, null),
     user: storage.get(StorageKeys.USER, null),
     permissions: storage.get(StorageKeys.PERMISSIONS, []),
-    organizationId: storage.get(StorageKeys.ORGANIZATION_ID, 22),
+    organizationId: storage.get(StorageKeys.ORGANIZATION_ID, null),
     availableOrganizations: storage.get('eq_available_orgs', []),
     loading: false,
   }),
@@ -20,7 +20,7 @@ export const useAuthStore = defineStore('auth', {
     currentOrganization: state => {
       return state.availableOrganizations.find(o => o.id === state.organizationId) || {
         id: state.organizationId,
-        name: 'Chi nhánh chính',
+        name: 'Tổ chức hiện tại',
       }
     },
   },
@@ -38,7 +38,7 @@ export const useAuthStore = defineStore('auth', {
         const user = data.user || res.user
         const permissions = data.permissions || user?.permissions || ['*']
         const availableOrgs = data.available_organizations || []
-        const currentOrgId = data.current_organization_id || (availableOrgs[0]?.id ?? 22)
+        const currentOrgId = data.current_organization_id || (availableOrgs[0]?.id ?? null)
 
         this.token = token
         this.user = user

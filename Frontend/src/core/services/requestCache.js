@@ -5,7 +5,7 @@ const requests = new Map()
 const generations = new Map()
 
 function cacheKey(namespace, key) {
-  const organizationId = storage.get(StorageKeys.ORGANIZATION_ID, 22)
+  const organizationId = storage.get(StorageKeys.ORGANIZATION_ID) || 'global'
   return `${namespace}|${organizationId}|${key}`
 }
 
