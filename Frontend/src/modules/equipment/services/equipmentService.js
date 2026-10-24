@@ -14,7 +14,8 @@ function invalidateEquipmentData() {
     'equipment-detail',
     'equipment-map',
     'equipment-room-detail',
-    'dashboard-stats'
+    'dashboard-stats',
+    'equipment-stats'
   )
 }
 
@@ -43,6 +44,14 @@ export const equipmentService = {
       const response = await axiosClient.get(Endpoints.EQUIPMENT.INDEX, { params })
       return response.data
     }, { ttl: 10000 })
+  },
+
+  // 1b. Thống kê thiết bị (tổng thể, theo block, tình trạng hoạt động)
+  async getStats(params = {}) {
+    return getCachedRequest('equipment-stats', stableParams(params), async () => {
+      const response = await axiosClient.get(Endpoints.EQUIPMENT.STATS, { params })
+      return response.data?.data || response.data
+    }, { ttl: 15000 })
   },
 
   // 2. Chi tiết 1 thiết bị

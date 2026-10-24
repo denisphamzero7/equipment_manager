@@ -676,8 +676,12 @@ class EquipmentService
             }
 
             if (!empty($block)) {
-                $baseQuery->join('rooms', 'rooms.id', '=', 'room_equipments.room_id')
-                    ->where('rooms.block', $block);
+                if ($block === '__stock__') {
+                    $baseQuery->whereNull('room_equipments.room_id');
+                } else {
+                    $baseQuery->join('rooms', 'rooms.id', '=', 'room_equipments.room_id')
+                        ->where('rooms.block', $block);
+                }
             }
 
             // 1. Status aggregation in 1 fast query
@@ -761,12 +765,38 @@ class EquipmentService
                 'lost' => $lostCount,
             ];
 
+            $blockCountsQuery = DB::table('room_equipments')
+                ->join('rooms', 'rooms.id', '=', 'room_equipments.room_id')
+                ->whereNull('room_equipments.deleted_at');
+            if ($organizationId) {
+                $blockCountsQuery->where('room_equipments.organization_id', $organizationId);
+            }
+            $blockCounts = $blockCountsQuery
+                ->select('rooms.block', DB::raw('count(*) as count'))
+                ->groupBy('rooms.block')
+                ->pluck('count', 'block')
+                ->all();
+
+            $inStockTotal = (int) DB::table('room_equipments')
+                ->whereNull('deleted_at')
+                ->whereNull('room_id')
+                ->when($organizationId, fn($q) => $q->where('organization_id', $organizationId))
+                ->count();
+
+            $allTotal = (int) DB::table('room_equipments')
+                ->whereNull('deleted_at')
+                ->when($organizationId, fn($q) => $q->where('organization_id', $organizationId))
+                ->count();
+
             return [
                 'total_equipments' => $totalCount,
                 'summary' => $statusData,
                 'by_status' => $statusData,
                 'rooms_with_issues_count' => $brokenRoomsCount,
                 'by_category' => $byCategory,
+                'by_block' => $blockCounts,
+                'in_stock_total' => $inStockTotal,
+                'all_total' => $allTotal,
             ];
         });
     }

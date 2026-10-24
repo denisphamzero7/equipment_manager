@@ -238,7 +238,8 @@ class EquipmentController extends Controller
     public function stats(Request $request): JsonResponse
     {
         $block = $request->query('block');
-        $stats = $this->service->getHotelStats($request->user()?->organization_id, $block);
+        $orgId = (int) ($request->header('X-Organization-Id') ?: ($request->user()?->organization_id ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : null)));
+        $stats = $this->service->getHotelStats($orgId, $block);
         return $this->success($stats, 'Lấy báo cáo thống kê thiết bị thành công');
     }
 

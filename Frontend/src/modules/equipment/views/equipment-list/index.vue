@@ -107,8 +107,66 @@ const hasActiveFilters = computed(() => {
   )
 })
 
+// Thống kê tổng số và tình trạng thiết bị (Đồng bộ kiểu Quản lý phòng)
+const stats = ref({
+  total: 0,
+  good: 0,
+  broken: 0,
+  maintenance: 0,
+  in_stock: 0,
+})
+
+const blockCounts = ref({
+  total: 0,
+  __stock__: 0,
+})
+
+const loadingStats = ref(false)
+
+async function fetchStats() {
+  loadingStats.value = true
+  try {
+    const blockParam = equipmentStore.filters.block || ''
+    const res = await equipmentService.getStats(blockParam ? { block: blockParam } : {})
+    
+    // Đếm tổng số lượng thiết bị theo từng block cho các pill badge
+    if (res?.by_block) {
+      blockCounts.value = {
+        total: res.all_total ?? res.total_equipments ?? 0,
+        __stock__: res.in_stock_total ?? 0,
+        ...res.by_block,
+      }
+    }
+
+    // Thống kê trạng thái (theo block đang chọn hoặc toàn bộ)
+    const summary = res?.summary || res?.by_status || {}
+    stats.value = {
+      total: res?.total_equipments ?? 0,
+      good: summary.good ?? 0,
+      broken: (summary.broken ?? 0) + (summary.lost ?? 0),
+      maintenance: summary.maintenance ?? 0,
+      in_stock: summary.in_stock ?? 0,
+    }
+  } catch (err) {
+    console.error('Fetch equipment stats error:', err)
+  } finally {
+    loadingStats.value = false
+  }
+}
+
 function selectBlock(b) {
   equipmentStore.filters.block = b
+  equipmentStore.filters.floor = null
+  equipmentStore.fetchEquipments(1)
+  fetchStats()
+}
+
+function selectStatusCard(statusKey) {
+  if (equipmentStore.filters.status === statusKey) {
+    equipmentStore.filters.status = ''
+  } else {
+    equipmentStore.filters.status = statusKey
+  }
   equipmentStore.fetchEquipments(1)
 }
 
@@ -126,6 +184,7 @@ function handleDebouncedFetch(val) {
 
 function resetAllFilters() {
   equipmentStore.resetFilters()
+  fetchStats()
 }
 
 async function loadCategories() {
@@ -168,6 +227,7 @@ onMounted(async () => {
   await Promise.all([
     equipmentStore.fetchEquipments(1),
     loadCategories(),
+    fetchStats(),
   ])
 
   if (route.query.action === 'create') {
@@ -256,6 +316,7 @@ watch(
     } else if (event.type === 'imported') {
       void refreshEquipmentListAfterRealtime()
     }
+    void fetchStats()
   }
 )
 
@@ -503,12 +564,99 @@ async function handleQuickStatusChange(item, newStatus) {
       </template>
     </AppPageHeader>
 
+    <!-- 0. Stat Badges Cards (Đồng bộ kiểu Quản lý phòng) -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+      <!-- Tổng thiết bị -->
+      <div
+        class="bg-white border border-slate-200/80 rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition hover:border-slate-300"
+        title="Hiển thị tất cả trạng thái"
+        @click="selectStatusCard('')"
+      >
+        <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700">
+          <v-icon icon="mdi-cube-outline" size="22" />
+        </div>
+        <div>
+          <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Tổng thiết bị</div>
+          <div v-if="loadingStats" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
+          <div v-else class="text-xl font-bold text-slate-800">{{ stats.total }}</div>
+        </div>
+      </div>
+
+      <!-- Hoạt động tốt -->
+      <div
+        class="bg-white border rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition"
+        :class="equipmentStore.filters.status === 'good' ? 'border-emerald-500 ring-2 ring-emerald-400/30 bg-emerald-50/40' : 'border-emerald-100 hover:border-emerald-300'"
+        title="Lọc nhanh thiết bị hoạt động tốt"
+        @click="selectStatusCard('good')"
+      >
+        <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+          <v-icon icon="mdi-check-circle-outline" size="22" />
+        </div>
+        <div>
+          <div class="text-xs font-semibold text-emerald-600 uppercase tracking-wider">Hoạt động tốt</div>
+          <div v-if="loadingStats" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
+          <div v-else class="text-xl font-bold text-emerald-700">{{ stats.good }}</div>
+        </div>
+      </div>
+
+      <!-- Hư hỏng / Thiếu -->
+      <div
+        class="bg-white border rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition"
+        :class="equipmentStore.filters.status === 'broken' ? 'border-rose-500 ring-2 ring-rose-400/30 bg-rose-50/40' : 'border-rose-100 hover:border-rose-300'"
+        title="Lọc nhanh thiết bị hư hỏng"
+        @click="selectStatusCard('broken')"
+      >
+        <div class="w-10 h-10 rounded-lg bg-rose-50 flex items-center justify-center text-rose-600">
+          <v-icon icon="mdi-alert-circle-outline" size="22" />
+        </div>
+        <div>
+          <div class="text-xs font-semibold text-rose-600 uppercase tracking-wider">Hư hỏng / Thiếu</div>
+          <div v-if="loadingStats" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
+          <div v-else class="text-xl font-bold text-rose-700">{{ stats.broken }}</div>
+        </div>
+      </div>
+
+      <!-- Đang bảo trì -->
+      <div
+        class="bg-white border rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition"
+        :class="equipmentStore.filters.status === 'maintenance' ? 'border-amber-500 ring-2 ring-amber-400/30 bg-amber-50/40' : 'border-amber-100 hover:border-amber-300'"
+        title="Lọc nhanh thiết bị đang bảo trì"
+        @click="selectStatusCard('maintenance')"
+      >
+        <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+          <v-icon icon="mdi-wrench-outline" size="22" />
+        </div>
+        <div>
+          <div class="text-xs font-semibold text-amber-600 uppercase tracking-wider">Đang bảo trì</div>
+          <div v-if="loadingStats" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
+          <div v-else class="text-xl font-bold text-amber-700">{{ stats.maintenance }}</div>
+        </div>
+      </div>
+
+      <!-- Trong kho -->
+      <div
+        class="bg-white border rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition"
+        :class="equipmentStore.filters.status === 'in_stock' || equipmentStore.filters.block === '__stock__' ? 'border-sky-500 ring-2 ring-sky-400/30 bg-sky-50/40' : 'border-sky-100 hover:border-sky-300'"
+        title="Lọc thiết bị đang lưu kho"
+        @click="selectBlock('__stock__')"
+      >
+        <div class="w-10 h-10 rounded-lg bg-sky-50 flex items-center justify-center text-sky-600">
+          <v-icon icon="mdi-package-variant-closed" size="22" />
+        </div>
+        <div>
+          <div class="text-xs font-semibold text-sky-600 uppercase tracking-wider">Trong kho</div>
+          <div v-if="loadingStats" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
+          <div v-else class="text-xl font-bold text-sky-700">{{ stats.in_stock }}</div>
+        </div>
+      </div>
+    </div>
+
     <!-- 1. Modern Block Quick-Filter Pills Bar (Đồng bộ với Dashboard, RoomListView & EquipmentMapView) -->
     <div class="bg-white border border-slate-200/80 rounded-2xl shadow-xs overflow-hidden mb-4">
       <div class="px-4 py-2.5 bg-slate-50/60 border-b border-slate-100 flex items-center justify-between gap-2">
         <span class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
           <v-icon icon="mdi-domain" size="15" color="primary" />
-          <span>Lọc Nhanh Theo Phân Khu & Vị Trí:</span>
+          <span>Phân khu & Vị trí (Block):</span>
         </span>
         <button
           v-if="equipmentStore.filters.block"
@@ -525,20 +673,26 @@ async function handleQuickStatusChange(item, newStatus) {
       <div class="p-3 flex items-center gap-2 overflow-x-auto scrollbar-thin">
         <button
           type="button"
-          class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-1.5 border cursor-pointer"
+          class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-2 border cursor-pointer"
           :class="!equipmentStore.filters.block
             ? 'bg-primary text-white border-primary shadow-xs'
             : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'"
           @click="selectBlock('')"
         >
           <span>Tất cả vị trí</span>
+          <span
+            class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold"
+            :class="!equipmentStore.filters.block ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'"
+          >
+            {{ blockCounts.total || 0 }}
+          </span>
         </button>
 
         <button
           v-for="b in hotelBlockOrder"
           :key="b"
           type="button"
-          class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-1.5 border cursor-pointer"
+          class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-2 border cursor-pointer"
           :class="equipmentStore.filters.block === b
             ? 'bg-primary text-white border-primary shadow-xs'
             : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'"
@@ -546,12 +700,18 @@ async function handleQuickStatusChange(item, newStatus) {
         >
           <v-icon icon="mdi-domain" size="13" />
           <span>{{ b }}</span>
+          <span
+            class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold"
+            :class="equipmentStore.filters.block === b ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'"
+          >
+            {{ blockCounts[b] || 0 }}
+          </span>
         </button>
 
         <!-- Pill: Thiết bị đang trong kho -->
         <button
           type="button"
-          class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-1.5 border cursor-pointer ml-auto"
+          class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-2 border cursor-pointer ml-auto"
           :class="equipmentStore.filters.block === '__stock__'
             ? 'bg-sky-600 text-white border-sky-600 shadow-xs'
             : 'bg-sky-50 text-sky-700 border-sky-200 hover:bg-sky-100'"
@@ -559,6 +719,12 @@ async function handleQuickStatusChange(item, newStatus) {
         >
           <v-icon icon="mdi-package-variant-closed" size="14" />
           <span>Trong kho</span>
+          <span
+            class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold"
+            :class="equipmentStore.filters.block === '__stock__' ? 'bg-white/25 text-white' : 'bg-sky-100 text-sky-800'"
+          >
+            {{ blockCounts.__stock__ || 0 }}
+          </span>
         </button>
       </div>
     </div>
