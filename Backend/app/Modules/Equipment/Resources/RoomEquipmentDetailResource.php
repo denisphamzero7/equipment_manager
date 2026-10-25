@@ -127,7 +127,28 @@ class RoomEquipmentDetailResource extends JsonResource
             }
         }
 
-        // 2. Kiểm tra Remote
+        // 2. Kiểm tra TV Box & Đầu thu (Box TV)
+        $boxStd = $standardAllocations->first(fn ($s) => ($s->model?->category?->code ?? '') === 'box');
+        if ($boxStd || $standardAllocations->isNotEmpty()) {
+            $actualBox = $equipmentsByCat['box'] ?? 0;
+            if ($actualBox < $tvSpaces) {
+                $diff = $tvSpaces - $actualBox;
+                $totalMissingCount += $diff;
+                $missingEquipments[] = [
+                    'model_id' => $boxStd?->equipment_model_id ?? 0,
+                    'model_name' => $boxStd?->model?->name ?? 'TV Box & Đầu thu',
+                    'name' => 'TV Box & Đầu thu',
+                    'category_code' => 'box',
+                    'category_name' => 'TV Box & Đầu thu',
+                    'standard_quantity' => $tvSpaces,
+                    'actual_quantity' => $actualBox,
+                    'missing_quantity' => $diff,
+                    'missing_count' => $diff,
+                ];
+            }
+        }
+
+        // 3. Kiểm tra Remote
         $remoteStd = $standardAllocations->first(fn ($s) => ($s->model?->category?->code ?? '') === 'remote');
         if ($remoteStd || $standardAllocations->isNotEmpty()) {
             $actualRemote = $equipmentsByCat['remote'] ?? 0;
@@ -148,7 +169,7 @@ class RoomEquipmentDetailResource extends JsonResource
             }
         }
 
-        // 3. Kiểm tra Wifi Router
+        // 4. Kiểm tra Wifi Router
         if ($requiredWifi > 0) {
             $wifiStd = $standardAllocations->first(fn ($s) => ($s->model?->category?->code ?? '') === 'wifi');
             if ($wifiStd || $standardAllocations->isNotEmpty()) {
@@ -171,7 +192,7 @@ class RoomEquipmentDetailResource extends JsonResource
             }
         }
 
-        // 4. Kiểm tra Điện thoại bàn (Mỗi 1 phòng cần 1 máy điện thoại)
+        // 5. Kiểm tra Điện thoại bàn (Mỗi 1 phòng cần 1 máy điện thoại)
         $phoneStd = $standardAllocations->first(fn ($s) => ($s->model?->category?->code ?? '') === 'phone');
         if ($phoneStd || $standardAllocations->isNotEmpty()) {
             $actualPhone = $equipmentsByCat['phone'] ?? 0;
@@ -192,10 +213,10 @@ class RoomEquipmentDetailResource extends JsonResource
             }
         }
 
-        // 5. Kiểm tra các danh mục khác (bỏ qua ac, fridge, appliance theo yêu cầu nghiệp vụ)
+        // 6. Kiểm tra các danh mục khác (bỏ qua ac, fridge, appliance theo yêu cầu nghiệp vụ)
         foreach ($standardAllocations as $std) {
             $catCode = $std->model?->category?->code ?? '';
-            if (in_array($catCode, ['tv', 'remote', 'wifi', 'phone', 'ac', 'fridge', 'appliance'])) {
+            if (in_array($catCode, ['tv', 'box', 'remote', 'wifi', 'phone', 'ac', 'fridge', 'appliance'])) {
                 continue; // Đã đối soát theo định mức động ở trên hoặc đã bỏ định mức
             }
 

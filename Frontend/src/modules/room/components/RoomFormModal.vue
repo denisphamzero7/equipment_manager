@@ -377,7 +377,7 @@ async function handleSubmit() {
                   <v-icon icon="mdi-bed" size="16" class="text-blue-600" />
                   Số phòng ngủ
                 </span>
-                <span class="text-[11px] text-slate-400">1 Tivi + 1 Remote / phòng</span>
+                <span class="text-[11px] text-slate-400">1 Tivi + 1 Box TV + 1 Remote / phòng</span>
               </div>
               <div class="flex items-center gap-1">
                 <button
@@ -412,7 +412,7 @@ async function handleSubmit() {
                   <v-icon icon="mdi-sofa" size="16" class="text-indigo-600" />
                   Số phòng khách
                 </span>
-                <span class="text-[11px] text-slate-400">1 Tivi + 1 Remote / phòng</span>
+                <span class="text-[11px] text-slate-400">1 Tivi + 1 Box TV + 1 Remote / phòng</span>
               </div>
               <div class="flex items-center gap-1">
                 <button
@@ -441,11 +441,11 @@ async function handleSubmit() {
             </div>
           </div>
 
-          <!-- Banner xem trước định mức Tivi / Remote -->
+          <!-- Banner xem trước định mức Tivi / Box TV / Remote -->
           <div class="p-2.5 rounded-lg bg-blue-50/80 border border-blue-200 text-xs text-blue-900 flex items-center gap-2">
             <v-icon icon="mdi-television-box" color="primary" size="20" />
             <div>
-              <strong>Định mức tự động:</strong> Cần <strong>{{ totalTvRequired }} Tivi</strong> &amp; <strong>{{ totalTvRequired }} Remote</strong>
+              <strong>Định mức tự động:</strong> Cần <strong>{{ totalTvRequired }} Tivi</strong>, <strong>{{ totalTvRequired }} Box TV</strong> &amp; <strong>{{ totalTvRequired }} Remote</strong>
               <span class="text-blue-700 ml-1">({{ form.bedroom_count }} PN + {{ form.living_room_count }} PK)</span>
             </div>
           </div>

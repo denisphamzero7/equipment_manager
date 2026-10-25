@@ -41,7 +41,16 @@ class EquipmentMapViewResource extends JsonResource
             }
         }
 
-        // 2. Kiểm tra Remote
+        // 2. Kiểm tra TV Box & Đầu thu (Box TV)
+        $hasBoxStandard = $standardAllocations->contains(fn ($std) => ($std->model?->category?->code ?? '') === 'box');
+        if ($hasBoxStandard || $standardAllocations->isNotEmpty()) {
+            $actualBox = $equipmentsByCat['box'] ?? 0;
+            if ($actualBox < $tvSpaces) {
+                $missingCount += ($tvSpaces - $actualBox);
+            }
+        }
+
+        // 3. Kiểm tra Remote
         $hasRemoteStandard = $standardAllocations->contains(fn ($std) => ($std->model?->category?->code ?? '') === 'remote');
         if ($hasRemoteStandard || $standardAllocations->isNotEmpty()) {
             $actualRemote = $equipmentsByCat['remote'] ?? 0;
@@ -50,7 +59,7 @@ class EquipmentMapViewResource extends JsonResource
             }
         }
 
-        // 3. Kiểm tra Wifi Router
+        // 4. Kiểm tra Wifi Router
         if ($requiredWifi > 0) {
             $hasWifiStandard = $standardAllocations->contains(fn ($std) => ($std->model?->category?->code ?? '') === 'wifi');
             if ($hasWifiStandard || $standardAllocations->isNotEmpty()) {
@@ -61,7 +70,7 @@ class EquipmentMapViewResource extends JsonResource
             }
         }
 
-        // 4. Kiểm tra Điện thoại bàn (Mỗi 1 phòng cần 1 máy điện thoại)
+        // 5. Kiểm tra Điện thoại bàn (Mỗi 1 phòng cần 1 máy điện thoại)
         $hasPhoneStandard = $standardAllocations->contains(fn ($std) => ($std->model?->category?->code ?? '') === 'phone');
         if ($hasPhoneStandard || $standardAllocations->isNotEmpty()) {
             $actualPhone = $equipmentsByCat['phone'] ?? 0;
@@ -70,10 +79,10 @@ class EquipmentMapViewResource extends JsonResource
             }
         }
 
-        // 5. Kiểm tra các thiết bị khác ngoài TV, Remote, Wifi, Phone (bỏ qua ac, fridge, appliance theo nghiệp vụ khách sạn)
+        // 6. Kiểm tra các thiết bị khác ngoài TV, Box, Remote, Wifi, Phone (bỏ qua ac, fridge, appliance theo nghiệp vụ khách sạn)
         foreach ($standardAllocations as $std) {
             $catCode = $std->model?->category?->code ?? '';
-            if (in_array($catCode, ['tv', 'remote', 'wifi', 'phone', 'ac', 'fridge', 'appliance'])) {
+            if (in_array($catCode, ['tv', 'box', 'remote', 'wifi', 'phone', 'ac', 'fridge', 'appliance'])) {
                 continue; // Đã kiểm tra theo định mức động ở trên hoặc đã bỏ định mức
             }
             $actual = $modelCounts[$std->equipment_model_id] ?? 0;

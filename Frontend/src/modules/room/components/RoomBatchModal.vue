@@ -347,7 +347,7 @@ async function handleSubmit() {
             </div>
           </div>
           <p class="text-[11px] text-blue-700 font-medium">
-            👉 Mỗi phòng sẽ tự động tính định mức: <strong>{{ Math.max(1, (form.bedroom_count || 1) + (form.living_room_count || 0)) }} Tivi</strong> &amp; <strong>{{ Math.max(1, (form.bedroom_count || 1) + (form.living_room_count || 0)) }} Remote</strong>.
+            👉 Mỗi phòng sẽ tự động tính định mức: <strong>{{ Math.max(1, (form.bedroom_count || 1) + (form.living_room_count || 0)) }} Tivi</strong>, <strong>{{ Math.max(1, (form.bedroom_count || 1) + (form.living_room_count || 0)) }} Box TV</strong> &amp; <strong>{{ Math.max(1, (form.bedroom_count || 1) + (form.living_room_count || 0)) }} Remote</strong>.
           </p>
         </div>
       </div>

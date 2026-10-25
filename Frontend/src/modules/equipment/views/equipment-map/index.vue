@@ -745,7 +745,7 @@ function getBadgeIndicatorClass(room) {
               </span>
             </div>
             <div class="text-[11px] text-slate-500 flex items-center gap-2.5 flex-wrap">
-              <span>📺 Định mức TV & Remote: <strong>{{ Math.max(1, (selectedRoomDetail.bedroom_count ?? 1) + (selectedRoomDetail.living_room_count ?? 0)) }} bộ</strong></span>
+              <span>📺 Định mức TV, Box & Remote: <strong>{{ Math.max(1, (selectedRoomDetail.bedroom_count ?? 1) + (selectedRoomDetail.living_room_count ?? 0)) }} bộ</strong></span>
               <span>•</span>
               <span v-if="selectedRoomDetail.wifi_mode === 'shared'" class="text-purple-700 font-semibold flex items-center gap-1">
                 <v-icon icon="mdi-wifi-arrow-left-right" size="13" />

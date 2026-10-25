@@ -18,6 +18,7 @@ class RoomStandardEquipmentSeeder extends Seeder
             // 1. Tiêu chuẩn (Standard - STD)
             1 => [
                 'UA43T6500' => 1,       // TV 43" Samsung
+                'T550' => 1,            // FPT Play Box 4K
                 'RM-GENERIC-V2' => 1,   // Remote đa năng
                 'CU/CS-PU9AKH-8' => 1,  // Điều hòa 1.0 HP
                 'LCG-50' => 1,          // Minibar 50L

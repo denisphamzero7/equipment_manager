@@ -858,7 +858,7 @@ async function handleCreateSubmit({ data }) {
                   </span>
                   <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold">
                     <v-icon icon="mdi-television" size="14" class="text-blue-600" />
-                    Định mức TV: {{ Math.max(1, (roomDetail.bedroom_count ?? 1) + (roomDetail.living_room_count ?? 0)) }} bộ
+                    Định mức TV, Box & Remote: {{ Math.max(1, (roomDetail.bedroom_count ?? 1) + (roomDetail.living_room_count ?? 0)) }} bộ
                   </span>
                   <span v-if="roomDetail.wifi_mode === 'shared'" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple-50 border border-purple-200 text-purple-700 text-xs font-semibold">
                     <v-icon icon="mdi-wifi-arrow-left-right" size="14" />

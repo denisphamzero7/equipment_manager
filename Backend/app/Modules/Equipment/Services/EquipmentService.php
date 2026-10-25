@@ -331,7 +331,7 @@ class EquipmentService
         $category = $equipment->model?->category;
         $catCode = $category?->code ?? '';
         $catId = $category?->id;
-        $isDynamicCategory = in_array($catCode, ['tv', 'remote', 'wifi', 'phone']);
+        $isDynamicCategory = in_array($catCode, ['tv', 'box', 'remote', 'wifi', 'phone']);
         $sameCatModelIds = ($isDynamicCategory && $catId)
             ? EquipmentModel::where('equipment_category_id', $catId)->pluck('id')
             : collect([$equipment->equipment_model_id]);
@@ -803,7 +803,7 @@ class EquipmentService
 
     /**
      * Tính toán định mức chuẩn động theo cơ cấu phòng:
-     * - TV, Remote: max(1, bedroom_count + living_room_count)
+     * - TV, Box, Remote: max(1, bedroom_count + living_room_count)
      * - Wifi Router: 0 nếu dùng ké wifi (shared) hoặc không wifi (none); 1 nếu riêng (dedicated)
      * - Điện thoại bàn: 1 chiếc cho mỗi phòng
      * - Bỏ định mức: Điều hòa (ac), Tủ lạnh (fridge), Thiết bị buồng phòng gia dụng (appliance)
@@ -813,7 +813,7 @@ class EquipmentService
     {
         $catCode = $model?->category?->code ?? '';
 
-        if (in_array($catCode, ['tv', 'remote'])) {
+        if (in_array($catCode, ['tv', 'box', 'remote'])) {
             $bedroomCount = (int) ($room->bedroom_count ?? 1);
             $livingRoomCount = (int) ($room->living_room_count ?? 0);
             return max(1, $bedroomCount + $livingRoomCount);
