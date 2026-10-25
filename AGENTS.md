@@ -25,3 +25,4 @@
 - Khi cấu hình môi trường, xử lý sự cố hiệu năng (tốc độ tải dữ liệu < 1s), tham khảo [docs/AI_CONFIGURATION_AND_PERFORMANCE_GUIDE.md](docs/AI_CONFIGURATION_AND_PERFORMANCE_GUIDE.md).
 - Tham khảo các điểm tối ưu, tính năng tiêu biểu và luồng xử lý mẫu tại [docs/SYSTEM_OPTIMIZATION_AND_BEST_PRACTICES.md](docs/SYSTEM_OPTIMIZATION_AND_BEST_PRACTICES.md).
 - Đặc tả chi tiết toàn bộ luồng nghiệp vụ hệ thống tại [docs/BUSINESS_WORKFLOW_GUIDE.md](docs/BUSINESS_WORKFLOW_GUIDE.md).
+- Cẩm nang nghiệp vụ thực chiến cho người quản lý thiết bị tại [docs/USER_GUIDE_EQUIPMENT_MANAGER.md](docs/USER_GUIDE_EQUIPMENT_MANAGER.md).
