@@ -24,3 +24,4 @@
 - Trước khi thêm/sửa tính năng, đọc [docs/AI_FEATURE_DEVELOPMENT_GUIDE.md](docs/AI_FEATURE_DEVELOPMENT_GUIDE.md) để theo đúng kiến trúc, quy ước UI, hiệu năng và phạm vi thay đổi của dự án.
 - Khi cấu hình môi trường, xử lý sự cố hiệu năng (tốc độ tải dữ liệu < 1s), tham khảo [docs/AI_CONFIGURATION_AND_PERFORMANCE_GUIDE.md](docs/AI_CONFIGURATION_AND_PERFORMANCE_GUIDE.md).
 - Tham khảo các điểm tối ưu, tính năng tiêu biểu và luồng xử lý mẫu tại [docs/SYSTEM_OPTIMIZATION_AND_BEST_PRACTICES.md](docs/SYSTEM_OPTIMIZATION_AND_BEST_PRACTICES.md).
+- Đặc tả chi tiết toàn bộ luồng nghiệp vụ hệ thống tại [docs/BUSINESS_WORKFLOW_GUIDE.md](docs/BUSINESS_WORKFLOW_GUIDE.md).
