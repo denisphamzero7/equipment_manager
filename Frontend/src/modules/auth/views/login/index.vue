@@ -66,13 +66,13 @@ async function handleLogin() {
     availableOrgs.value = orgs
     selectedOrgId.value = result.currentOrganizationId || orgs[0]?.id || null
 
-    if (orgs.length > 1) {
-      // Nếu user có nhiều hơn 1 tổ chức: Chuyển sang Bước 2 để người dùng lựa chọn
+    if (orgs.length > 0) {
+      // Luôn chuyển sang Bước 2: Hiển thị danh sách tổ chức để người dùng chủ động chọn
       step.value = 'select_org'
       toast.info('Xác thực tài khoản thành công! Vui lòng chọn tổ chức làm việc.')
     } else {
-      // Nếu user chỉ có 1 tổ chức (hoặc tổ chức mặc định): Vào thẳng hệ thống làm việc
-      toast.success('Đăng nhập thành công!')
+      // Nếu user chưa được gán tổ chức nào
+      toast.warning('Tài khoản chưa được phân vào tổ chức nào. Vui lòng liên hệ quản trị.')
       try {
         await router.push('/dashboard')
       } catch {
