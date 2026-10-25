@@ -27,7 +27,7 @@ const quickSelectItems = computed(() => {
 </script>
 
 <template>
-  <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs space-y-3.5 sticky top-20">
+  <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs space-y-3.5 lg:sticky lg:top-20">
     <!-- Header -->
     <div class="flex items-center justify-between pb-2 border-b border-slate-100">
       <div>
@@ -44,7 +44,7 @@ const quickSelectItems = computed(() => {
       </v-chip>
     </div>
 
-    <!-- Quick select dropdown for mobile / fast jump -->
+    <!-- Quick select dropdown for fast jump -->
     <div>
       <v-select
         :model-value="selectedRoomId"

@@ -38,6 +38,9 @@ let roomDetailRequestId = 0
 // Standard hotel block order
 const hotelBlockOrder = ['Block A', 'Block B', 'Block C', 'Block D', 'Condos 1', 'Condos 2', 'Penthouse-spa+Villa']
 
+// Mobile active view tab: 'detail' | 'list'
+const mobileActiveTab = ref('detail')
+
 // Filter States
 const filters = reactive({
   search: '',
@@ -526,21 +529,50 @@ async function handleCreateSubmit({ data }) {
         @reset-filters="resetFilters"
       />
 
+      <!-- Mobile View Mode Segmented Tab (Chỉ hiển thị trên Mobile / Tablet < lg) -->
+      <div class="lg:hidden flex items-center p-1 bg-slate-200/70 rounded-xl text-xs font-bold shadow-2xs">
+        <button
+          type="button"
+          class="flex-1 py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+          :class="mobileActiveTab === 'detail' ? 'bg-white text-primary shadow-xs font-black' : 'text-slate-600 hover:text-slate-900'"
+          @click="mobileActiveTab = 'detail'"
+        >
+          <v-icon icon="mdi-clipboard-text-outline" size="16" />
+          <span>Chi tiết đối soát {{ roomDetail?.room_number ? `(P.${roomDetail.room_number})` : '' }}</span>
+        </button>
+
+        <button
+          type="button"
+          class="flex-1 py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+          :class="mobileActiveTab === 'list' ? 'bg-white text-primary shadow-xs font-black' : 'text-slate-600 hover:text-slate-900'"
+          @click="mobileActiveTab = 'list'"
+        >
+          <v-icon icon="mdi-door" size="16" />
+          <span>Danh sách phòng ({{ filteredRooms.length }})</span>
+        </button>
+      </div>
+
       <!-- 4. Main Content: Left Room Sidebar + Right Audit Detail -->
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
         <!-- Left: Room Selector Sidebar (Child Component) -->
-        <div class="lg:col-span-1">
+        <div
+          class="lg:col-span-1"
+          :class="mobileActiveTab === 'list' ? 'block' : 'hidden lg:block'"
+        >
           <RoomAuditSidebarList
             :rooms="filteredRooms"
             :total-rooms="rooms.length"
             :selected-room-id="selectedRoomId"
-            @select-room="(id) => { selectedRoomId = id; loadRoomDetail(id) }"
+            @select-room="(id) => { selectedRoomId = id; loadRoomDetail(id); mobileActiveTab = 'detail' }"
             @reset-filters="resetFilters"
           />
         </div>
 
         <!-- Right: Detailed Audit Card (Child Component) -->
-        <div class="lg:col-span-3">
+        <div
+          class="lg:col-span-3"
+          :class="mobileActiveTab === 'detail' ? 'block' : 'hidden lg:block'"
+        >
           <RoomAuditDetailCard
             :room-detail="roomDetail"
             :loading="loading"
