@@ -14,6 +14,7 @@ import EquipmentOverviewChart from '../../components/EquipmentOverviewChart.vue'
 import RoomAlertList from '../../components/RoomAlertList.vue'
 import { toast } from '@/core/helpers/toast'
 import { HotelBlockOrder } from '@/core/enums'
+import { resolveMediaUrl } from '@/core/helpers/formatters'
 
 const router = useRouter()
 const realtimeStore = useRealtimeStore()
@@ -168,13 +169,6 @@ async function openRoomDetail(room) {
       roomDetailLoading.value = false
     }
   }
-}
-
-function resolveMediaUrl(url) {
-  if (!url) return ''
-  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url
-  const base = import.meta.env.VITE_API_BASE_URL || ''
-  return `${base.replace(/\/$/, '')}/${url.replace(/^\//, '')}`
 }
 
 function openLightbox(item) {

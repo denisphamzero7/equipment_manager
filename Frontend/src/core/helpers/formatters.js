@@ -47,11 +47,15 @@ export function resolveMediaUrl(url) {
   // 1. Clean up legacy subpath if present
   let cleanUrl = String(url).replace('/laravel_hq/quandh-core/public', '')
 
-  // 2. Normalize full localhost/127.0.0.1 url on port 80 to relative /storage
+  // 2. Normalize full localhost/127.0.0.1 (any port like 8088, 80) or /storage/ URL to relative path
   try {
     if (cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://')) {
       const parsed = new URL(cleanUrl)
-      if ((parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1') && (!parsed.port || parsed.port === '80')) {
+      if (
+        parsed.hostname === 'localhost' ||
+        parsed.hostname === '127.0.0.1' ||
+        parsed.pathname.startsWith('/storage')
+      ) {
         return parsed.pathname + parsed.search
       }
     }

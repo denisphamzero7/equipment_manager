@@ -13,9 +13,9 @@ class EquipmentResource extends JsonResource
         $eqPhotos = $mediaCollection->where('collection_name', 'equipment_photos');
         $brPhotos = $mediaCollection->where('collection_name', 'broken_photos');
         $firstPhoto = $eqPhotos->first();
-        $photoUrl = $firstPhoto ? str_replace('/laravel_hq/quandh-core/public', '', $firstPhoto->getUrl()) : null;
+        $photoUrl = $firstPhoto ? $this->normalizeMediaUrl($firstPhoto->getUrl()) : null;
         $thumbUrl = ($firstPhoto && $firstPhoto->hasGeneratedConversion('thumb'))
-            ? str_replace('/laravel_hq/quandh-core/public', '', $firstPhoto->getUrl('thumb'))
+            ? $this->normalizeMediaUrl($firstPhoto->getUrl('thumb'))
             : $photoUrl;
 
         return [
@@ -32,12 +32,12 @@ class EquipmentResource extends JsonResource
             'thumb_url' => $thumbUrl,
             'photos' => $eqPhotos->map(fn ($m) => [
                 'id' => $m->id,
-                'url' => str_replace('/laravel_hq/quandh-core/public', '', $m->getUrl()),
+                'url' => $this->normalizeMediaUrl($m->getUrl()),
                 'file_name' => $m->file_name,
             ])->values()->all(),
             'broken_photos' => $brPhotos->map(fn ($m) => [
                 'id' => $m->id,
-                'url' => str_replace('/laravel_hq/quandh-core/public', '', $m->getUrl()),
+                'url' => $this->normalizeMediaUrl($m->getUrl()),
                 'file_name' => $m->file_name,
             ])->values()->all(),
             'model' => $this->whenLoaded('model', fn () => [
@@ -77,5 +77,17 @@ class EquipmentResource extends JsonResource
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
         ];
+    }
+
+    protected function normalizeMediaUrl(?string $url): ?string
+    {
+        if (! $url) {
+            return null;
+        }
+
+        $url = str_replace('/laravel_hq/quandh-core/public', '', $url);
+        $path = parse_url($url, PHP_URL_PATH);
+
+        return $path ?: $url;
     }
 }

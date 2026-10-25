@@ -74,14 +74,14 @@ class RoomEquipmentDetailResource extends JsonResource
                 'position_note' => $item->position_note,
                 'note' => $item->note,
                 'installed_at' => $item->installed_at?->format('Y-m-d H:i:s'),
-                'photo_url' => $item->getFirstMediaUrl('equipment_photos') ? str_replace('/laravel_hq/quandh-core/public', '', $item->getFirstMediaUrl('equipment_photos')) : null,
+                'photo_url' => $this->normalizeMediaUrl($item->getFirstMediaUrl('equipment_photos')),
                 'photos' => $item->getMedia('equipment_photos')->map(fn ($m) => [
                     'id' => $m->id,
-                    'url' => str_replace('/laravel_hq/quandh-core/public', '', $m->getUrl()),
+                    'url' => $this->normalizeMediaUrl($m->getUrl()),
                 ]),
                 'broken_photos' => $item->getMedia('broken_photos')->map(fn ($m) => [
                     'id' => $m->id,
-                    'url' => str_replace('/laravel_hq/quandh-core/public', '', $m->getUrl()),
+                    'url' => $this->normalizeMediaUrl($m->getUrl()),
                 ]),
             ];
         }
@@ -302,5 +302,17 @@ class RoomEquipmentDetailResource extends JsonResource
             'categories' => array_values($grouped),
             'missing_equipments' => $missingEquipments,
         ];
+    }
+
+    protected function normalizeMediaUrl(?string $url): ?string
+    {
+        if (! $url) {
+            return null;
+        }
+
+        $url = str_replace('/laravel_hq/quandh-core/public', '', $url);
+        $path = parse_url($url, PHP_URL_PATH);
+
+        return $path ?: $url;
     }
 }
