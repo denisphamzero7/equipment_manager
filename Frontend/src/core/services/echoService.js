@@ -21,9 +21,11 @@ export async function initEcho() {
     if (generation !== initializationGeneration) return null
     window.Pusher = Pusher
 
-  const host = import.meta.env.VITE_REVERB_HOST || window.location.hostname
-  const port = Number(import.meta.env.VITE_REVERB_PORT) || (window.location.port ? Number(window.location.port) : (window.location.protocol === 'https:' ? 443 : 80))
-  const scheme = import.meta.env.VITE_REVERB_SCHEME || (window.location.protocol === 'https:' ? 'https' : 'http')
+  const isDevServer = window.location.port === '5173' || window.location.port === '3000'
+  const host = isDevServer && import.meta.env.VITE_REVERB_HOST ? import.meta.env.VITE_REVERB_HOST : window.location.hostname
+  const defaultPort = window.location.port ? Number(window.location.port) : (window.location.protocol === 'https:' ? 443 : 80)
+  const port = isDevServer && import.meta.env.VITE_REVERB_PORT ? Number(import.meta.env.VITE_REVERB_PORT) : defaultPort
+  const scheme = window.location.protocol === 'https:' ? 'https' : (import.meta.env.VITE_REVERB_SCHEME || 'http')
 
   const instance = new Echo({
     broadcaster: 'reverb',
