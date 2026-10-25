@@ -244,7 +244,7 @@ async function fetchRoomSummaryIfNeeded() {
 }
 
 onMounted(async () => {
-  await Promise.all([fetchRoomTypes(), fetchRooms(), fetchRoomSummaryIfNeeded()])
+  await Promise.allSettled([fetchRoomTypes(), fetchRooms(), fetchRoomSummaryIfNeeded()])
 })
 
 // Watch real-time changes

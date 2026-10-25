@@ -221,7 +221,7 @@ onMounted(async () => {
   if (route.query.room_number) equipmentStore.filters.room_number = route.query.room_number
   if (route.query.floor) equipmentStore.filters.floor = Number(route.query.floor)
 
-  await Promise.all([
+  await Promise.allSettled([
     equipmentStore.fetchEquipments(1),
     loadCategories(),
     fetchStats(),

@@ -30,10 +30,35 @@ axiosClient.interceptors.request.use(
   error => Promise.reject(error)
 )
 
+let lastGatewayWarning = 0
+
 // Response Interceptor
 axiosClient.interceptors.response.use(
   response => response,
-  error => {
+  async error => {
+    const config = error.config
+
+    // Tự động thử lại (Silent Auto-Retry) tối đa 2 lần với lỗi 502/503/504 hoặc rớt kết nối
+    if (config && !config._skipRetry) {
+      const status = error.response?.status
+      const isRetriable =
+        !error.response ||
+        status === 502 ||
+        status === 503 ||
+        status === 504 ||
+        error.code === 'ECONNABORTED'
+
+      config._retryCount = config._retryCount || 0
+      const maxRetries = 2
+
+      if (isRetriable && config._retryCount < maxRetries) {
+        config._retryCount += 1
+        const delay = config._retryCount * 600 // Thử lại sau 600ms, 1200ms
+        await new Promise(resolve => setTimeout(resolve, delay))
+        return axiosClient(config)
+      }
+    }
+
     const { response } = error
 
     if (response) {
@@ -62,7 +87,11 @@ axiosClient.interceptors.response.use(
         }
       } else if (status >= 500) {
         if (status === 502 || status === 503 || status === 504) {
-          toast.warning('Đường truyền mạng tạm thời gián đoạn (Tunnel/Gateway). Đang tự động kết nối lại...')
+          const now = Date.now()
+          if (now - lastGatewayWarning > 5000) {
+            lastGatewayWarning = now
+            toast.warning('Đường truyền mạng tạm thời gián đoạn (Tunnel/Gateway). Đang tự động kết nối lại...')
+          }
         } else {
           toast.error(message && message !== 'Server Error' ? message : 'Lỗi máy chủ nội bộ. Vui lòng thử lại sau.')
         }
@@ -70,7 +99,11 @@ axiosClient.interceptors.response.use(
         toast.error(message)
       }
     } else {
-      toast.error('Không thể kết nối đến máy chủ. Vui lòng kiểm tra mạng hoặc backend!')
+      const now = Date.now()
+      if (now - lastGatewayWarning > 5000) {
+        lastGatewayWarning = now
+        toast.error('Không thể kết nối đến máy chủ. Vui lòng kiểm tra mạng hoặc backend!')
+      }
     }
 
     return Promise.reject(error)

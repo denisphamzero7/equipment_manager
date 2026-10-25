@@ -80,7 +80,7 @@ const lightboxTitle = ref('')
 const lightboxSubtitle = ref('')
 
 onMounted(async () => {
-  await Promise.all([
+  await Promise.allSettled([
     loadRooms(),
     fetchRoomTypes(),
   ])
