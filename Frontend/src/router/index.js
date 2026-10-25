@@ -62,8 +62,36 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-router.onError((error) => {
+router.onError((error, to) => {
   console.error('Lỗi Vue Router:', error)
+
+  const errorMsg = error?.message || String(error)
+  const isChunkLoadFailed =
+    errorMsg.includes('Failed to fetch dynamically imported module') ||
+    errorMsg.includes('Importing a module script failed') ||
+    errorMsg.includes('error loading dynamically imported module') ||
+    error?.name === 'ChunkLoadError'
+
+  if (isChunkLoadFailed) {
+    const targetPath = to?.fullPath || window.location.pathname
+    const reloadKey = `chunk_reload_${targetPath}`
+    const lastReload = sessionStorage.getItem(reloadKey)
+    const now = Date.now()
+
+    // Tránh reload lặp vô hạn nếu rớt mạng hoàn toàn (trong vòng 10 giây)
+    if (lastReload && now - Number(lastReload) < 10000) {
+      sessionStorage.removeItem(reloadKey)
+      toast.error('Phiên bản hệ thống đã được cập nhật hoặc kết nối mạng bị gián đoạn. Vui lòng bấm Ctrl + F5 để tải lại.')
+      return
+    }
+
+    sessionStorage.setItem(reloadKey, String(now))
+    if (to?.fullPath) {
+      window.location.href = to.fullPath
+    } else {
+      window.location.reload()
+    }
+  }
 })
 
 export default router
