@@ -28,6 +28,7 @@ const rooms = ref([])
 const selectedBlock = ref('')
 const selectedFloor = ref('')
 const internalRoomId = ref(null)
+const isWarehouseMode = ref(false)
 
 onMounted(async () => {
   await loadRooms()
@@ -37,7 +38,17 @@ onMounted(async () => {
 watch(
   () => props.modelValue,
   (newVal) => {
-    syncWithModelValue(newVal)
+    if (newVal === null || newVal === undefined || newVal === '') {
+      internalRoomId.value = null
+      if (props.allowWarehouse && !selectedBlock.value && selectedFloor.value === '') {
+        isWarehouseMode.value = true
+      }
+    } else {
+      const idNum = Number(newVal)
+      if (internalRoomId.value !== idNum) {
+        syncWithModelValue(idNum)
+      }
+    }
   }
 )
 
@@ -56,10 +67,14 @@ async function loadRooms() {
 function syncWithModelValue(val) {
   if (val === null || val === undefined || val === '') {
     internalRoomId.value = null
+    if (props.allowWarehouse) {
+      isWarehouseMode.value = true
+    }
     return
   }
   const idNum = Number(val)
   internalRoomId.value = idNum
+  isWarehouseMode.value = false
 
   const found = rooms.value.find(r => r.id === idNum)
   if (found) {
@@ -113,50 +128,66 @@ const selectedRoomObj = computed(() => {
 })
 
 function onBlockChange() {
-  // If current floor not in block, reset floor
+  // If current floor is not in the new block, reset floor
   if (selectedFloor.value !== '') {
-    const validFloor = rooms.value.some(r => r.block === selectedBlock.value && r.floor === selectedFloor.value)
+    const validFloor = rooms.value.some(r => (!selectedBlock.value || r.block === selectedBlock.value) && r.floor === selectedFloor.value)
     if (!validFloor) selectedFloor.value = ''
   }
+  validateCurrentRoom()
 }
 
 function onFloorChange() {
-  // If room is selected but not in this floor/block, clear it
-  if (internalRoomId.value && selectedRoomObj.value) {
-    if (selectedFloor.value !== '' && selectedRoomObj.value.floor !== selectedFloor.value) {
-      internalRoomId.value = null
-      emit('update:modelValue', null)
-      emit('change', null)
-    }
+  validateCurrentRoom()
+}
+
+function validateCurrentRoom() {
+  if (!internalRoomId.value) return
+  const current = rooms.value.find(r => r.id === internalRoomId.value)
+  if (!current) {
+    internalRoomId.value = null
+    emit('update:modelValue', null)
+    emit('change', null)
+    return
+  }
+
+  const blockMismatch = selectedBlock.value !== '' && current.block !== selectedBlock.value
+  const floorMismatch = selectedFloor.value !== '' && selectedFloor.value !== null && current.floor !== selectedFloor.value
+
+  if (blockMismatch || floorMismatch) {
+    internalRoomId.value = null
+    emit('update:modelValue', null)
+    emit('change', null)
   }
 }
 
 function onRoomSelected(val) {
-  if (val) {
-    const found = rooms.value.find(r => r.id === val)
+  const idNum = val ? Number(val) : null
+  internalRoomId.value = idNum
+  if (idNum) {
+    const found = rooms.value.find(r => r.id === idNum)
     if (found) {
       selectedBlock.value = found.block
       selectedFloor.value = found.floor
     }
   }
-  emit('update:modelValue', val ? Number(val) : null)
+  emit('update:modelValue', idNum)
   emit('change', selectedRoomObj.value)
 }
 
 function selectWarehouse() {
+  isWarehouseMode.value = true
   internalRoomId.value = null
+  selectedBlock.value = ''
+  selectedFloor.value = ''
   emit('update:modelValue', null)
   emit('change', null)
 }
 
 function startSelectingRoom() {
-  // Default pick the first available room or let user pick
-  if (filteredRooms.value.length > 0) {
-    const first = filteredRooms.value[0]
-    onRoomSelected(first.id)
-  } else if (rooms.value.length > 0) {
-    onRoomSelected(rooms.value[0].id)
-  }
+  isWarehouseMode.value = false
+  internalRoomId.value = null
+  emit('update:modelValue', null)
+  emit('change', null)
 }
 
 function clearSelection() {
@@ -172,7 +203,7 @@ function clearSelection() {
         {{ label }} <span v-if="required" class="text-rose-500">*</span>
       </label>
       <button
-        v-if="allowWarehouse && internalRoomId !== null"
+        v-if="allowWarehouse && !isWarehouseMode"
         type="button"
         class="text-[11px] text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1 transition"
         @click="selectWarehouse"
@@ -182,9 +213,9 @@ function clearSelection() {
       </button>
     </div>
 
-    <!-- Warehouse state banner (if room_id is null) -->
+    <!-- Warehouse state banner (if in warehouse mode) -->
     <div
-      v-if="allowWarehouse && internalRoomId === null"
+      v-if="allowWarehouse && isWarehouseMode"
       class="p-3 bg-amber-50/80 border border-amber-200 rounded-xl flex items-center justify-between text-xs"
     >
       <div class="flex items-center gap-2.5 text-amber-900 font-medium">
@@ -193,9 +224,10 @@ function clearSelection() {
       </div>
       <button
         type="button"
-        class="px-2.5 py-1 rounded-lg bg-white border border-amber-300 text-amber-900 text-xs font-bold hover:bg-amber-100 transition shadow-2xs"
+        class="px-3 py-1.5 rounded-lg bg-white border border-amber-300 text-amber-900 text-xs font-bold hover:bg-amber-100 transition shadow-2xs flex items-center gap-1.5"
         @click="startSelectingRoom"
       >
+        <v-icon icon="mdi-door-open" size="16" />
         Chọn phòng gán
       </button>
     </div>
@@ -231,6 +263,23 @@ function clearSelection() {
         >
           <v-icon icon="mdi-close" size="16" />
         </button>
+      </div>
+
+      <!-- Hint banner when in room mode but no room selected yet -->
+      <div
+        v-else
+        class="p-2.5 bg-slate-50 border border-dashed border-slate-300 rounded-xl flex items-center justify-between text-xs"
+      >
+        <div class="flex items-center gap-2 text-slate-600">
+          <v-icon icon="mdi-map-marker-outline" size="16" class="text-blue-500" />
+          <span>
+            <template v-if="selectedBlock || selectedFloor !== ''">
+              Đang lọc: <strong>{{ selectedBlock || 'Tất cả Block' }}</strong>
+              <span v-if="selectedFloor !== ''"> • Tầng {{ selectedFloor }}</span>.
+            </template>
+            Vui lòng chọn phòng ở <strong>Bậc 3</strong> bên dưới.
+          </span>
+        </div>
       </div>
 
       <!-- Tier 1, 2, 3 selection grid -->
@@ -284,10 +333,17 @@ function clearSelection() {
             density="compact"
             variant="outlined"
             hide-details
+            clearable
             placeholder="Tìm & chọn phòng..."
-            no-data-text="Không tìm thấy phòng"
+            no-data-text="Không tìm thấy phòng phù hợp"
             @update:model-value="onRoomSelected"
-          />
+          >
+            <template #no-data>
+              <div class="p-3 text-xs text-slate-400 text-center">
+                Không tìm thấy phòng nào trong bộ lọc này
+              </div>
+            </template>
+          </v-autocomplete>
         </div>
       </div>
     </div>
