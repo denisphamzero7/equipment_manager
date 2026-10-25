@@ -41,14 +41,12 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
-        // // Bắt lỗi khi chưa đăng nhập / thiếu Token gửi vào API
-        // $exceptions->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
-        //     if ($request->expectsJson() || $request->is('api/*')) {
-        //         return response()->json([
-        //             'success' => false,
-        //             'message' => 'Chưa xác thực (Thiếu Token hoặc Token quá hạn)',
-        //             'code' => 'UNAUTHENTICATED',
-        //         ], 401);
-        //     }
-        // });
+        // Bắt lỗi khi chưa đăng nhập / thiếu Token gửi vào API
+        $exceptions->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Chưa xác thực hoặc phiên đăng nhập đã hết hạn.',
+                'code' => 'UNAUTHENTICATED',
+            ], 401);
+        });
     })->create();

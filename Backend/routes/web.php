@@ -6,6 +6,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Fallback route named 'login' for Laravel Authenticate middleware (API SPA)
+Route::get('/login', function () {
+    return response()->json([
+        'success' => false,
+        'message' => 'Chưa xác thực hoặc phiên đăng nhập đã hết hạn.',
+        'code' => 'UNAUTHENTICATED',
+    ], 401);
+})->name('login');
+
 /**
  * Universal Storage Route Fallback:
  * Đảm bảo hình ảnh / tài liệu trong storage/app/public luôn truy cập được

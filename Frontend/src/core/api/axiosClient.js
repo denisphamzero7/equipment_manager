@@ -61,7 +61,11 @@ axiosClient.interceptors.response.use(
           toast.error(message)
         }
       } else if (status >= 500) {
-        toast.error('Lỗi máy chủ nội bộ. Vui lòng thử lại sau.')
+        if (status === 502 || status === 503 || status === 504) {
+          toast.warning('Đường truyền mạng tạm thời gián đoạn (Tunnel/Gateway). Đang tự động kết nối lại...')
+        } else {
+          toast.error(message && message !== 'Server Error' ? message : 'Lỗi máy chủ nội bộ. Vui lòng thử lại sau.')
+        }
       } else {
         toast.error(message)
       }
