@@ -36,6 +36,10 @@ export const useAuthStore = defineStore('auth', {
         // Sửa lỗi lấy access_token chuẩn xác từ backend
         const token = data.access_token || data.token || res.access_token || res.token
         const user = data.user || res.user
+        const roles = data.roles || []
+        if (user && roles.length) {
+          user.roles = roles
+        }
         const permissions = data.permissions || user?.permissions || ['*']
         const availableOrgs = data.available_organizations || []
         const currentOrgId = data.current_organization_id || (availableOrgs[0]?.id ?? null)
@@ -75,11 +79,19 @@ export const useAuthStore = defineStore('auth', {
         this.organizationId = Number(orgId)
         storage.set(StorageKeys.ORGANIZATION_ID, Number(orgId))
 
+        if (data.roles && this.user) {
+          this.user.roles = data.roles
+        }
+        if (this.user) {
+          storage.set(StorageKeys.USER, this.user)
+        }
+
         if (data.permissions) {
           this.permissions = data.permissions
           storage.set(StorageKeys.PERMISSIONS, data.permissions)
-          updateAbility(this.user, data.permissions)
         }
+
+        updateAbility(this.user, this.permissions)
 
         return res
       } finally {

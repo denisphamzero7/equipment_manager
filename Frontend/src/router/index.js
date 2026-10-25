@@ -47,7 +47,10 @@ router.beforeEach((to, from, next) => {
   if (to.meta.action && to.meta.subject) {
     if (!ability.can(to.meta.action, to.meta.subject)) {
       toast.error('Bạn không có quyền truy cập vào trang này.')
-      return next({ name: 'dashboard' })
+      if (to.name !== 'dashboard') {
+        return next({ name: 'dashboard' })
+      }
+      return next(false)
     }
   }
 

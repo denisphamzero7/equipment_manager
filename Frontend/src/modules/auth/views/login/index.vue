@@ -66,14 +66,18 @@ async function handleLogin() {
     availableOrgs.value = orgs
     selectedOrgId.value = result.currentOrganizationId || orgs[0]?.id || null
 
-    if (orgs.length > 0) {
-      // Chuyển sang Bước 2: Hiển thị danh sách tổ chức để người dùng chọn
+    if (orgs.length > 1) {
+      // Nếu user có nhiều hơn 1 tổ chức: Chuyển sang Bước 2 để người dùng lựa chọn
       step.value = 'select_org'
       toast.info('Xác thực tài khoản thành công! Vui lòng chọn tổ chức làm việc.')
     } else {
-      // Nếu user chưa được gán tổ chức nào
-      toast.warning('Tài khoản chưa được phân vào tổ chức nào. Vui lòng liên hệ quản trị.')
-      router.push('/dashboard')
+      // Nếu user chỉ có 1 tổ chức (hoặc tổ chức mặc định): Vào thẳng hệ thống làm việc
+      toast.success('Đăng nhập thành công!')
+      try {
+        await router.push('/dashboard')
+      } catch {
+        window.location.href = '/dashboard'
+      }
     }
   } catch (e) {
     const status = e.response?.status
@@ -106,9 +110,14 @@ async function handleConfirmOrganization() {
     await authStore.selectOrganization(selectedOrgId.value)
     const orgName = availableOrgs.value.find(o => o.id === selectedOrgId.value)?.name || `#${selectedOrgId.value}`
     toast.success(`Đăng nhập thành công vào tổ chức "${orgName}"!`)
-    router.push('/dashboard')
+    try {
+      await router.push('/dashboard')
+    } catch {
+      window.location.href = '/dashboard'
+    }
   } catch (e) {
-    console.error(e)
+    console.error('Lỗi khi vào hệ thống:', e)
+    toast.error(e.response?.data?.message || e.message || 'Không thể chọn tổ chức làm việc.')
   } finally {
     selectingOrg.value = false
   }

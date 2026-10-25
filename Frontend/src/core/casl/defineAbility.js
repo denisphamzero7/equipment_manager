@@ -33,6 +33,10 @@ export function defineRulesFor(user = null, permissions = []) {
     return build()
   }
 
+  // Dashboard: Luôn cho phép mọi người dùng đã đăng nhập đọc và truy cập Dashboard
+  can('read', 'Dashboard')
+  can('index', 'Dashboard')
+
   // 2. Map từng quyền chi tiết từ Spatie Permissions sang CASL Actions/Subjects
   permissions.forEach(perm => {
     const permName = typeof perm === 'string' ? perm : perm.name
@@ -98,10 +102,6 @@ export function defineRulesFor(user = null, permissions = []) {
         can('import', 'Room')
       }
     }
-
-    // Dashboard
-    can('read', 'Dashboard')
-
   })
 
   const permissionNames = new Set(permissions.map(permission =>
