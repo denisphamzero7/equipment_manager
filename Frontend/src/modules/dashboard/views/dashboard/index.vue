@@ -51,18 +51,41 @@ async function loadDashboardData(silent = false) {
   }
   const requestId = ++dashboardRequestId
   try {
-    const [statsData, roomsData] = await Promise.all([
+    const [statsResult, roomsResult] = await Promise.allSettled([
       dashboardService.getStats(selectedBlock.value),
-      dashboardService.getMapOverview(),
+      mapRooms.value.length > 0 ? Promise.resolve(mapRooms.value) : dashboardService.getMapOverview(),
     ])
+
     if (requestId === dashboardRequestId) {
-      stats.value = statsData
-      mapRooms.value = roomsData
+      if (statsResult.status === 'fulfilled' && statsResult.value) {
+        const data = statsResult.value
+        stats.value = {
+          total_equipments: data.total_equipments ?? data.total ?? 0,
+          by_status: data.by_status || data.summary || {},
+          by_category: data.by_category || [],
+          rooms_with_issues_count: data.rooms_with_issues_count || 0,
+          by_block: data.by_block || {},
+          ...data,
+        }
+      } else if (statsResult.status === 'rejected') {
+        console.error('Failed to load dashboard stats:', statsResult.reason)
+      }
+
+      if (roomsResult.status === 'fulfilled' && roomsResult.value) {
+        mapRooms.value = Array.isArray(roomsResult.value) ? roomsResult.value : (roomsResult.value?.data || [])
+      } else if (roomsResult.status === 'rejected') {
+        console.error('Failed to load dashboard map rooms:', roomsResult.reason)
+      }
+
+      // Chỉ báo lỗi nếu cả 2 request cùng thất bại
+      if (statsResult.status === 'rejected' && roomsResult.status === 'rejected') {
+        const msg = statsResult.reason?.response?.data?.message || roomsResult.reason?.response?.data?.message
+        toast.error(msg || 'Không thể tải dữ liệu bảng điều khiển.')
+      }
     }
   } catch (error) {
     if (requestId === dashboardRequestId) {
-      console.error('Failed to load dashboard data:', error)
-      toast.error(error.response?.data?.message || 'Không thể tải dữ liệu bảng điều khiển.')
+      console.error('Unexpected error loading dashboard:', error)
     }
   } finally {
     if (!silent && requestId === dashboardRequestId) {
@@ -79,22 +102,35 @@ const filteredRooms = computed(() => {
 
 // Đếm số lượng phòng trong từng Block để hiển thị trên Pills
 const blockCounts = computed(() => {
-  const counts = { total: mapRooms.value.length }
-  mapRooms.value.forEach(r => {
-    const b = r.block || 'Khu vực chung'
-    counts[b] = (counts[b] || 0) + 1
-  })
-  return counts
+  if (mapRooms.value.length > 0) {
+    const counts = { total: mapRooms.value.length }
+    mapRooms.value.forEach(r => {
+      const b = r.block || 'Khu vực chung'
+      counts[b] = (counts[b] || 0) + 1
+    })
+    return counts
+  }
+  if (stats.value?.by_block) {
+    return {
+      total: stats.value.total_equipments || stats.value.all_total || 0,
+      ...stats.value.by_block,
+    }
+  }
+  return { total: 0 }
 })
 
 // Danh sách các block thực tế có trong hệ thống
 const existingBlocks = computed(() => {
-  const presentSet = new Set(mapRooms.value.map(r => r.block).filter(Boolean))
+  const presentSet = new Set(
+    mapRooms.value.length > 0
+      ? mapRooms.value.map(r => r.block).filter(Boolean)
+      : Object.keys(stats.value?.by_block || {})
+  )
   const ordered = hotelBlockOrder.filter(b => presentSet.has(b))
   Array.from(presentSet).forEach(b => {
     if (!ordered.includes(b)) ordered.push(b)
   })
-  return ordered
+  return ordered.length > 0 ? ordered : hotelBlockOrder
 })
 
 function selectBlock(b) {
