@@ -1,5 +1,5 @@
 import { AbilityBuilder, createMongoAbility } from '@casl/ability'
-import { SuperAdminRoles } from '@/core/enums'
+import { SuperAdminRoles } from '../enums/UserRole'
 
 /**
  * Định nghĩa Ability từ danh sách quyền (permissions) và vai trò (roles) của User.
@@ -18,12 +18,12 @@ export function defineRulesFor(user = null, permissions = []) {
   const isSuperAdmin = 
     user.is_super_admin === true ||
     user.roles?.some(r => {
-      const name = typeof r === 'string' ? r : r.name
-      return SuperAdminRoles.includes(name)
+      const name = typeof r === 'string' ? r : r?.name
+      return name === 'Super Admin' || name === 'Admin' || (Array.isArray(SuperAdminRoles) && SuperAdminRoles.includes(name))
     }) ||
     user.assignments?.some(a => {
-      const name = a.role_name || a.name
-      return SuperAdminRoles.includes(name)
+      const name = a?.role_name || a?.name
+      return name === 'Super Admin' || name === 'Admin' || (Array.isArray(SuperAdminRoles) && SuperAdminRoles.includes(name))
     }) ||
     permissions.includes('*') ||
     permissions.includes('all')
@@ -47,6 +47,7 @@ export function defineRulesFor(user = null, permissions = []) {
     // Module Trang thiết bị (Equipments)
     if (permName === 'equipments.index' || permName === 'equipments.show') {
       can('read', 'Equipment')
+      can('index', 'Equipment')
     }
     if (permName === 'equipments.create' || permName === 'equipments.store') {
       can('create', 'Equipment')
@@ -65,6 +66,7 @@ export function defineRulesFor(user = null, permissions = []) {
     }
     if (permName === 'equipments.map_view' || permName === 'equipments.mapView') {
       can('map_view', 'Equipment')
+      can('read', 'Equipment')
     }
     if (permName === 'equipments.stats') {
       can('stats', 'Equipment')
@@ -78,16 +80,9 @@ export function defineRulesFor(user = null, permissions = []) {
 
     // Module Phòng (Rooms / Motel)
     if (permName.startsWith('rooms.') || permName.startsWith('motel.')) {
-      if (permName === 'motel.index' || permName === 'rooms.index') {
-        can('read', 'Room')
-        can('index', 'Room')
-      }
-      if (permName === 'motel.show' || permName === 'rooms.show') {
-        can('read', 'Room')
-      }
+      can('read', 'Room')
+      can('index', 'Room')
       if (permName === 'motel.update' || permName === 'rooms.edit' || permName === 'rooms.update') {
-        can('read', 'Room')
-        can('index', 'Room')
         can('update', 'Room')
       }
       if (permName === 'motel.store' || permName === 'rooms.create' || permName === 'rooms.store') {

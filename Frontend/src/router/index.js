@@ -30,31 +30,40 @@ const router = createRouter({
 
 // Navigation Guards
 router.beforeEach((to, from, next) => {
-  const token = storage.get(StorageKeys.TOKEN)
+  try {
+    const token = storage.get(StorageKeys.TOKEN)
 
-  // 1. Kiểm tra yêu cầu đăng nhập
-  if (to.meta.requiresAuth && !token) {
-    toast.warning('Vui lòng đăng nhập để tiếp tục.')
-    return next({ name: 'login' })
-  }
-
-  // 2. Chặn trang guest (login/register) nếu đã đăng nhập
-  if (to.meta.guestOnly && token) {
-    return next({ name: 'dashboard' })
-  }
-
-  // 3. Phân quyền CASL Ability Check
-  if (to.meta.action && to.meta.subject) {
-    if (!ability.can(to.meta.action, to.meta.subject)) {
-      toast.error('Bạn không có quyền truy cập vào trang này.')
-      if (to.name !== 'dashboard') {
-        return next({ name: 'dashboard' })
-      }
-      return next(false)
+    // 1. Kiểm tra yêu cầu đăng nhập
+    if (to.meta.requiresAuth && !token) {
+      toast.warning('Vui lòng đăng nhập để tiếp tục.')
+      return next({ name: 'login' })
     }
-  }
 
-  next()
+    // 2. Chặn trang guest (login/register) nếu đã đăng nhập
+    if (to.meta.guestOnly && token) {
+      return next({ name: 'dashboard' })
+    }
+
+    // 3. Phân quyền CASL Ability Check
+    if (to.meta.action && to.meta.subject) {
+      if (!ability.can(to.meta.action, to.meta.subject)) {
+        toast.error('Bạn không có quyền truy cập vào trang này.')
+        if (to.name !== 'dashboard') {
+          return next({ name: 'dashboard' })
+        }
+        return next(false)
+      }
+    }
+
+    next()
+  } catch (err) {
+    console.error('Lỗi navigation guard:', err)
+    next()
+  }
+})
+
+router.onError((error) => {
+  console.error('Lỗi Vue Router:', error)
 })
 
 export default router
