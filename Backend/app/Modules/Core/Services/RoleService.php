@@ -4,6 +4,7 @@ namespace App\Modules\Core\Services;
 
 use App\Modules\Core\Exports\RolesExport;
 use App\Modules\Core\Imports\RolesImport;
+use App\Modules\Core\Models\Permission;
 use App\Modules\Core\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -35,13 +36,14 @@ class RoleService
         return DB::transaction(function () use ($data) {
             $permissionIds = $data['permission_ids'] ?? null;
             unset($data['permission_ids']);
-            $data['guard_name'] = $data['guard_name'] ?? config('auth.defaults.guard', 'web');
+            $data['guard_name'] = $data['guard_name'] ?? 'web';
             $data['organization_id'] = null;
 
             $role = Role::create($data);
 
             if (! empty($permissionIds)) {
-                $role->syncPermissions($permissionIds);
+                $permissions = Permission::whereIn('id', $permissionIds)->get();
+                $role->syncPermissions($permissions);
             }
 
             return $role->load('permissions');
@@ -58,7 +60,8 @@ class RoleService
             $role->update($data);
 
             if ($permissionIds !== null) {
-                $role->syncPermissions($permissionIds);
+                $permissions = empty($permissionIds) ? [] : Permission::whereIn('id', $permissionIds)->get();
+                $role->syncPermissions($permissions);
             }
 
             return $role->load('permissions');

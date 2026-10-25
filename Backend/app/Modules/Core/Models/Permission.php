@@ -12,6 +12,8 @@ class Permission extends SpatiePermission
 {
     use HasFactory;
 
+    protected string $guard_name = 'web';
+
     protected static function newFactory()
     {
         return \Database\Factories\Modules\Core\Models\PermissionFactory::new();
