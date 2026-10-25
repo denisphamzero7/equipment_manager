@@ -67,7 +67,9 @@ const statusOptions = [
 ]
 
 function responseItems(response) {
-  return Array.isArray(response?.data) ? response.data : []
+  if (Array.isArray(response)) return response
+  if (Array.isArray(response?.data)) return response.data
+  return []
 }
 
 function userParams(targetPage = page.value) {
@@ -81,29 +83,57 @@ function userParams(targetPage = page.value) {
   }
 }
 
-async function loadUsers(targetPage = page.value, { silent = false } = {}) {
+async function loadUsers(targetPage = page.value, { silent = false, isRetry = false } = {}) {
   if (!silent) {
     loading.value = true
   }
   loadError.value = ''
   try {
-    const [listResponse, statsResponse] = await Promise.all([
+    const [listResult, statsResult] = await Promise.allSettled([
       accessManagementService.getUsers(userParams(targetPage)),
       accessManagementService.getUserStats({
         search: search.value || undefined,
         status: statusFilter.value || undefined,
       }),
     ])
-    items.value = responseItems(listResponse)
-    page.value = listResponse?.meta?.current_page || targetPage
-    total.value = listResponse?.meta?.total || 0
-    stats.value = {
-      total: Number(statsResponse?.total || 0),
-      active: Number(statsResponse?.active || 0),
-      inactive: Number(statsResponse?.inactive || 0),
+
+    if (listResult.status === 'fulfilled') {
+      const listResponse = listResult.value
+      items.value = responseItems(listResponse)
+      page.value = listResponse?.meta?.current_page || targetPage
+      total.value = listResponse?.meta?.total || items.value.length
+      loadError.value = ''
+    } else {
+      console.error('Failed to load users list:', listResult.reason)
+      if (!isRetry) {
+        await new Promise(r => setTimeout(r, 600))
+        return await loadUsers(targetPage, { silent, isRetry: true })
+      }
+      loadError.value = listResult.reason?.response?.data?.message || 'Không thể tải danh sách người dùng.'
+      toast.error(loadError.value)
+    }
+
+    if (statsResult.status === 'fulfilled' && statsResult.value) {
+      const statsData = statsResult.value
+      stats.value = {
+        total: Number(statsData.total ?? total.value ?? 0),
+        active: Number(statsData.active ?? 0),
+        inactive: Number(statsData.inactive ?? 0),
+      }
+    } else {
+      const activeCount = items.value.filter(u => u.status === 'active').length
+      stats.value = {
+        total: total.value || items.value.length,
+        active: activeCount,
+        inactive: Math.max(0, (total.value || items.value.length) - activeCount),
+      }
     }
   } catch (error) {
     console.error('Failed to load user management data:', error)
+    if (!isRetry) {
+      await new Promise(r => setTimeout(r, 600))
+      return await loadUsers(targetPage, { silent, isRetry: true })
+    }
     loadError.value = error.response?.data?.message || 'Không thể tải danh sách người dùng.'
     toast.error(loadError.value)
   } finally {
@@ -280,7 +310,8 @@ function statusLabel(status) {
   return ({ active: 'Hoạt động', inactive: 'Ngưng hoạt động', banned: 'Bị khóa' })[status] || status || 'Chưa rõ'
 }
 
-function formatAssignments(assignments = []) {
+function formatAssignments(assignments) {
+  if (!Array.isArray(assignments)) return []
   return assignments.map(assignment => {
     const organizations = assignment.organizations?.map(org => org.name).join(', ')
       || assignment.organization_ids?.map(id => `#${id}`).join(', ')
@@ -345,8 +376,14 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
       </div>
     </div>
 
-    <div v-if="loadError && !items.length" class="mb-4 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
-      {{ loadError }}
+    <div v-if="loadError && !items.length" class="mb-4 flex items-center justify-between gap-3 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+      <div class="flex items-center gap-2">
+        <v-icon icon="mdi-alert-circle-outline" size="small" color="error" />
+        <span>{{ loadError }}</span>
+      </div>
+      <AppButton size="small" variant="outlined" color="error" @click="loadUsers(1)">
+        Thử lại
+      </AppButton>
     </div>
 
     <AppDataTable
