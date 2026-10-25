@@ -14,7 +14,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-echo "=== 1. Đảm bảo mẫu thiết bị TV 32 inch tồn tại trong hệ thống ===\n";
+echo "=== 1. Đảm bảo các mẫu thiết bị tồn tại trong hệ thống ===\n";
 
 $tvModel = EquipmentModel::firstOrCreate(
     ['name' => 'TV Samsung 32 inch HD'],
@@ -30,7 +30,7 @@ $tvModel = EquipmentModel::firstOrCreate(
         'organization_id' => null,
     ]
 );
-echo "TV Model ID: " . $tvModel->id . " (" . $tvModel->name . ")\n";
+echo "TV Model: " . $tvModel->name . "\n";
 
 EquipmentModel::firstOrCreate(
     ['name' => 'Tivi 32 inch'],
@@ -39,6 +39,29 @@ EquipmentModel::firstOrCreate(
         'brand' => 'Samsung',
         'model_code' => 'TV-32-GEN',
         'specs' => ['type' => 'Tivi 32 inch'],
+        'organization_id' => null,
+    ]
+);
+
+// Đảm bảo mẫu Điện thoại bàn
+EquipmentModel::firstOrCreate(
+    ['name' => 'Điện thoại bàn Panasonic KX-TS500'],
+    [
+        'equipment_category_id' => 1,
+        'brand' => 'Panasonic',
+        'model_code' => 'TEL-PANA-500',
+        'specs' => ['type' => 'Điện thoại cố định / Nội bộ', 'features' => 'Gọi lễ tân, nội bộ buồng phòng'],
+        'organization_id' => null,
+    ]
+);
+
+EquipmentModel::firstOrCreate(
+    ['name' => 'Điện thoại bàn'],
+    [
+        'equipment_category_id' => 1,
+        'brand' => 'Panasonic',
+        'model_code' => 'TEL-GEN',
+        'specs' => ['type' => 'Điện thoại bàn nội bộ buồng phòng'],
         'organization_id' => null,
     ]
 );
@@ -160,6 +183,7 @@ $rowIdx = 2;
 $countTV = 0;
 $countBox = 0;
 $countRemote = 0;
+$countPhone = 0;
 $countWifi = 0;
 
 foreach ($allRooms as $room) {
@@ -196,7 +220,17 @@ foreach ($allRooms as $room) {
     $rowIdx++;
     $countRemote++;
 
-    // 4. Wifi Router: Chỉ lắp ở 21 phòng có router riêng
+    // 4. Điện thoại bàn (Mỗi phòng 1 cái)
+    $sheet->setCellValue("A{$rowIdx}", "TEL-A{$rNum}");
+    $sheet->setCellValue("B{$rowIdx}", "Điện thoại bàn Panasonic KX-TS500");
+    $sheet->setCellValue("C{$rowIdx}", $rNum);
+    $sheet->setCellValue("D{$rowIdx}", "Hoạt động tốt");
+    $sheet->setCellValue("E{$rowIdx}", "Bàn làm việc / Táp đầu giường");
+    $sheet->setCellValue("F{$rowIdx}", "Điện thoại bàn nội bộ buồng phòng - Tầng {$floor}");
+    $rowIdx++;
+    $countPhone++;
+
+    // 5. Wifi Router: Chỉ lắp ở 21 phòng có router riêng
     if (isset($dedicatedRoomSet[$rNum])) {
         $sheet->setCellValue("A{$rowIdx}", "WF-A{$rNum}");
         $sheet->setCellValue("B{$rowIdx}", "Wifi Router TP-Link Archer C6");
@@ -238,10 +272,11 @@ echo "Tạo thành công {$outputFile} với tổng cộng " . ($lastRow - 1) . 
 echo "- Tivi 32 inch: {$countTV} cái (41 phòng)\n";
 echo "- TV Box 4K: {$countBox} cái (41 phòng)\n";
 echo "- Remote Tivi: {$countRemote} cái (41 phòng)\n";
+echo "- Điện thoại bàn: {$countPhone} cái (41 phòng)\n";
 echo "- Wifi Router: {$countWifi} cái (21 phòng có router, 20 phòng dùng ké)\n";
-echo "Tổng cộng = " . ($countTV + $countBox + $countRemote + $countWifi) . " thiết bị.\n";
+echo "Tổng cộng = " . ($countTV + $countBox + $countRemote + $countPhone + $countWifi) . " thiết bị.\n";
 
-// Tạo thêm file tham chiếu cấu hình WiFi: cau_hinh_wifi_khu_A.xlsx
+// Cập nhật thêm file tham chiếu cấu hình WiFi: cau_hinh_wifi_khu_A.xlsx
 $ssWifi = new Spreadsheet();
 $sWifi = $ssWifi->getActiveSheet();
 $sWifi->setTitle('Cau_Hinh_WiFi_1_1');
