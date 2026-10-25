@@ -5,6 +5,7 @@ import { roomService } from '../../services/roomService'
 import { equipmentService } from '@/modules/equipment/services/equipmentService'
 import { useRealtimeStore } from '@/core/stores/realtimeStore'
 import { toast } from '@/core/helpers/toast'
+import { HotelBlockOrder } from '@/core/enums'
 import { resolveMediaUrl } from '@/core/helpers/formatters'
 import DefaultLayout from '@/core/layouts/DefaultLayout.vue'
 import AppPageHeader from '@/core/components/AppPageHeader.vue'
@@ -36,7 +37,7 @@ const roomDetail = ref(null)
 let roomDetailRequestId = 0
 
 // Standard hotel block order
-const hotelBlockOrder = ['Block A', 'Block B', 'Block C', 'Block D', 'Condos 1', 'Condos 2', 'Penthouse-spa+Villa']
+const hotelBlockOrder = HotelBlockOrder
 
 // Mobile active view tab: 'detail' | 'list'
 const mobileActiveTab = ref('detail')

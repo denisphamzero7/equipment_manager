@@ -9,6 +9,7 @@ import { toast } from '@/core/helpers/toast'
 import DefaultLayout from '@/core/layouts/DefaultLayout.vue'
 import AppPageHeader from '@/core/components/AppPageHeader.vue'
 import AppButton from '@/core/components/AppButton.vue'
+import { HotelBlockOrder } from '@/core/enums'
 
 // Domain Presentational Components
 import MapFilterToolbar from '../../components/MapFilterToolbar.vue'
@@ -22,8 +23,8 @@ const router = useRouter()
 const route = useRoute()
 const realtimeStore = useRealtimeStore()
 
-// Master hotel block order matching hotel layout
-const hotelBlockOrder = ['Block A', 'Block B', 'Block C', 'Block D', 'Condos 1', 'Condos 2', 'Penthouse-spa+Villa']
+// Master hotel block order matching hotel layout (từ Enum trung tâm)
+const hotelBlockOrder = HotelBlockOrder
 
 // Data state
 const loading = ref(true)

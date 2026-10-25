@@ -1,4 +1,5 @@
 import { AbilityBuilder, createMongoAbility } from '@casl/ability'
+import { SuperAdminRoles } from '@/core/enums'
 
 /**
  * Định nghĩa Ability từ danh sách quyền (permissions) và vai trò (roles) của User.
@@ -18,11 +19,11 @@ export function defineRulesFor(user = null, permissions = []) {
     user.is_super_admin === true ||
     user.roles?.some(r => {
       const name = typeof r === 'string' ? r : r.name
-      return name === 'Super Admin' || name === 'Admin'
+      return SuperAdminRoles.includes(name)
     }) ||
     user.assignments?.some(a => {
       const name = a.role_name || a.name
-      return name === 'Super Admin' || name === 'Admin'
+      return SuperAdminRoles.includes(name)
     }) ||
     permissions.includes('*') ||
     permissions.includes('all')

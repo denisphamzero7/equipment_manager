@@ -15,6 +15,7 @@ import { roomService } from '../../services/roomService'
 import { RoomStatusOptions, RoomStatusMeta } from '@/core/enums/RoomStatus'
 import { formatCurrency } from '@/core/helpers/formatters'
 import { toast } from '@/core/helpers/toast'
+import { HotelBlockOrder } from '@/core/enums'
 import { useRealtimeStore } from '@/core/stores/realtimeStore'
 
 const router = useRouter()
@@ -80,7 +81,7 @@ const tableHeaders = [
 ]
 
 // Extract distinct blocks and floors from rooms list with standard hotel ordering
-const hotelBlockOrder = ['Block A', 'Block B', 'Block C', 'Block D', 'Condos 1', 'Condos 2', 'Penthouse-spa+Villa']
+const hotelBlockOrder = HotelBlockOrder
 
 const existingBlocks = computed(() => {
   const source = roomSummary.value.length > 0 ? roomSummary.value : rooms.value

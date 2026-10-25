@@ -61,3 +61,17 @@ export const RoomStatusMeta = Object.freeze({
     icon: 'mdi-hammer-wrench',
   },
 })
+
+/**
+ * Hàm lấy metadata trạng thái phòng có fallback an toàn
+ */
+export function getRoomStatusMeta(status) {
+  return RoomStatusMeta[status] || {
+    value: status,
+    label: status || 'Không xác định',
+    color: 'secondary',
+    badgeClass: 'bg-slate-100 text-slate-700 border-slate-300',
+    icon: 'mdi-help-circle',
+  }
+}
+

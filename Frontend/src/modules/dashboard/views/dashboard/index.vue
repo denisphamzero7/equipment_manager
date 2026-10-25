@@ -13,6 +13,7 @@ import AppStatusBadge from '@/core/components/AppStatusBadge.vue'
 import EquipmentOverviewChart from '../../components/EquipmentOverviewChart.vue'
 import RoomAlertList from '../../components/RoomAlertList.vue'
 import { toast } from '@/core/helpers/toast'
+import { HotelBlockOrder } from '@/core/enums'
 
 const router = useRouter()
 const realtimeStore = useRealtimeStore()
@@ -28,16 +29,8 @@ const stats = ref({
 })
 const mapRooms = ref([])
 
-// Thứ tự block chuẩn đồng bộ với RoomListView và EquipmentMapView
-const hotelBlockOrder = [
-  'Block A',
-  'Block B',
-  'Block C',
-  'Block D',
-  'Condos 1',
-  'Condos 2',
-  'Penthouse-spa+Villa',
-]
+// Thứ tự block chuẩn đồng bộ từ Enum tập trung
+const hotelBlockOrder = HotelBlockOrder
 
 // Modal xem chi tiết thiết bị phòng ngay tại Dashboard
 const roomDetailModalOpen = ref(false)

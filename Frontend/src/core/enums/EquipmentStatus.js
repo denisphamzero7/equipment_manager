@@ -62,3 +62,17 @@ export const EquipmentStatusOptions = Object.values(EquipmentStatusMeta).map(ite
   color: item.color,
   icon: item.icon,
 }))
+
+/**
+ * Hàm lấy metadata trạng thái thiết bị có fallback an toàn
+ */
+export function getEquipmentStatusMeta(status) {
+  return EquipmentStatusMeta[status] || {
+    value: status,
+    label: status || 'Không xác định',
+    color: 'secondary',
+    badgeClass: 'bg-slate-100 text-slate-700 border-slate-300',
+    icon: 'mdi-help-circle',
+  }
+}
+

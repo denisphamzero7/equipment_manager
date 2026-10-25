@@ -7,6 +7,7 @@ import { useRealtimeStore } from '@/core/stores/realtimeStore'
 import { EquipmentStatus, EquipmentStatusOptions } from '@/core/enums/EquipmentStatus'
 import { formatDate, resolveMediaUrl } from '@/core/helpers/formatters'
 import { toast } from '@/core/helpers/toast'
+import { HotelBlockOrder } from '@/core/enums'
 import DefaultLayout from '@/core/layouts/DefaultLayout.vue'
 import AppPageHeader from '@/core/components/AppPageHeader.vue'
 import AppDataTable from '@/core/components/AppDataTable.vue'
@@ -89,15 +90,7 @@ const lightboxSubtitle = ref('')
 // Danh mục thiết bị cho dropdown bộ lọc
 const categoryOptions = ref([])
 
-const hotelBlockOrder = [
-  'Block A',
-  'Block B',
-  'Block C',
-  'Block D',
-  'Condos 1',
-  'Condos 2',
-  'Penthouse-spa+Villa',
-]
+const hotelBlockOrder = HotelBlockOrder
 
 const hasActiveFilters = computed(() => {
   const f = equipmentStore.filters

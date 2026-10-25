@@ -1,4 +1,6 @@
 <script setup>
+import { HotelBlockOrder } from '@/core/enums'
+
 defineProps({
   filters: {
     type: Object,
@@ -10,7 +12,7 @@ defineProps({
   },
   hotelBlockOrder: {
     type: Array,
-    default: () => [],
+    default: () => HotelBlockOrder,
   },
   statusOptions: {
     type: Array,
