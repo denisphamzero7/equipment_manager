@@ -12,6 +12,7 @@ import AppButton from '@/core/components/AppButton.vue'
 import { HotelBlockOrder } from '@/core/enums'
 
 // Domain Presentational Components
+import MapStatHeader from '../../components/MapStatHeader.vue'
 import MapFilterToolbar from '../../components/MapFilterToolbar.vue'
 import MapFloorGrid from '../../components/MapFloorGrid.vue'
 import MapRoomDetailModal from '../../components/MapRoomDetailModal.vue'
@@ -301,6 +302,12 @@ const totalFilteredRooms = computed(() => {
   return groupedRooms.value.reduce((sum, b) => sum + b.totalRooms, 0)
 })
 
+// Danh sách các phòng thuộc Block đang chọn (dùng cho thống kê MapStatHeader)
+const activeBlockRooms = computed(() => {
+  if (!selectedBlock.value) return rawRooms.value
+  return rawRooms.value.filter(r => r.block === selectedBlock.value)
+})
+
 async function openRoomDetail(room) {
   roomDetailModalOpen.value = true
   selectedRoomSummary.value = room
@@ -359,6 +366,13 @@ async function openRoomDetail(room) {
         </AppButton>
       </template>
     </AppPageHeader>
+
+    <!-- Top Dynamic Stat Header (5 cards viền xanh đồng bộ) -->
+    <MapStatHeader
+      :rooms="activeBlockRooms"
+      :loading="loading"
+      :selected-block="selectedBlock"
+    />
 
     <!-- 1. Upgraded Filter & Control Card (Child Component) -->
     <MapFilterToolbar
