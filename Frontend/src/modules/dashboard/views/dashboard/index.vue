@@ -415,7 +415,7 @@ watch(
           title="Báo hỏng / Cần bảo trì"
           :value="(stats.by_status?.broken || 0) + (stats.by_status?.maintenance || 0)"
           :subtitle="stats.rooms_with_issues_count > 0 ? `${stats.rooms_with_issues_count} phòng có sự cố` : 'Cần kỹ thuật xử lý'"
-          icon="mdi-wrench-alert"
+          icon="mdi-wrench"
           color="error"
           :loading="loading"
           trend="Cần xử lý gấp →"
