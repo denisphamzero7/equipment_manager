@@ -16,7 +16,10 @@ defineProps({
 <template>
   <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
     <!-- Tổng phòng -->
-    <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 shadow-xs">
+    <div
+      class="bg-white rounded-2xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 shadow-xs"
+      style="border: 2px solid #2563eb !important;"
+    >
       <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700 shrink-0">
         <v-icon icon="mdi-door" size="20" />
       </div>
@@ -27,7 +30,10 @@ defineProps({
     </div>
 
     <!-- Đạt chuẩn định mức -->
-    <div class="bg-white border border-emerald-200/80 rounded-2xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 shadow-xs">
+    <div
+      class="bg-white rounded-2xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 shadow-xs"
+      style="border: 2px solid #2563eb !important;"
+    >
       <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
         <v-icon icon="mdi-check-decagram" size="20" />
       </div>
@@ -40,7 +46,10 @@ defineProps({
     </div>
 
     <!-- Chưa đạt định mức -->
-    <div class="bg-white border border-rose-200/80 rounded-2xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 shadow-xs">
+    <div
+      class="bg-white rounded-2xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 shadow-xs"
+      style="border: 2px solid #2563eb !important;"
+    >
       <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600 shrink-0">
         <v-icon icon="mdi-alert-decagram" size="20" />
       </div>
@@ -53,7 +62,10 @@ defineProps({
     </div>
 
     <!-- Tỷ lệ tuân thủ -->
-    <div class="bg-white border border-blue-200/80 rounded-2xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 shadow-xs">
+    <div
+      class="bg-white rounded-2xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 shadow-xs"
+      style="border: 2px solid #2563eb !important;"
+    >
       <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
         <v-icon icon="mdi-percent-outline" size="20" />
       </div>
