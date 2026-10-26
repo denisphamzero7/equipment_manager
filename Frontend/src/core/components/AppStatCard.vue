@@ -60,7 +60,8 @@ const colorMap = {
 
 <template>
   <div
-    class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 relative overflow-hidden"
+    class="bg-white rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 relative overflow-hidden"
+    style="border: 2px solid #2563eb !important;"
   >
     <div class="flex items-start justify-between gap-3">
       <div class="min-w-0 flex-1">
