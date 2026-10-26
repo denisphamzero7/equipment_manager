@@ -15,30 +15,17 @@ defineProps({
     type: Boolean,
     default: false,
   },
-  activeStatus: {
-    type: String,
-    default: '',
-  },
-  activeBlock: {
-    type: String,
-    default: '',
-  },
 })
-
-defineEmits(['select-status', 'select-stock'])
 </script>
 
 <template>
   <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
     <!-- 1. Tổng thiết bị -->
     <div
-      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition hover:shadow-md"
+      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs"
       style="border: 2px solid #2563eb !important;"
-      :class="!activeStatus && !activeBlock ? 'ring-2 ring-blue-500/80 bg-blue-50/20' : ''"
-      title="Hiển thị tất cả trạng thái"
-      @click="$emit('select-status', '')"
     >
-      <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+      <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
         <v-icon icon="mdi-cube-outline" size="22" />
       </div>
       <div>
@@ -50,13 +37,10 @@ defineEmits(['select-status', 'select-stock'])
 
     <!-- 2. Hoạt động tốt -->
     <div
-      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition hover:shadow-md"
+      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs"
       style="border: 2px solid #2563eb !important;"
-      :class="activeStatus === 'good' ? 'ring-2 ring-emerald-500/80 bg-emerald-50/30' : ''"
-      title="Lọc nhanh thiết bị hoạt động tốt"
-      @click="$emit('select-status', 'good')"
     >
-      <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+      <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
         <v-icon icon="mdi-check-circle-outline" size="22" />
       </div>
       <div>
@@ -68,13 +52,10 @@ defineEmits(['select-status', 'select-stock'])
 
     <!-- 3. Hư hỏng / Thiếu -->
     <div
-      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition hover:shadow-md"
+      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs"
       style="border: 2px solid #2563eb !important;"
-      :class="activeStatus === 'broken' ? 'ring-2 ring-rose-500/80 bg-rose-50/30' : ''"
-      title="Lọc nhanh thiết bị hư hỏng"
-      @click="$emit('select-status', 'broken')"
     >
-      <div class="w-10 h-10 rounded-lg bg-rose-50 flex items-center justify-center text-rose-600">
+      <div class="w-10 h-10 rounded-lg bg-rose-50 flex items-center justify-center text-rose-600 shrink-0">
         <v-icon icon="mdi-alert-circle-outline" size="22" />
       </div>
       <div>
@@ -86,13 +67,10 @@ defineEmits(['select-status', 'select-stock'])
 
     <!-- 4. Đang bảo trì -->
     <div
-      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition hover:shadow-md"
+      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs"
       style="border: 2px solid #2563eb !important;"
-      :class="activeStatus === 'maintenance' ? 'ring-2 ring-amber-500/80 bg-amber-50/30' : ''"
-      title="Lọc nhanh thiết bị đang bảo trì"
-      @click="$emit('select-status', 'maintenance')"
     >
-      <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+      <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600 shrink-0">
         <v-icon icon="mdi-wrench-outline" size="22" />
       </div>
       <div>
@@ -104,13 +82,10 @@ defineEmits(['select-status', 'select-stock'])
 
     <!-- 5. Trong kho -->
     <div
-      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition hover:shadow-md"
+      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs"
       style="border: 2px solid #2563eb !important;"
-      :class="activeBlock === '__stock__' && !activeStatus ? 'ring-2 ring-sky-500/80 bg-sky-50/40' : ''"
-      title="Lọc thiết bị đang lưu kho"
-      @click="$emit('select-stock')"
     >
-      <div class="w-10 h-10 rounded-lg bg-sky-50 flex items-center justify-center text-sky-600">
+      <div class="w-10 h-10 rounded-lg bg-sky-50 flex items-center justify-center text-sky-600 shrink-0">
         <v-icon icon="mdi-package-variant-closed" size="22" />
       </div>
       <div>

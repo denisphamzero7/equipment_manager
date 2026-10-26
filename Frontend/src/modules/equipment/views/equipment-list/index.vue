@@ -626,14 +626,10 @@ watch(
       </template>
     </AppPageHeader>
 
-    <!-- 0. Stat Badges Cards (Child Component) -->
+    <!-- 0. Stat Badges Cards (Child Component - Hiển thị thuần túy không lọc) -->
     <EquipmentStatHeader
       :stats="stats"
       :loading="loadingStats"
-      :active-status="equipmentStore.filters.status"
-      :active-block="equipmentStore.filters.block"
-      @select-status="selectStatusCard"
-      @select-stock="selectStockCard"
     />
 
     <!-- 1 & 2. Block Quick-Filter Pills & Detailed Filter Toolbar (Child Component) -->
