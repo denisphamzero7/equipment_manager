@@ -4,6 +4,7 @@ import { ability } from '@/core/casl/ability'
 import { toast } from '@/core/helpers/toast'
 import AppButton from '@/core/components/AppButton.vue'
 import AppConfirmDialog from '@/core/components/AppConfirmDialog.vue'
+import AppBulkActionsBar from '@/core/components/AppBulkActionsBar.vue'
 import AppDataTable from '@/core/components/AppDataTable.vue'
 import AppModal from '@/core/components/AppModal.vue'
 import AppPageHeader from '@/core/components/AppPageHeader.vue'
@@ -174,6 +175,25 @@ async function deletePermission() {
   }
 }
 
+// Bulk Actions
+const selectedPermissionIds = ref([])
+const bulkActionLoading = ref(false)
+
+async function handleBulkDeletePermissions(ids) {
+  bulkActionLoading.value = true
+  try {
+    const res = await accessManagementService.bulkDestroyPermissions(ids)
+    toast.success(res?.message || `Đã xóa ${ids.length} quyền thành công!`)
+    selectedPermissionIds.value = []
+    await loadPermissions({ silent: true })
+  } catch (err) {
+    const msg = err.response?.data?.message || err.message || 'Lỗi khi xóa nhiều quyền.'
+    toast.error(msg)
+  } finally {
+    bulkActionLoading.value = false
+  }
+}
+
 onMounted(loadPermissions)
 </script>
 
@@ -211,7 +231,23 @@ onMounted(loadPermissions)
       {{ errorMessage }}
     </div>
 
+    <!-- Bulk Actions Bar -->
+    <AppBulkActionsBar
+      v-model:selected-ids="selectedPermissionIds"
+      :status-options="[]"
+      :can-update-status="false"
+      :loading="bulkActionLoading"
+      item-label="quyền"
+      delete-confirm-title="Xác nhận xóa quyền"
+      :delete-confirm-message="`Bạn có chắc chắn muốn xóa ${selectedPermissionIds.length} quyền đã chọn? Việc này có thể ảnh hưởng đến các vai trò đang sở hữu các quyền này.`"
+      :can-delete="canDelete"
+      @delete="handleBulkDeletePermissions"
+      @clear="selectedPermissionIds = []"
+    />
+
     <AppDataTable
+      v-model="selectedPermissionIds"
+      show-select
       :headers="headers"
       :items="filteredPermissions"
       :loading="loading"

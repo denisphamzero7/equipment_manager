@@ -14,6 +14,7 @@ import AppDataTable from '@/core/components/AppDataTable.vue'
 import AppStatusBadge from '@/core/components/AppStatusBadge.vue'
 import AppButton from '@/core/components/AppButton.vue'
 import AppConfirmDialog from '@/core/components/AppConfirmDialog.vue'
+import AppBulkActionsBar from '@/core/components/AppBulkActionsBar.vue'
 import AppExcelTransfer from '@/core/components/AppExcelTransfer.vue'
 
 // Domain Child Components
@@ -517,6 +518,44 @@ async function confirmDelete() {
 async function handleQuickStatusChange(item, newStatus) {
   await equipmentStore.changeStatus(item.id, newStatus)
 }
+
+// Bulk Actions State & Handlers
+const selectedEquipmentIds = ref([])
+const bulkActionLoading = ref(false)
+
+async function handleBulkDelete(ids) {
+  bulkActionLoading.value = true
+  try {
+    await equipmentStore.bulkDestroy(ids)
+    selectedEquipmentIds.value = []
+    await fetchStats()
+  } catch (error) {
+    console.error('Lỗi khi xóa hàng loạt thiết bị:', error)
+  } finally {
+    bulkActionLoading.value = false
+  }
+}
+
+async function handleBulkStatusChange({ ids, status, note }) {
+  bulkActionLoading.value = true
+  try {
+    await equipmentStore.bulkUpdateStatus(ids, status, note)
+    selectedEquipmentIds.value = []
+    await fetchStats()
+  } catch (error) {
+    console.error('Lỗi cập nhật trạng thái hàng loạt:', error)
+  } finally {
+    bulkActionLoading.value = false
+  }
+}
+
+// Reset selection on page or filter changes
+watch(
+  () => [equipmentStore.pagination.currentPage, equipmentStore.filters.search, equipmentStore.filters.status, equipmentStore.filters.block],
+  () => {
+    selectedEquipmentIds.value = []
+  }
+)
 </script>
 
 <template>
@@ -585,15 +624,33 @@ async function handleQuickStatusChange(item, newStatus) {
       @filter-change="() => equipmentStore.fetchEquipments(1)"
     />
 
+    <!-- Thanh thao tác hàng loạt (Bulk Actions Bar) -->
+    <AppBulkActionsBar
+      v-model:selected-ids="selectedEquipmentIds"
+      :status-options="EquipmentStatusOptions"
+      :loading="bulkActionLoading"
+      item-label="thiết bị"
+      delete-confirm-title="Xác nhận xóa thiết bị đã chọn"
+      :delete-confirm-message="`Bạn có chắc chắn muốn xóa vĩnh viễn ${selectedEquipmentIds.length} thiết bị đã chọn? Hành động này không thể hoàn tác.`"
+      status-modal-title="Cập nhật trạng thái thiết bị hàng loạt"
+      :can-delete="$can('delete', 'Equipment')"
+      :can-update-status="$can('update', 'Equipment')"
+      @delete="handleBulkDelete"
+      @update-status="handleBulkStatusChange"
+      @clear="selectedEquipmentIds = []"
+    />
+
     <!-- Data Table -->
     <AppDataTable
+      v-model="selectedEquipmentIds"
+      show-select
       :headers="headers"
       :items="tableItems"
       :loading="equipmentStore.loading"
       :total-items="tableTotal"
       :page="equipmentStore.pagination.currentPage"
       :items-per-page="equipmentStore.pagination.perPage"
-      @update:page="p => equipmentStore.fetchEquipments(p)"
+      @update:page="p => { selectedEquipmentIds = []; equipmentStore.fetchEquipments(p) }"
       @click:row="handleRowClick"
     >
       <!-- Custom item: ID -->

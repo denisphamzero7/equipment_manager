@@ -4,6 +4,7 @@ import { ability } from '@/core/casl/ability'
 import { toast } from '@/core/helpers/toast'
 import AppButton from '@/core/components/AppButton.vue'
 import AppConfirmDialog from '@/core/components/AppConfirmDialog.vue'
+import AppBulkActionsBar from '@/core/components/AppBulkActionsBar.vue'
 import AppDataTable from '@/core/components/AppDataTable.vue'
 import AppModal from '@/core/components/AppModal.vue'
 import AppPageHeader from '@/core/components/AppPageHeader.vue'
@@ -325,6 +326,62 @@ function handleSearch(value) {
   searchTimer = setTimeout(() => loadUsers(1), 300)
 }
 
+// Bulk Actions
+const selectedUserIds = ref([])
+const bulkActionLoading = ref(false)
+const userBulkStatusOptions = [
+  { value: 'active', title: 'Đang hoạt động', icon: 'mdi-check-circle', color: 'success' },
+  { value: 'inactive', title: 'Ngưng hoạt động', icon: 'mdi-pause-circle', color: 'secondary' },
+  { value: 'banned', title: 'Khóa tài khoản', icon: 'mdi-cancel', color: 'error' },
+]
+
+async function handleBulkDeleteUsers(ids) {
+  const currentUserId = authStore.user?.id
+  const safeIds = ids.filter(id => Number(id) !== Number(currentUserId))
+  if (safeIds.length !== ids.length) {
+    toast.warning('Hệ thống tự động loại bỏ tài khoản của bạn khỏi danh sách xóa để đảm bảo an toàn.')
+  }
+  if (!safeIds.length) return
+
+  bulkActionLoading.value = true
+  try {
+    const res = await accessManagementService.bulkDestroyUsers(safeIds)
+    toast.success(res?.message || `Đã xóa ${safeIds.length} người dùng thành công!`)
+    selectedUserIds.value = []
+    await loadUsers(page.value)
+    await loadStats()
+  } catch (err) {
+    const msg = err.response?.data?.message || err.message || 'Lỗi khi xóa nhiều người dùng.'
+    toast.error(msg)
+  } finally {
+    bulkActionLoading.value = false
+  }
+}
+
+async function handleBulkStatusChangeUsers({ ids, status }) {
+  const currentUserId = authStore.user?.id
+  let targetIds = [...ids]
+  if (status !== 'active' && targetIds.some(id => Number(id) === Number(currentUserId))) {
+    toast.warning('Bạn không thể tự khóa hoặc ngưng hoạt động tài khoản của chính mình.')
+    targetIds = targetIds.filter(id => Number(id) !== Number(currentUserId))
+  }
+  if (!targetIds.length) return
+
+  bulkActionLoading.value = true
+  try {
+    const res = await accessManagementService.bulkUpdateStatusUsers(targetIds, status)
+    toast.success(res?.message || 'Cập nhật trạng thái người dùng thành công!')
+    selectedUserIds.value = []
+    await loadUsers(page.value)
+    await loadStats()
+  } catch (err) {
+    const msg = err.response?.data?.message || err.message || 'Lỗi khi cập nhật trạng thái người dùng.'
+    toast.error(msg)
+  } finally {
+    bulkActionLoading.value = false
+  }
+}
+
 onMounted(() => loadUsers(1))
 onBeforeUnmount(() => clearTimeout(searchTimer))
 </script>
@@ -386,7 +443,25 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
       </AppButton>
     </div>
 
+    <!-- Bulk Actions Bar -->
+    <AppBulkActionsBar
+      v-model:selected-ids="selectedUserIds"
+      :status-options="userBulkStatusOptions"
+      :loading="bulkActionLoading"
+      item-label="người dùng"
+      delete-confirm-title="Xác nhận xóa tài khoản người dùng"
+      :delete-confirm-message="`Bạn có chắc chắn muốn xóa ${selectedUserIds.length} người dùng đã chọn? Dữ liệu người dùng sẽ bị xóa khỏi hệ thống.`"
+      status-modal-title="Cập nhật trạng thái người dùng hàng loạt"
+      :can-delete="canDelete"
+      :can-update-status="canUpdate"
+      @delete="handleBulkDeleteUsers"
+      @update-status="handleBulkStatusChangeUsers"
+      @clear="selectedUserIds = []"
+    />
+
     <AppDataTable
+      v-model="selectedUserIds"
+      show-select
       :headers="headers"
       :items="items"
       :loading="loading"
@@ -394,7 +469,7 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
       :items-per-page="perPage"
       :total-items="total"
       empty-text="Chưa có người dùng phù hợp."
-      @update:page="loadUsers"
+      @update:page="p => { selectedUserIds = []; loadUsers(p) }"
     >
       <template #item.user="{ item }">
         <div class="min-w-[180px]">

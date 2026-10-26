@@ -4,6 +4,7 @@ import { ability } from '@/core/casl/ability'
 import { toast } from '@/core/helpers/toast'
 import AppButton from '@/core/components/AppButton.vue'
 import AppConfirmDialog from '@/core/components/AppConfirmDialog.vue'
+import AppBulkActionsBar from '@/core/components/AppBulkActionsBar.vue'
 import AppDataTable from '@/core/components/AppDataTable.vue'
 import AppModal from '@/core/components/AppModal.vue'
 import AppPageHeader from '@/core/components/AppPageHeader.vue'
@@ -186,6 +187,36 @@ function handleSearch(value) {
   searchTimer = setTimeout(() => loadData(1), 300)
 }
 
+// Bulk Actions
+const selectedRoleIds = ref([])
+const bulkActionLoading = ref(false)
+
+async function handleBulkDeleteRoles(ids) {
+  const protectedRoles = ['Super Admin', 'Admin']
+  const selectedRoles = items.value.filter(r => ids.includes(r.id))
+  const safeIds = selectedRoles
+    .filter(r => !protectedRoles.includes(r.name))
+    .map(r => r.id)
+
+  if (safeIds.length !== ids.length) {
+    toast.warning('Các vai trò hệ thống (Super Admin, Admin) không thể bị xóa và đã được tự động bỏ qua.')
+  }
+  if (!safeIds.length) return
+
+  bulkActionLoading.value = true
+  try {
+    const res = await accessManagementService.bulkDestroyRoles(safeIds)
+    toast.success(res?.message || `Đã xóa ${safeIds.length} vai trò thành công!`)
+    selectedRoleIds.value = []
+    await loadData(page.value)
+  } catch (err) {
+    const msg = err.response?.data?.message || err.message || 'Lỗi khi xóa nhiều vai trò.'
+    toast.error(msg)
+  } finally {
+    bulkActionLoading.value = false
+  }
+}
+
 onMounted(() => loadData(1))
 onBeforeUnmount(() => clearTimeout(searchTimer))
 </script>
@@ -225,7 +256,23 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
       {{ errorMessage }}
     </div>
 
+    <!-- Bulk Actions Bar -->
+    <AppBulkActionsBar
+      v-model:selected-ids="selectedRoleIds"
+      :status-options="[]"
+      :can-update-status="false"
+      :loading="bulkActionLoading"
+      item-label="vai trò"
+      delete-confirm-title="Xác nhận xóa vai trò"
+      :delete-confirm-message="`Bạn có chắc chắn muốn xóa ${selectedRoleIds.length} vai trò đã chọn? Các tài khoản được gán vai trò này sẽ bị mất các quyền tương ứng.`"
+      :can-delete="canDelete"
+      @delete="handleBulkDeleteRoles"
+      @clear="selectedRoleIds = []"
+    />
+
     <AppDataTable
+      v-model="selectedRoleIds"
+      show-select
       :headers="headers"
       :items="items"
       :loading="loading"
@@ -233,7 +280,7 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
       :items-per-page="perPage"
       :total-items="total"
       empty-text="Chưa có vai trò phù hợp."
-      @update:page="loadData"
+      @update:page="p => { selectedRoleIds = []; loadData(p) }"
     >
       <template #item.role="{ item }">
         <div>

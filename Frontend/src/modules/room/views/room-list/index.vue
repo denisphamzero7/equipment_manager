@@ -6,6 +6,7 @@ import AppPageHeader from '@/core/components/AppPageHeader.vue'
 import AppDataTable from '@/core/components/AppDataTable.vue'
 import AppButton from '@/core/components/AppButton.vue'
 import AppConfirmDialog from '@/core/components/AppConfirmDialog.vue'
+import AppBulkActionsBar from '@/core/components/AppBulkActionsBar.vue'
 import AppExcelTransfer from '@/core/components/AppExcelTransfer.vue'
 import RoomFormModal from '../../components/RoomFormModal.vue'
 import RoomBatchModal from '../../components/RoomBatchModal.vue'
@@ -432,6 +433,61 @@ async function handleDeleteRoom() {
   }
 }
 
+const roomBulkStatusOptions = [
+  { value: 'ready', title: 'Sẵn sàng đón khách', icon: 'mdi-door-open', color: 'success' },
+  { value: 'occupied', title: 'Đang có khách', icon: 'mdi-account-check', color: 'error' },
+  { value: 'not_ready', title: 'Chờ dọn dẹp', icon: 'mdi-broom', color: 'warning' },
+  { value: 'maintenance', title: 'Đang bảo trì', icon: 'mdi-wrench', color: 'info' },
+]
+
+const bulkActionLoading = ref(false)
+
+function toggleSelectRoom(id) {
+  const numId = Number(id)
+  const idx = selectedRoomIds.value.findIndex(item => Number(item) === numId)
+  if (idx > -1) {
+    selectedRoomIds.value.splice(idx, 1)
+  } else {
+    selectedRoomIds.value.push(numId)
+  }
+}
+
+async function handleBulkDeleteRooms(ids) {
+  bulkActionLoading.value = true
+  try {
+    const res = await roomService.bulkDeleteRooms(ids, true)
+    toast.success(res.message || `Đã xóa ${ids.length} phòng thành công!`)
+    removeRoomsFromView(ids, true)
+    selectedRoomIds.value = []
+  } catch (err) {
+    const msg = err.response?.data?.message || err.message || 'Lỗi khi xóa nhiều phòng.'
+    toast.error(msg)
+  } finally {
+    bulkActionLoading.value = false
+  }
+}
+
+async function handleBulkStatusChangeRooms({ ids, status }) {
+  bulkActionLoading.value = true
+  try {
+    const res = await roomService.bulkUpdateStatusRooms(ids, status)
+    toast.success(res.message || 'Cập nhật trạng thái các phòng thành công!')
+    const idSet = new Set(ids.map(Number))
+    rooms.value.forEach(r => {
+      if (idSet.has(Number(r.id))) r.status = status
+    })
+    roomSummary.value.forEach(r => {
+      if (idSet.has(Number(r.id))) r.status = status
+    })
+    selectedRoomIds.value = []
+  } catch (err) {
+    const msg = err.response?.data?.message || err.message || 'Lỗi khi cập nhật trạng thái nhiều phòng.'
+    toast.error(msg)
+  } finally {
+    bulkActionLoading.value = false
+  }
+}
+
 function confirmBulkDelete() {
   if (!selectedRoomIds.value.length) {
     toast.error('Vui lòng chọn ít nhất một phòng để xóa.')
@@ -441,19 +497,8 @@ function confirmBulkDelete() {
 }
 
 async function handleBulkDelete() {
-  bulkDeleteLoading.value = true
-  try {
-    const res = await roomService.bulkDeleteRooms(selectedRoomIds.value, true)
-    toast.success(res.message || `Đã xóa ${selectedRoomIds.value.length} phòng thành công!`)
-    removeRoomsFromView(selectedRoomIds.value, true)
-    selectedRoomIds.value = []
-    bulkDeleteDialogOpen.value = false
-  } catch (err) {
-    const msg = err.response?.data?.message || err.message || 'Lỗi khi xóa nhiều phòng.'
-    toast.error(msg)
-  } finally {
-    bulkDeleteLoading.value = false
-  }
+  await handleBulkDeleteRooms(selectedRoomIds.value)
+  bulkDeleteDialogOpen.value = false
 }
 
 function updateRoomSummary(room, remove = false) {
@@ -808,6 +853,22 @@ function getStatusBadge(status) {
         </div>
       </div>
 
+      <!-- Bulk Actions Bar (Hoạt động linh hoạt cho cả Dạng thẻ và Dạng bảng) -->
+      <AppBulkActionsBar
+        v-model:selected-ids="selectedRoomIds"
+        :status-options="roomBulkStatusOptions"
+        :loading="bulkActionLoading"
+        item-label="phòng"
+        delete-confirm-title="Xác nhận xóa các phòng đã chọn"
+        :delete-confirm-message="`Bạn có chắc chắn muốn xóa ${selectedRoomIds.length} phòng đã chọn? Toàn bộ thiết bị trong các phòng này sẽ tự động được thu hồi về kho an toàn.`"
+        status-modal-title="Cập nhật trạng thái phòng hàng loạt"
+        :can-delete="$can('delete', 'Room')"
+        :can-update-status="$can('update', 'Room')"
+        @delete="handleBulkDeleteRooms"
+        @update-status="handleBulkStatusChangeRooms"
+        @clear="selectedRoomIds = []"
+      />
+
       <!-- VIEW 1: Dạng Thẻ theo Khu vực & Tầng (Cards View) -->
       <div v-if="viewMode === 'cards'" class="space-y-6">
         <!-- Loading Skeleton (Thẻ theo tầng đồng bộ phong cách với danh sách thiết bị) -->
@@ -937,9 +998,18 @@ function getStatusBadge(status) {
                 <!-- Top Row: Room Number & Status Badge -->
                 <div>
                   <div class="flex items-center justify-between gap-1.5 mb-1">
-                    <span class="text-xl font-black text-slate-900 tracking-tight">
-                      {{ room.room_number }}
-                    </span>
+                    <div class="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        :checked="selectedRoomIds.includes(Number(room.id))"
+                        class="rounded border-slate-300 text-primary focus:ring-primary w-4 h-4 cursor-pointer"
+                        @click.stop
+                        @change="toggleSelectRoom(room.id)"
+                      />
+                      <span class="text-xl font-black text-slate-900 tracking-tight">
+                        {{ room.room_number }}
+                      </span>
+                    </div>
                     <span
                       class="px-2 py-0.5 rounded-full text-[11px] font-bold border inline-flex items-center gap-1 shrink-0 whitespace-nowrap"
                       :class="getStatusBadge(room.status).badgeClass"
@@ -1051,18 +1121,6 @@ function getStatusBadge(status) {
 
       <!-- VIEW 2: Dạng Bảng Dữ Liệu (Table View) -->
       <div v-else-if="viewMode === 'table'" class="bg-white border border-slate-200/80 rounded-2xl shadow-xs overflow-hidden">
-        <!-- Bulk Action Header if Selected -->
-        <div v-if="selectedRoomIds.length > 0" class="p-3 bg-indigo-50 border-b border-indigo-100 flex items-center justify-between">
-          <div class="text-xs font-semibold text-indigo-900 flex items-center gap-2">
-            <v-icon icon="mdi-checkbox-marked" color="indigo" size="18" />
-            Đã chọn {{ selectedRoomIds.length }} phòng
-          </div>
-          <AppButton variant="danger" size="small" @click="confirmBulkDelete">
-            <v-icon start icon="mdi-trash-can" size="16" />
-            Xóa các phòng đã chọn
-          </AppButton>
-        </div>
-
         <AppDataTable
           v-model="selectedRoomIds"
           :headers="tableHeaders"

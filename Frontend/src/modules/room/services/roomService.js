@@ -104,6 +104,19 @@ export const roomService = {
     })
   },
 
+  /**
+   * Cập nhật trạng thái nhiều phòng
+   */
+  async bulkUpdateStatusRooms(ids, status) {
+    return runRoomMutation(async () => {
+      const response = await axiosClient.patch(Endpoints.ROOM.BULK_STATUS, {
+        ids,
+        status,
+      })
+      return response.data
+    })
+  },
+
   async exportExcel(params = {}) {
     const response = await axiosClient.get(Endpoints.ROOM.EXPORT, {
       params,

@@ -17,6 +17,12 @@ export const accessManagementService = {
   async deleteUser(id) {
     return (await axiosClient.delete(Endpoints.CORE.USER(id))).data
   },
+  async bulkDestroyUsers(ids) {
+    return (await axiosClient.post(Endpoints.CORE.USERS_BULK_DESTROY, { ids })).data
+  },
+  async bulkUpdateStatusUsers(ids, status) {
+    return (await axiosClient.patch(Endpoints.CORE.USERS_BULK_STATUS, { ids, status })).data
+  },
   async getRoles(params = { limit: 100 }) {
     return (await axiosClient.get(Endpoints.CORE.ROLES, { params })).data
   },
@@ -29,6 +35,9 @@ export const accessManagementService = {
   async deleteRole(id) {
     return (await axiosClient.delete(Endpoints.CORE.ROLE(id))).data
   },
+  async bulkDestroyRoles(ids) {
+    return (await axiosClient.post(Endpoints.CORE.ROLES_BULK_DESTROY, { ids })).data
+  },
   async getPermissionTree() {
     return (await axiosClient.get(Endpoints.CORE.PERMISSION_TREE)).data
   },
@@ -40,5 +49,8 @@ export const accessManagementService = {
   },
   async deletePermission(id) {
     return (await axiosClient.delete(Endpoints.CORE.PERMISSION(id))).data
+  },
+  async bulkDestroyPermissions(ids) {
+    return (await axiosClient.post(Endpoints.CORE.PERMISSIONS_BULK_DESTROY, { ids })).data
   },
 }
