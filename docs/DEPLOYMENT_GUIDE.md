@@ -181,3 +181,12 @@ Ngay lập tức, tab **Actions** trên GitHub sẽ tự động:
 2. 🟢 **Kiểm tra cú pháp PHP & Composer**: Đảm bảo Backend không bị lỗi.
 3. 🟢 **SSH vào VPS Server**: Tải tệp mới về, chạy `php artisan migrate`, làm mới Cache, nạp lại WebSocket và Nginx.
 4. 🎉 **Toàn bộ quá trình chỉ mất ~45 - 60 giây**, người dùng không bị rớt mạng hay trắng trang!
+
+---
+
+## 🐳 5. Dành cho môi trường Docker (Local & Server All-In-One Container)
+
+Nếu bạn đang chạy ứng dụng dưới dạng Docker Container (`docker-compose.prod.yml`), sau khi chỉnh sửa code, bạn có thể áp dụng ngay thay đổi vào container chỉ trong ~15 giây mà không cần push git:
+- **Windows:** Nhấp đúp vào file `update-app.bat` hoặc chạy `.\update-app.bat` trên terminal.
+- **PowerShell:** `powershell -ExecutionPolicy Bypass -File .\update-app.ps1`
+- Chi tiết các tùy chọn đồng bộ và đóng gói lại Docker image xem thêm tại: [DOCKER_DEPLOYMENT_GUIDE.md](file:///c:/xampp/htdocs/equipment_manager/docs/DOCKER_DEPLOYMENT_GUIDE.md).
