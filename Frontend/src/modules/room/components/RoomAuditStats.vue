@@ -7,71 +7,97 @@ defineProps({
       total: 0,
       compliant: 0,
       missing: 0,
+      maintenance: 0,
       rate: 0,
     }),
+  },
+  loading: {
+    type: Boolean,
+    default: false,
   },
 })
 </script>
 
 <template>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
-    <!-- Tổng phòng -->
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+    <!-- 1. Tổng phòng -->
     <div
-      class="bg-white rounded-2xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 shadow-xs"
+      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs"
       style="border: 2px solid #2563eb !important;"
     >
-      <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700 shrink-0">
-        <v-icon icon="mdi-door" size="20" />
+      <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+        <v-icon icon="mdi-door" size="22" />
       </div>
       <div class="min-w-0">
-        <div class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider truncate">Tổng phòng</div>
-        <div class="text-xl sm:text-2xl font-black text-slate-800 mt-0.5">{{ stats.total }}</div>
+        <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider truncate">Tổng phòng</div>
+        <div v-if="loading" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
+        <div v-else class="text-xl font-bold text-slate-800">{{ stats.total }}</div>
       </div>
     </div>
 
-    <!-- Đạt chuẩn định mức -->
+    <!-- 2. Đạt chuẩn định mức -->
     <div
-      class="bg-white rounded-2xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 shadow-xs"
+      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs"
       style="border: 2px solid #2563eb !important;"
     >
-      <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
-        <v-icon icon="mdi-check-decagram" size="20" />
+      <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
+        <v-icon icon="mdi-check-circle-outline" size="22" />
       </div>
       <div class="min-w-0">
-        <div class="text-[10px] sm:text-xs font-bold text-emerald-600 uppercase tracking-wider truncate">Đủ chuẩn</div>
-        <div class="text-xl sm:text-2xl font-black text-emerald-700 mt-0.5">
-          {{ stats.compliant }} <span class="text-[10px] sm:text-xs font-normal text-slate-400">/ {{ stats.total }}</span>
+        <div class="text-xs font-semibold text-emerald-600 uppercase tracking-wider truncate">Đủ chuẩn</div>
+        <div v-if="loading" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
+        <div v-else class="text-xl font-bold text-emerald-700">
+          {{ stats.compliant }} <span class="text-xs font-normal text-slate-400">/ {{ stats.total }}</span>
         </div>
       </div>
     </div>
 
-    <!-- Chưa đạt định mức -->
+    <!-- 3. Thiếu thiết bị -->
     <div
-      class="bg-white rounded-2xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 shadow-xs"
+      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs"
       style="border: 2px solid #2563eb !important;"
     >
-      <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600 shrink-0">
-        <v-icon icon="mdi-alert-decagram" size="20" />
+      <div class="w-10 h-10 rounded-lg bg-rose-50 flex items-center justify-center text-rose-600 shrink-0">
+        <v-icon icon="mdi-alert-circle-outline" size="22" />
       </div>
       <div class="min-w-0">
-        <div class="text-[10px] sm:text-xs font-bold text-rose-600 uppercase tracking-wider truncate">Thiếu TB</div>
-        <div class="text-xl sm:text-2xl font-black text-rose-700 mt-0.5">
-          {{ stats.missing }} <span class="text-[10px] sm:text-xs font-normal text-slate-400">phòng</span>
+        <div class="text-xs font-semibold text-rose-600 uppercase tracking-wider truncate">Thiếu TB</div>
+        <div v-if="loading" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
+        <div v-else class="text-xl font-bold text-rose-700">
+          {{ stats.missing }} <span class="text-xs font-normal text-slate-400">phòng</span>
         </div>
       </div>
     </div>
 
-    <!-- Tỷ lệ tuân thủ -->
+    <!-- 4. Đang bảo trì -->
     <div
-      class="bg-white rounded-2xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 shadow-xs"
+      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs"
       style="border: 2px solid #2563eb !important;"
     >
-      <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
-        <v-icon icon="mdi-percent-outline" size="20" />
+      <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600 shrink-0">
+        <v-icon icon="mdi-wrench" size="22" />
       </div>
       <div class="min-w-0">
-        <div class="text-[10px] sm:text-xs font-bold text-blue-600 uppercase tracking-wider truncate">Tỷ lệ phủ</div>
-        <div class="text-xl sm:text-2xl font-black text-blue-700 mt-0.5">{{ stats.rate }}%</div>
+        <div class="text-xs font-semibold text-amber-600 uppercase tracking-wider truncate">Đang bảo trì</div>
+        <div v-if="loading" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
+        <div v-else class="text-xl font-bold text-amber-700">
+          {{ stats.maintenance || 0 }} <span class="text-xs font-normal text-slate-400">phòng</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Tỷ lệ phủ / Tuân thủ -->
+    <div
+      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs col-span-2 md:col-span-1"
+      style="border: 2px solid #2563eb !important;"
+    >
+      <div class="w-10 h-10 rounded-lg bg-sky-50 flex items-center justify-center text-sky-600 shrink-0">
+        <v-icon icon="mdi-percent-outline" size="22" />
+      </div>
+      <div class="min-w-0">
+        <div class="text-xs font-semibold text-sky-600 uppercase tracking-wider truncate">Tỷ lệ phủ</div>
+        <div v-if="loading" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
+        <div v-else class="text-xl font-bold text-sky-700">{{ stats.rate }}%</div>
       </div>
     </div>
   </div>

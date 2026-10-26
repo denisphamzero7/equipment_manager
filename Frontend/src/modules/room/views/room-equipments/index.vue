@@ -534,7 +534,7 @@ async function handleCreateSubmit({ data }) {
       </AppPageHeader>
 
       <!-- 2. Overview Stats Badges Cards (Child Component) -->
-      <RoomAuditStats :stats="auditStats" />
+      <RoomAuditStats :stats="auditStats" :loading="loading" />
 
       <!-- 3. Modern Filter & Navigation Control Card (Child Component) -->
       <RoomAuditFilterBar
