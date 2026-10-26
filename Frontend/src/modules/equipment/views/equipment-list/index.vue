@@ -152,9 +152,28 @@ async function fetchStats() {
   }
 }
 
+function selectStockCard() {
+  if (equipmentStore.filters.block === '__stock__' && !equipmentStore.filters.status) {
+    equipmentStore.filters.block = ''
+  } else {
+    equipmentStore.filters.block = '__stock__'
+    equipmentStore.filters.status = ''
+    equipmentStore.filters.floor = null
+    equipmentStore.filters.room_id = null
+    equipmentStore.filters.room_number = ''
+  }
+  equipmentStore.fetchEquipments(1)
+  fetchStats()
+}
+
 function selectBlock(b) {
   equipmentStore.filters.block = b
   equipmentStore.filters.floor = null
+  if (b === '__stock__') {
+    equipmentStore.filters.status = ''
+    equipmentStore.filters.room_id = null
+    equipmentStore.filters.room_number = ''
+  }
   equipmentStore.fetchEquipments(1)
   fetchStats()
 }
@@ -164,6 +183,9 @@ function selectStatusCard(statusKey) {
     equipmentStore.filters.status = ''
   } else {
     equipmentStore.filters.status = statusKey
+    if (equipmentStore.filters.block === '__stock__') {
+      equipmentStore.filters.block = ''
+    }
   }
   equipmentStore.fetchEquipments(1)
 }
@@ -611,7 +633,7 @@ watch(
       :active-status="equipmentStore.filters.status"
       :active-block="equipmentStore.filters.block"
       @select-status="selectStatusCard"
-      @select-stock="selectBlock('__stock__')"
+      @select-stock="selectStockCard"
     />
 
     <!-- 1 & 2. Block Quick-Filter Pills & Detailed Filter Toolbar (Child Component) -->

@@ -172,10 +172,14 @@ function getCategoryIcon(code) {
               <span class="px-2 py-0.5 rounded-md bg-rose-600 text-white font-black text-[10px] tracking-wider uppercase">Sự cố lan truyền</span>
               <h4 class="font-bold text-sm text-rose-900">MẤT KẾT NỐI WIFI DO SỰ CỐ TẠI PHÒNG PHÁT NGUỒN</h4>
             </div>
-            <p class="text-xs text-rose-800 font-semibold mt-1">
+            <p class="text-xs text-rose-800 font-bold mt-1">
               {{ roomDetail.shared_wifi_issue.message }}
             </p>
-            <p class="text-[11px] text-slate-600 mt-1">
+            <div v-if="roomDetail.shared_wifi_issue.broken_reason" class="mt-2 p-2.5 rounded-lg bg-rose-100/90 border border-rose-200 text-xs text-rose-950 font-medium flex items-center gap-2">
+              <v-icon icon="mdi-alert-octagon-outline" size="16" class="text-rose-600 shrink-0" />
+              <span>Lý do hỏng: <strong class="font-bold text-rose-900">{{ roomDetail.shared_wifi_issue.broken_reason }}</strong></span>
+            </div>
+            <p class="text-[11px] text-slate-600 mt-1.5">
               Phòng {{ roomDetail.room_number }} sử dụng ké sóng Wifi từ <strong>Phòng {{ roomDetail.shared_wifi_issue.source_room_number }}</strong>. Khi Router phòng phát gặp sự cố, phòng này sẽ mất Internet hoàn toàn. Vui lòng ưu tiên kiểm tra, khởi động lại hoặc điều chuyển Router thay thế cho phòng phát.
             </p>
           </div>

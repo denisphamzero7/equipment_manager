@@ -154,8 +154,12 @@ function getCategoryIcon(code) {
             <span class="px-1.5 py-0.2 rounded bg-rose-600 text-white text-[9px] uppercase font-black">Cảnh báo dây chuyền</span>
             <span>MẤT WIFI DO SỰ CỐ TẠI PHÒNG PHÁT</span>
           </div>
-          <p class="text-xs text-rose-800 font-semibold mt-1">{{ roomDetail.shared_wifi_issue.message }}</p>
-          <p class="text-[11px] text-slate-600 mt-0.5">Phòng này phụ thuộc mạng từ <strong>Phòng {{ roomDetail.shared_wifi_issue.source_room_number }}</strong>. Khi Router phòng đó gặp sự cố, phòng này sẽ bị gián đoạn Internet.</p>
+          <p class="text-xs text-rose-800 font-bold mt-1">{{ roomDetail.shared_wifi_issue.message }}</p>
+          <div v-if="roomDetail.shared_wifi_issue.broken_reason" class="mt-2 p-2 rounded-lg bg-rose-100/90 border border-rose-200 text-xs text-rose-950 font-medium flex items-center gap-2">
+            <v-icon icon="mdi-alert-octagon-outline" size="16" class="text-rose-600 shrink-0" />
+            <span>Lý do hỏng: <strong class="font-bold text-rose-900">{{ roomDetail.shared_wifi_issue.broken_reason }}</strong></span>
+          </div>
+          <p class="text-[11px] text-slate-600 mt-1.5">Phòng này phụ thuộc mạng từ <strong>Phòng {{ roomDetail.shared_wifi_issue.source_room_number }}</strong>. Khi Router phòng đó gặp sự cố, phòng này sẽ bị gián đoạn Internet.</p>
         </div>
       </div>
 

@@ -111,6 +111,11 @@ class EquipmentMapViewResource extends JsonResource
                 ];
                 $missingCount++;
             } elseif ($sourceRouter->status === EquipmentStatusEnum::Broken) {
+                $brokenReason = $sourceRouter->note
+                    ?: ($sourceRouter->relationLoaded('maintenanceLogs') ? $sourceRouter->maintenanceLogs->first()?->issue_description : null)
+                    ?: $sourceRouter->maintenanceLogs()->latest()->value('issue_description')
+                    ?: 'Chưa có ghi chú lý do hỏng';
+
                 $sharedWifiIssue = [
                     'type' => 'broken',
                     'status' => 'broken',
@@ -119,10 +124,16 @@ class EquipmentMapViewResource extends JsonResource
                     'router_id' => $sourceRouter->id,
                     'router_name' => $sourceRouter->name,
                     'serial_number' => $sourceRouter->serial_number,
+                    'broken_reason' => $brokenReason,
                     'message' => 'Mất Wifi do Router tại phòng phát (P.' . $room->sharedWifiRoom->room_number . ') bị HƯ HỎNG!',
                 ];
                 $brokenCount++;
             } elseif ($sourceRouter->status === EquipmentStatusEnum::Maintenance) {
+                $maintenanceReason = $sourceRouter->note
+                    ?: ($sourceRouter->relationLoaded('maintenanceLogs') ? $sourceRouter->maintenanceLogs->first()?->issue_description : null)
+                    ?: $sourceRouter->maintenanceLogs()->latest()->value('issue_description')
+                    ?: 'Đang bảo dưỡng kỹ thuật';
+
                 $sharedWifiIssue = [
                     'type' => 'maintenance',
                     'status' => 'maintenance',
@@ -131,6 +142,7 @@ class EquipmentMapViewResource extends JsonResource
                     'router_id' => $sourceRouter->id,
                     'router_name' => $sourceRouter->name,
                     'serial_number' => $sourceRouter->serial_number,
+                    'broken_reason' => $maintenanceReason,
                     'message' => 'Wifi gián đoạn do Router tại phòng phát (P.' . $room->sharedWifiRoom->room_number . ') đang BẢO TRÌ!',
                 ];
                 $maintenanceCount++;

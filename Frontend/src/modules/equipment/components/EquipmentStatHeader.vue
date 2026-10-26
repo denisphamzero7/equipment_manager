@@ -34,6 +34,7 @@ defineEmits(['select-status', 'select-stock'])
     <div
       class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition hover:shadow-md"
       style="border: 2px solid #2563eb !important;"
+      :class="!activeStatus && !activeBlock ? 'ring-2 ring-blue-500/80 bg-blue-50/20' : ''"
       title="Hiển thị tất cả trạng thái"
       @click="$emit('select-status', '')"
     >
@@ -51,6 +52,7 @@ defineEmits(['select-status', 'select-stock'])
     <div
       class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition hover:shadow-md"
       style="border: 2px solid #2563eb !important;"
+      :class="activeStatus === 'good' ? 'ring-2 ring-emerald-500/80 bg-emerald-50/30' : ''"
       title="Lọc nhanh thiết bị hoạt động tốt"
       @click="$emit('select-status', 'good')"
     >
@@ -68,6 +70,7 @@ defineEmits(['select-status', 'select-stock'])
     <div
       class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition hover:shadow-md"
       style="border: 2px solid #2563eb !important;"
+      :class="activeStatus === 'broken' ? 'ring-2 ring-rose-500/80 bg-rose-50/30' : ''"
       title="Lọc nhanh thiết bị hư hỏng"
       @click="$emit('select-status', 'broken')"
     >
@@ -85,6 +88,7 @@ defineEmits(['select-status', 'select-stock'])
     <div
       class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition hover:shadow-md"
       style="border: 2px solid #2563eb !important;"
+      :class="activeStatus === 'maintenance' ? 'ring-2 ring-amber-500/80 bg-amber-50/30' : ''"
       title="Lọc nhanh thiết bị đang bảo trì"
       @click="$emit('select-status', 'maintenance')"
     >
@@ -102,6 +106,7 @@ defineEmits(['select-status', 'select-stock'])
     <div
       class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition hover:shadow-md"
       style="border: 2px solid #2563eb !important;"
+      :class="activeBlock === '__stock__' && !activeStatus ? 'ring-2 ring-sky-500/80 bg-sky-50/40' : ''"
       title="Lọc thiết bị đang lưu kho"
       @click="$emit('select-stock')"
     >
