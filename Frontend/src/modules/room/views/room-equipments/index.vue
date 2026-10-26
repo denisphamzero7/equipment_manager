@@ -402,7 +402,10 @@ async function handleRetract() {
 }
 
 // 4. Thao tác Gán thiết bị từ kho vào phòng
-async function openWarehouseModal() {
+const targetCategoryCode = ref('')
+
+async function openWarehouseModal(categoryCode = '') {
+  targetCategoryCode.value = typeof categoryCode === 'string' ? categoryCode : ''
   warehouseModalOpen.value = true
   warehouseLoading.value = true
   try {
@@ -436,16 +439,28 @@ const suggestedPositions = computed(() => {
   return list
 })
 
-async function handleAssignFromWarehouse({ equipment_id, position_note }) {
-  if (!equipment_id || !selectedRoomId.value) return
+async function handleAssignFromWarehouse({ equipment_id, equipment_ids, position_note }) {
+  if (!selectedRoomId.value) return
+  const ids = equipment_ids && equipment_ids.length ? equipment_ids : (equipment_id ? [equipment_id] : [])
+  if (!ids.length) return
+
   actionLoading.value = true
   try {
-    await equipmentService.assignToRoom({
-      equipment_id,
-      room_id: selectedRoomId.value,
-      position_note,
-    })
-    toast.success('Đã gán thiết bị từ kho vào phòng thành công!')
+    if (ids.length === 1) {
+      await equipmentService.assignToRoom({
+        equipment_id: ids[0],
+        room_id: selectedRoomId.value,
+        position_note,
+      })
+      toast.success('Đã gán thiết bị từ kho vào phòng thành công!')
+    } else {
+      await equipmentService.assignToRoom({
+        equipment_ids: ids,
+        room_id: selectedRoomId.value,
+        position_note,
+      })
+      toast.success(`Đã gán thành công ${ids.length} thiết bị từ kho vào phòng!`)
+    }
     warehouseModalOpen.value = false
     await loadRoomDetail(selectedRoomId.value, { silent: true })
     void loadRooms({ silent: true })
@@ -633,6 +648,7 @@ async function handleCreateSubmit({ data }) {
 
     <!-- MODAL 5: Gán thiết bị từ kho vào phòng hiện tại (Child Component) -->
     <RoomAssignWarehouseModal
+      v-if="warehouseModalOpen"
       v-model="warehouseModalOpen"
       :room-number="roomDetail?.room_number || selectedRoomId || ''"
       :room-id="selectedRoomId"
@@ -640,6 +656,9 @@ async function handleCreateSubmit({ data }) {
       :warehouse-loading="warehouseLoading"
       :action-loading="actionLoading"
       :suggested-positions="suggestedPositions"
+      :target-category-code="targetCategoryCode"
+      :missing-equipments="roomDetail?.missing_equipments || []"
+      :standard-model-ids="(roomDetail?.standard_allocations || []).map(s => s.equipment_model_id).filter(Boolean)"
       @submit="handleAssignFromWarehouse"
     />
 

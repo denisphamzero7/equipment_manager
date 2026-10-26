@@ -141,6 +141,24 @@ class EquipmentController extends Controller
      */
     public function assignToRoom(AssignRoomEquipmentRequest $request): JsonResponse
     {
+        $equipmentIds = $request->input('equipment_ids');
+        if (!empty($equipmentIds) && is_array($equipmentIds)) {
+            $assignedItems = [];
+            foreach ($equipmentIds as $eqId) {
+                $assignedItems[] = $this->service->assignToRoom(
+                    (int) $eqId,
+                    $request->validated('room_id'),
+                    $request->validated('position_note')
+                );
+            }
+            $count = count($assignedItems);
+            $targetText = $request->validated('room_id') ? "vào phòng" : "về kho";
+            return $this->success([
+                'assigned_count' => $count,
+                'items' => EquipmentResource::collection($assignedItems),
+            ], "Đã gán thành công {$count} thiết bị {$targetText}.");
+        }
+
         $item = $this->service->assignToRoom(
             $request->validated('equipment_id'),
             $request->validated('room_id'),

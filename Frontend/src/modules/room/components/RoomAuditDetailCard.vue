@@ -235,9 +235,9 @@ function getCategoryIcon(code) {
             class="bg-white/80 border rounded-xl p-2.5 flex items-center justify-between gap-2"
             :class="mis.is_cascade_error ? 'border-amber-300 bg-amber-50/60' : 'border-rose-200'"
           >
-            <div>
+            <div class="min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="font-bold text-slate-800 text-xs">{{ mis.category_name || mis.name }}</span>
+                <span class="font-bold text-slate-800 text-xs truncate">{{ mis.category_name || mis.name }}</span>
                 <span v-if="mis.is_cascade_error" class="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-bold text-[9px] uppercase tracking-wider">
                   Sự cố dây chuyền
                 </span>
@@ -249,12 +249,24 @@ function getCategoryIcon(code) {
                 Quy chuẩn: <strong>{{ mis.standard_quantity || 1 }}</strong> • Hiện có: <strong>{{ mis.actual_quantity || 0 }}</strong>
               </p>
             </div>
-            <span
-              class="px-2 py-0.5 rounded-full font-black text-xs border shrink-0"
-              :class="mis.is_cascade_error ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-rose-100 text-rose-800 border-rose-200'"
-            >
-              {{ mis.is_cascade_error ? 'Mất sóng' : `Thiếu ${mis.missing_count || 1}` }}
-            </span>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <span
+                class="px-2 py-0.5 rounded-full font-black text-xs border shrink-0"
+                :class="mis.is_cascade_error ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-rose-100 text-rose-800 border-rose-200'"
+              >
+                {{ mis.is_cascade_error ? 'Mất sóng' : `Thiếu ${mis.missing_count || 1}` }}
+              </span>
+              <button
+                v-if="!mis.is_cascade_error && $can('assign', 'Equipment')"
+                type="button"
+                class="px-2 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-bold text-[11px] flex items-center gap-1 transition shadow-xs cursor-pointer"
+                title="Bù riêng thiết bị này từ kho"
+                @click="emit('open-warehouse-modal', mis.category_code)"
+              >
+                <v-icon icon="mdi-plus" size="13" />
+                <span>Bù kho</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
