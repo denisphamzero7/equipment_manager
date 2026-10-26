@@ -288,10 +288,19 @@ function getCategoryIcon(code) {
         Đóng
       </v-btn>
       <AppButton
+        v-if="roomDetail?.room_id || roomDetail?.id || roomSummary?.id"
+        variant="tonal"
+        color="primary"
+        icon="mdi-floor-plan"
+        @click="router.push({ path: '/equipments/map-view', query: { block: roomDetail?.block || roomSummary?.block, floor: roomDetail?.floor || roomSummary?.floor } })"
+      >
+        Xem trên Sơ đồ Map
+      </AppButton>
+      <AppButton
         v-if="$can('assign', 'Equipment')"
         color="primary"
         icon="mdi-plus"
-        @click="emit('assign-more', roomDetail?.room_id || roomDetail?.id)"
+        @click="emit('assign-more', roomDetail?.room_id || roomDetail?.id || roomSummary?.id)"
       >
         Gán thêm thiết bị
       </AppButton>

@@ -344,6 +344,8 @@ class RoomEquipmentDetailResource extends JsonResource
             'room_id' => $room->id,
             'room_number' => $room->room_number,
             'name' => $room->name,
+            'block' => $room->block,
+            'floor' => $room->floor,
             'room_type' => $room->roomType?->name ?? 'Phòng Tiêu chuẩn',
             'bedroom_count' => $bedroomCount,
             'living_room_count' => $livingRoomCount,

@@ -10,6 +10,9 @@ import AppStatCard from '@/core/components/AppStatCard.vue'
 import AppButton from '@/core/components/AppButton.vue'
 import AppModal from '@/core/components/AppModal.vue'
 import AppStatusBadge from '@/core/components/AppStatusBadge.vue'
+import MapRoomDetailModal from '@/modules/equipment/components/MapRoomDetailModal.vue'
+import RoomFormModal from '@/modules/room/components/RoomFormModal.vue'
+import { roomService } from '@/modules/room/services/roomService'
 import EquipmentOverviewChart from '../../components/EquipmentOverviewChart.vue'
 import RoomAlertList from '../../components/RoomAlertList.vue'
 import { toast } from '@/core/helpers/toast'
@@ -177,6 +180,33 @@ function openLightbox(item) {
   lightboxImage.value = resolveMediaUrl(url)
   lightboxTitle.value = `${item.model_name || 'Thiết bị'} (${item.serial_number || 'N/A'})`
   lightboxOpen.value = true
+}
+
+const editRoomModalOpen = ref(false)
+const roomForEdit = ref(null)
+const roomTypesList = ref([])
+
+async function openEditRoomModal() {
+  if (!selectedRoomDetail.value) return
+  try {
+    roomTypesList.value = await roomService.getRoomTypes()
+  } catch (error) {
+    console.error('Failed to load room types for editing:', error)
+    return
+  }
+  roomForEdit.value = {
+    ...selectedRoomDetail.value,
+    ...(selectedRoomDetail.value.room || {}),
+  }
+  editRoomModalOpen.value = true
+}
+
+async function handleRoomSaved(savedRoom) {
+  editRoomModalOpen.value = false
+  if (selectedRoomSummary.value?.id) {
+    await openRoomDetail({ ...selectedRoomSummary.value, ...savedRoom })
+  }
+  await loadDashboardData(true)
 }
 
 const categoryIconMap = {
@@ -471,172 +501,25 @@ watch(
       </div>
     </div>
 
-    <!-- Room Detail Modal (AppModal) right on Dashboard -->
-    <AppModal
+    <!-- Full Room Detail Modal with Quota Alerts, Space Composition, Wifi Status & Missing Warning -->
+    <MapRoomDetailModal
       v-model="roomDetailModalOpen"
-      :title="`Danh sách Thiết bị — Phòng ${selectedRoomDetail?.room_number || selectedRoomSummary?.room_number || ''}`"
-      :subtitle="`${selectedRoomDetail?.block || selectedRoomSummary?.block || ''} • Tầng ${selectedRoomDetail?.floor || selectedRoomSummary?.floor || ''} • Hạng: ${selectedRoomDetail?.room_type || selectedRoomSummary?.room_type || 'Tiêu chuẩn'}`"
-      max-width="800"
-    >
-      <div v-if="roomDetailLoading" class="mb-4 rounded-xl border border-blue-200 bg-blue-50 p-3.5">
-        <div class="flex items-center gap-2 text-xs font-semibold text-blue-800">
-          <v-progress-circular indeterminate color="primary" size="18" />
-          <span>Đang tải danh sách thiết bị đầy đủ...</span>
-        </div>
-        <div v-if="selectedRoomSummary" class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600">
-          <span>{{ selectedRoomSummary.block }} • Tầng {{ selectedRoomSummary.floor }}</span>
-          <span>{{ selectedRoomSummary.stats?.total_equipments ?? 0 }} thiết bị</span>
-          <span v-if="selectedRoomSummary.stats?.missing_count">Thiếu {{ selectedRoomSummary.stats.missing_count }}</span>
-          <span v-if="selectedRoomSummary.stats?.broken_count">Hỏng {{ selectedRoomSummary.stats.broken_count }}</span>
-        </div>
-      </div>
+      :room-detail="selectedRoomDetail"
+      :room-summary="selectedRoomSummary"
+      :loading="roomDetailLoading"
+      @open-edit-room="openEditRoomModal"
+      @open-lightbox="openLightbox"
+      @assign-more="roomId => router.push(`/equipments?action=create&room_id=${roomId}`)"
+    />
 
-      <div v-if="selectedRoomDetail" class="space-y-4">
-        <!-- Room Status Summary Banner -->
-        <div class="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-primary text-white font-black text-sm flex items-center justify-center shadow-xs">
-              {{ selectedRoomDetail.room_number }}
-            </div>
-            <div>
-              <p class="text-xs font-bold text-slate-800">
-                {{ selectedRoomDetail.name || `Phòng ${selectedRoomDetail.room_number}` }}
-              </p>
-              <p class="text-[11px] text-slate-500">
-                {{ selectedRoomDetail.block }} • Tầng {{ selectedRoomDetail.floor }} • {{ selectedRoomDetail.room_type }}
-              </p>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-2 text-xs">
-            <span class="text-slate-500 font-medium">Tổng thiết bị:</span>
-            <span class="px-2 py-0.5 rounded-full font-bold bg-slate-200 text-slate-800">
-              {{ selectedRoomDetail.total_equipments || 0 }}
-            </span>
-          </div>
-        </div>
-
-        <!-- Categorized Equipment List in Room -->
-        <div class="space-y-3 max-h-[50vh] overflow-y-auto pr-1">
-          <div
-            v-if="selectedRoomDetail.categories && selectedRoomDetail.categories.length > 0"
-            class="space-y-3"
-          >
-            <div
-              v-for="cat in selectedRoomDetail.categories"
-              :key="cat.category_id"
-              class="border border-slate-200/80 rounded-xl p-3 bg-white shadow-2xs"
-            >
-              <p class="text-xs font-bold text-slate-700 mb-2 flex items-center justify-between">
-                <span>{{ cat.category_name }}</span>
-                <span class="text-[11px] text-slate-400 font-normal">{{ cat.items?.length || 0 }} thiết bị</span>
-              </p>
-
-              <div class="space-y-2">
-                <div
-                  v-for="item in cat.items"
-                  :key="item.id"
-                  class="flex items-center justify-between gap-3 p-2.5 bg-slate-50 hover:bg-slate-100/80 transition-colors rounded-xl text-xs border border-slate-100"
-                >
-                  <!-- Equipment Thumbnail with lightbox zoom -->
-                  <div
-                    class="relative w-11 h-11 rounded-lg overflow-hidden shrink-0 border border-slate-200/80 bg-white flex items-center justify-center shadow-2xs group cursor-pointer"
-                    :title="(item.photo_url || item.photos?.[0]?.url) ? 'Nhấp để xem ảnh lớn' : (item.model_name || 'Thiết bị')"
-                    @click="openLightbox(item)"
-                  >
-                    <img
-                      v-if="item.photo_url || item.photos?.[0]?.url"
-                      :src="resolveMediaUrl(item.photo_url || item.photos?.[0]?.url)"
-                      :alt="item.model_name || 'Thiết bị'"
-                      class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
-                      loading="lazy"
-                    />
-                    <div v-else class="flex flex-col items-center justify-center text-slate-400">
-                      <v-icon :icon="cat.category_icon || getCategoryIcon(cat.category_code)" size="20" />
-                    </div>
-
-                    <div
-                      v-if="item.photo_url || item.photos?.[0]?.url"
-                      class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white"
-                    >
-                      <v-icon icon="mdi-magnify-plus" size="14" />
-                    </div>
-                  </div>
-
-                  <!-- Equipment Info -->
-                  <div class="min-w-0 flex-1">
-                    <div class="flex items-center gap-1.5">
-                      <router-link
-                        :to="`/equipments/${item.id}`"
-                        class="font-bold text-slate-800 hover:text-primary transition-colors truncate"
-                        title="Xem trang chi tiết thiết bị"
-                      >
-                        {{ item.model_name || 'Thiết bị' }}
-                      </router-link>
-                      <span v-if="item.photos?.length > 1" class="text-[10px] bg-slate-200/70 text-slate-600 px-1.5 py-0.2 rounded-full font-medium">
-                        {{ item.photos.length }} ảnh
-                      </span>
-                    </div>
-                    <p class="text-[11px] font-mono text-blue-600 font-medium truncate mt-0.5">
-                      {{ item.serial_number || 'Chưa gắn Serial' }}
-                    </p>
-                    <p v-if="item.position_note" class="text-[10px] text-slate-400 truncate mt-0.5">
-                      Vị trí: {{ item.position_note }}
-                    </p>
-                  </div>
-
-                  <!-- Right: Status Badge & Link -->
-                  <div class="flex items-center gap-1.5 shrink-0">
-                    <AppStatusBadge :status="item.status" />
-                    <button
-                      type="button"
-                      class="p-1 rounded-lg text-slate-400 hover:text-primary hover:bg-white transition cursor-pointer"
-                      title="Xem trang chi tiết thiết bị"
-                      @click="router.push(`/equipments/${item.id}`)"
-                    >
-                      <v-icon icon="mdi-chevron-right" size="18" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div v-else class="text-center py-8 text-slate-400 text-xs">
-            <v-icon icon="mdi-package-variant-closed" size="36" class="text-slate-300 mb-2 block mx-auto" />
-            <p class="font-bold text-slate-600">Phòng này chưa có bất kỳ thiết bị nào được gán.</p>
-            <p class="text-[11px] text-slate-400 mt-0.5">Bạn có thể bấm "Gán thêm thiết bị" bên dưới để trang bị cho phòng.</p>
-          </div>
-        </div>
-      </div>
-
-      <template #footer>
-        <v-btn
-          variant="tonal"
-          color="secondary"
-          @click="roomDetailModalOpen = false"
-        >
-          Đóng
-        </v-btn>
-        <AppButton
-          v-if="selectedRoomDetail?.room_id"
-          variant="tonal"
-          color="primary"
-          icon="mdi-floor-plan"
-          @click="router.push({ path: '/equipments/map-view', query: { block: selectedRoomDetail.block, floor: selectedRoomDetail.floor } })"
-        >
-          Xem trên Sơ đồ Map
-        </AppButton>
-        <AppButton
-          v-if="$can('assign', 'Equipment')"
-          color="primary"
-          icon="mdi-plus"
-          @click="router.push(`/equipments?action=create&room_id=${selectedRoomDetail?.room_id}`)"
-        >
-          Gán thêm thiết bị
-        </AppButton>
-      </template>
-    </AppModal>
+    <!-- Room Structure Edit Modal -->
+    <RoomFormModal
+      v-if="editRoomModalOpen"
+      v-model="editRoomModalOpen"
+      :room="roomForEdit"
+      :room-types="roomTypesList"
+      @submit="handleRoomSaved"
+    />
 
     <!-- Image Preview Lightbox Dialog -->
     <v-dialog v-model="lightboxOpen" max-width="700">
