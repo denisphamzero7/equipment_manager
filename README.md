@@ -152,106 +152,138 @@ Tất cả các route đều được bảo vệ bởi middleware `auth:sanctum`
 
 ---
 
-## ⚙️ 6. Hướng dẫn Cài đặt & Khởi chạy
+## ⚙️ 6. Hướng dẫn Cài đặt & Khởi chạy (Getting Started)
 
-### Yêu cầu hệ thống:
-- **PHP**: >= 8.2 (Bật các extension: `pdo_mysql`, `gd`, `zip`, `fileinfo`, `mbstring`)
-- **MySQL / MariaDB**: >= 8.0
-- **Composer**: >= 2.x
-- **Node.js & npm**: (cho Frontend / Assets)
+Dự án hỗ trợ 3 phương thức khởi chạy linh hoạt tùy theo nhu cầu sử dụng:
 
-### Các bước cài đặt:
+### 🚀 Lựa chọn 1: Chạy Siêu Tốc với All-In-One Docker (Khuyên dùng - Nhanh nhất)
 
-1. **Di chuyển vào thư mục Backend:**
-   ```bash
-   cd Backend
-   ```
+> Không cần cài đặt PHP, Composer hay MySQL trên máy. Toàn bộ hệ thống (**Frontend Vue 3, Backend API Laravel, Nginx, Reverb WebSocket, MySQL, Redis**) được đóng gói sẵn trong một cụm container chuẩn.
 
-2. **Cài đặt các gói phụ thuộc PHP:**
-   ```bash
-   composer install
-   ```
+#### 1. Chuẩn bị file môi trường
+```bash
+cp .env.docker.example .env.docker
+```
 
-3. **Cấu hình file môi trường:**
-   - Sao chép file `.env.example` thành `.env`:
-     ```bash
-     cp .env.example .env
-     ```
-   - Cấu hình thông số kết nối cơ sở dữ liệu trong file `.env`:
-     ```env
-     DB_CONNECTION=mysql
-     DB_HOST=127.0.0.1
-     DB_PORT=3306
-     DB_DATABASE=equipment_manager
-     DB_USERNAME=root
-     DB_PASSWORD=
-     ```
+#### 2. Khởi động hệ thống
+```bash
+docker compose -f docker-compose.prod.yml --env-file .env.docker up -d --build
+```
 
-4. **Tạo Application Key:**
-   ```bash
-   php artisan key:generate
-   ```
+#### 3. Khởi tạo dữ liệu mẫu (Chạy lần đầu)
+```bash
+docker compose -f docker-compose.prod.yml exec app php artisan db:seed
+```
 
-5. **Chạy Migration và nạp dữ liệu mẫu:**
-   ```bash
-   php artisan migrate
-   php artisan db:seed --class=EquipmentSeeder
-   ```
+#### 4. Truy cập ứng dụng
+- **Giao diện Web & API:** `http://localhost:8088` (hoặc cổng được cấu hình trong `.env.docker`)
+- **Tài khoản mẫu đăng nhập:**
+  - **Super Admin:** `admin@example.com` / Mật khẩu: `quandcore**11`
+  - **Tài khoản phụ:** `pnhau2001@gmail.com` / Mật khẩu: `12345`
 
-6. **Tạo symbolic link cho thư mục lưu trữ ảnh:**
-   ```bash
-   php artisan storage:link
-   ```
+#### 🔄 Cập nhật code sau khi chỉnh sửa (Hot Update):
+Khi bạn sửa code Frontend hoặc Backend, chỉ cần chạy 1 câu lệnh để nạp thay đổi vào container trong ~15 giây:
+- **Windows File Explorer:** Nhấp đúp chuột vào file **`update-app.bat`**.
+- **PowerShell:** `.\update-app.ps1`
+- **Dừng hệ thống:** `docker compose -f docker-compose.prod.yml down`
 
-7. **Khởi chạy Local Server:**
-   ```bash
-   php artisan serve
-   ```
-   API Backend sẽ sẵn sàng tại: `http://127.0.0.1:8000`
+> 📖 **Xem hướng dẫn chi tiết:** [docs/DOCKER_DEPLOYMENT_GUIDE.md](docs/DOCKER_DEPLOYMENT_GUIDE.md)
 
 ---
 
-## 🐳 6. Hướng dẫn Khởi chạy với Docker & Xem Log
+### 💻 Lựa chọn 2: Chạy Môi Trường Phát Triển Cục Bộ (Local Dev - XAMPP / PHP + Node.js)
 
-> 📖 **Xem tài liệu chi tiết đầy đủ:** [docs/DOCKER_GUIDE.md](docs/DOCKER_GUIDE.md)
+Dành cho lập trình viên muốn code trực tiếp với tính năng Hot-Reload của Vite và debug trực tiếp trên máy.
 
-### A. Khởi chạy toàn bộ hệ thống
+#### Yêu cầu hệ thống:
+- **PHP**: >= 8.2 (kèm các extension: `pdo_mysql`, `gd`, `zip`, `fileinfo`, `mbstring`, `intl`)
+- **MySQL / MariaDB**: >= 8.0 (ví dụ MySQL trong XAMPP)
+- **Composer**: >= 2.x
+- **Node.js**: >= 18.x & npm
+
+#### A. Khởi chạy Backend (Laravel API):
 ```bash
-# 1. Khởi động cụm Docker Backend (Laravel, Reverb WebSocket, Horizon, Scheduler, Redis, Mailpit)
+# 1. Di chuyển vào thư mục Backend
+cd Backend
+
+# 2. Cài đặt các thư viện PHP
+composer install
+
+# 3. Tạo file cấu hình môi trường
+cp .env.example .env
+# Chỉnh sửa thông số kết nối Database (DB_DATABASE, DB_USERNAME, DB_PASSWORD) trong .env cho khớp với MySQL của bạn.
+
+# 4. Tạo Application Key
+php artisan key:generate
+
+# 5. Tạo liên kết thư mục lưu trữ ảnh/tệp tin
+php artisan storage:link
+
+# 6. Chạy Migration và nạp dữ liệu mẫu
+php artisan migrate --seed
+
+# 7. Khởi chạy máy chủ API
+php artisan serve
+```
+Backend API sẽ hoạt động tại: `http://127.0.0.1:8000`
+
+*(Tùy chọn) Bật WebSocket Realtime:*
+```bash
+php artisan reverb:start
+```
+
+#### B. Khởi chạy Frontend (Vue 3 + Vite):
+Mở một cửa sổ Terminal mới:
+```bash
+# 1. Di chuyển vào thư mục Frontend
+cd Frontend
+
+# 2. Cài đặt các thư viện Node.js
+npm install
+
+# 3. Khởi chạy máy chủ phát triển
+npm run dev
+```
+Frontend Web sẽ mở tại: `http://localhost:3000` (đã cấu hình sẵn proxy chuyển tiếp request `/api` và `/storage` sang Backend).
+
+---
+
+### 🐳 Lựa chọn 3: Chạy Môi Trường Docker Cho Lập Trình Viên (Sail / Multi-container)
+
+Nếu bạn muốn môi trường dev riêng biệt qua Docker Compose (Laravel Sail, Reverb, Horizon, Redis, Mailpit):
+
+```bash
+# 1. Khởi động cụm Docker Backend
 docker compose -f backend/compose.yaml up -d
 
-# 2. Khởi động Frontend Vue 3 (mở terminal mới)
+# 2. Khởi chạy Frontend
 npm run dev --prefix Frontend
 ```
 
 - **Giao diện Web:** `http://localhost:3000`
 - **Backend API:** `http://localhost`
 - **Reverb WebSocket:** `ws://localhost:8090`
-- **Horizon Queue Dashboard:** `http://localhost/horizon`
-- **Mailpit Email Dashboard:** `http://localhost:8025`
-- **phpMyAdmin (XAMPP):** `http://localhost:8080/phpmyadmin`
+- **Horizon Dashboard:** `http://localhost/horizon`
+- **Mailpit:** `http://localhost:8025`
 
-### B. Các lệnh xem log thời gian thực
-```bash
-# Xem log toàn bộ hệ thống
-docker compose -f backend/compose.yaml logs -f
-
-# Xem log Backend API
-docker logs -f --tail 100 backend-laravel.test-1
-
-# Xem log Real-time WebSocket Reverb
-docker logs -f --tail 100 backend-reverb-1
-
-# Xem log Hàng đợi Horizon
-docker logs -f --tail 100 backend-horizon-1
-
-# Xem file laravel.log với công cụ Pail
-docker exec -it backend-laravel.test-1 php artisan pail
-```
+> 📖 **Xem hướng dẫn chi tiết:** [docs/DOCKER_GUIDE.md](docs/DOCKER_GUIDE.md)
 
 ---
 
-## 🛣️ 7. Kế hoạch phát triển (Roadmap)
+## 📚 7. Tài liệu Hướng dẫn Chuyên sâu
+
+| Tài liệu | Mô tả |
+| :--- | :--- |
+| [docs/DOCKER_DEPLOYMENT_GUIDE.md](docs/DOCKER_DEPLOYMENT_GUIDE.md) | Hướng dẫn đóng gói và triển khai Docker All-In-One, quy trình cập nhật hot-update |
+| [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md) | Hướng dẫn triển khai CI/CD GitHub Actions lên máy chủ VPS không downtime |
+| [docs/BUSINESS_WORKFLOW_GUIDE.md](docs/BUSINESS_WORKFLOW_GUIDE.md) | Đặc tả chi tiết toàn bộ luồng nghiệp vụ kiểm kê, đối soát, định mức và báo hỏng |
+| [docs/USER_GUIDE_EQUIPMENT_MANAGER.md](docs/USER_GUIDE_EQUIPMENT_MANAGER.md) | Cẩm nang sử dụng thực tế dành cho người quản lý thiết bị và kỹ thuật viên |
+| [docs/AI_FEATURE_DEVELOPMENT_GUIDE.md](docs/AI_FEATURE_DEVELOPMENT_GUIDE.md) | Quy chuẩn kiến trúc, UI/UX và phạm vi thay đổi khi phát triển tính năng |
+| [docs/SYSTEM_OPTIMIZATION_AND_BEST_PRACTICES.md](docs/SYSTEM_OPTIMIZATION_AND_BEST_PRACTICES.md) | Các giải pháp tối ưu hóa hiệu năng và best practices |
+
+---
+
+## 🛣️ 8. Kế hoạch phát triển (Roadmap)
 
 - [x] Thiết kế Cơ sở dữ liệu và Migrations Module Thiết bị.
 - [x] Xây dựng Backend API: Sơ đồ phòng, CRUD, Định mức, Báo hỏng, Import/Export Excel.
