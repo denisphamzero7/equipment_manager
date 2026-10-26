@@ -258,7 +258,8 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
 
     <!-- Bulk Actions Bar -->
     <AppBulkActionsBar
-      v-model:selected-ids="selectedRoleIds"
+      v-model="selectedRoleIds"
+      :all-ids="items.map(r => r.id)"
       :status-options="[]"
       :can-update-status="false"
       :loading="bulkActionLoading"

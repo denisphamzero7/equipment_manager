@@ -445,7 +445,8 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
 
     <!-- Bulk Actions Bar -->
     <AppBulkActionsBar
-      v-model:selected-ids="selectedUserIds"
+      v-model="selectedUserIds"
+      :all-ids="items.map(u => u.id)"
       :status-options="userBulkStatusOptions"
       :loading="bulkActionLoading"
       item-label="người dùng"

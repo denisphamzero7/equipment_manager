@@ -233,7 +233,8 @@ onMounted(loadPermissions)
 
     <!-- Bulk Actions Bar -->
     <AppBulkActionsBar
-      v-model:selected-ids="selectedPermissionIds"
+      v-model="selectedPermissionIds"
+      :all-ids="filteredPermissions.map(p => p.id)"
       :status-options="[]"
       :can-update-status="false"
       :loading="bulkActionLoading"

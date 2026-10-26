@@ -626,7 +626,8 @@ watch(
 
     <!-- Thanh thao tác hàng loạt (Bulk Actions Bar) -->
     <AppBulkActionsBar
-      v-model:selected-ids="selectedEquipmentIds"
+      v-model="selectedEquipmentIds"
+      :all-ids="tableItems.map(item => item.id)"
       :status-options="EquipmentStatusOptions"
       :loading="bulkActionLoading"
       item-label="thiết bị"

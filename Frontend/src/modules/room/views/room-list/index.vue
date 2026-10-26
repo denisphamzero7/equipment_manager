@@ -218,6 +218,20 @@ const totalFilteredRooms = computed(() => {
   return pagination.totalItems
 })
 
+// All room IDs currently visible on screen (cho tính năng chọn tất cả)
+const currentDisplayRoomIds = computed(() => {
+  if (viewMode.value === 'cards') {
+    const ids = []
+    groupedRooms.value.forEach(b => {
+      b.floors.forEach(f => {
+        f.rooms.forEach(r => ids.push(Number(r.id)))
+      })
+    })
+    return ids
+  }
+  return rooms.value.map(r => Number(r.id))
+})
+
 // Statistics counter
 const stats = computed(() => {
   let ready = 0, occupied = 0, notReady = 0, maintenance = 0
@@ -855,7 +869,8 @@ function getStatusBadge(status) {
 
       <!-- Bulk Actions Bar (Hoạt động linh hoạt cho cả Dạng thẻ và Dạng bảng) -->
       <AppBulkActionsBar
-        v-model:selected-ids="selectedRoomIds"
+        v-model="selectedRoomIds"
+        :all-ids="currentDisplayRoomIds"
         :status-options="roomBulkStatusOptions"
         :loading="bulkActionLoading"
         item-label="phòng"
