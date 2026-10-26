@@ -850,7 +850,8 @@ class EquipmentService
     {
         return Room::with([
             'roomType',
-            'sharedWifiRoom',
+            'sharedWifiRoom.equipments.model.category',
+            'dependentWifiRooms',
             'equipments.model.category',
             'equipments.media',
             'standardEquipments.model.category',

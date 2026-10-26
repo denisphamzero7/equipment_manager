@@ -58,10 +58,19 @@ function getBadgeIndicatorClass(room) {
         </span>
         <span
           v-if="room.wifi_mode === 'shared'"
-          class="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-purple-100 text-purple-700 text-[9px] font-semibold"
-          :title="room.shared_wifi_note || (room.shared_wifi_room ? `Dùng ké Wifi P.${room.shared_wifi_room.room_number}` : 'Dùng ké Wifi phòng bên cạnh')"
+          class="inline-flex items-center gap-0.5 px-1 py-0.2 rounded text-[9px] font-bold"
+          :class="room.shared_wifi_issue ? 'bg-rose-100 text-rose-700 animate-pulse border border-rose-300' : 'bg-purple-100 text-purple-700'"
+          :title="room.shared_wifi_issue ? room.shared_wifi_issue.message : (room.shared_wifi_note || (room.shared_wifi_room ? `Dùng ké Wifi P.${room.shared_wifi_room.room_number}` : 'Dùng ké Wifi phòng bên cạnh'))"
         >
-          <v-icon icon="mdi-wifi-arrow-left-right" size="10" /> Ké Wifi
+          <v-icon :icon="room.shared_wifi_issue ? 'mdi-wifi-alert' : 'mdi-wifi-arrow-left-right'" size="10" />
+          {{ room.shared_wifi_issue ? 'Mất Wifi ké' : 'Ké Wifi' }}
+        </span>
+        <span
+          v-else-if="room.dependent_rooms && room.dependent_rooms.length"
+          class="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-indigo-50 text-indigo-700 text-[9px] font-semibold border border-indigo-200"
+          :title="`Đang phát Wifi cho: ${room.dependent_rooms.map(r => 'P.' + r.room_number).join(', ')}`"
+        >
+          <v-icon icon="mdi-access-point-network" size="10" /> Cấp {{ room.dependent_rooms.length }}P
         </span>
       </div>
     </div>

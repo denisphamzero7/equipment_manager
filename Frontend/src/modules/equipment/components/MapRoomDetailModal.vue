@@ -146,6 +146,28 @@ function getCategoryIcon(code) {
         </button>
       </div>
 
+      <!-- Cascade Shared Wifi Alert Banner -->
+      <div v-if="roomDetail.shared_wifi_issue" class="rounded-xl p-3.5 border bg-rose-50 border-rose-300 text-rose-900 flex items-start gap-3 shadow-2xs">
+        <v-icon icon="mdi-wifi-alert" size="22" class="text-rose-600 shrink-0 mt-0.5" />
+        <div class="flex-1 min-w-0">
+          <div class="font-bold text-xs text-rose-900 flex items-center gap-1.5 flex-wrap">
+            <span class="px-1.5 py-0.2 rounded bg-rose-600 text-white text-[9px] uppercase font-black">Cảnh báo dây chuyền</span>
+            <span>MẤT WIFI DO SỰ CỐ TẠI PHÒNG PHÁT</span>
+          </div>
+          <p class="text-xs text-rose-800 font-semibold mt-1">{{ roomDetail.shared_wifi_issue.message }}</p>
+          <p class="text-[11px] text-slate-600 mt-0.5">Phòng này phụ thuộc mạng từ <strong>Phòng {{ roomDetail.shared_wifi_issue.source_room_number }}</strong>. Khi Router phòng đó gặp sự cố, phòng này sẽ bị gián đoạn Internet.</p>
+        </div>
+      </div>
+
+      <!-- Sharing wifi info banner -->
+      <div v-if="roomDetail.dependent_rooms && roomDetail.dependent_rooms.length" class="rounded-xl p-3 border bg-indigo-50 border-indigo-200 text-indigo-950 flex items-center gap-2.5 text-xs shadow-2xs">
+        <v-icon icon="mdi-access-point-network" size="20" class="text-indigo-600 shrink-0" />
+        <div class="flex-1 min-w-0">
+          <span class="font-bold text-indigo-900">Phòng phát Wifi trung tâm:</span>
+          <span class="text-indigo-800 ml-1">Đang cấp mạng cho {{ roomDetail.dependent_rooms.length }} phòng khác ({{ roomDetail.dependent_rooms.map(r => 'P.' + r.room_number).join(', ') }}).</span>
+        </div>
+      </div>
+
       <!-- Missing Equipments Alert (if any) -->
       <div v-if="roomDetail.missing_equipments && roomDetail.missing_equipments.length" class="bg-amber-50 p-4 rounded-xl border border-amber-200">
         <h4 class="text-xs font-bold text-amber-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">

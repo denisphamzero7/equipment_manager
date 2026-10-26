@@ -1,10 +1,11 @@
 <script setup>
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { resolveMediaUrl } from '@/core/helpers/formatters'
 import AppButton from '@/core/components/AppButton.vue'
 import AppStatusBadge from '@/core/components/AppStatusBadge.vue'
 
-defineProps({
+const props = defineProps({
   roomDetail: {
     type: Object,
     default: null,
@@ -13,6 +14,16 @@ defineProps({
     type: Boolean,
     default: false,
   },
+})
+
+const hasBrokenRouter = computed(() => {
+  const allItems = props.roomDetail?.categories?.flatMap(c => c.items || []) || []
+  return allItems.some(i => (i.model?.category?.code === 'wifi' || i.category_code === 'wifi') && i.status === 'broken')
+})
+
+const hasMaintenanceRouter = computed(() => {
+  const allItems = props.roomDetail?.categories?.flatMap(c => c.items || []) || []
+  return allItems.some(i => (i.model?.category?.code === 'wifi' || i.category_code === 'wifi') && i.status === 'maintenance')
 })
 
 const emit = defineEmits([
@@ -101,15 +112,24 @@ function getCategoryIcon(code) {
               <v-icon icon="mdi-television" size="14" class="text-blue-600" />
               Định mức TV, Box & Remote: {{ Math.max(1, (roomDetail.bedroom_count ?? 1) + (roomDetail.living_room_count ?? 0)) }} bộ
             </span>
-            <span v-if="roomDetail.wifi_mode === 'shared'" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple-50 border border-purple-200 text-purple-700 text-xs font-semibold">
-              <v-icon icon="mdi-wifi-arrow-left-right" size="14" />
+            <span
+              v-if="roomDetail.wifi_mode === 'shared'"
+              class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-bold transition-all"
+              :class="roomDetail.shared_wifi_issue ? 'bg-rose-50 border-rose-300 text-rose-700 animate-pulse' : 'bg-purple-50 border-purple-200 text-purple-700'"
+            >
+              <v-icon :icon="roomDetail.shared_wifi_issue ? 'mdi-wifi-alert' : 'mdi-wifi-arrow-left-right'" size="14" />
               Dùng ké Wifi {{ roomDetail.shared_wifi_note || (roomDetail.shared_wifi_room ? `P.${roomDetail.shared_wifi_room.room_number}` : 'phòng bên cạnh') }}
+              <template v-if="roomDetail.shared_wifi_issue"> (MẤT KẾT NỐI)</template>
             </span>
             <span v-else-if="roomDetail.wifi_mode === 'none'" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-slate-500 text-xs">
               <v-icon icon="mdi-wifi-off" size="14" /> Không Wifi
             </span>
             <span v-else class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold">
               <v-icon icon="mdi-wifi" size="14" /> Router riêng ({{ roomDetail.wifi_router_count || 1 }} bộ)
+            </span>
+            <span v-if="roomDetail.dependent_rooms && roomDetail.dependent_rooms.length" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-semibold">
+              <v-icon icon="mdi-access-point-network" size="14" />
+              Đang phát Wifi cho {{ roomDetail.dependent_rooms.length }} phòng: {{ roomDetail.dependent_rooms.map(r => 'P.' + r.room_number).join(', ') }}
             </span>
           </div>
         </div>
@@ -141,6 +161,49 @@ function getCategoryIcon(code) {
         </div>
       </div>
 
+      <!-- Cascade Shared Wifi Issue Warning Banner (Phòng dùng ké bị mất mạng do Router phòng phát bị hỏng) -->
+      <div v-if="roomDetail.shared_wifi_issue" class="rounded-2xl p-4 sm:p-5 border bg-rose-50/95 border-rose-300 text-rose-900 shadow-xs">
+        <div class="flex items-start gap-3.5">
+          <div class="w-10 h-10 rounded-xl bg-rose-100 border border-rose-200 text-rose-600 flex items-center justify-center shrink-0">
+            <v-icon icon="mdi-wifi-alert" size="24" />
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="px-2 py-0.5 rounded-md bg-rose-600 text-white font-black text-[10px] tracking-wider uppercase">Sự cố lan truyền</span>
+              <h4 class="font-bold text-sm text-rose-900">MẤT KẾT NỐI WIFI DO SỰ CỐ TẠI PHÒNG PHÁT NGUỒN</h4>
+            </div>
+            <p class="text-xs text-rose-800 font-semibold mt-1">
+              {{ roomDetail.shared_wifi_issue.message }}
+            </p>
+            <p class="text-[11px] text-slate-600 mt-1">
+              Phòng {{ roomDetail.room_number }} sử dụng ké sóng Wifi từ <strong>Phòng {{ roomDetail.shared_wifi_issue.source_room_number }}</strong>. Khi Router phòng phát gặp sự cố, phòng này sẽ mất Internet hoàn toàn. Vui lòng ưu tiên kiểm tra, khởi động lại hoặc điều chuyển Router thay thế cho phòng phát.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Source Room Multi-room Impact Banner (Router phòng này hỏng làm ảnh hưởng các phòng dùng ké) -->
+      <div v-if="roomDetail.dependent_rooms && roomDetail.dependent_rooms.length && (hasBrokenRouter || hasMaintenanceRouter)" class="rounded-2xl p-4 sm:p-5 border bg-amber-50/95 border-amber-300 text-amber-950 shadow-xs">
+        <div class="flex items-start gap-3.5">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 border border-amber-200 text-amber-700 flex items-center justify-center shrink-0">
+            <v-icon icon="mdi-alert-octagon" size="24" />
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="px-2 py-0.5 rounded-md bg-amber-600 text-white font-black text-[10px] tracking-wider uppercase">Ưu tiên xử lý cao</span>
+              <h4 class="font-bold text-sm text-amber-900">SỰ CỐ ROUTER ẢNH HƯỞNG ĐẾN NHIỀU PHÒNG KHÁC</h4>
+            </div>
+            <p class="text-xs text-amber-800 font-medium mt-1">
+              Router tại phòng này đang phát Wifi cho <strong>{{ roomDetail.dependent_rooms.length }} phòng khác</strong>: 
+              <span class="font-bold text-amber-950">{{ roomDetail.dependent_rooms.map(r => 'P.' + r.room_number).join(', ') }}</span>.
+            </p>
+            <p class="text-[11px] text-amber-700 mt-1">
+              Sự cố Router tại phòng này khiến toàn bộ các phòng phụ thuộc ở trên mất mạng. Đề xuất kỹ thuật viên ưu tiên thay thế hoặc điều chuyển router dự phòng cấp cứu.
+            </p>
+          </div>
+        </div>
+      </div>
+
       <!-- Missing items banner -->
       <div v-if="roomDetail.missing_equipments && roomDetail.missing_equipments.length" class="bg-rose-50 border border-rose-200 rounded-2xl p-4 sm:p-5 text-xs text-rose-900 shadow-xs">
         <div class="flex items-center justify-between gap-2 mb-3">
@@ -165,16 +228,28 @@ function getCategoryIcon(code) {
           <div
             v-for="(mis, i) in roomDetail.missing_equipments"
             :key="i"
-            class="bg-white/80 border border-rose-200 rounded-xl p-2.5 flex items-center justify-between gap-2"
+            class="bg-white/80 border rounded-xl p-2.5 flex items-center justify-between gap-2"
+            :class="mis.is_cascade_error ? 'border-amber-300 bg-amber-50/60' : 'border-rose-200'"
           >
             <div>
-              <span class="font-bold text-slate-800 text-xs">{{ mis.category_name || mis.name }}</span>
-              <p class="text-[11px] text-slate-500 mt-0.5">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="font-bold text-slate-800 text-xs">{{ mis.category_name || mis.name }}</span>
+                <span v-if="mis.is_cascade_error" class="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-bold text-[9px] uppercase tracking-wider">
+                  Sự cố dây chuyền
+                </span>
+              </div>
+              <p v-if="mis.error_message" class="text-[11px] text-amber-900 font-medium mt-0.5">
+                {{ mis.error_message }}
+              </p>
+              <p v-else class="text-[11px] text-slate-500 mt-0.5">
                 Quy chuẩn: <strong>{{ mis.standard_quantity || 1 }}</strong> • Hiện có: <strong>{{ mis.actual_quantity || 0 }}</strong>
               </p>
             </div>
-            <span class="px-2 py-0.5 rounded-full font-black text-xs bg-rose-100 text-rose-800 border border-rose-200">
-              Thiếu {{ mis.missing_count || 1 }}
+            <span
+              class="px-2 py-0.5 rounded-full font-black text-xs border shrink-0"
+              :class="mis.is_cascade_error ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-rose-100 text-rose-800 border-rose-200'"
+            >
+              {{ mis.is_cascade_error ? 'Mất sóng' : `Thiếu ${mis.missing_count || 1}` }}
             </span>
           </div>
         </div>

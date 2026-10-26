@@ -95,6 +95,54 @@ class EquipmentMapViewResource extends JsonResource
             }
         }
 
+        // 7. Kiểm tra sự cố lan truyền (Cascade Issue) từ phòng phát Wifi nếu phòng này dùng ké Wifi
+        $sharedWifiIssue = null;
+        if ($wifiMode === 'shared' && $room->sharedWifiRoom) {
+            $sourceEquipments = $room->sharedWifiRoom->equipments ?? collect();
+            $sourceRouter = $sourceEquipments->first(fn ($item) => ($item->model?->category?->code ?? '') === 'wifi');
+
+            if (!$sourceRouter) {
+                $sharedWifiIssue = [
+                    'type' => 'missing',
+                    'status' => 'missing',
+                    'source_room_id' => $room->sharedWifiRoom->id,
+                    'source_room_number' => (string) $room->sharedWifiRoom->room_number,
+                    'message' => 'Phòng phát P.' . $room->sharedWifiRoom->room_number . ' chưa được lắp đặt Wifi Router!',
+                ];
+                $missingCount++;
+            } elseif ($sourceRouter->status === EquipmentStatusEnum::Broken) {
+                $sharedWifiIssue = [
+                    'type' => 'broken',
+                    'status' => 'broken',
+                    'source_room_id' => $room->sharedWifiRoom->id,
+                    'source_room_number' => (string) $room->sharedWifiRoom->room_number,
+                    'router_id' => $sourceRouter->id,
+                    'router_name' => $sourceRouter->name,
+                    'serial_number' => $sourceRouter->serial_number,
+                    'message' => 'Mất Wifi do Router tại phòng phát (P.' . $room->sharedWifiRoom->room_number . ') bị HƯ HỎNG!',
+                ];
+                $brokenCount++;
+            } elseif ($sourceRouter->status === EquipmentStatusEnum::Maintenance) {
+                $sharedWifiIssue = [
+                    'type' => 'maintenance',
+                    'status' => 'maintenance',
+                    'source_room_id' => $room->sharedWifiRoom->id,
+                    'source_room_number' => (string) $room->sharedWifiRoom->room_number,
+                    'router_id' => $sourceRouter->id,
+                    'router_name' => $sourceRouter->name,
+                    'serial_number' => $sourceRouter->serial_number,
+                    'message' => 'Wifi gián đoạn do Router tại phòng phát (P.' . $room->sharedWifiRoom->room_number . ') đang BẢO TRÌ!',
+                ];
+                $maintenanceCount++;
+            }
+        }
+
+        $dependentRooms = $room->dependentWifiRooms ? $room->dependentWifiRooms->map(fn ($r) => [
+            'id' => $r->id,
+            'room_number' => (string) $r->room_number,
+            'name' => $r->name,
+        ])->values()->all() : [];
+
         // Tóm tắt nhanh số lượng theo nhóm (TV, Remote, Box, Wifi)
         $summaryParts = [];
         $catGroups = $equipments->groupBy(fn ($item) => $item->model?->category?->name ?? 'Khác');
@@ -150,6 +198,8 @@ class EquipmentMapViewResource extends JsonResource
                 'name' => $room->sharedWifiRoom->name,
             ] : null,
             'shared_wifi_note' => $room->shared_wifi_note,
+            'shared_wifi_issue' => $sharedWifiIssue,
+            'dependent_rooms' => $dependentRooms,
             'room_status' => $room->status?->value ?? $room->status,
             'room_type_id' => $room->room_type_id,
             'room_type' => $room->roomType?->name ?? 'Tiêu chuẩn',

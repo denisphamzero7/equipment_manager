@@ -76,7 +76,8 @@ class EquipmentMapViewService
     {
         $query = Room::with([
             'roomType',
-            'sharedWifiRoom',
+            'sharedWifiRoom.equipments.model.category',
+            'dependentWifiRooms',
             'equipments.model.category',
             'standardEquipments.model.category',
         ]);

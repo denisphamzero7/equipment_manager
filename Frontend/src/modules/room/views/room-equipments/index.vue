@@ -278,7 +278,10 @@ function syncRoomStatsInPlace(id, detail) {
 
   r.badge_color = detail.compliance_status === 'compliant'
     ? 'green'
-    : (detail.missing_equipments?.length > 0 ? 'red' : 'yellow')
+    : (detail.missing_equipments?.length > 0 || detail.shared_wifi_issue ? 'red' : 'yellow')
+
+  r.shared_wifi_issue = detail.shared_wifi_issue || null
+  r.dependent_rooms = detail.dependent_rooms || []
 
   if (!r.stats) r.stats = {}
   

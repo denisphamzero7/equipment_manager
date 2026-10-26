@@ -95,12 +95,28 @@ const quickSelectItems = computed(() => {
           <div class="text-[11px] text-slate-500 mt-0.5 truncate">
             {{ room.block || 'Block A' }} • Tầng {{ room.floor ?? 1 }}
           </div>
+          <div v-if="room.shared_wifi_issue" class="text-[10px] text-rose-600 font-bold mt-0.5 flex items-center gap-1 animate-pulse">
+            <v-icon icon="mdi-wifi-alert" size="12" />
+            <span>Mất Wifi ké (P.{{ room.shared_wifi_issue.source_room_number }} sự cố)</span>
+          </div>
+          <div v-else-if="room.dependent_rooms && room.dependent_rooms.length" class="text-[10px] text-indigo-600 font-medium mt-0.5 flex items-center gap-1">
+            <v-icon icon="mdi-access-point-network" size="12" />
+            <span>Phát Wifi: {{ room.dependent_rooms.length }} phòng</span>
+          </div>
         </div>
 
         <!-- Badge right indicator -->
         <div class="shrink-0 text-right">
           <span
-            v-if="room.badge_color === 'green'"
+            v-if="room.shared_wifi_issue"
+            class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200 animate-pulse flex items-center gap-1"
+            :title="room.shared_wifi_issue.message"
+          >
+            <v-icon icon="mdi-wifi-alert" size="11" />
+            Mất Wifi ké
+          </span>
+          <span
+            v-else-if="room.badge_color === 'green'"
             class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200"
           >
             ✓ Đạt chuẩn

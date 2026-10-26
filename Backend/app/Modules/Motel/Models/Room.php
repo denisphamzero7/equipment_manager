@@ -71,6 +71,11 @@ class Room extends Model implements HasMedia
         return $this->hasMany(\App\Modules\Equipment\Models\RoomStandardEquipment::class, 'room_type_id', 'room_type_id');
     }
 
+    public function dependentWifiRooms()
+    {
+        return $this->hasMany(\App\Modules\Motel\Models\Room::class, 'shared_wifi_room_id');
+    }
+
     public function sharedWifiRoom()
     {
         return $this->belongsTo(\App\Modules\Motel\Models\Room::class, 'shared_wifi_room_id');
