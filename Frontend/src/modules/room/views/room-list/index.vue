@@ -623,15 +623,12 @@ function getStatusBadge(status) {
         </AppButton>
       </div>
 
-      <!-- Stat Badges Cards (Tô viền màu xanh dương nổi bật theo yêu cầu) -->
+      <!-- Stat Badges Cards (Tô viền màu xanh dương nổi bật theo yêu cầu - Hiển thị thuần túy) -->
       <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
         <!-- 1. Tổng phòng -->
         <div
-          class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer hover:shadow-md transition-all"
+          class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs"
           style="border: 2px solid #2563eb !important;"
-          :class="filters.status === '' ? 'ring-2 ring-blue-400/40 bg-blue-50/20' : ''"
-          title="Xem tất cả phòng"
-          @click="filters.status = ''"
         >
           <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
             <v-icon icon="mdi-door" size="22" />
@@ -645,11 +642,8 @@ function getStatusBadge(status) {
 
         <!-- 2. Sẵn sàng -->
         <div
-          class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer hover:shadow-md transition-all"
+          class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs"
           style="border: 2px solid #2563eb !important;"
-          :class="filters.status === 'ready' ? 'ring-2 ring-blue-400/40 bg-blue-50/20' : ''"
-          title="Lọc phòng Sẵn sàng"
-          @click="filters.status = filters.status === 'ready' ? '' : 'ready'"
         >
           <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
             <v-icon icon="mdi-door-open" size="22" />
@@ -663,11 +657,8 @@ function getStatusBadge(status) {
 
         <!-- 3. Đang có khách -->
         <div
-          class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer hover:shadow-md transition-all"
+          class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs"
           style="border: 2px solid #2563eb !important;"
-          :class="filters.status === 'occupied' ? 'ring-2 ring-blue-400/40 bg-blue-50/20' : ''"
-          title="Lọc phòng Đang có khách"
-          @click="filters.status = filters.status === 'occupied' ? '' : 'occupied'"
         >
           <div class="w-10 h-10 rounded-lg bg-rose-50 flex items-center justify-center text-rose-600">
             <v-icon icon="mdi-account-check" size="22" />
@@ -681,11 +672,8 @@ function getStatusBadge(status) {
 
         <!-- 4. Chờ dọn -->
         <div
-          class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer hover:shadow-md transition-all"
+          class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs"
           style="border: 2px solid #2563eb !important;"
-          :class="filters.status === 'not_ready' ? 'ring-2 ring-blue-400/40 bg-blue-50/20' : ''"
-          title="Lọc phòng Chờ dọn"
-          @click="filters.status = filters.status === 'not_ready' ? '' : 'not_ready'"
         >
           <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
             <v-icon icon="mdi-broom" size="22" />
@@ -699,11 +687,8 @@ function getStatusBadge(status) {
 
         <!-- 5. Bảo trì -->
         <div
-          class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer hover:shadow-md transition-all"
+          class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs"
           style="border: 2px solid #2563eb !important;"
-          :class="filters.status === 'maintenance' ? 'ring-2 ring-blue-400/40 bg-blue-50/20' : ''"
-          title="Lọc phòng Bảo trì"
-          @click="filters.status = filters.status === 'maintenance' ? '' : 'maintenance'"
         >
           <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600">
             <v-icon icon="mdi-hammer-wrench" size="22" />

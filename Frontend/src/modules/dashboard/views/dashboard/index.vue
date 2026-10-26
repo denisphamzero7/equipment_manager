@@ -367,14 +367,10 @@ watch(
       </div>
     </div>
 
-    <!-- Top 4 Actionable KPI Stat Cards (Clickable to Filter!) -->
+    <!-- Top 4 Actionable KPI Stat Cards (Hiển thị thông số tổng quan - Không click lọc) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5 mb-5 sm:mb-8">
       <!-- 1. Total Equipments -->
-      <div
-        class="cursor-pointer group transform transition-transform duration-150 hover:-translate-y-0.5"
-        title="Nhấp để xem danh sách toàn bộ thiết bị"
-        @click="navigateToEquipments('')"
-      >
+      <div>
         <AppStatCard
           title="Tổng số thiết bị"
           :value="stats.total_equipments || 0"
@@ -382,17 +378,13 @@ watch(
           icon="mdi-devices"
           color="primary"
           :loading="loading"
-          trend="Xem danh sách →"
+          trend="Toàn bộ hệ thống"
           trend-type="neutral"
         />
       </div>
 
       <!-- 2. Good Equipments -->
-      <div
-        class="cursor-pointer group transform transition-transform duration-150 hover:-translate-y-0.5"
-        title="Nhấp để lọc thiết bị đang hoạt động tốt"
-        @click="navigateToEquipments('good')"
-      >
+      <div>
         <AppStatCard
           title="Đang hoạt động tốt"
           :value="stats.by_status?.good || 0"
@@ -406,11 +398,7 @@ watch(
       </div>
 
       <!-- 3. Broken / Maintenance Equipments -->
-      <div
-        class="cursor-pointer group transform transition-transform duration-150 hover:-translate-y-0.5"
-        title="Nhấp để lọc thiết bị hỏng hóc hoặc đang bảo dưỡng"
-        @click="navigateToEquipments('broken')"
-      >
+      <div>
         <AppStatCard
           title="Báo hỏng / Cần bảo trì"
           :value="(stats.by_status?.broken || 0) + (stats.by_status?.maintenance || 0)"
@@ -418,17 +406,13 @@ watch(
           icon="mdi-wrench"
           color="error"
           :loading="loading"
-          trend="Cần xử lý gấp →"
+          trend="Cần xử lý gấp"
           trend-type="down"
         />
       </div>
 
       <!-- 4. Stock Equipments -->
-      <div
-        class="cursor-pointer group transform transition-transform duration-150 hover:-translate-y-0.5"
-        title="Nhấp để vào kho quản lý thiết bị dự phòng"
-        @click="navigateToEquipments('in_stock')"
-      >
+      <div>
         <AppStatCard
           title="Tồn trong kho"
           :value="stats.by_status?.in_stock || 0"
