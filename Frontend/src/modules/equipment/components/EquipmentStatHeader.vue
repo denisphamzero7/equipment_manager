@@ -32,7 +32,8 @@ defineEmits(['select-status', 'select-stock'])
   <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
     <!-- 1. Tổng thiết bị -->
     <div
-      class="bg-white border-2 border-blue-400 rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition hover:border-blue-600"
+      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition hover:shadow-md"
+      style="border: 2px solid #2563eb !important;"
       title="Hiển thị tất cả trạng thái"
       @click="$emit('select-status', '')"
     >
@@ -48,8 +49,8 @@ defineEmits(['select-status', 'select-stock'])
 
     <!-- 2. Hoạt động tốt -->
     <div
-      class="bg-white border-2 rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition"
-      :class="activeStatus === 'good' ? 'border-emerald-500 ring-2 ring-emerald-400/30 bg-emerald-50/40' : 'border-blue-400 hover:border-blue-600'"
+      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition hover:shadow-md"
+      style="border: 2px solid #2563eb !important;"
       title="Lọc nhanh thiết bị hoạt động tốt"
       @click="$emit('select-status', 'good')"
     >
@@ -65,8 +66,8 @@ defineEmits(['select-status', 'select-stock'])
 
     <!-- 3. Hư hỏng / Thiếu -->
     <div
-      class="bg-white border-2 rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition"
-      :class="activeStatus === 'broken' ? 'border-rose-500 ring-2 ring-rose-400/30 bg-rose-50/40' : 'border-blue-400 hover:border-blue-600'"
+      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition hover:shadow-md"
+      style="border: 2px solid #2563eb !important;"
       title="Lọc nhanh thiết bị hư hỏng"
       @click="$emit('select-status', 'broken')"
     >
@@ -82,8 +83,8 @@ defineEmits(['select-status', 'select-stock'])
 
     <!-- 4. Đang bảo trì -->
     <div
-      class="bg-white border-2 rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition"
-      :class="activeStatus === 'maintenance' ? 'border-amber-500 ring-2 ring-amber-400/30 bg-amber-50/40' : 'border-blue-400 hover:border-blue-600'"
+      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition hover:shadow-md"
+      style="border: 2px solid #2563eb !important;"
       title="Lọc nhanh thiết bị đang bảo trì"
       @click="$emit('select-status', 'maintenance')"
     >
@@ -99,8 +100,8 @@ defineEmits(['select-status', 'select-stock'])
 
     <!-- 5. Trong kho -->
     <div
-      class="bg-white border-2 rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition"
-      :class="activeStatus === 'in_stock' || activeBlock === '__stock__' ? 'border-sky-500 ring-2 ring-sky-400/30 bg-sky-50/40' : 'border-blue-400 hover:border-blue-600'"
+      class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs cursor-pointer transition hover:shadow-md"
+      style="border: 2px solid #2563eb !important;"
       title="Lọc thiết bị đang lưu kho"
       @click="$emit('select-stock')"
     >
