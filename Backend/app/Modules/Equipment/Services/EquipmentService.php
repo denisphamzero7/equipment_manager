@@ -6,6 +6,8 @@ use App\Modules\Equipment\Enums\EquipmentStatusEnum;
 use App\Modules\Equipment\Enums\MaintenanceStatusEnum;
 use App\Modules\Equipment\Events\EquipmentAssigned;
 use App\Modules\Equipment\Events\EquipmentBrokenReported;
+use App\Modules\Equipment\Events\EquipmentBulkDeleted;
+use App\Modules\Equipment\Events\EquipmentBulkStatusChanged;
 use App\Modules\Equipment\Events\EquipmentCreated;
 use App\Modules\Equipment\Events\EquipmentDeleted;
 use App\Modules\Equipment\Events\EquipmentStatusChanged;
@@ -205,11 +207,13 @@ class EquipmentService
 
     public function bulkDestroy(array $ids): int
     {
+        $orgId = (int) (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 1);
         $count = DB::transaction(function () use ($ids) {
             return RoomEquipment::whereIn('id', $ids)->delete();
         });
 
-        $this->invalidateCache();
+        $this->safeBroadcast(new EquipmentBulkDeleted($ids, $orgId));
+        $this->invalidateCache($orgId);
 
         return $count;
     }
@@ -278,7 +282,9 @@ class EquipmentService
             return $affected;
         });
 
-        $this->invalidateCache();
+        $orgId = (int) (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 1);
+        $this->safeBroadcast(new EquipmentBulkStatusChanged($ids, $status, $orgId));
+        $this->invalidateCache($orgId);
 
         return $count;
     }

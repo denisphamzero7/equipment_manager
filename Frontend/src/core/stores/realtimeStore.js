@@ -184,6 +184,33 @@ export const useRealtimeStore = defineStore('realtime', () => {
       toast.info(msg)
     })
 
+    // 4b. Cập nhật trạng thái thiết bị hàng loạt
+    channel.listen('.equipment.bulk_status_changed', (event) => {
+      invalidateChangedData()
+      lastEvent.value = { type: 'bulk_status_changed', ...event }
+      addNotification({
+        type: 'status_changed',
+        title: 'Đổi trạng thái hàng loạt',
+        message: event.message || `Đã đổi trạng thái ${event.count} thiết bị sang: "${event.status_label}".`,
+        ids: event.ids,
+        status: event.status,
+      })
+      toast.info(event.message || `Đã cập nhật trạng thái cho ${event.count} thiết bị.`)
+    })
+
+    // 4c. Xóa thiết bị hàng loạt
+    channel.listen('.equipment.bulk_deleted', (event) => {
+      invalidateChangedData(false, true)
+      lastEvent.value = { type: 'bulk_deleted', ...event }
+      addNotification({
+        type: 'deleted',
+        title: 'Xóa thiết bị hàng loạt',
+        message: event.message || `Đã xóa ${event.count} thiết bị khỏi hệ thống.`,
+        ids: event.ids,
+      })
+      toast.warning(event.message || `Đã xóa ${event.count} thiết bị.`)
+    })
+
     // 5. Điều chuyển phòng / Thu hồi về kho
     channel.listen('.equipment.assigned', (event) => {
       invalidateChangedData(false, true)

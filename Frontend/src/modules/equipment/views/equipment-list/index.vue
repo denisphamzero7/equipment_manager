@@ -291,6 +291,10 @@ watch(
       }
     } else if (event.type === 'status_changed') {
       equipmentStore.patchEquipment(event.equipment?.id, { status: event.equipment?.new_status })
+    } else if (event.type === 'bulk_status_changed') {
+      (event.ids || []).forEach(id => equipmentStore.patchEquipment(id, { status: event.status }))
+    } else if (event.type === 'bulk_deleted') {
+      (event.ids || []).forEach(id => equipmentStore.removeEquipment(id))
     } else if (event.type === 'assigned') {
       const current = equipmentStore.items.find(item => Number(item.id) === Number(event.equipment?.id))
       if (
