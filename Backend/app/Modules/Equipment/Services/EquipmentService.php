@@ -310,12 +310,16 @@ class EquipmentService
                 // Thu hồi về kho
                 $item->room_id = null;
                 $item->position_note = null;
+                if ($positionNote) {
+                    $item->note = $positionNote;
+                }
                 $item->status = EquipmentStatusEnum::InStock;
             }
 
             $item->save();
 
-            $this->syncOpenMaintenanceLogs($item, $status);
+            $statusVal = $item->status instanceof \BackedEnum ? $item->status->value : (string) $item->status;
+            $this->syncOpenMaintenanceLogs($item, $statusVal);
 
             return $item->load(['model.category', 'room']);
         });
