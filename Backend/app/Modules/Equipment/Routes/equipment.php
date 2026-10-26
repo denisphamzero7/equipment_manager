@@ -28,16 +28,18 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // 4. Thao tác điều chuyển & Báo hỏng thiết bị
     Route::post('assign-to-room', [EquipmentController::class, 'assignToRoom']);
-    Route::get('{id}/check-assign-target', [EquipmentController::class, 'checkAssignTarget']);
-    Route::post('{id}/report-broken', [EquipmentController::class, 'reportBroken']);
+    Route::get('{id}/check-assign-target', [EquipmentController::class, 'checkAssignTarget'])->whereNumber('id');
+    Route::post('{id}/report-broken', [EquipmentController::class, 'reportBroken'])->whereNumber('id');
     Route::patch('maintenance-logs/{logId}', [EquipmentController::class, 'updateMaintenanceLog']);
-    Route::post('{id}/upload-photo', [EquipmentController::class, 'uploadPhoto']);
-    Route::delete('{id}/photos/{mediaId}', [EquipmentController::class, 'deletePhoto']);
+    Route::post('{id}/upload-photo', [EquipmentController::class, 'uploadPhoto'])->whereNumber('id');
+    Route::delete('{id}/photos/{mediaId}', [EquipmentController::class, 'deletePhoto'])->whereNumber('id');
 
-    // 5. Cập nhật trạng thái
-    Route::patch('{id}/status', [EquipmentController::class, 'changeStatus']);
+    // 5. Thao tác hàng loạt (Bulk actions) - PHẢI ĐẶT TRƯỚC {id} ĐỂ TRÁNH MATCHING NHẦM
     Route::patch('bulk/status', [EquipmentController::class, 'bulkUpdateStatus']);
     Route::post('bulk/destroy', [EquipmentController::class, 'bulkDestroy']);
+
+    // Cập nhật trạng thái từng thiết bị
+    Route::patch('{id}/status', [EquipmentController::class, 'changeStatus'])->whereNumber('id');
 
     // 6. Quản lý Mẫu thiết bị (Equipment Models) & Danh mục (Categories)
     Route::get('models', [EquipmentModelController::class, 'index']);
@@ -52,8 +54,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // 8. CRUD thiết bị
     Route::get('', [EquipmentController::class, 'index']);
-    Route::get('{id}', [EquipmentController::class, 'show']);
+    Route::get('{id}', [EquipmentController::class, 'show'])->whereNumber('id');
     Route::post('', [EquipmentController::class, 'store']);
-    Route::put('{id}', [EquipmentController::class, 'update']);
-    Route::delete('{id}', [EquipmentController::class, 'destroy']);
+    Route::put('{id}', [EquipmentController::class, 'update'])->whereNumber('id');
+    Route::delete('{id}', [EquipmentController::class, 'destroy'])->whereNumber('id');
 });

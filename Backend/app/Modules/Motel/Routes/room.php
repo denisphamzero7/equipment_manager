@@ -28,15 +28,16 @@ Route::prefix('rooms')->group(function () {
     Route::post('/batch-generate', [Motel::class, 'batchGenerate'])->middleware('permission:motel.store,web');
     Route::get('/room-types', [Motel::class, 'getRoomTypes'])->middleware('permission:motel.index|motel.update,web');
     Route::post('/bulk-delete', [Motel::class, 'bulkDestroy'])->middleware('permission:motel.bulkDestroy,web');
-    Route::get('/{room}', [Motel::class, 'show'])->middleware('permission:motel.show,web');
-    Route::put('/{room}', [Motel::class, 'update'])->middleware('permission:motel.update,web');
-    Route::patch('/{room}', [Motel::class, 'update'])->middleware('permission:motel.update,web');
-    Route::delete('/{room}', [Motel::class, 'destroy'])->middleware('permission:motel.destroy,web');
-    Route::patch('/{room}/status', [Motel::class, 'changeStatus'])->middleware('permission:motel.changeStatus,web');
+    Route::patch('/bulk-status', [Motel::class, 'bulkUpdateStatus'])->middleware('permission:motel.bulkUpdateStatus,web');
+    Route::get('/{room}', [Motel::class, 'show'])->whereNumber('room')->middleware('permission:motel.show,web');
+    Route::put('/{room}', [Motel::class, 'update'])->whereNumber('room')->middleware('permission:motel.update,web');
+    Route::patch('/{room}', [Motel::class, 'update'])->whereNumber('room')->middleware('permission:motel.update,web');
+    Route::delete('/{room}', [Motel::class, 'destroy'])->whereNumber('room')->middleware('permission:motel.destroy,web');
+    Route::patch('/{room}/status', [Motel::class, 'changeStatus'])->whereNumber('room')->middleware('permission:motel.changeStatus,web');
 });
 
-Route::get('/{room}', [Motel::class, 'show'])->middleware('permission:motel.show,web');
-Route::put('/{room}', [Motel::class, 'update'])->middleware('permission:motel.update,web');
-Route::patch('/{room}', [Motel::class, 'update'])->middleware('permission:motel.update,web');
-Route::delete('/{room}', [Motel::class, 'destroy'])->middleware('permission:motel.destroy,web');
-Route::patch('/{room}/status', [Motel::class, 'changeStatus'])->middleware('permission:motel.changeStatus,web');
+Route::get('/{room}', [Motel::class, 'show'])->whereNumber('room')->middleware('permission:motel.show,web');
+Route::put('/{room}', [Motel::class, 'update'])->whereNumber('room')->middleware('permission:motel.update,web');
+Route::patch('/{room}', [Motel::class, 'update'])->whereNumber('room')->middleware('permission:motel.update,web');
+Route::delete('/{room}', [Motel::class, 'destroy'])->whereNumber('room')->middleware('permission:motel.destroy,web');
+Route::patch('/{room}/status', [Motel::class, 'changeStatus'])->whereNumber('room')->middleware('permission:motel.changeStatus,web');
