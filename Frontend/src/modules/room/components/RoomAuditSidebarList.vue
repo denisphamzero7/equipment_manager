@@ -79,9 +79,9 @@ const quickSelectItems = computed(() => {
         v-for="room in rooms"
         :key="room.id"
         type="button"
-        class="w-full text-left p-3 rounded-xl text-xs transition-all duration-150 flex items-center justify-between border cursor-pointer group"
+        class="w-full text-left p-2.5 sm:p-3 rounded-lg text-xs transition-all duration-150 flex items-center justify-between border cursor-pointer group"
         :class="selectedRoomId === room.id
-          ? 'bg-blue-50/90 text-blue-900 border-primary shadow-xs ring-2 ring-primary/20 font-bold'
+          ? 'bg-blue-50/90 text-blue-900 border-primary shadow-xs ring-1 ring-primary/30 font-bold'
           : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200/90 hover:border-slate-300'"
         @click="emit('select-room', room.id)"
       >
