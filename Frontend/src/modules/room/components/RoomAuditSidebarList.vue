@@ -55,7 +55,9 @@ const quickSelectItems = computed(() => {
         variant="outlined"
         hide-details
         prepend-inner-icon="mdi-door"
-        placeholder="Chọn nhanh phòng..."
+        :placeholder="rooms.length === 0 ? 'Không có phòng phù hợp...' : 'Chọn nhanh phòng...'"
+        :disabled="rooms.length === 0"
+        no-data-text="Không có phòng phù hợp"
         @update:model-value="val => emit('select-room', val)"
       />
     </div>

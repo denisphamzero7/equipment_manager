@@ -211,6 +211,9 @@ watch(filteredRooms, (newList) => {
       selectedRoomId.value = newList[0].id
       loadRoomDetail(newList[0].id)
     }
+  } else {
+    selectedRoomId.value = null
+    roomDetail.value = null
   }
 })
 

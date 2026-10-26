@@ -418,5 +418,16 @@ function getCategoryIcon(code) {
         </div>
       </div>
     </div>
+
+    <!-- 3. Empty State khi không có phòng nào được chọn hoặc không tìm thấy phòng -->
+    <div v-else class="bg-white rounded-2xl p-8 sm:p-14 border border-slate-200/80 shadow-xs text-center">
+      <div class="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center mx-auto mb-3 text-slate-400">
+        <v-icon icon="mdi-filter-off-outline" size="32" class="text-slate-400" />
+      </div>
+      <h3 class="text-base font-bold text-slate-700">Không tìm thấy phòng phù hợp</h3>
+      <p class="text-xs text-slate-400 mt-1.5 max-w-sm mx-auto leading-relaxed">
+        Không có phòng nào thỏa mãn điều kiện lọc. Vui lòng kiểm tra lại số phòng hoặc đặt lại bộ lọc để tiếp tục đối soát.
+      </p>
+    </div>
   </div>
 </template>
