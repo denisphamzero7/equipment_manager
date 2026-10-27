@@ -470,7 +470,7 @@ function handleNavClick() {
 
               <!-- Footer info -->
               <div class="p-2 bg-slate-50 border-t border-slate-100 text-center text-[10px] text-slate-400">
-                Laravel Reverb • Đồng bộ theo thời gian thực
+                Thông báo được cập nhật theo thời gian thực
               </div>
             </div>
           </v-menu>

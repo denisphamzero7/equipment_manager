@@ -145,7 +145,7 @@ function fillDemoAccount() {
             <v-icon icon="mdi-shield-lock-outline" size="26" />
           </div>
           <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">
-            Đăng nhập hệ thống
+            Đăng nhập hệ thống quản lý thiết bị
           </h2>
           <p class="text-sm text-slate-500 mt-1">
             Nhập thông tin xác thực để truy cập quản lý trang thiết bị
@@ -153,7 +153,7 @@ function fillDemoAccount() {
         </div>
 
         <!-- Quick Fill Demo Banner -->
-        <div class="mb-6 p-3.5 bg-blue-50/70 border border-blue-100 rounded-xl flex items-center justify-between text-xs">
+        <!-- <div class="mb-6 p-3.5 bg-blue-50/70 border border-blue-100 rounded-xl flex items-center justify-between text-xs">
           <div class="flex items-center gap-2 text-blue-800 font-medium">
             <v-icon icon="mdi-information-outline" size="18" color="primary" />
             <span>Tài khoản Super Admin mặc định</span>
@@ -165,7 +165,7 @@ function fillDemoAccount() {
           >
             Điền nhanh
           </button>
-        </div>
+        </div> -->
 
         <!-- Error Alert Banner -->
         <div
