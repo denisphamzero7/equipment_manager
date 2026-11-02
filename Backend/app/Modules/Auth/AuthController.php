@@ -22,17 +22,25 @@ class AuthController extends Controller
     public function __construct(private AuthService $authService) {}
 
     /**
-     * Đăng nhập
+     * [1. MỤC ĐÍCH]
+     * Tiếp nhận yêu cầu đăng nhập, kiểm tra thông tin tài khoản và trả về Access Token kèm danh sách cơ sở, quyền hạn.
      *
-     * Trả về access_token, thông tin user và danh sách organization user có thể truy cập.
-     * `current_organization_id` lấy từ bảng `user_preferences` nếu còn hợp lệ; nếu user chỉ có đúng một tổ chức thì tự gán và lưu preference; nếu có nhiều tổ chức và chưa có preference hợp lệ thì trả `null` (frontend cần màn chọn tổ chức rồi gọi switch-organization).
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Validate định dạng `email`/tên đăng nhập và `password` qua `LoginRequest`.
+     * 2. Gọi `$this->authService->login($request->email, $request->password)`.
+     * 3. Xử lý phản hồi:
+     *    - Nếu thất bại: Trả về 401 Unauthorized (sai mật khẩu) hoặc 403 Forbidden (tài khoản bị khóa).
+     *    - Nếu thành công: Trả về mã 200 kèm `access_token`, thông tin user, danh sách tổ chức và CASL abilities.
      *
-     * @unauthenticated
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - Route: POST /api/auth/login
+     * - Frontend: `useAuthStore::login()` tại form đăng nhập
      *
-     * @bodyParam email string required Email hoặc tên đăng nhập (user_name). Example: admin@example.com
-     * @bodyParam password string required Mật khẩu. Example: password
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param \App\Modules\Auth\Requests\LoginRequest $request Chứa `email` và `password`
      *
-     * @response 200 {"success": true, "message": "Đăng nhập thành công.", "data": {"access_token": "1|xxx...", "token_type": "Bearer", "user": {"id": 1, "name": "Admin"}, "available_organizations": [{"id": 2, "name": "Sở Nội vụ"}], "current_organization_id": 2, "roles": ["admin"], "permissions": ["users.index", "users.store"], "abilities": [{"action": "index", "subject": "User"}, {"action": "store", "subject": "User"}]}}
+     * [5. GIÁ TRỊ TRẢ VỀ]
+     * @return \Illuminate\Http\JsonResponse
      */
     public function login(LoginRequest $request)
     {
@@ -50,14 +58,24 @@ class AuthController extends Controller
     }
 
     /**
-     * Lấy thông tin user đăng nhập hiện tại kèm roles và permissions của tổ chức đang chọn.
+     * [1. MỤC ĐÍCH]
+     * Lấy thông tin người dùng hiện tại kèm danh sách vai trò (roles) và quyền hạn (permissions) của tổ chức đang chọn.
      *
-     * Dùng để Vue Casl khởi tạo ability khi refresh trang. Cần header X-Organization-Id (middleware set.permissions.team đã đặt ngữ cảnh).
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Lấy user từ Sanctum Auth: `$request->user()`.
+     * 2. Lấy toàn bộ quyền hạn trực tiếp và từ vai trò của tổ chức hiện tại (`getAllPermissions`).
+     * 3. Chuyển đổi quyền sang CASL abilities (`CaslAbilityConverter::toCaslAbilities`).
+     * 4. Trả về thông tin user và quyền hạn để Frontend khởi tạo CASL khi F5 / tải lại trang.
      *
-     * @authenticated
-     * @header X-Organization-Id integer required ID của tổ chức đang làm việc. Example: 1
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - Route: GET /api/auth/me (Yêu cầu header `X-Organization-Id`)
+     * - Frontend Store: `useAuthStore::fetchMe()`
      *
-     * @response 200 {"success": true, "data": {"user": {"id": 1, "name": "Admin"}, "roles": ["admin"], "permissions": ["users.index", "users.store"], "abilities": [{"action": "index", "subject": "User"}, {"action": "store", "subject": "User"}]}}
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param \Illuminate\Http\Request $request
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ]
+     * @return \Illuminate\Http\JsonResponse
      */
     public function me(Request $request)
     {
@@ -74,13 +92,23 @@ class AuthController extends Controller
     }
 
     /**
-     * Đăng xuất
+     * [1. MỤC ĐÍCH]
+     * Đăng xuất khỏi hệ thống và xóa token phiên làm việc hiện tại.
      *
-     * Hủy token hiện tại.
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Gọi `$this->authService->logout($request->user())`.
+     * 2. Xóa access token trong cơ sở dữ liệu.
+     * 3. Trả về JSON thành công 200.
      *
-     * @authenticated
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - Route: POST /api/auth/logout
+     * - Frontend Store: `useAuthStore::logout()`
      *
-     * @response 200 {"success": true, "message": "Đã đăng xuất"}
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param \Illuminate\Http\Request $request
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ]
+     * @return \Illuminate\Http\JsonResponse
      */
     public function logout(Request $request)
     {
@@ -90,15 +118,23 @@ class AuthController extends Controller
     }
 
     /**
-     * Chuyển tổ chức làm việc
+     * [1. MỤC ĐÍCH]
+     * Chuyển đổi tổ chức / cơ sở làm việc và tải lại toàn bộ quyền hạn tương ứng.
      *
-     * Chọn organization để frontend gắn vào header `X-Organization-Id` cho các request tiếp theo. Lưu `current_organization_id` vào bảng `user_preferences` để lần đăng nhập sau tự nhớ (nếu còn hợp lệ).
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Validate `organization_id` qua `SwitchOrganizationRequest`.
+     * 2. Gọi `$this->authService->switchOrganization()` để kiểm tra quyền và lưu preference.
+     * 3. Trả về quyền hạn và CASL abilities mới.
      *
-     *  @authenticated
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - Route: POST /api/auth/switch-organization
+     * - Frontend: Dropdown chọn khách sạn trên Header
      *
-     * @bodyParam organization_id integer required ID tổ chức muốn chuyển. Example: 2
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param \App\Modules\Auth\Requests\SwitchOrganizationRequest $request
      *
-     * @response 200 {"success": true, "message": "Đã chuyển tổ chức làm việc.", "data": {"current_organization_id": 2, "current_organization": {"id": 2, "name": "Sở Nội vụ"}, "roles": ["admin"], "permissions": ["users.index", "users.store"], "abilities": [{"action": "index", "subject": "User"}, {"action": "store", "subject": "User"}]}}
+     * [5. GIÁ TRỊ TRẢ VỀ]
+     * @return \Illuminate\Http\JsonResponse
      */
     public function switchOrganization(SwitchOrganizationRequest $request)
     {
@@ -112,15 +148,23 @@ class AuthController extends Controller
     }
 
     /**
-     * Quên mật khẩu
+     * [1. MỤC ĐÍCH]
+     * Gửi link đặt lại mật khẩu vào địa chỉ email của người dùng.
      *
-     * Gửi link đặt lại mật khẩu qua email.
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Validate `email` qua `ForgotPasswordRequest`.
+     * 2. Gọi `$this->authService->forgotPassword($request->email)`.
+     * 3. Trả về thông báo thành công hoặc lỗi 400.
      *
-     * @unauthenticated
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - Route: POST /api/auth/forgot-password
+     * - Frontend: Form Quên mật khẩu
      *
-     * @bodyParam email string required Email tài khoản. Example: user@example.com
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param \App\Modules\Auth\Requests\ForgotPasswordRequest $request
      *
-     * @response 200 {"success": true, "message": "Link reset đã được gửi vào Email"}
+     * [5. GIÁ TRỊ TRẢ VỀ]
+     * @return \Illuminate\Http\JsonResponse
      */
     public function forgotPassword(ForgotPasswordRequest $request)
     {
@@ -132,18 +176,23 @@ class AuthController extends Controller
     }
 
     /**
-     * Đặt lại mật khẩu
+     * [1. MỤC ĐÍCH]
+     * Đặt mật khẩu mới bằng token xác thực nhận được từ email.
      *
-     * Đặt mật khẩu mới dùng token từ email reset.
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Validate `email`, `password`, `password_confirmation`, `token` qua `ResetPasswordRequest`.
+     * 2. Gọi `$this->authService->resetPassword()`.
+     * 3. Trả về thông báo đổi mật khẩu thành công.
      *
-     * @unauthenticated
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - Route: POST /api/auth/reset-password
+     * - Frontend: Form Đặt lại mật khẩu
      *
-     * @bodyParam email string required Email tài khoản. Example: user@example.com
-     * @bodyParam password string required Mật khẩu mới (tối thiểu 6 ký tự, có xác nhận). Example: newpassword123
-     * @bodyParam password_confirmation string required Xác nhận mật khẩu.
-     * @bodyParam token string required Token từ email reset.
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param \App\Modules\Auth\Requests\ResetPasswordRequest $request
      *
-     * @response 200 {"success": true, "message": "Mật khẩu đã được đặt lại"}
+     * [5. GIÁ TRỊ TRẢ VỀ]
+     * @return \Illuminate\Http\JsonResponse
      */
     public function resetPassword(ResetPasswordRequest $request)
     {
