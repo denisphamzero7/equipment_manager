@@ -10,7 +10,7 @@ const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
 const realtimeStore = useRealtimeStore()
-const { mobile } = useDisplay()
+const { width, mobile } = useDisplay()
 
 const user = computed(() => authStore.user)
 const organizationId = computed(() => authStore.organizationId)
@@ -31,19 +31,27 @@ watch(organizationId, (newOrg) => {
   }
 })
 
-// Drawer is open by default on desktop, hidden on mobile
-const drawer = ref(!mobile.value)
+/**
+ * Màn hình laptop 16 inch trở xuống (viewport width < 1680px, bao gồm 13", 14", 15", 15.6", 16"
+ * ở các độ phân giải từ 1280px đến 1600px theo tỉ lệ scale Windows 100%, 125%, 150%).
+ * Trên các màn hình này, menu mặc định đóng để tối đa 100% diện tích làm việc như Hình 2,
+ * và hoạt động dưới dạng Drawer tạm thời (Temporary Overlay).
+ */
+const isCompactScreen = computed(() => width.value < 1680)
+
+// Mặc định ẩn drawer trên màn hình <= 16 inch, mở cố định trên màn hình desktop siêu lớn (> 1680px)
+const drawer = ref(!isCompactScreen.value)
 const rail = ref(false)
 
-// Keep drawer state synced with viewport resize
-watch(mobile, isMobile => {
-  if (isMobile) {
+// Đồng bộ trạng thái drawer khi thay đổi kích thước cửa sổ trình duyệt
+watch(isCompactScreen, (compact) => {
+  if (compact) {
     drawer.value = false
     rail.value = false
   } else {
     drawer.value = true
   }
-})
+}, { immediate: true })
 
 const navSections = [
   {
@@ -170,32 +178,32 @@ function handleLogout() {
 }
 
 function handleNavClick() {
-  if (mobile.value) {
+  if (isCompactScreen.value) {
     drawer.value = false
   }
 }
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 flex">
+  <v-layout class="min-h-screen bg-slate-50">
     <!-- Sidebar Navigation Drawer -->
     <v-navigation-drawer
       v-model="drawer"
-      :rail="!mobile && rail"
+      :rail="!isCompactScreen && rail"
       :rail-width="72"
-      :temporary="mobile"
-      :permanent="!mobile"
+      :temporary="isCompactScreen"
+      :permanent="!isCompactScreen"
       elevation="0"
       color="white"
-      class="border-r border-slate-200/80 select-none"
+      class="border-r border-slate-200/80 select-none z-50"
       :width="265"
     >
       <!-- Logo / Header đồng bộ Royal Blue của hệ thống -->
       <div
         class="h-16 border-b border-slate-100 flex items-center transition-all overflow-hidden"
-        :class="!mobile && rail ? 'justify-center px-2' : 'justify-between px-4'"
+        :class="!isCompactScreen && rail ? 'justify-center px-2' : 'justify-between px-4'"
       >
-        <div v-if="mobile || !rail" class="flex items-center gap-3 overflow-hidden min-w-0">
+        <div v-if="isCompactScreen || !rail" class="flex items-center gap-3 overflow-hidden min-w-0">
           <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center flex-shrink-0 text-white shadow-sm shadow-blue-500/20">
             <v-icon icon="mdi-shield-home" size="20" />
           </div>
@@ -209,9 +217,9 @@ function handleNavClick() {
           </div>
         </div>
 
-        <!-- Toggle Button khi mở rộng -->
+        <!-- Toggle Button khi mở rộng trên Desktop lớn (> 16in) -->
         <button
-          v-if="!mobile && !rail"
+          v-if="!isCompactScreen && !rail"
           type="button"
           class="w-7 h-7 rounded-lg border border-slate-200/80 text-slate-400 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50/60 flex items-center justify-center transition cursor-pointer"
           title="Thu gọn menu"
@@ -220,9 +228,9 @@ function handleNavClick() {
           <v-icon icon="mdi-chevron-left" size="18" />
         </button>
 
-        <!-- Toggle Button khi thu gọn (rail mode) -->
+        <!-- Toggle Button khi thu gọn rail trên Desktop lớn (> 16in) -->
         <button
-          v-else-if="!mobile && rail"
+          v-else-if="!isCompactScreen && rail"
           type="button"
           class="w-9 h-9 rounded-xl hover:bg-blue-50 text-slate-500 hover:text-blue-600 flex items-center justify-center transition cursor-pointer"
           title="Mở rộng menu"
@@ -231,7 +239,7 @@ function handleNavClick() {
           <v-icon icon="mdi-chevron-right" size="20" />
         </button>
 
-        <!-- Close Button on Mobile -->
+        <!-- Close Button trên Màn hình <= 16in / Mobile dạng Temporary Overlay -->
         <v-btn
           v-else
           icon="mdi-close"
@@ -239,6 +247,7 @@ function handleNavClick() {
           density="comfortable"
           size="small"
           color="secondary"
+          title="Đóng menu"
           @click="drawer = false"
         />
       </div>
@@ -249,7 +258,7 @@ function handleNavClick() {
           <div class="space-y-1">
             <!-- Heading nhóm -->
             <div
-              v-if="mobile || !rail"
+              v-if="isCompactScreen || !rail"
               class="px-3 pt-1 pb-1 text-[11px] font-semibold text-slate-400 uppercase tracking-wider"
             >
               {{ section.heading }}
@@ -281,7 +290,7 @@ function handleNavClick() {
                       :color="isItemActive(item) ? 'white' : 'secondary'"
                     />
                   </div>
-                  <span v-if="mobile || !rail" class="truncate text-[13px] no-underline">
+                  <span v-if="isCompactScreen || !rail" class="truncate text-[13px] no-underline">
                     {{ item.title }}
                   </span>
                 </div>
@@ -293,7 +302,7 @@ function handleNavClick() {
 
       <!-- Organization badge in Sidebar Bottom -->
       <template #append>
-        <div v-if="mobile || !rail" class="p-3.5 border-t border-slate-100 bg-slate-50/60">
+        <div v-if="isCompactScreen || !rail" class="p-3.5 border-t border-slate-100 bg-slate-50/60">
           <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
             <span class="font-medium text-[11px] text-slate-400 uppercase tracking-wider">Tổ chức:</span>
             <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-[10px] font-bold">
@@ -309,18 +318,18 @@ function handleNavClick() {
     </v-navigation-drawer>
 
     <!-- Main Content Area -->
-    <div class="flex-1 flex flex-col min-w-0">
+    <v-main class="min-w-0 flex flex-col min-h-screen">
       <!-- Top Navbar -->
       <header class="h-16 bg-white border-b border-slate-200/80 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30">
         <div class="flex items-center gap-2.5 sm:gap-4 min-w-0">
-          <!-- Toggle Button for Sidebar (Available on both Mobile and Desktop) -->
+          <!-- Toggle Button for Sidebar (Màn hình <= 16in luôn là icon 3 gạch mdi-menu như Hình 2) -->
           <button
             type="button"
             class="w-9 h-9 rounded-xl hover:bg-slate-100 text-slate-600 hover:text-slate-900 flex items-center justify-center transition cursor-pointer flex-shrink-0 border border-slate-200/70 shadow-2xs"
-            :title="mobile ? 'Mở danh mục' : (rail ? 'Mở rộng menu' : 'Thu gọn menu')"
-            @click="mobile ? (drawer = !drawer) : (rail = !rail)"
+            :title="isCompactScreen ? (drawer ? 'Đóng menu' : 'Mở danh mục') : (rail ? 'Mở rộng menu' : 'Thu gọn menu')"
+            @click="isCompactScreen ? (drawer = !drawer) : (rail = !rail)"
           >
-            <v-icon :icon="mobile ? 'mdi-menu' : (rail ? 'mdi-menu-open' : 'mdi-menu')" size="20" />
+            <v-icon :icon="isCompactScreen ? 'mdi-menu' : (rail ? 'mdi-menu-open' : 'mdi-menu')" size="20" />
           </button>
 
           <!-- Organization Switcher Dropdown in Navbar -->
@@ -518,6 +527,6 @@ function handleNavClick() {
       <main class="flex-1 p-3.5 sm:p-6 md:p-8 max-w-7xl w-full mx-auto">
         <slot />
       </main>
-    </div>
-  </div>
+    </v-main>
+  </v-layout>
 </template>
