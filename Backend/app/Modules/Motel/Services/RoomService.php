@@ -11,15 +11,38 @@ use App\Modules\Motel\Models\RoomType as RoomTypeModel;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Tầng dịch vụ quản lý thực thể Phòng (Rooms) trong khách sạn:
+ * Quản lý danh sách phòng, phân cấp Block - Tầng, tạo phòng nhanh hàng loạt, đổi tên/xóa khu vực và thu hồi thiết bị an toàn.
+ */
 class RoomService
 {
+    /**
+     * [1. MỤC ĐÍCH]
+     * Xác định Organization ID (ID cơ sở) hiện tại.
+     * @param int|null $orgId
+     * @return int
+     */
     protected function getActiveOrgId(?int $orgId = null): int
     {
         return (int) ($orgId ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : (\App\Modules\Core\Models\Organization::value('id') ?? 1)));
     }
 
     /**
-     * Phát broadcast an toàn (không làm sập request nếu server websocket/reverb chưa bật hoặc host không kết nối được).
+     * [1. MỤC ĐÍCH]
+     * Phát broadcast sự kiện Reverb an toàn cho các tác vụ thay đổi phòng, không làm gián đoạn request nếu websocket offline.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Gọi `event($event)` để dispatch broadcast event.
+     * 2. Bắt ngoại lệ Throwable và ghi cảnh báo vào Log nếu kết nối Reverb lỗi.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - Các method trong RoomService: createRoom, updateRoom, deleteRoom, bulkDestroy, batchGenerate, renameBlock, deleteBlock
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param object $event Đối tượng Event (RoomChanged)
+     * @return void
      */
     protected function safeBroadcast(object $event): void
     {
@@ -30,6 +53,22 @@ class RoomService
         }
     }
 
+    /**
+     * [1. MỤC ĐÍCH]
+     * Xóa sạch các tầng cache dữ liệu liên quan đến cấu trúc phòng, block, tầng và Map View khi có thay đổi.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Xác định `$orgId` hoạt động.
+     * 2. Xóa cache danh sách block (`hotel_blocks_{orgId}`), tầng (`hotel_floors_{orgId}_all`), options phòng (`equipment_room_options_{orgId}`) và hạng phòng (`motel_room_types_{orgId}`).
+     * 3. Tăng phiên bản `equipment_map_view_version_{orgId}` lên 1 để Frontend tự động refresh sơ đồ Map.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - Mọi tác vụ ghi dữ liệu trong RoomService
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param int|null $orgId
+     * @return void
+     */
     public function invalidateMapCache(?int $orgId = null): void
     {
         $orgId = $this->getActiveOrgId($orgId);
@@ -48,6 +87,23 @@ class RoomService
         cache()->put('equipment_map_view_version_all', $vAll + 1, 86400 * 30);
     }
 
+    /**
+     * [1. MỤC ĐÍCH]
+     * Thống kê số lượng phòng theo trạng thái (sẵn sàng, có khách, chưa dọn, đang sửa chữa).
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Xác định `organization_id`.
+     * 2. Đếm số lượng phòng gom nhóm theo `status`.
+     * 3. Trả về mảng chứa: total, ready, occupied, not_ready, maintenance.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - Route: GET /api/v1/motel/rooms/stats
+     * - View: `Frontend/src/modules/room/views/room-list/index.vue`
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param array $filters Bộ lọc theo tổ chức
+     * @return array Mảng thống kê trạng thái phòng
+     */
     public function stats(array $filters = []): array
     {
         $orgId = $this->getActiveOrgId($filters['organization_id'] ?? null);
@@ -66,6 +122,27 @@ class RoomService
         ];
     }
 
+    /**
+     * [1. MỤC ĐÍCH]
+     * Lấy danh sách phòng có phân trang, bộ lọc (block, floor, status, room_type_id) và tóm tắt thiết bị trong phòng.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Áp dụng scope filter trên `RoomModel`, eager load `roomType`, `sharedWifiRoom` và đếm tổng thiết bị (`withCount('equipments')`).
+     * 2. Phân trang theo `limit` (mặc định 15 phòng/trang).
+     * 3. Tối ưu N+1: Truy vấn tóm tắt tên và số lượng thiết bị (`equipmentSummary`) cho toàn bộ các phòng trong trang chỉ bằng 1 câu SQL `whereIn('room_id', $roomIds)`.
+     * 4. Gắn mảng `equipment_summary` vào từng thực thể phòng.
+     * 5. Trả về LengthAwarePaginator.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - Route: GET /api/v1/motel/rooms
+     * - Controller: App\Modules\Motel\Controllers\RoomController::index()
+     * - Frontend Service: `roomService.getRooms()`
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param array $filters Tham số lọc (block, floor, status, search, room_type_id...)
+     * @param int $limit Số lượng bản ghi trên một trang (mặc định 15)
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
     public function index(array $filters = [], int $limit = 15): LengthAwarePaginator
     {
         $orgId = $this->getActiveOrgId($filters['organization_id'] ?? null);
@@ -113,6 +190,12 @@ class RoomService
         return $rooms;
     }
 
+    /**
+     * [1. MỤC ĐÍCH]
+     * Lấy danh sách các Hạng phòng (Room Types) của cơ sở hiện tại (Standard, VIP, Deluxe...).
+     * @param int|null $orgId
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function getRoomTypes(?int $orgId = null)
     {
         $activeOrg = $this->getActiveOrgId($orgId);
@@ -124,11 +207,23 @@ class RoomService
         });
     }
 
+    /**
+     * [1. MỤC ĐÍCH]
+     * Lấy thông tin chi tiết một phòng theo ID kèm danh sách thiết bị.
+     * @param int $id ID phòng
+     * @return \App\Modules\Motel\Models\Room
+     */
     public function getRoomById(int $id): RoomModel
     {
         return RoomModel::with(['roomType', 'sharedWifiRoom', 'equipments.model.category'])->findOrFail($id);
     }
 
+    /**
+     * [1. MỤC ĐÍCH]
+     * Tạo mới một phòng đơn lẻ và phát broadcast đồng bộ.
+     * @param array $data Dữ liệu phòng (room_number, block, floor, room_type_id, wifi_mode...)
+     * @return \App\Modules\Motel\Models\Room
+     */
     public function createRoom(array $data): RoomModel
     {
         if (empty($data['organization_id'])) {
@@ -152,6 +247,13 @@ class RoomService
         return $room;
     }
 
+    /**
+     * [1. MỤC ĐÍCH]
+     * Cập nhật thông tin phòng (số phòng, tầng, block, cơ cấu phòng ngủ/khách, chế độ wifi).
+     * @param int $id ID phòng
+     * @param array $data
+     * @return \App\Modules\Motel\Models\Room
+     */
     public function updateRoom(int $id, array $data): RoomModel
     {
         $room = RoomModel::findOrFail($id);
@@ -166,6 +268,21 @@ class RoomService
         return $room;
     }
 
+    /**
+     * [1. MỤC ĐÍCH]
+     * Xóa một phòng khỏi hệ thống, hỗ trợ tự động thu hồi toàn bộ thiết bị về kho dự phòng chung để bảo toàn tài sản.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Bắt đầu Database Transaction.
+     * 2. Nếu `$retractEquipments = true`: Thu hồi toàn bộ thiết bị đang gắn trong phòng (`room_id = null`, `status = in_stock`).
+     * 3. Thực hiện xóa bản ghi phòng.
+     * 4. Xóa cache và phát broadcast sự kiện `RoomChanged('deleted')`.
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param int $id ID phòng
+     * @param bool $retractEquipments Có tự động thu hồi thiết bị về kho hay không (mặc định true)
+     * @return bool
+     */
     public function deleteRoom(int $id, bool $retractEquipments = true): bool
     {
         return DB::transaction(function () use ($id, $retractEquipments) {
@@ -194,6 +311,13 @@ class RoomService
         });
     }
 
+    /**
+     * [1. MỤC ĐÍCH]
+     * Xóa đồng thời nhiều phòng và tự động thu hồi tài sản về kho.
+     * @param array<int> $ids Mảng ID các phòng cần xóa
+     * @param bool $retractEquipments
+     * @return int Số phòng đã xóa
+     */
     public function bulkDestroy(array $ids, bool $retractEquipments = true): int
     {
         return DB::transaction(function () use ($ids, $retractEquipments) {
@@ -215,6 +339,13 @@ class RoomService
         });
     }
 
+    /**
+     * [1. MỤC ĐÍCH]
+     * Cập nhật trạng thái kinh doanh hàng loạt cho nhiều phòng.
+     * @param array<int> $ids
+     * @param string $status ('ready', 'occupied', 'not_ready', 'maintenance')
+     * @return int
+     */
     public function bulkUpdateStatus(array $ids, string $status): int
     {
         $count = RoomModel::whereIn('id', $ids)->update(['status' => $status]);
@@ -224,7 +355,20 @@ class RoomService
     }
 
     /**
-     * Sinh phòng nhanh hàng loạt (Batch Generator).
+     * [1. MỤC ĐÍCH]
+     * Sinh phòng nhanh hàng loạt theo dải số phòng (Batch Generator) cho một tầng và block cụ thể.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Validate số phòng kết thúc `$endNum >= $startNum`.
+     * 2. Lặp từ `$startNum` đến `$endNum`:
+     *    - Kiểm tra số phòng đã tồn tại trong tổ chức chưa, nếu có thì bỏ qua để tránh trùng.
+     *    - Tạo bản ghi phòng với tọa độ lưới (`grid_row = floor`, `grid_col = colIndex++`).
+     * 3. Xóa cache sơ đồ Map View và phát broadcast `batch_generated`.
+     * 4. Trả về số lượng phòng đã tạo thành công và danh sách phòng.
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param array $data Chứa block, floor, start_number, end_number, room_type_id, wifi_mode...
+     * @return array{created_count: int, rooms: array}
      */
     public function batchGenerate(array $data): array
     {
@@ -292,7 +436,12 @@ class RoomService
     }
 
     /**
-     * Đổi tên Block hàng loạt
+     * [1. MỤC ĐÍCH]
+     * Đổi tên một Block / Khu vực và cập nhật đồng loạt toàn bộ các phòng thuộc Block đó.
+     * @param string $oldBlock Tên cũ
+     * @param string $newBlock Tên mới
+     * @param int|null $orgId
+     * @return int Số phòng bị tác động
      */
     public function renameBlock(string $oldBlock, string $newBlock, ?int $orgId = null): int
     {
@@ -309,7 +458,11 @@ class RoomService
     }
 
     /**
-     * Xóa toàn bộ phòng của một Block
+     * [1. MỤC ĐÍCH]
+     * Xóa toàn bộ phòng của một Block và tự động thu hồi toàn bộ thiết bị về kho.
+     * @param string $block Tên block cần xóa
+     * @param int|null $orgId
+     * @return int Số phòng đã xóa
      */
     public function deleteBlock(string $block, ?int $orgId = null): int
     {
