@@ -24,7 +24,28 @@ use Illuminate\Support\Facades\DB;
 class EquipmentService
 {
     /**
-     * Phát broadcast an toàn (không làm sập request nếu server websocket/reverb chưa bật hoặc host không kết nối được).
+     * [1. MỤC ĐÍCH]
+     * Phát broadcast sự kiện Reverb/Websocket an toàn mà không làm gián đoạn request.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Gọi hàm event($event) của Laravel để dispatch sự kiện broadcast ra websocket channel.
+     * 2. Bắt ngoại lệ Throwable (nếu Reverb server tắt, timeout hoặc lỗi kết nối).
+     * 3. Ghi log Warning thay vì throw exception để luồng chính vẫn hoàn tất bình thường.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - Các phương thức nội bộ trong EquipmentService: create, update, delete, changeStatus, assignToRoom, reportBroken...
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param object $event Đối tượng Event broadcast của Laravel (ví dụ: EquipmentCreated, EquipmentUpdated)
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ]
+     * @return void
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * $this->safeBroadcast(new EquipmentUpdated($item));
+     * ```
      */
     protected function safeBroadcast(object $event): void
     {
@@ -36,7 +57,30 @@ class EquipmentService
     }
 
     /**
-     * Xóa cache liên quan khi thiết bị thay đổi (stats, map view).
+     * [1. MỤC ĐÍCH]
+     * Xóa sạch các tầng cache dữ liệu (thống kê phòng, map view) khi có bất kỳ thay đổi nào về thiết bị.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Xác định organization_id của người dùng hiện tại (hoặc lấy mặc định từ cơ sở dữ liệu).
+     * 2. Xóa cache thống kê khách sạn theo tổ chức (`hotel_stats_{orgId}_all`) và toàn cục (`hotel_stats_all_all`).
+     * 3. Tăng phiên bản version cache sơ đồ Map View (`equipment_map_view_version_{orgId}` và `equipment_map_view_version_all`).
+     *    -> Frontend khi thấy version thay đổi sẽ tự động tải lại dữ liệu mới nhất.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - Các hàm ghi dữ liệu trong EquipmentService: create, update, delete, bulkDestroy, changeStatus, assignToRoom, reportBroken...
+     * - Import Excel thiết bị: EquipmentController::import()
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param int|null $orgId ID của tổ chức / cơ sở (nếu null sẽ tự động nhận diện từ session/token)
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ]
+     * @return void
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * $this->invalidateCache($equipment->organization_id);
+     * ```
      */
     public function invalidateCache(?int $orgId = null): void
     {
@@ -52,7 +96,41 @@ class EquipmentService
     }
 
     /**
-     * Lấy danh sách thiết bị có phân trang và bộ lọc.
+     * [1. MỤC ĐÍCH]
+     * Truy vấn danh sách thiết bị có phân trang, hỗ trợ đa dạng bộ lọc và tìm kiếm toàn văn.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Khởi tạo query Eloquent từ RoomEquipment, eager load quan hệ: `model.category`, `room`, `media`.
+     * 2. Lọc theo trạng thái (`status`: good, broken, maintenance, in_stock, lost...).
+     * 3. Lọc theo Block / Tòa nhà:
+     *    - Nếu `block === '__stock__'`, lọc thiết bị trong kho (`whereNull('room_id')`).
+     *    - Nếu `block` khác, join lọc theo bảng `rooms.block`.
+     * 4. Lọc theo tầng (`floor`), số phòng (`room_number`), hoặc phòng cụ thể (`room_id`).
+     * 5. Lọc theo danh mục thiết bị (`equipment_category_id`) hoặc model cụ thể (`equipment_model_id`).
+     * 6. Tìm kiếm toàn văn (`search`) trên các trường: serial_number, position_note, note, tên model, thương hiệu, số phòng, tên phòng.
+     * 7. Áp dụng sắp xếp (`sort_by`, `sort_order`) và phân trang (`per_page` mặc định 15).
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - API: GET /api/v1/equipments
+     * - Controller: App\Modules\Equipment\Controllers\EquipmentController::index()
+     * - Frontend Store: `useEquipmentStore::fetchEquipments()`
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param array $filters Mảng tham số lọc (status, block, floor, room_id, search, per_page, sort_by...)
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ]
+     * @return \Illuminate\Pagination\LengthAwarePaginator Danh sách thiết bị được phân trang
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * $paginator = $equipmentService->paginate([
+     *     'status' => 'broken',
+     *     'block' => 'Tòa A',
+     *     'search' => 'Sony 55 inch',
+     *     'per_page' => 20
+     * ]);
+     * ```
      */
     public function paginate(array $filters = []): LengthAwarePaginator
     {
@@ -104,6 +182,39 @@ class EquipmentService
         return $query->orderBy($sortBy, $sortOrder)->paginate($perPage);
     }
 
+    /**
+     * [1. MỤC ĐÍCH]
+     * Lấy thông tin chi tiết một cá thể thiết bị kèm toàn bộ quan hệ liên quan.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Tìm bản ghi RoomEquipment theo ID (sử dụng findOrFail).
+     * 2. Eager load các mối quan hệ:
+     *    - `model.category`: Thông tin model, thương hiệu, nhóm danh mục thiết bị.
+     *    - `room`: Thông tin phòng đang đặt thiết bị (số phòng, tầng, block).
+     *    - `maintenanceLogs.reportedByUser`: Lịch sử các phiếu bảo trì kèm thông tin người báo.
+     *    - `maintenanceLogs.resolvedByUser`: Thông tin kỹ thuật viên/người xử lý phiếu bảo trì.
+     *    - `media`: Danh sách ảnh chụp thực tế (ảnh thiết bị, ảnh hư hỏng).
+     * 3. Trả về thực thể RoomEquipment hoặc ném ModelNotFoundException (404) nếu không tìm thấy.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - API: GET /api/v1/equipments/{id}
+     * - Controller: App\Modules\Equipment\Controllers\EquipmentController::show()
+     * - Frontend Store: `useEquipmentStore::fetchEquipment(id)`
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param int $id ID của thiết bị (cột `room_equipments.id`)
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+     * @return \App\Modules\Equipment\Models\RoomEquipment Model thiết bị kèm quan hệ
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Khi ID không tồn tại trong hệ thống
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * $equipment = $equipmentService->find(42);
+     * echo $equipment->model->name . ' - Phòng ' . $equipment->room?->room_number;
+     * ```
+     */
     public function find(int $id): RoomEquipment
     {
         return RoomEquipment::with([
@@ -115,6 +226,47 @@ class EquipmentService
         ])->findOrFail($id);
     }
 
+    /**
+     * [1. MỤC ĐÍCH]
+     * Tạo mới một cá thể thiết bị vào hệ thống (gắn vào phòng hoặc đưa vào kho dự phòng).
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Bắt đầu Database Transaction.
+     * 2. Tách file ảnh (`photo`) ra khỏi mảng dữ liệu.
+     * 3. Xử lý trạng thái & thời gian lắp đặt:
+     *    - Nếu có `room_id`: thiết lập `installed_at = now()` (nếu chưa có).
+     *    - Nếu không có `room_id`: mặc định thiết bị ở kho (`status = in_stock`).
+     * 4. Gán `organization_id` theo tổ chức hiện tại nếu chưa được cung cấp.
+     * 5. Tạo mới bản ghi RoomEquipment.
+     * 6. Nếu có file ảnh, lưu vào Spatie Media Library collection `equipment_photos`.
+     * 7. Eager load thông tin `model.category` và `room`.
+     * 8. Phát sự kiện broadcast `EquipmentCreated` kèm `$clientRequestId` (để tránh xử lý trùng ở client gọi).
+     * 9. Xóa cache dữ liệu (`invalidateCache`) và trả về thiết bị vừa tạo.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - API: POST /api/v1/equipments
+     * - Controller: App\Modules\Equipment\Controllers\EquipmentController::store()
+     * - Frontend Store: `useEquipmentStore::createEquipment()`
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param array $data Dữ liệu thiết bị (equipment_model_id, serial_number, room_id, status, photo...)
+     * @param string|null $clientRequestId UUID định danh request từ client để chống trùng lặp real-time
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+     * @return \App\Modules\Equipment\Models\RoomEquipment Model thiết bị vừa được tạo
+     * @throws \Throwable Nếu lỗi kết nối DB hoặc lỗi ghi file ảnh
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * $item = $equipmentService->create([
+     *     'equipment_model_id' => 5,
+     *     'serial_number' => 'SN-TV-2026-001',
+     *     'room_id' => 12,
+     *     'status' => 'good'
+     * ]);
+     * ```
+     */
     public function create(array $data, ?string $clientRequestId = null): RoomEquipment
     {
         $item = DB::transaction(function () use ($data) {
@@ -147,6 +299,43 @@ class EquipmentService
         return $item;
     }
 
+    /**
+     * [1. MỤC ĐÍCH]
+     * Cập nhật thông tin chi tiết, trạng thái, phòng hoặc ảnh của thiết bị.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Bắt đầu Database Transaction và tìm RoomEquipment theo ID.
+     * 2. Lưu lại trạng thái cũ (`$oldStatus`) để phát hiện việc thay đổi trạng thái.
+     * 3. Tách file ảnh (`photo`) ra khỏi payload và gọi `$item->update($data)`.
+     * 4. Nếu có cập nhật trạng thái mới (`status`), gọi `syncOpenMaintenanceLogs()` để tự động cập nhật hoặc mở phiếu sự cố.
+     * 5. Nếu có tải kèm ảnh mới, lưu vào media collection `equipment_photos`.
+     * 6. Phát sự kiện Broadcast:
+     *    - Nếu trạng thái đổi: phát `EquipmentStatusChanged` kèm `$oldStatus`.
+     *    - Nếu chỉ sửa thông tin: phát `EquipmentUpdated`.
+     * 7. Xóa cache thống kê và sơ đồ phòng (`invalidateCache`).
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - API: PUT /api/v1/equipments/{id}
+     * - Controller: App\Modules\Equipment\Controllers\EquipmentController::update()
+     * - Frontend Store: `useEquipmentStore::updateEquipment()`
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param int $id ID thiết bị cần sửa
+     * @param array $data Dữ liệu cần cập nhật (serial_number, status, room_id, note, photo...)
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+     * @return \App\Modules\Equipment\Models\RoomEquipment Model thiết bị sau khi cập nhật
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Khi không tìm thấy ID
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * $updated = $equipmentService->update(15, [
+     *     'position_note' => 'Gắn góc trái phòng ngủ 1',
+     *     'status' => 'good'
+     * ]);
+     * ```
+     */
     public function update(int $id, array $data): RoomEquipment
     {
         $oldStatus = null;
@@ -188,6 +377,37 @@ class EquipmentService
         return $item;
     }
 
+    /**
+     * [1. MỤC ĐÍCH]
+     * Xóa 1 thiết bị khỏi hệ thống (soft delete hoặc hard delete theo cấu hình Model).
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Tìm RoomEquipment theo ID.
+     * 2. Lưu lại `room_id` và `organization_id` trước khi xóa.
+     * 3. Thực hiện xóa bản ghi ($item->delete()).
+     * 4. Nếu xóa thành công:
+     *    - Phát sự kiện broadcast `EquipmentDeleted` để client xóa khỏi danh sách ngay lập tức.
+     *    - Xóa cache thống kê khách sạn (`invalidateCache`).
+     * 5. Trả về true nếu xóa thành công.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - API: DELETE /api/v1/equipments/{id}
+     * - Controller: App\Modules\Equipment\Controllers\EquipmentController::destroy()
+     * - Frontend Store: `useEquipmentStore::deleteEquipment()`
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param int $id ID thiết bị cần xóa
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+     * @return bool True nếu xóa thành công
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Nếu không tìm thấy thiết bị
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * $equipmentService->delete(25);
+     * ```
+     */
     public function delete(int $id): bool
     {
         $item = RoomEquipment::findOrFail($id);
@@ -205,6 +425,34 @@ class EquipmentService
         return $deleted;
     }
 
+    /**
+     * [1. MỤC ĐÍCH]
+     * Xóa đồng thời nhiều thiết bị theo danh sách ID.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Lấy tổ chức hiện tại (`organization_id`).
+     * 2. Bắt đầu Database Transaction và xóa hàng loạt bằng `whereIn('id', $ids)->delete()`.
+     * 3. Phát broadcast `EquipmentBulkDeleted` kèm danh sách ID để các client đồng bộ UI.
+     * 4. Xóa cache thống kê (`invalidateCache`).
+     * 5. Trả về số lượng bản ghi đã xóa.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - API: POST /api/v1/equipments/bulk-destroy
+     * - Controller: App\Modules\Equipment\Controllers\EquipmentController::bulkDestroy()
+     * - Frontend Store: `useEquipmentStore::bulkDestroy()`
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param array<int> $ids Mảng danh sách ID thiết bị cần xóa
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ]
+     * @return int Số lượng thiết bị đã xóa
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * $deletedCount = $equipmentService->bulkDestroy([10, 11, 12]);
+     * ```
+     */
     public function bulkDestroy(array $ids): int
     {
         $orgId = (int) (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 1);
@@ -219,7 +467,37 @@ class EquipmentService
     }
 
     /**
-     * Thay đổi trạng thái thiết bị (tốt, hỏng, bảo trì, mất, trong kho).
+     * [1. MỤC ĐÍCH]
+     * Thay đổi nhanh trạng thái của 1 thiết bị (tốt, hư hỏng, đang bảo trì, trong kho, thanh lý...).
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Tìm RoomEquipment theo ID và lưu lại `$oldStatus`.
+     * 2. Chuyển đổi trạng thái sang enum `EquipmentStatusEnum`.
+     * 3. Nếu chuyển về trạng thái 'in_stock' (kho): tự động giải phóng khỏi phòng (`room_id = null`).
+     * 4. Cập nhật ghi chú nếu có.
+     * 5. Gọi `syncOpenMaintenanceLogs()` để tự động cập nhật hoặc đóng/mở phiếu bảo trì tương ứng.
+     * 6. Phát broadcast `EquipmentStatusChanged` và xóa cache.
+     * 7. Trả về RoomEquipment với thông tin danh mục và phòng mới nhất.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - API: PATCH /api/v1/equipments/{id}/status
+     * - Controller: App\Modules\Equipment\Controllers\EquipmentController::changeStatus()
+     * - Frontend Store: `useEquipmentStore::changeStatus()`
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param int $id ID thiết bị
+     * @param string $status Mã trạng thái mới ('good', 'broken', 'maintenance', 'in_stock', 'lost', 'disposed')
+     * @param string|null $note Ghi chú lý do chuyển trạng thái
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+     * @return \App\Modules\Equipment\Models\RoomEquipment Model sau khi đổi trạng thái
+     * @throws \ValueError Nếu mã trạng thái không hợp lệ theo enum
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * $item = $equipmentService->changeStatus(12, 'maintenance', 'Kỹ thuật viên đang kiểm tra màn hình');
+     * ```
      */
     public function changeStatus(int $id, string $status, ?string $note = null): RoomEquipment
     {
@@ -249,7 +527,37 @@ class EquipmentService
     }
 
     /**
-     * Cập nhật trạng thái hàng loạt.
+     * [1. MỤC ĐÍCH]
+     * Cập nhật trạng thái hàng loạt cho nhiều thiết bị cùng lúc.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Bắt đầu Database Transaction.
+     * 2. Nếu chuyển về trạng thái 'in_stock', tự động set `room_id = null` cho toàn bộ danh sách.
+     * 3. Thực hiện câu lệnh bulk update `RoomEquipment::whereIn('id', $ids)->update(...)`.
+     * 4. Đồng bộ phiếu bảo trì:
+     *    - Nếu trạng thái là 'good': tự động hoàn tất các phiếu đang chờ/đang sửa (`status = completed`, `resolved_at = now()`).
+     *    - Nếu là 'broken' hoặc 'maintenance': duyệt qua từng thiết bị để gọi `syncOpenMaintenanceLogs()`.
+     * 5. Phát broadcast `EquipmentBulkStatusChanged` và xóa cache.
+     * 6. Trả về số lượng bản ghi bị tác động.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - API: PATCH /api/v1/equipments/bulk-status
+     * - Controller: App\Modules\Equipment\Controllers\EquipmentController::bulkUpdateStatus()
+     * - Frontend Store: `useEquipmentStore::bulkUpdateStatus()`
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param array<int> $ids Mảng ID thiết bị cần cập nhật
+     * @param string $status Trạng thái mới
+     * @param string|null $note Ghi chú chung
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ]
+     * @return int Số lượng bản ghi đã cập nhật
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * $count = $equipmentService->bulkUpdateStatus([1, 2, 3], 'good', 'Đã bảo dưỡng định kỳ');
+     * ```
      */
     public function bulkUpdateStatus(array $ids, string $status, ?string $note = null): int
     {
@@ -290,7 +598,45 @@ class EquipmentService
     }
 
     /**
-     * Gán thiết bị vào phòng hoặc đưa về kho.
+     * [1. MỤC ĐÍCH]
+     * Điều chuyển thiết bị vào một phòng cụ thể hoặc thu hồi thiết bị về kho dự phòng chung.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Bắt đầu Database Transaction.
+     * 2. Tìm RoomEquipment theo `$equipmentId` và lưu lại phòng cũ (`$fromRoomId`).
+     * 3. Xử lý logic gán:
+     *    - Nếu có `$roomId`: Cập nhật `room_id = $roomId`, `installed_at = now()`.
+     *      Nếu thiết bị đang ở trạng thái 'in_stock', tự động đổi thành 'good'.
+     *    - Nếu `$roomId == null`: Thu hồi về kho: set `room_id = null`, `position_note = null`,
+     *      cập nhật ghi chú và đổi trạng thái sang 'in_stock'.
+     * 4. Lưu bản ghi và gọi `syncOpenMaintenanceLogs()` để đảm bảo trạng thái phiếu bảo trì đồng bộ.
+     * 5. Eager load quan hệ `model.category` và `room`.
+     * 6. Phát sự kiện broadcast `EquipmentAssigned` kèm `$fromRoomId` (để FE cập nhật cả phòng cũ lẫn phòng mới).
+     * 7. Xóa cache thống kê & map view (`invalidateCache`).
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - API: POST /api/v1/equipments/assign-room
+     * - Controller: App\Modules\Equipment\Controllers\EquipmentController::assignToRoom()
+     * - UI Trigger: Modal `AssignRoomModal.vue` hoặc `RoomAssignWarehouseModal.vue`
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param int $equipmentId ID của thiết bị cần điều chuyển
+     * @param int|null $roomId ID phòng đích (nếu null là thu hồi về kho)
+     * @param string|null $positionNote Ghi chú vị trí lắp đặt trong phòng (ví dụ: "Treo tường đối diện giường")
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+     * @return \App\Modules\Equipment\Models\RoomEquipment Model thiết bị sau khi điều chuyển
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Khi không tìm thấy thiết bị
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * // Gán vào phòng 101
+     * $item = $equipmentService->assignToRoom(42, 101, 'Kệ tủ phòng khách');
+     *
+     * // Thu hồi về kho
+     * $item = $equipmentService->assignToRoom(42, null, 'Thu hồi bảo dưỡng');
+     * ```
      */
     public function assignToRoom(int $equipmentId, ?int $roomId, ?string $positionNote = null): RoomEquipment
     {
@@ -332,7 +678,46 @@ class EquipmentService
     }
 
     /**
-     * Kiểm tra định mức chuẩn của phòng đích và cảnh báo trước khi điều chuyển thiết bị.
+     * [1. MỤC ĐÍCH]
+     * Kiểm tra đối soát định mức chuẩn của phòng đích và cảnh báo trước khi thực hiện điều chuyển thiết bị.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Tìm RoomEquipment theo ID kèm model và category.
+     * 2. Phân loại danh mục: Nhóm thiết bị động (tv, box, remote, wifi, phone) hay nhóm định mức tĩnh.
+     * 3. Nhánh 1: Nếu đích đến là KHO (`$targetRoomId == null`):
+     *    - Đánh giá tác động đến phòng hiện tại (phòng nguồn): Nếu thu hồi thiết bị, phòng có bị thiếu định mức không.
+     * 4. Nhánh 2: Nếu đích đến là một PHÒNG cụ thể:
+     *    - Lấy thông tin phòng đích (`Room::with('roomType')`).
+     *    - Tính toán định mức chuẩn bắt buộc (`getDynamicStandardQuota`).
+     *    - Đếm số lượng hiện có của thiết bị cùng nhóm trong phòng đích.
+     *    - So sánh số lượng sau khi thêm (`afterCount = currentCount + 1`):
+     *      * Trạng thái 'exact_quota': Chuyển vào sẽ giúp phòng đạt chuẩn định mức.
+     *      * Trạng thái 'over_quota': Chuyển vào sẽ khiến phòng bị thừa thiết bị.
+     *      * Trạng thái 'under_quota': Vẫn còn thiếu so với định mức.
+     *      * Trạng thái 'no_standard': Hạng phòng không quy định định mức cho thiết bị này.
+     *    - Đánh giá tác động ngược lại đối với phòng nguồn (nếu chuyển từ phòng khác sang).
+     * 5. Trả về mảng thông tin chi tiết để giao diện hiển thị hộp thoại cảnh báo người dùng.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - API: GET /api/v1/equipments/{id}/check-assign-target
+     * - Controller: App\Modules\Equipment\Controllers\EquipmentController::checkAssignTarget()
+     * - UI Component: Modal `AssignRoomModal.vue` khi chọn phòng đích từ danh sách
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param int $equipmentId ID thiết bị chuẩn bị điều chuyển
+     * @param int|null $targetRoomId ID phòng dự kiến chuyển tới (null nếu chuyển về kho)
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ]
+     * @return array Cấu trúc gồm: target_type, target_room, model, standard_quota, current_count, after_count, status, message, source_room_impact
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * $checkResult = $equipmentService->checkAssignTarget(10, 205);
+     * if ($checkResult['status'] === 'over_quota') {
+     *     // Cảnh báo người dùng phòng đã đủ số lượng TV
+     * }
+     * ```
      */
     public function checkAssignTarget(int $equipmentId, ?int $targetRoomId): array
     {
@@ -487,7 +872,41 @@ class EquipmentService
     }
 
     /**
-     * Báo hỏng thiết bị kèm ghi chép bảo trì và ảnh chụp lỗi.
+     * [1. MỤC ĐÍCH]
+     * Tiếp nhận báo hỏng thiết bị từ nhân viên/khách hàng, tự động tạo phiếu sửa chữa và lưu ảnh hiện trường.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Bắt đầu Database Transaction.
+     * 2. Tìm RoomEquipment theo ID và cập nhật `status = broken`, lưu mô tả sự cố vào `note`.
+     * 3. Tạo mới 1 bản ghi `EquipmentMaintenanceLog` với:
+     *    - `room_equipment_id` và `room_id` hiện tại của thiết bị.
+     *    - `issue_description` = mô tả lỗi do người báo cung cấp.
+     *    - `status` = 'pending' (Đang chờ kỹ thuật tiếp nhận).
+     *    - `reported_by` = ID người dùng đang đăng nhập (`auth()->id()`).
+     * 4. Nếu có đính kèm file ảnh chụp hiện trường (`$brokenPhoto`), lưu vào collection `broken_photos`.
+     * 5. Eager load thông tin `model.category`, `room`, và `maintenanceLogs`.
+     * 6. Phát sự kiện broadcast `EquipmentBrokenReported` để thông báo cho đội kỹ thuật.
+     * 7. Xóa cache thống kê khách sạn (`invalidateCache`).
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - API: POST /api/v1/equipments/{id}/report-broken
+     * - Controller: App\Modules\Equipment\Controllers\EquipmentController::reportBroken()
+     * - UI Component: Modal `ReportBrokenModal.vue` khi bấm nút "Báo hỏng" trên thẻ phòng hoặc danh sách
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param int $equipmentId ID thiết bị gặp sự cố
+     * @param string $issueDescription Mô tả chi tiết triệu chứng lỗi (ví dụ: "Màn hình sọc ngang, không lên nguồn")
+     * @param mixed $brokenPhoto File ảnh hoặc mảng file ảnh chụp hiện trường (UploadedFile)
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+     * @return \App\Modules\Equipment\Models\RoomEquipment Model thiết bị sau khi cập nhật trạng thái hỏng
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Khi ID thiết bị không tồn tại
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * $item = $equipmentService->reportBroken(15, 'Điều khiển TV bị gãy nắp pin', $request->file('photo'));
+     * ```
      */
     public function reportBroken(int $equipmentId, string $issueDescription, mixed $brokenPhoto = null): RoomEquipment
     {
@@ -522,7 +941,35 @@ class EquipmentService
     }
 
     /**
-     * Đồng bộ trạng thái phiếu bảo trì đang mở khi trạng thái thiết bị thay đổi.
+     * [1. MỤC ĐÍCH]
+     * Tự động đồng bộ trạng thái phiếu bảo trì (EquipmentMaintenanceLog) khi trạng thái cá thể thiết bị thay đổi.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Nếu trạng thái mới là 'broken':
+     *    - Kiểm tra xem đã có phiếu bảo trì nào đang mở ('pending' hoặc 'in_progress') hay chưa.
+     *    - Nếu chưa có, tự động tạo mới 1 phiếu `status = pending`.
+     * 2. Nếu trạng thái mới là 'maintenance':
+     *    - Chuyển phiếu bảo trì đang mở sang 'in_progress' (hoặc tạo phiếu mới nếu chưa có).
+     * 3. Nếu trạng thái mới là 'good':
+     *    - Đóng toàn bộ phiếu bảo trì đang mở: `status = completed`, `resolved_at = now()`, `resolved_by = auth()->id()`.
+     * 4. Nếu trạng thái mới là 'disposed' (thanh lý do không sửa được):
+     *    - Đóng phiếu bảo trì đang mở: `status = unfixable`, `resolved_at = now()`.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - Nội bộ trong EquipmentService: update(), changeStatus(), bulkUpdateStatus(), assignToRoom()
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param \App\Modules\Equipment\Models\RoomEquipment $equipment Đối tượng thiết bị đang xử lý
+     * @param string $newStatus Giá trị trạng thái mới ('good', 'broken', 'maintenance', 'disposed'...)
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ]
+     * @return void
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * $this->syncOpenMaintenanceLogs($equipment, 'good');
+     * ```
      */
     protected function syncOpenMaintenanceLogs(RoomEquipment $equipment, string $newStatus): void
     {
@@ -577,7 +1024,43 @@ class EquipmentService
     }
 
     /**
-     * Cập nhật tiến độ xử lý và chi phí phiếu bảo trì.
+     * [1. MỤC ĐÍCH]
+     * Cập nhật tiến độ xử lý, chi phí sửa chữa và tình trạng hoàn tất của phiếu bảo trì.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Bắt đầu Database Transaction và tìm EquipmentMaintenanceLog theo `$logId`.
+     * 2. Cập nhật chi phí (`cost`), mô tả bổ sung (`issue_description`) nếu có.
+     * 3. Nếu có cập nhật trạng thái phiếu (`status`):
+     *    - Nếu trạng thái là 'completed' hoặc 'unfixable': Ghi nhận `resolved_at = now()` và `resolved_by = auth()->id()`.
+     * 4. Tự động đồng bộ ngược lại trạng thái của thiết bị (`RoomEquipment`):
+     *    - Nếu phiếu 'completed' -> Đổi thiết bị thành 'good' (Hoạt động tốt).
+     *    - Nếu phiếu 'in_progress' và thiết bị đang 'broken' -> Đổi thành 'maintenance' (Đang sửa chữa).
+     *    - Nếu phiếu 'unfixable' -> Đổi thiết bị thành 'disposed' (Thanh lý).
+     * 5. Eager load thông tin người báo (`reportedByUser`) và người giải quyết (`resolvedByUser`).
+     * 6. Phát sự kiện Broadcast để giao diện cập nhật thời gian thực.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - API: PATCH /api/v1/equipments/maintenance-logs/{logId}
+     * - Controller: App\Modules\Equipment\Controllers\EquipmentController::updateMaintenanceLog()
+     * - Frontend Service: `equipmentService.updateMaintenanceLog()`
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param int $logId ID phiếu bảo trì
+     * @param array $data Dữ liệu cập nhật (status, cost, issue_description)
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+     * @return \App\Modules\Equipment\Models\EquipmentMaintenanceLog Phiếu bảo trì sau khi cập nhật
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Khi không tìm thấy phiếu
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * $log = $equipmentService->updateMaintenanceLog(5, [
+     *     'status' => 'completed',
+     *     'cost' => 150000,
+     *     'issue_description' => 'Đã thay thế tụ nguồn bo mạch'
+     * ]);
+     * ```
      */
     public function updateMaintenanceLog(int $logId, array $data): EquipmentMaintenanceLog
     {
@@ -648,7 +1131,34 @@ class EquipmentService
     }
 
     /**
-     * Tải thêm ảnh cho thiết bị (ảnh chụp thiết bị hoặc ảnh lỗi).
+     * [1. MỤC ĐÍCH]
+     * Tải thêm hình ảnh đính kèm cho thiết bị (ảnh chụp thực tế hoặc ảnh hiện trường hư hỏng).
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Tìm RoomEquipment theo ID.
+     * 2. Sử dụng Spatie Media Library để lưu file vào collection tương ứng ('equipment_photos' hoặc 'broken_photos').
+     * 3. Eager load lại quan hệ `media` để cập nhật danh sách ảnh.
+     * 4. Trả về thực thể RoomEquipment có danh sách media mới nhất.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - API: POST /api/v1/equipments/{id}/photos
+     * - Controller: App\Modules\Equipment\Controllers\EquipmentController::uploadPhoto()
+     * - Frontend Store: `useEquipmentStore` hoặc form chi tiết thiết bị
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param int $equipmentId ID thiết bị
+     * @param mixed $file Tệp hình ảnh tải lên (UploadedFile)
+     * @param string $collection Tên bộ sưu tập ảnh (mặc định 'equipment_photos')
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+     * @return \App\Modules\Equipment\Models\RoomEquipment Model thiết bị kèm danh sách media
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Khi không tìm thấy thiết bị
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * $item = $equipmentService->uploadPhoto(12, $request->file('file'), 'equipment_photos');
+     * ```
      */
     public function uploadPhoto(int $equipmentId, mixed $file, string $collection = 'equipment_photos'): RoomEquipment
     {
@@ -659,7 +1169,33 @@ class EquipmentService
     }
 
     /**
-     * Xóa ảnh của thiết bị theo media ID.
+     * [1. MỤC ĐÍCH]
+     * Xóa 1 ảnh đính kèm của thiết bị theo media ID.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Tìm RoomEquipment theo ID.
+     * 2. Tìm bản ghi media liên kết với thiết bị qua quan hệ `item->media()->where('id', $mediaId)->firstOrFail()`.
+     * 3. Xóa file vật lý trên đĩa và xóa bản ghi trong bảng `media`.
+     * 4. Load lại quan hệ media và trả về đối tượng RoomEquipment.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - API: DELETE /api/v1/equipments/{id}/photos/{mediaId}
+     * - Controller: App\Modules\Equipment\Controllers\EquipmentController::deletePhoto()
+     * - Frontend Service: `equipmentService.deletePhoto()`
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param int $equipmentId ID thiết bị sở hữu ảnh
+     * @param int $mediaId ID của ảnh trong bảng `media`
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+     * @return \App\Modules\Equipment\Models\RoomEquipment Model sau khi xóa ảnh
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Khi không tìm thấy thiết bị hoặc ảnh
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * $item = $equipmentService->deletePhoto(12, 105);
+     * ```
      */
     public function deletePhoto(int $equipmentId, int $mediaId): RoomEquipment
     {
@@ -671,7 +1207,37 @@ class EquipmentService
     }
 
     /**
-     * Thống kê tổng thể toàn khách sạn: Tổng số TV, Remote, Box, Wifi...
+     * [1. MỤC ĐÍCH]
+     * Thống kê tổng thể trang thiết bị toàn khách sạn (tổng số lượng, số tốt, hỏng, bảo trì, trong kho, phân rã theo nhóm danh mục).
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Kiểm tra cache Redis/File với key `hotel_stats_{orgId}_{block}` (TTL 60 giây).
+     * 2. Nếu cache miss:
+     *    - Tạo query tổng hợp trạng thái (good, broken, maintenance, in_stock, lost) gom nhóm theo SQL `groupBy('status')`.
+     *    - Tính toán số lượng thiết bị theo từng danh mục (TV, Box, Wifi, Remote...) và từng trạng thái trong 1 câu query duy nhất.
+     *    - Đếm số lượng phòng đang có sự cố (`brokenRoomsCount`).
+     *    - Thống kê phân bổ thiết bị theo từng Tòa nhà / Block (`by_block`).
+     *    - Lưu kết quả vào Cache trong 60 giây.
+     * 3. Trả về mảng dữ liệu thống kê đồng bộ cho Dashboard, Header và Map View.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - API: GET /api/v1/equipments/stats
+     * - Controller: App\Modules\Equipment\Controllers\EquipmentController::stats()
+     * - Frontend Header: `EquipmentStatHeader.vue`, `MapStatHeader.vue`, Dashboard view
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param int|null $organizationId ID tổ chức / cơ sở (mặc định lấy theo phiên làm việc)
+     * @param string|null $block Tên Block lọc thống kê (ví dụ: 'Tòa A', 'Tòa B', '__stock__' cho kho)
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ]
+     * @return array Mảng chứa: total_equipments, summary, by_status, rooms_with_issues_count, by_category, by_block, in_stock_total, all_total
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * $stats = $equipmentService->getHotelStats(organizationId: 1, block: 'Tòa A');
+     * echo "Tổng thiết bị: " . $stats['total_equipments'];
+     * ```
      */
     public function getHotelStats(?int $organizationId = null, ?string $block = null): array
     {
@@ -812,12 +1378,46 @@ class EquipmentService
     }
 
     /**
-     * Tính toán định mức chuẩn động theo cơ cấu phòng:
-     * - TV, Box, Remote: max(1, bedroom_count + living_room_count)
-     * - Wifi Router: 0 nếu dùng ké wifi (shared) hoặc không wifi (none); 1 nếu riêng (dedicated)
-     * - Điện thoại bàn: 1 chiếc cho mỗi phòng
-     * - Bỏ định mức: Điều hòa (ac), Tủ lạnh (fridge), Thiết bị buồng phòng gia dụng (appliance)
-     * - Các danh mục khác: giữ nguyên định mức từ bảng room_standard_equipments
+     * [1. MỤC ĐÍCH]
+     * Tính toán định mức chuẩn động (Dynamic Standard Quota) dựa theo cơ cấu thực tế của từng phòng:
+     * - TV, TV Box, Remote: max(1, số phòng ngủ + số phòng khách).
+     * - Wifi Router: 0 nếu dùng chung (shared) hoặc không dùng (none); 1 nếu dùng riêng (dedicated).
+     * - Điện thoại bàn: 1 chiếc cho mỗi phòng.
+     * - Bỏ định mức: Điều hòa (ac), Tủ lạnh (fridge), Thiết bị gia dụng (appliance) -> trả về 0.
+     * - Các danh mục khác: giữ nguyên định mức tĩnh trong cấu hình phòng.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Xác định mã code danh mục của thiết bị (`$catCode = $model->category->code`).
+     * 2. Nếu thuộc nhóm `['tv', 'box', 'remote']`:
+     *    - Lấy `bedroom_count` (mặc định 1) + `living_room_count` (mặc định 0).
+     *    - Định mức = max(1, tổng số phòng ngủ và phòng khách).
+     * 3. Nếu là 'wifi':
+     *    - Nếu `room->wifi_mode` là 'shared' hoặc 'none' -> Định mức = 0.
+     *    - Nếu riêng (dedicated) -> Định mức = 1.
+     * 4. Nếu là 'phone': Định mức = 1.
+     * 5. Nếu thuộc nhóm `['ac', 'fridge', 'appliance']`: Định mức = 0 (bỏ kiểm kê bắt buộc).
+     * 6. Các loại khác: trả về định mức tĩnh `$staticQuota` từ cấu hình `RoomStandardEquipment`.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - Nội bộ trong EquipmentService: checkAssignTarget()
+     * - Resource: RoomEquipmentDetailResource
+     * - Service: RoomAuditService, RoomEquipmentService
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param \App\Modules\Motel\Models\Room $room Đối tượng phòng cần tính định mức
+     * @param \App\Modules\Equipment\Models\EquipmentModel|null $model Mẫu thiết bị đang xét
+     * @param int $staticQuota Định mức chuẩn tĩnh được cài đặt sẵn cho loại phòng (mặc định 0)
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ]
+     * @return int Số lượng định mức chuẩn yêu cầu cho thiết bị này trong phòng
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * // Phòng có 2 phòng ngủ + 1 phòng khách:
+     * $tvQuota = $equipmentService->getDynamicStandardQuota($room, $tvModel, 1);
+     * // Trả về: 3 (mỗi phòng ngủ 1 TV + phòng khách 1 TV)
+     * ```
      */
     public function getDynamicStandardQuota(Room $room, ?EquipmentModel $model, int $staticQuota = 0): int
     {
@@ -848,7 +1448,39 @@ class EquipmentService
     }
 
     /**
-     * Chi tiết thiết bị trong 1 phòng cụ thể.
+     * [1. MỤC ĐÍCH]
+     * Lấy toàn bộ thông tin chi tiết về thiết bị, định mức và sơ đồ mạng wifi của một phòng cụ thể.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Tìm bản ghi Room theo `$roomId` (sử dụng findOrFail).
+     * 2. Eager load sâu các mối quan hệ:
+     *    - `roomType`: Thông tin hạng phòng tiêu chuẩn.
+     *    - `sharedWifiRoom.equipments.model.category`: Thông tin phòng chia sẻ wifi (nếu đang dùng ké wifi).
+     *    - `dependentWifiRooms`: Danh sách các phòng khác đang dùng ké wifi từ phòng này.
+     *    - `equipments.model.category` & `equipments.media`: Danh sách thiết bị hiện có trong phòng kèm ảnh.
+     *    - `standardEquipments.model.category`: Danh sách định mức tiêu chuẩn được cấu hình.
+     * 3. Trả về thực thể Room đã nạp đủ dữ liệu.
+     *
+     * [3. NGUỒN GỌI (CALLERS)]
+     * - API: GET /api/v1/equipments/room-detail/{roomId}
+     * - Controller: App\Modules\Equipment\Controllers\RoomEquipmentDetailController::show()
+     * - Frontend Store & View: `equipmentService.getRoomDetail(roomId)` tại `MapRoomDetailModal.vue`
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param int $roomId ID của phòng cần tra cứu
+     *
+     * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+     * @return \App\Modules\Motel\Models\Room Model phòng kèm đầy đủ quan hệ
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Khi ID phòng không tồn tại
+     *
+     * [6. VÍ DỤ SỬ DỤNG]
+     * @example
+     * ```php
+     * $room = $equipmentService->getRoomDetail(105);
+     * foreach ($room->equipments as $equipment) {
+     *     echo $equipment->model->name . ' - ' . $equipment->status;
+     * }
+     * ```
      */
     public function getRoomDetail(int $roomId): Room
     {
