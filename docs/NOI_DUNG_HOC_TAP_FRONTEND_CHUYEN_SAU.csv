@@ -1,0 +1,28 @@
+﻿STT,BÀI HỌC,NỘI DUNG,GHI CHÚ,TRẠNG THÁI
+1,Vue 3 Reactivity & Composition API,Ref vs Reactive trong thực tế,"ref dùng cho kiểu nguyên thủy (boolean, string, number, array). reactive dùng cho gom nhóm Form Filters. Không gán đè cả object reactive.",Chưa học
+,,Computed Properties & Tự động Caching,"Computed chỉ tính lại khi biến phụ thuộc thay đổi. Ví dụ: filteredRooms (lọc 255 phòng theo từ khóa, block, tầng), auditStats (tính % đạt chuẩn).",Chưa học
+,,Watchers & Xử lý Side-effects,"Theo dõi biến để chạy logic bất đồng bộ. Ví dụ: watch filteredRooms tự chọn phòng đầu tiên; watch realtimeStore.lastEvent nạp ngầm khi có WebSocket.",Chưa học
+,,Chống Race-condition (Request ID Lock),"Xử lý lỗi bất đồng bộ khi chuyển phòng liên tục: dùng roomDetailRequestId và so sánh requestId === roomDetailRequestId trước khi gán data.",Chưa học
+,,Đồng bộ Dữ liệu Tại Chỗ (In-place Mutation),"syncRoomStatsInPlace cập nhật thẳng badge màu và số lượng thiếu vào item trong mảng rooms, giúp UI mượt mà 0ms độ trễ không cần reload API.",Chưa học
+2,Quản lý State Quy mô lớn với Pinia Store,Thiết kế Setup Store (defineStore),"Cấu trúc store dạng Composition API (ref làm state, computed làm getters, function làm actions) dễ đọc, dễ mở rộng hơn Options Store cũ.",Chưa học
+,,Store Đa Chi Nhánh (authStore),"Quản lý JWT token, người dùng hiện tại và danh sách cơ sở làm việc. Khi đổi tổ chức (selectOrganization), tự động cập nhật header Axios.",Chưa học
+,,Store Thiết Bị (equipmentStore),"Quản lý bộ lọc, phân trang server-side và đồng bộ dữ liệu. Tách biệt hoàn toàn tầng logic gọi API ra khỏi giao diện Vue Component.",Chưa học
+,,Client Request Caching (requestCache.js),"Lưu tạm kết quả GET request trong RAM client với thời gian sống (TTL). Có hàm invalidateRequestCache tự động xóa cache khi có thay đổi.",Chưa học
+3,Phân quyền RBAC với CASL & Vue Directives,Tích hợp Thư viện CASL Ability,"core/casl/ability.js chuyển đổi quyền backend thành cặp { action, subject } của CASL (ví dụ: { action: 'update', subject: 'Room' }).",Chưa học
+,,Chỉ thị v-can và \ trên Giao diện,"Dùng v-if=""\('assign', 'Equipment')"" để ẩn/hiện các nút Thao tác (Gán từ kho, Sửa phòng, Báo hỏng, Xóa) chính xác theo quyền của User.",Chưa học
+,,Navigation Guard Bảo vệ Tuyến đường,"router/index.js dùng hook beforeEach kiểm tra token và meta { action, subject } của từng route, tự động chặn và đẩy về 403 nếu không đủ quyền.",Chưa học
+4,Axios Client & Xử lý Lỗi Mạng Nâng cao,Request Interceptors tự động,"Tự động tiêm Authorization: Bearer <token> và X-Organization-Id vào mọi request gửi đi, lập trình viên không cần truyền tay thủ công.",Chưa học
+,,Silent Retry khi gặp lỗi mạng (502/503/504),"Tự động chờ 800ms - 1500ms và thử lại tối đa 2 lần khi server gateway bị trễ hoặc khởi động lại trước khi ném lỗi cho người dùng.",Chưa học
+,,Response Interceptors & Toast tập trung,"Bắt mã 401 tự động xóa token và redirect về Login; bắt mã 422 tự động hiển thị Toast màu đỏ thông báo lỗi validate form chi tiết.",Chưa học
+5,Hệ thống Real-time WebSocket (Echo + Reverb),Lắng nghe Sự kiện Private Channel,"echoService.js kết nối Reverb qua Pusher protocol, lắng nghe kênh organization.{orgId} các sự kiện equipment.changed, room.changed.",Chưa học
+,,Khử Trùng Lặp Sự Kiện (Fingerprint Deduplication),"Tạo chuỗi định danh fingerprint = type_title_message trong 2 giây, ngăn chặn hiện tượng spam thông báo hoặc lặp âm thanh chuông báo.",Chưa học
+,,Âm báo Bằng Web Audio API Thuần,"audioNotification.js dùng AudioContext và OscillatorNode tạo âm thanh ding-dong mượt mà, không cần file mp3 ngoài, không lo lỗi 404 âm thanh.",Chưa học
+6,Kiến trúc UI Responsive (Vuetify 3 + Tailwind),Kết hợp Vuetify 3 và Tailwind CSS,"Vuetify cung cấp component phức tạp (v-select, v-navigation-drawer, v-dialog); Tailwind kiểm soát layout, flexbox, spacing và màu sắc tinh tế.",Chưa học
+,,Vuetify 3 Layout System (v-layout + v-main),"Dùng v-layout và v-main để Vuetify tự động tính toán bù lề CSS variable --v-layout-left, triệt tiêu 100% lỗi sidebar đè lấn lên nội dung.",Chưa học
+,,Responsive Laptop 14-16 inch (isCompactScreen),"Laptop 14-16 inch (viewport < 1680px) mặc định đóng sidebar, hiện nút 3 gạch mở dạng Temporary Drawer trượt mượt mà, giữ màn hình rộng 100%.",Chưa học
+,,Skeleton Loader Animation,"Dùng các khối animate-pulse bg-slate-200 giả lập cấu trúc trang trong lúc đang tải API, loại bỏ cảm giác màn hình bị giật cục hoặc nhấp nháy.",Chưa học
+,,Modal & Form Architecture chuẩn Vue 3,"Quản lý đóng/mở 2 chiều qua v-model (modelValue và emit update:modelValue). Tách biệt form state độc lập, dễ bảo trì.",Chưa học
+,,Dynamic Import & Code Splitting (defineAsyncComponent),"Dùng defineAsyncComponent(() => import(...)) cho các modal nặng, giúp trình duyệt chỉ tải code modal khi người dùng thực sự bấm mở.",Chưa học
+7,Xử lý Dữ liệu phức tạp & Hiệu năng cao,Sơ đồ Ma trận Phòng (Grouping Block & Floor),"Dùng reduce gom mảng phẳng 255 phòng thành Cây phân cấp Block -> Tầng -> Phòng, sắp xếp chuẩn thứ tự Block và số phòng từ nhỏ đến lớn.",Chưa học
+,,Tính Định Mức Thiết Bị Động theo Không Gian,"Thuật toán tự động tính định mức TV, Box, Remote dựa trên số phòng khách và phòng ngủ; cảnh báo mất mạng lan truyền khi Router phòng chủ hỏng.",Chưa học
+,,Import / Export Excel Trực tiếp Trên Trình duyệt,"AppExcelTransfer.vue hỗ trợ tải template mẫu, kéo thả file .xlsx, parse dữ liệu gửi lên API và xuất danh sách thiết bị ra Excel tức thì.",Chưa học
