@@ -33,6 +33,28 @@ const emit = defineEmits([
 
 const router = useRouter()
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Chuyển đổi mã phân loại thiết bị sang tên icon tương ứng thuộc bộ icon Material Design Icons (MDI).
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Chuyển `code` về chữ thường để so sánh không phân biệt hoa thường.
+ * 2. Tra cứu trong bảng đối chiếu `map`.
+ * 3. Trả về tên icon MDI hoặc 'mdi-devices' nếu chưa được gán.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Dùng trong template render icon danh mục thiết bị của popup chi tiết phòng.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {string} code Mã nhóm thiết bị (tv, remote, box, wifi, phone, ac...).
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {string} Tên icon MDI.
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * getCategoryIcon('ac') // => 'mdi-air-conditioner'
+ */
 function getCategoryIcon(code) {
   const map = {
     tv: 'mdi-television',

@@ -86,6 +86,30 @@ onMounted(async () => {
   ])
 })
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Tải danh sách tất cả loại phòng (Room Types) của khách sạn để phục vụ bộ lọc tìm kiếm
+ * và cung cấp dữ liệu cấu hình khi người dùng mở modal cập nhật phòng.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Gọi `roomService.getRoomTypes()` lấy danh sách loại phòng qua API.
+ * 2. Lưu kết quả vào biến phản ứng `roomTypesList`.
+ * 3. Bắt lỗi ngoại lệ và ghi log nếu quá trình tải thất bại (không chặn UI).
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Hook `onMounted()` khi màn hình Đối soát thiết bị phòng vừa khởi tạo.
+ * - Hàm `openEditRoomModal()` kiểm tra nạp bổ sung nếu mảng loại phòng chưa có dữ liệu.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * Không có.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {Promise<void>}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * await fetchRoomTypes()
+ */
 async function fetchRoomTypes() {
   try {
     const types = await roomService.getRoomTypes()
@@ -190,11 +214,57 @@ const hasActiveFilters = computed(() => {
   return !!(filters.search || filters.block || filters.floor !== null || filters.status || filters.room_type_id)
 })
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Chuyển đổi bộ lọc theo tòa nhà (Block), đồng thời reset lại tầng về "Tất cả tầng"
+ * để tránh trường hợp tầng cũ không tồn tại trong Block mới chọn.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Gán `filters.block` bằng giá trị `b` được chọn từ UI tab hoặc danh sách block.
+ * 2. Đặt `filters.floor = null` để hiển thị tất cả tầng của tòa nhà này.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Sự kiện click chọn Block tại component `RoomAuditFilterBar.vue`.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {string} b Tên tòa nhà (Block A, Block B, v.v.).
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {void}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * selectBlock('Block A')
+ */
 function selectBlock(b) {
   filters.block = b
   filters.floor = null
 }
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Đặt lại toàn bộ các tiêu chí tìm kiếm và bộ lọc về trạng thái mặc định ban đầu.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Reset chuỗi từ khóa `filters.search = ''`.
+ * 2. Reset tòa nhà `filters.block = ''`.
+ * 3. Reset tầng `filters.floor = null`.
+ * 4. Reset trạng thái định mức `filters.status = ''`.
+ * 5. Reset loại phòng `filters.room_type_id = null`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Nút "Đặt lại bộ lọc" tại giao diện hoặc `RoomAuditFilterBar.vue`.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * Không có.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {void}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * resetFilters()
+ */
 function resetFilters() {
   filters.search = ''
   filters.block = ''
@@ -217,6 +287,29 @@ watch(filteredRooms, (newList) => {
   }
 })
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Mở modal chỉnh sửa nhanh thông tin cơ cấu phòng (loại phòng, số phòng khách, phòng ngủ)
+ * cho phòng đang được chọn trong giao diện đối soát.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Kiểm tra nếu chưa có phòng nào được chọn (`!roomDetail.value`) thì bỏ qua.
+ * 2. Nạp trước danh sách loại phòng nếu mảng `roomTypesList` đang trống.
+ * 3. Kích hoạt cờ `editRoomModalOpen = true` để hiển thị modal `RoomFormModal`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Nút "Sửa cơ cấu phòng" từ component `RoomAuditDetailCard.vue`.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * Không có.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {Promise<void>}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * await openEditRoomModal()
+ */
 async function openEditRoomModal() {
   if (!roomDetail.value) return
   if (roomTypesList.value.length === 0) {
@@ -225,6 +318,29 @@ async function openEditRoomModal() {
   editRoomModalOpen.value = true
 }
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Cập nhật lại dữ liệu phòng trong danh sách và nạp lại thông số định mức đối soát
+ * ngay sau khi người dùng lưu thành công thay đổi từ modal cấu hình phòng.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Nếu có object `savedRoom` với `id`, cập nhật trực tiếp item tương ứng trong mảng `rooms`.
+ * 2. Nếu không có object cụ thể, gọi nạp lại danh sách phòng ngầm `loadRooms({ silent: true })`.
+ * 3. Tải lại chi tiết đối soát định mức ngầm của phòng đang chọn `loadRoomDetail(selectedRoomId.value, { silent: true })`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Sự kiện `@saved="handleRoomSaved"` của component `RoomFormModal`.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {Object} [savedRoom] Dữ liệu phòng đã cập nhật từ API.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {Promise<void>}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * await handleRoomSaved(updatedRoomData)
+ */
 async function handleRoomSaved(savedRoom) {
   if (savedRoom?.id) {
     rooms.value = rooms.value.map(room =>
@@ -250,6 +366,37 @@ watch(
   }
 )
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Tải toàn bộ danh sách phòng và trạng thái trang thiết bị theo sơ đồ (Map View).
+ * Hỗ trợ tự động định vị và chọn phòng được truyền qua query params URL `?room_id=...`.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Gọi `equipmentService.getMapView()` lấy dữ liệu các block, tầng và phòng.
+ * 2. Cập nhật mảng phản ứng `rooms`.
+ * 3. Kiểm tra query param `room_id`:
+ *    - Nếu có và tồn tại trong danh sách: chọn phòng đó làm `selectedRoomId`.
+ *    - Nếu không có và danh sách không rỗng: mặc định chọn phòng đầu tiên.
+ * 4. Kích hoạt `loadRoomDetail(selectedRoomId)` để đối soát ngay phòng được chọn.
+ * 5. Bắt lỗi và hiển thị thông báo lỗi Toast nếu không chạy ở chế độ silent.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Hook `onMounted()` khi người dùng mở trang.
+ * - Watcher `realtimeStore.lastEvent` khi có thay đổi thiết bị theo thời gian thực (chế độ silent).
+ * - Sau các thao tác điều chuyển, thu hồi, gán mới thiết bị để đồng bộ lại danh sách phòng.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {Object} [options]
+ * @param {boolean} [options.silent=false] Nếu true, chạy ngầm không hiển thị loader và thông báo lỗi.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {Promise<void>}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * await loadRooms()
+ * await loadRooms({ silent: true })
+ */
 async function loadRooms({ silent = false } = {}) {
   try {
     const data = await equipmentService.getMapView()
@@ -274,6 +421,31 @@ async function loadRooms({ silent = false } = {}) {
   }
 }
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Cập nhật số liệu thống kê (badge màu, số lượng thiếu, đang bảo trì, hỏng) tại chỗ
+ * cho một phòng trong mảng `rooms` mà không cần reload lại toàn bộ danh sách phòng qua API.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Tìm phần tử phòng có `id` khớp trong `rooms.value`.
+ * 2. Cập nhật `badge_color`: 'green' (đạt chuẩn), 'red' (thiếu đồ hoặc phụ thuộc wifi), 'yellow' (đang bảo trì).
+ * 3. Đồng bộ cảnh báo dùng chung wifi `shared_wifi_issue` và danh sách phòng phụ thuộc `dependent_rooms`.
+ * 4. Tính toán lại tổng thiết bị, số thiết bị hỏng, và thiết bị đang bảo trì từ danh sách categories.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Hàm `loadRoomDetail()` ngay sau khi nhận được dữ liệu chi tiết đối soát phòng.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {number|string} id ID của phòng cần đồng bộ số liệu.
+ * @param {Object} detail Object chi tiết trả về từ API `roomService.getRoomEquipmentDetail()`.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {void}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * syncRoomStatsInPlace(101, detailResponse)
+ */
 function syncRoomStatsInPlace(id, detail) {
   if (!detail) return
   const r = rooms.value.find(item => Number(item.id) === Number(id))
@@ -297,6 +469,39 @@ function syncRoomStatsInPlace(id, detail) {
   r.stats.maintenance_count = allItems.filter(i => i.status === 'maintenance').length
 }
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Tải thông tin chi tiết các thiết bị hiện có và đối soát bảng định mức tiêu chuẩn
+ * cho một phòng cụ thể. Quản lý race-condition bằng biến đếm `roomDetailRequestId`.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Kiểm tra tham số `id`. Nếu rỗng thì thoát.
+ * 2. Tăng `roomDetailRequestId` để đánh dấu lượt request mới nhất (chống response đến sau đè response mới).
+ * 3. Bật cờ `loading = true` nếu không chạy ở chế độ silent.
+ * 4. Gọi API `roomService.getRoomEquipmentDetail(id)`.
+ * 5. So sánh `requestId === roomDetailRequestId`:
+ *    - Đúng: gán `roomDetail.value = detail` và gọi `syncRoomStatsInPlace(id, detail)`.
+ * 6. Bắt lỗi ngoại lệ và tắt cờ `loading`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Hàm `loadRooms()` khi khởi tạo phòng đầu tiên.
+ * - Sự kiện người dùng nhấp chọn một phòng từ thanh danh sách phòng `RoomAuditSidebarList.vue`.
+ * - Sau các hành động điều chuyển, báo hỏng, thu hồi, gán kho, tạo mới.
+ * - Watcher sự kiện Real-time Pusher khi có biến động thiết bị trong phòng.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {number|string} id ID của phòng cần tải thông tin đối soát.
+ * @param {Object} [options]
+ * @param {boolean} [options.silent=false] Có tắt hiển thị loader spinner và thông báo lỗi không.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {Promise<void>}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * await loadRoomDetail(105)
+ * await loadRoomDetail(105, { silent: true })
+ */
 async function loadRoomDetail(id, { silent = false } = {}) {
   if (!id) return
   const requestId = ++roomDetailRequestId
@@ -320,6 +525,30 @@ async function loadRoomDetail(id, { silent = false } = {}) {
   }
 }
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Mở modal xem trước ảnh phóng to (Lightbox) hình ảnh thực tế của thiết bị trong phòng.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Trích xuất URL ảnh từ `item.photo_url` hoặc `item.photos[0].url`.
+ * 2. Nếu không có ảnh thì dừng lại.
+ * 3. Chuẩn hóa đường dẫn bằng `resolveMediaUrl(url)`.
+ * 4. Gán thông tin tiêu đề `lightboxTitle` (tên model), phụ đề `lightboxSubtitle` (serial, ID).
+ * 5. Mở modal qua cờ `lightboxOpen = true`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Sự kiện nhấp vào ảnh thu nhỏ của thiết bị trong `RoomAuditDetailCard.vue`.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {Object} item Thông tin thiết bị có trường ảnh `photo_url` hoặc `photos`.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {void}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * openLightbox(equipmentItem)
+ */
 function openLightbox(item) {
   const url = item.photo_url || item.photos?.[0]?.url
   if (!url) return
@@ -330,6 +559,27 @@ function openLightbox(item) {
 }
 
 // 1. Thao tác Điều chuyển
+/**
+ * [1. MỤC ĐÍCH]
+ * Mở modal điều chuyển thiết bị đang chọn sang phòng khác trong khách sạn.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Đóng gói dữ liệu thiết bị kèm `room_id` hiện tại vào `selectedEquipmentForAssign`.
+ * 2. Mở modal điều chuyển qua cờ `assignModalOpen = true`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Sự kiện `@assign="openAssignModal"` từ component `RoomAuditDetailCard.vue`.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {Object} item Thông tin thiết bị cần điều chuyển.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {void}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * openAssignModal(equipmentItem)
+ */
 function openAssignModal(item) {
   selectedEquipmentForAssign.value = {
     ...item,
@@ -338,6 +588,31 @@ function openAssignModal(item) {
   assignModalOpen.value = true
 }
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Gửi yêu cầu điều chuyển thiết bị sang vị trí/phòng mới đến backend, sau đó đồng bộ lại UI.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Bật trạng thái chờ `actionLoading = true`.
+ * 2. Gọi API `equipmentService.assignToRoom(payload)`.
+ * 3. Hiển thị thông báo thành công Toast.
+ * 4. Đóng modal `assignModalOpen = false`.
+ * 5. Tải lại chi tiết đối soát phòng hiện tại `loadRoomDetail` và danh sách phòng `loadRooms`.
+ * 6. Bắt lỗi ngoại lệ và tắt cờ `actionLoading`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Sự kiện `@submit="handleAssignSubmit"` của component `AssignRoomModal.vue`.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {Object} payload Dữ liệu điều chuyển ({ equipment_id, room_id, position_note }).
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {Promise<void>}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * await handleAssignSubmit({ equipment_id: 12, room_id: 102, position_note: 'Phòng ngủ' })
+ */
 async function handleAssignSubmit(payload) {
   actionLoading.value = true
   try {
@@ -354,11 +629,59 @@ async function handleAssignSubmit(payload) {
 }
 
 // 2. Thao tác Báo hỏng
+/**
+ * [1. MỤC ĐÍCH]
+ * Mở modal lập phiếu báo hỏng thiết bị và yêu cầu bảo dưỡng kỹ thuật.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Gán thiết bị cần báo hỏng vào `selectedEquipmentForReport`.
+ * 2. Mở modal qua cờ `reportBrokenModalOpen = true`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Sự kiện `@report="openReportBrokenModal"` từ component `RoomAuditDetailCard.vue`.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {Object} item Dữ liệu thiết bị gặp sự cố.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {void}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * openReportBrokenModal(equipmentItem)
+ */
 function openReportBrokenModal(item) {
   selectedEquipmentForReport.value = item
   reportBrokenModalOpen.value = true
 }
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Gửi báo cáo hỏng hóc thiết bị kèm lý do, mức độ ưu tiên và ảnh sự cố lên hệ thống.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Bật cờ `actionLoading = true`.
+ * 2. Gọi API `equipmentService.reportBroken(id, formData)`.
+ * 3. Hiển thị thông báo thành công Toast.
+ * 4. Đóng modal `reportBrokenModalOpen = false`.
+ * 5. Tải lại chi tiết đối soát phòng và danh sách phòng (silent).
+ * 6. Bắt lỗi ngoại lệ và tắt cờ `actionLoading`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Sự kiện `@submit="handleReportBrokenSubmit"` của component `ReportBrokenModal.vue`.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {Object} param
+ * @param {number|string} param.id ID thiết bị hỏng.
+ * @param {FormData} param.formData Form data chứa mô tả lỗi và file đính kèm.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {Promise<void>}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * await handleReportBrokenSubmit({ id: 5, formData: myFormData })
+ */
 async function handleReportBrokenSubmit({ id, formData }) {
   actionLoading.value = true
   try {
@@ -375,11 +698,58 @@ async function handleReportBrokenSubmit({ id, formData }) {
 }
 
 // 3. Thao tác Thu hồi về kho
+/**
+ * [1. MỤC ĐÍCH]
+ * Mở hộp thoại xác nhận trước khi thu hồi thiết bị từ phòng về lại kho lưu trữ.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Gán thiết bị cần thu hồi vào `equipmentToRetract`.
+ * 2. Mở dialog xác nhận qua cờ `retractDialogOpen = true`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Nút "Thu hồi về kho" hoặc sự kiện `@retract` từ `RoomAuditDetailCard.vue`.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {Object} item Thiết bị cần thu hồi.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {void}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * confirmRetract(equipmentItem)
+ */
 function confirmRetract(item) {
   equipmentToRetract.value = item
   retractDialogOpen.value = true
 }
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Thực thi lệnh thu hồi thiết bị từ phòng về kho (`room_id = null`) sau khi người dùng xác nhận.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Kiểm tra tồn tại `equipmentToRetract.value`.
+ * 2. Bật cờ `actionLoading = true`.
+ * 3. Gọi `equipmentService.assignToRoom({ equipment_id, room_id: null, position_note })`.
+ * 4. Hiển thị Toast thông báo thành công.
+ * 5. Đóng dialog `retractDialogOpen = false` và reset `equipmentToRetract = null`.
+ * 6. Tải lại chi tiết đối soát phòng và danh sách phòng (silent).
+ * 7. Bắt lỗi ngoại lệ và tắt cờ `actionLoading`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Sự kiện `@confirm="handleRetract"` của `AppConfirmDialog.vue`.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * Không có.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {Promise<void>}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * await handleRetract()
+ */
 async function handleRetract() {
   if (!equipmentToRetract.value) return
   actionLoading.value = true
@@ -404,6 +774,30 @@ async function handleRetract() {
 // 4. Thao tác Gán thiết bị từ kho vào phòng
 const targetCategoryCode = ref('')
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Mở modal chọn thiết bị đang có sẵn trong kho (`status = in_stock`) để bổ sung vào phòng.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Gán mã loại thiết bị mục tiêu `targetCategoryCode` nếu được truyền vào từ danh sách thiếu.
+ * 2. Mở modal qua cờ `warehouseModalOpen = true` và bật cờ `warehouseLoading = true`.
+ * 3. Gọi API `equipmentService.getEquipments({ status: 'in_stock', limit: 100 })`.
+ * 4. Gán danh sách kết quả vào `warehouseEquipments`.
+ * 5. Bắt lỗi ngoại lệ và tắt cờ `warehouseLoading`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Nút "Gán từ kho" tại Header trang hoặc nút "Bổ sung" cạnh mỗi loại thiết bị thiếu trong `RoomAuditDetailCard.vue`.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {string} [categoryCode=''] Mã nhóm thiết bị gợi ý lọc trước trong kho.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {Promise<void>}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * await openWarehouseModal('tivi')
+ */
 async function openWarehouseModal(categoryCode = '') {
   targetCategoryCode.value = typeof categoryCode === 'string' ? categoryCode : ''
   warehouseModalOpen.value = true
@@ -439,6 +833,36 @@ const suggestedPositions = computed(() => {
   return list
 })
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Thực hiện gán một hoặc nhiều thiết bị đang trong kho vào phòng hiện tại.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Kiểm tra tồn tại phòng đang chọn `selectedRoomId.value`.
+ * 2. Gom danh sách ID thiết bị (`equipment_ids` hoặc `equipment_id`).
+ * 3. Bật cờ `actionLoading = true`.
+ * 4. Gọi API `equipmentService.assignToRoom` với danh sách ID và ghi chú vị trí đặt.
+ * 5. Hiển thị Toast thông báo thành công (số lượng thiết bị đã gán).
+ * 6. Đóng modal kho `warehouseModalOpen = false`.
+ * 7. Tải lại chi tiết đối soát phòng và danh sách phòng (silent).
+ * 8. Bắt lỗi ngoại lệ và tắt cờ `actionLoading`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Sự kiện `@assign="handleAssignFromWarehouse"` từ component `RoomAssignWarehouseModal.vue`.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {Object} param
+ * @param {number} [param.equipment_id] ID thiết bị đơn lẻ.
+ * @param {number[]} [param.equipment_ids] Mảng ID các thiết bị gán hàng loạt.
+ * @param {string} [param.position_note] Vị trí lắp đặt trong phòng (Phòng ngủ, Phòng khách...).
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {Promise<void>}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * await handleAssignFromWarehouse({ equipment_ids: [1, 2], position_note: 'Phòng khách' })
+ */
 async function handleAssignFromWarehouse({ equipment_id, equipment_ids, position_note }) {
   if (!selectedRoomId.value) return
   const ids = equipment_ids && equipment_ids.length ? equipment_ids : (equipment_id ? [equipment_id] : [])
@@ -472,6 +896,33 @@ async function handleAssignFromWarehouse({ equipment_id, equipment_ids, position
 }
 
 // 5. Thao tác Tạo mới thiết bị gắn trực tiếp vào phòng
+/**
+ * [1. MỤC ĐÍCH]
+ * Tạo mới một thiết bị trong cơ sở dữ liệu và tự động gán trực tiếp vào phòng đang đối soát.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Bật cờ `actionLoading = true`.
+ * 2. Gộp thuộc tính `room_id: selectedRoomId.value` vào form dữ liệu `data`.
+ * 3. Gọi API `equipmentService.createEquipment(payload)`.
+ * 4. Hiển thị Toast thông báo thành công.
+ * 5. Đóng modal thêm mới `createModalOpen = false`.
+ * 6. Tải lại chi tiết đối soát phòng và danh sách phòng (silent).
+ * 7. Bắt lỗi ngoại lệ và tắt cờ `actionLoading`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Sự kiện `@submit="handleCreateSubmit"` của component `EquipmentFormModal.vue`.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {Object} param
+ * @param {Object} param.data Form dữ liệu thiết bị mới từ form modal.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {Promise<void>}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * await handleCreateSubmit({ data: formValues })
+ */
 async function handleCreateSubmit({ data }) {
   actionLoading.value = true
   try {

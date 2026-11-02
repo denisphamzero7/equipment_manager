@@ -16,11 +16,55 @@ const props = defineProps({
   },
 })
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Kiểm tra xem phòng này có thiết bị Router Wifi nào đang ở trạng thái bị hỏng ('broken') hay không.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Trích xuất toàn bộ items trong các categories của phòng.
+ * 2. Tìm thiết bị có mã nhóm là 'wifi' và trạng thái `status === 'broken'`.
+ * 3. Trả về true nếu có ít nhất 1 router bị hỏng.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Dùng nội bộ trong template để cảnh báo mất kết nối lan truyền sang các phòng phụ thuộc.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * Không có.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {import('vue').ComputedRef<boolean>}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * if (hasBrokenRouter.value) { ... }
+ */
 const hasBrokenRouter = computed(() => {
   const allItems = props.roomDetail?.categories?.flatMap(c => c.items || []) || []
   return allItems.some(i => (i.model?.category?.code === 'wifi' || i.category_code === 'wifi') && i.status === 'broken')
 })
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Kiểm tra xem phòng có thiết bị Router Wifi nào đang trong quá trình bảo trì ('maintenance') hay không.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Trích xuất toàn bộ items trong các categories của phòng.
+ * 2. Tìm thiết bị có mã nhóm là 'wifi' và trạng thái `status === 'maintenance'`.
+ * 3. Trả về true nếu có ít nhất 1 router đang bảo dưỡng.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Dùng nội bộ trong template để hiển thị cảnh báo phụ thuộc mạng wifi.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * Không có.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {import('vue').ComputedRef<boolean>}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * if (hasMaintenanceRouter.value) { ... }
+ */
 const hasMaintenanceRouter = computed(() => {
   const allItems = props.roomDetail?.categories?.flatMap(c => c.items || []) || []
   return allItems.some(i => (i.model?.category?.code === 'wifi' || i.category_code === 'wifi') && i.status === 'maintenance')
@@ -37,6 +81,28 @@ const emit = defineEmits([
 
 const router = useRouter()
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Trả về icon Material Design Icons (MDI) đặc trưng cho từng loại/nhóm thiết bị phòng.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Nhận mã nhóm thiết bị `code` (ví dụ: 'tv', 'ac', 'wifi'...).
+ * 2. Tra cứu trong bảng ánh xạ `map`.
+ * 3. Nếu tìm thấy trả về tên icon tương ứng; nếu không trả về icon mặc định 'mdi-devices'.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Render icon đại diện cho từng danh mục thiết bị và thẻ thiếu định mức trong template card.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {string} code Mã nhóm thiết bị (tv, remote, wifi, ac...).
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {string} Chuỗi class icon MDI.
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * getCategoryIcon('wifi') // => 'mdi-wifi'
+ */
 function getCategoryIcon(code) {
   const map = {
     tv: 'mdi-television',

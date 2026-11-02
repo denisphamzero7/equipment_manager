@@ -18,6 +18,28 @@ const props = defineProps({
 
 const emit = defineEmits(['select-room', 'reset-filters'])
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Định dạng danh sách phòng thành mảng các lựa chọn { value, title } phục vụ cho dropdown `v-select`
+ * giúp người quản lý tìm kiếm và nhảy nhanh đến phòng cần kiểm tra.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Duyệt qua mảng `props.rooms`.
+ * 2. Trả về cấu trúc gồm `value` (room id) và `title` (hiển thị số phòng cùng block).
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Prop `:items="quickSelectItems"` của `v-select` trong template sidebar.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * Không có.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {import('vue').ComputedRef<Array<{value: number|string, title: string}>>}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * <v-select :items="quickSelectItems" ... />
+ */
 const quickSelectItems = computed(() => {
   return props.rooms.map(r => ({
     value: r.id,

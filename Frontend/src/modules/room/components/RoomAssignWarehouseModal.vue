@@ -49,7 +49,28 @@ const warehousePositionNote = ref('')
 const activeCategory = ref('all')
 const searchQuery = ref('')
 
-// Category icon mapper
+/**
+ * [1. MỤC ĐÍCH]
+ * Ánh xạ mã phân loại thiết bị sang biểu tượng giao diện MDI tương ứng.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Chuyển chuỗi `code` về chữ thường.
+ * 2. Tìm kiếm trong bảng map icon.
+ * 3. Trả về tên icon hoặc 'mdi-devices' nếu chưa định nghĩa.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Hàm `categoryTabs` để hiển thị icon cho từng tab danh mục trong modal.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {string} code Mã nhóm thiết bị (tv, remote, box, wifi...).
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {string} Icon MDI.
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * getCategoryIcon('tv') // => 'mdi-television'
+ */
 function getCategoryIcon(code) {
   const map = {
     tv: 'mdi-television',
@@ -66,7 +87,28 @@ function getCategoryIcon(code) {
   return map[code?.toLowerCase()] || 'mdi-devices'
 }
 
-// Helper to extract proper category name & code
+/**
+ * [1. MỤC ĐÍCH]
+ * Trích xuất an toàn mã định danh (`code`) và tên gọi (`name`) của danh mục thiết bị từ object thiết bị kho.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Đọc thuộc tính lồng nhau từ `item.model.category` hoặc `item.category`.
+ * 2. Đặt giá trị mặc định là 'other' và 'Chưa phân loại' nếu thiết bị thiếu dữ liệu danh mục.
+ * 3. Trả về object `{ code, name }`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Computed `categoryTabs` và `filteredEquipments`.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {Object} item Thiết bị kho.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {{code: string, name: string}}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * const { code, name } = getItemCategory(item)
+ */
 function getItemCategory(item) {
   const code = item.model?.category?.code || item.category?.code || 'other'
   const name = item.model?.category?.name || item.category?.name || 'Chưa phân loại'
@@ -136,6 +178,28 @@ watch(
   }
 )
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Bật/tắt chọn một thiết bị cụ thể trong kho để chuẩn bị gán vào phòng.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Tìm vị trí `id` trong mảng `selectedWarehouseEquipmentIds`.
+ * 2. Nếu chưa có: thêm vào mảng bằng `push(id)`.
+ * 3. Nếu đã có: loại bỏ bằng `splice(idx, 1)`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Sự kiện click vào thẻ thiết bị hoặc checkbox trong danh sách thiết bị kho.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {number|string} id ID của thiết bị kho.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {void}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * toggleSelect(45)
+ */
 function toggleSelect(id) {
   const idx = selectedWarehouseEquipmentIds.value.indexOf(id)
   if (idx === -1) {
@@ -145,6 +209,28 @@ function toggleSelect(id) {
   }
 }
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Chọn nhanh tất cả thiết bị đang thỏa mãn điều kiện lọc và tìm kiếm hiện tại.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Lấy danh sách ID từ `filteredEquipments.value`.
+ * 2. Đưa vào `Set` để tránh trùng lặp với các thiết bị đã chọn từ trước.
+ * 3. Chuyển Set về mảng và cập nhật `selectedWarehouseEquipmentIds`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Nút "Chọn tất cả" trong thanh công cụ chọn của modal.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * Không có.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {void}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * selectAllFiltered()
+ */
 function selectAllFiltered() {
   const ids = filteredEquipments.value.map(e => e.id)
   const currentSet = new Set(selectedWarehouseEquipmentIds.value)
@@ -152,10 +238,51 @@ function selectAllFiltered() {
   selectedWarehouseEquipmentIds.value = Array.from(currentSet)
 }
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Xóa toàn bộ danh sách các thiết bị đã chọn trong kho về mảng rỗng.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Gán `selectedWarehouseEquipmentIds.value = []`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Nút "Bỏ chọn tất cả" trong thanh công cụ chọn của modal.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * Không có.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {void}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * clearSelection()
+ */
 function clearSelection() {
   selectedWarehouseEquipmentIds.value = []
 }
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Xác nhận gán các thiết bị đã chọn từ kho vào phòng và phát sự kiện `submit` lên view cha.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Kiểm tra danh sách thiết bị đã chọn `selectedWarehouseEquipmentIds.length`. Nếu rỗng thì bỏ qua.
+ * 2. Emit sự kiện `submit` với payload gồm mảng `equipment_ids`, `equipment_id` đầu tiên, và ghi chú vị trí `position_note`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Nút "Xác nhận gán vào phòng" ở footer của modal.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * Không có.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {void}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * handleSubmit()
+ */
 function handleSubmit() {
   if (!selectedWarehouseEquipmentIds.value.length) return
   emit('submit', {

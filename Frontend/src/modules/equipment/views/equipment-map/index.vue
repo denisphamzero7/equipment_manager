@@ -56,6 +56,29 @@ const lightboxImage = ref('')
 const lightboxTitle = ref('')
 const lightboxSubtitle = ref('')
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Mở modal lightbox hiển thị ảnh phóng to của thiết bị được chọn từ popup chi tiết phòng.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Lấy URL ảnh từ `item.photo_url` hoặc `item.photos[0].url`. Nếu không có thì thoát.
+ * 2. Chuẩn hóa đường dẫn đầy đủ với `resolveMediaUrl(url)`.
+ * 3. Thiết lập tiêu đề và mã định danh / serial của thiết bị.
+ * 4. Kích hoạt cờ `lightboxOpen = true`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Sự kiện `@open-lightbox="openLightbox"` từ component `MapRoomDetailModal.vue`.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {Object} item Thiết bị chứa URL hình ảnh.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {void}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * openLightbox(equipmentItem)
+ */
 function openLightbox(item) {
   const url = item.photo_url || item.photos?.[0]?.url
   if (!url) return
@@ -78,6 +101,30 @@ onMounted(async () => {
   loadMapViewData()
 })
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Mở modal chỉnh sửa nhanh thông tin cơ cấu phòng (loại phòng, số phòng ngủ, phòng khách)
+ * trực tiếp từ modal chi tiết của sơ đồ mặt bằng.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Kiểm tra tồn tại `selectedRoomDetail.value`.
+ * 2. Tải danh mục loại phòng qua API `roomService.getRoomTypes()`.
+ * 3. Gộp thông tin phòng vào `roomForEdit.value`.
+ * 4. Mở modal chỉnh sửa `editRoomModalOpen = true`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Sự kiện `@open-edit-room="openEditRoomModal"` từ component `MapRoomDetailModal.vue`.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * Không có.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {Promise<void>}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * await openEditRoomModal()
+ */
 async function openEditRoomModal() {
   if (!selectedRoomDetail.value) return
   try {
@@ -93,6 +140,28 @@ async function openEditRoomModal() {
   editRoomModalOpen.value = true
 }
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Cập nhật danh sách phòng sau khi lưu thay đổi thông tin cơ cấu phòng từ modal.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Nếu không có `savedRoom.id`, nạp lại toàn bộ dữ liệu sơ đồ ngầm `loadMapViewData(true)`.
+ * 2. Nếu có `savedRoom.id`, cập nhật phần tử phòng tương ứng trong mảng `rawRooms`.
+ * 3. Nếu modal chi tiết phòng đang mở, nạp lại thông tin chi tiết phòng mới cập nhật `openRoomDetail(...)`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Sự kiện `@saved="handleRoomSaved"` của `RoomFormModal.vue`.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {Object} [savedRoom] Dữ liệu phòng đã cập nhật thành công.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {Promise<void>}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * await handleRoomSaved(updatedRoomData)
+ */
 async function handleRoomSaved(savedRoom) {
   if (!savedRoom?.id) {
     await loadMapViewData(true)
@@ -116,6 +185,34 @@ watch(
   }
 )
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Tải toàn bộ cấu trúc sơ đồ mặt bằng khách sạn (các Block, Tầng, Phòng) và trạng thái
+ * đồng bộ thiết bị qua API `equipmentService.getMapView`.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Bật cờ `loading = true` nếu không chạy silent.
+ * 2. Gọi API `equipmentService.getMapView({})`.
+ * 3. Gán danh sách phòng vào mảng phản ứng `rawRooms`.
+ * 4. Bắt lỗi ngoại lệ và hiển thị thông báo lỗi Toast.
+ * 5. Tắt cờ `loading` khi hoàn thành.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Hook `onMounted()` khi người dùng truy cập trang Map View.
+ * - Nút "Tải lại sơ đồ" tại thanh tiêu đề.
+ * - Watcher sự kiện WebSocket Real-time `realtimeStore.lastEvent` (chạy silent).
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {boolean} [silent=false] Nếu true, chạy ngầm không hiển thị skeleton loader và toast lỗi.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {Promise<void>}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * await loadMapViewData()
+ * await loadMapViewData(true)
+ */
 async function loadMapViewData(silent = false) {
   if (!silent) {
     loading.value = true
@@ -170,11 +267,53 @@ const hasActiveFilters = computed(() => {
   return !!(searchQuery.value || selectedBlock.value || (selectedFloor.value !== null && selectedFloor.value !== '') || selectedStatus.value || floorSortOrder.value !== 'asc')
 })
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Lọc sơ đồ mặt bằng theo tòa nhà (Block), đồng thời đặt lại tầng về 'Tất cả tầng'.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Gán `selectedBlock.value = b`.
+ * 2. Đặt `selectedFloor.value = null`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Sự kiện click tab Block trên thanh công cụ `MapFilterToolbar.vue` hoặc thẻ Block trên lưới `MapFloorGrid.vue`.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {string} b Tên Block (Block A, Block B, v.v.).
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {void}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * selectBlock('Block A')
+ */
 function selectBlock(b) {
   selectedBlock.value = b
   selectedFloor.value = null
 }
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Bật/tắt nhanh bộ lọc theo trạng thái tình trạng thiết bị của phòng (Tốt, Bảo trì, Hỏng/Thiếu).
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Nếu trạng thái đang chọn trùng với `statusKey`, hủy chọn (gán rỗng `''`).
+ * 2. Ngược lại, gán `selectedStatus.value = statusKey`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Sự kiện nhấp vào chú giải trạng thái màu (Color Legends) hoặc thẻ thống kê header.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {string} statusKey Mã trạng thái ('good' | 'maintenance' | 'broken' | 'unconfigured').
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {void}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * selectStatus('broken')
+ */
 function selectStatus(statusKey) {
   if (selectedStatus.value === statusKey) {
     selectedStatus.value = ''
@@ -183,6 +322,30 @@ function selectStatus(statusKey) {
   }
 }
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Đặt lại tất cả các điều kiện tìm kiếm, chọn Block, chọn Tầng, lọc tình trạng và sắp xếp về mặc định.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Reset từ khóa `searchQuery = ''`.
+ * 2. Reset block `selectedBlock = ''`.
+ * 3. Reset tầng `selectedFloor = null`.
+ * 4. Reset trạng thái `selectedStatus = ''`.
+ * 5. Reset thứ tự tầng `floorSortOrder = 'asc'`.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Nút "Đặt lại bộ lọc" tại toolbar và màn hình rỗng (empty state).
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * Không có.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {void}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * resetFilters()
+ */
 function resetFilters() {
   searchQuery.value = ''
   selectedBlock.value = ''
@@ -308,6 +471,34 @@ const activeBlockRooms = computed(() => {
   return rawRooms.value.filter(r => r.block === selectedBlock.value)
 })
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Mở modal hiển thị chi tiết danh sách thiết bị và cấu hình phòng khi người dùng click vào một phòng trên bản đồ.
+ * Quản lý tranh chấp dữ liệu (race-condition) với biến đếm `roomDetailRequestId`.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Mở modal `roomDetailModalOpen = true`.
+ * 2. Lưu thông tin tóm tắt ban đầu của phòng `selectedRoomSummary.value = room`.
+ * 3. Đặt trạng thái đang tải `roomDetailLoading = true` và tăng `roomDetailRequestId`.
+ * 4. Gọi API `equipmentService.getRoomDetail(room.id)`.
+ * 5. Khi có response, kiểm tra `requestId === roomDetailRequestId` để đảm bảo dữ liệu mới nhất.
+ * 6. Bắt lỗi ngoại lệ và hiển thị Toast thông báo.
+ * 7. Tắt trạng thái tải khi hoàn tất.
+ *
+ * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
+ * - Sự kiện click vào thẻ phòng tại `MapFloorGrid.vue`.
+ * - Hàm `handleRoomSaved()` sau khi lưu cập nhật phòng thành công.
+ *
+ * [4. THAM SỐ (PARAMETERS)]
+ * @param {Object} room Thông tin tóm tắt của phòng được click trên bản đồ.
+ *
+ * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
+ * @return {Promise<void>}
+ *
+ * [6. VÍ DỤ SỬ DỤNG]
+ * @example
+ * await openRoomDetail(clickedRoom)
+ */
 async function openRoomDetail(room) {
   roomDetailModalOpen.value = true
   selectedRoomSummary.value = room
