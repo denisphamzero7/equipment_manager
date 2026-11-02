@@ -2,6 +2,13 @@ import axios from 'axios'
 import { storage, StorageKeys } from '@/core/helpers/storage'
 import { toast } from '@/core/helpers/toast'
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Cấu hình Axios HTTP Client trung tâm cho toàn bộ ứng dụng Frontend:
+ * - Tự động đính kèm Sanctum Bearer Token và Header X-Organization-Id.
+ * - Cơ chế tự động thử lại (Silent Auto-Retry) khi gặp sự cố mạng/gateway timeout.
+ * - Xử lý tập trung các mã lỗi HTTP (401, 403, 422, 500, 502/503/504).
+ */
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '',
   headers: {
@@ -10,16 +17,22 @@ const axiosClient = axios.create({
   timeout: 30000,
 })
 
-// Request Interceptor
+/**
+ * [REQUEST INTERCEPTOR]
+ * [Luồng]:
+ *   1. Đọc Token xác thực từ LocalStorage (`StorageKeys.TOKEN`). Nếu có, gắn `Authorization: Bearer <token>`.
+ *   2. Đọc ID cơ sở làm việc (`StorageKeys.ORGANIZATION_ID`). Nếu có, gắn `X-Organization-Id: <orgId>`.
+ *   3. Trả về cấu hình `config` để tiếp tục gửi request.
+ */
 axiosClient.interceptors.request.use(
   config => {
-    // Gắn Bearer Token nếu có
+    // 1. Gắn Bearer Token nếu có
     const token = storage.get(StorageKeys.TOKEN)
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
 
-    // Gắn X-Organization-Id của tổ chức người dùng đang làm việc
+    // 2. Gắn X-Organization-Id của tổ chức người dùng đang làm việc
     const orgId = storage.get(StorageKeys.ORGANIZATION_ID)
     if (orgId) {
       config.headers['X-Organization-Id'] = orgId
@@ -32,7 +45,16 @@ axiosClient.interceptors.request.use(
 
 let lastGatewayWarning = 0
 
-// Response Interceptor
+/**
+ * [RESPONSE INTERCEPTOR]
+ * [Luồng xử lý lỗi]:
+ *   1. Cơ chế Auto-Retry: Với lỗi 502/503/504 hoặc timeout (ECONNABORTED), tự động thử lại tối đa 2 lần với khoảng trễ (delay) lũy tiến 600ms, 1200ms.
+ *   2. Mã 401 (Unauthorized): Xóa session đăng nhập, nếu không phải trang login thì điều hướng về `/login` kèm thông báo hết hạn.
+ *   3. Mã 403 (Forbidden): Hiển thị thông báo Toast cảnh báo không có quyền thực hiện.
+ *   4. Mã 422 (Unprocessable Entity / Validation Error): Trích xuất lỗi đầu tiên từ mảng `errors` và hiển thị Toast.
+ *   5. Mã 500+ (Server Error): Cảnh báo lỗi máy chủ nội bộ.
+ *   6. Lỗi mất mạng: Hiển thị cảnh báo kết nối gateway/tunnel.
+ */
 axiosClient.interceptors.response.use(
   response => response,
   async error => {

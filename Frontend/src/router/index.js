@@ -8,6 +8,11 @@ import dashboardRoutes from '@/modules/dashboard/routes'
 import equipmentRoutes from '@/modules/equipment/routes'
 import roomRoutes from '@/modules/room/routes'
 
+/**
+ * [1. MỤC ĐÍCH]
+ * Định nghĩa cây điều hướng URL (Vue Router) cho toàn bộ ứng dụng:
+ * Gom cụm các route từ các module độc lập (Auth, Dashboard, Equipment, Room).
+ */
 const routes = [
   {
     path: '/',
@@ -28,7 +33,14 @@ const router = createRouter({
   routes,
 })
 
-// Navigation Guards
+/**
+ * [NAVIGATION GUARDS - BEFORE EACH]
+ * [1. MỤC ĐÍCH]
+ * Kiểm soát quyền truy cập trước khi chuyển trang:
+ * 1. Kiểm tra yêu cầu đăng nhập (`requiresAuth`): Nếu chưa có token -> Điều hướng về `/login`.
+ * 2. Chặn trang Guest (`guestOnly`): Nếu đã đăng nhập mà truy cập `/login` -> Đưa về `/dashboard`.
+ * 3. Kiểm tra quyền hạn CASL Ability (`to.meta.action` & `to.meta.subject`): Nếu không đủ quyền -> Cảnh báo lỗi và chặn truy cập.
+ */
 router.beforeEach((to, from, next) => {
   try {
     const token = storage.get(StorageKeys.TOKEN)
@@ -62,6 +74,17 @@ router.beforeEach((to, from, next) => {
   }
 })
 
+/**
+ * [ROUTER ERROR HANDLER - TỰ ĐỘNG KHÔI PHỤC KHI DEPLOY MÃ MỚI]
+ * [1. MỤC ĐÍCH]
+ * Xử lý lỗi không tải được file chunk (`Failed to fetch dynamically imported module` / `ChunkLoadError`)
+ * khi hệ thống vừa build bản mới trên server khiến mã hash cũ trên trình duyệt người dùng bị 404.
+ *
+ * [2. LUỒNG XỬ LÝ (FLOW)]
+ * 1. Nhận diện lỗi ChunkLoadError.
+ * 2. Kiểm tra `sessionStorage` để chống vòng lặp reload liên tục nếu mất mạng hoàn toàn.
+ * 3. Tự động tải lại trang (`window.location.reload()`) để trình duyệt nạp manifest và chunk bundle mới nhất.
+ */
 router.onError((error, to) => {
   console.error('Lỗi Vue Router:', error)
 

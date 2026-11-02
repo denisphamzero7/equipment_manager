@@ -8,15 +8,22 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Trait chuẩn hóa response API JSON cho frontend.
- *
- * Cấu trúc success: { success: true, message?, data? }
- * Cấu trúc error:   { success: false, message, errors?, code? }
+ * [1. MỤC ĐÍCH]
+ * Trait chuẩn hóa định dạng phản hồi JSON API thống nhất cho toàn bộ Controller trong hệ thống:
+ * - Cấu trúc thành công: { success: true, message: string, data: any }
+ * - Cấu trúc lỗi:        { success: false, message: string, errors?: array, code?: string }
  */
 trait RespondsWithJson
 {
     /**
-     * Trả về response thành công với dữ liệu thuần (stats, destroy, bulk, ...).
+     * [1. MỤC ĐÍCH]
+     * Trả về JSON Response thành công với dữ liệu thuần (mảng, object, số liệu thống kê).
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param mixed $data Dữ liệu trả về
+     * @param string|null $message Thông điệp thông báo
+     * @param int $statusCode Mã HTTP Status (mặc định 200)
+     * @return \Illuminate\Http\JsonResponse
      */
     protected function success(
         mixed $data = null,
@@ -33,7 +40,14 @@ trait RespondsWithJson
     }
 
     /**
-     * Trả về response thành công với JsonResource (show, store, update, changeStatus).
+     * [1. MỤC ĐÍCH]
+     * Trả về JSON Response thành công từ Eloquent JsonResource (tự động gắn envelope success, message).
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param \Illuminate\Http\Resources\Json\JsonResource $resource Đối tượng Resource (ví dụ: EquipmentResource)
+     * @param string|null $message
+     * @param int $statusCode (mặc định 200, hoặc 201 khi tạo mới)
+     * @return \Illuminate\Http\JsonResponse
      */
     protected function successResource(
         JsonResource $resource,
@@ -49,8 +63,14 @@ trait RespondsWithJson
     }
 
     /**
-     * Trả về response thành công với ResourceCollection (index, tree).
-     * Thêm success, message vào envelope của collection.
+     * [1. MỤC ĐÍCH]
+     * Trả về JSON Response cho danh sách phân trang ResourceCollection.
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param \Illuminate\Http\Resources\Json\ResourceCollection $collection (ví dụ: EquipmentCollection)
+     * @param string|null $message
+     * @param int $statusCode
+     * @return \Illuminate\Http\JsonResponse
      */
     protected function successCollection(
         ResourceCollection $collection,
@@ -66,7 +86,15 @@ trait RespondsWithJson
     }
 
     /**
-     * Trả về response lỗi.
+     * [1. MỤC ĐÍCH]
+     * Trả về JSON Response thông báo lỗi tổng quát.
+     *
+     * [4. THAM SỐ (PARAMETERS)]
+     * @param string $message Mô tả lỗi
+     * @param int $statusCode Mã HTTP Status (mặc định 400)
+     * @param array|null $errors Danh sách lỗi chi tiết
+     * @param string|null $code Mã định danh lỗi (ví dụ: 'INVALID_CREDENTIALS')
+     * @return \Illuminate\Http\JsonResponse
      */
     protected function error(
         string $message,
@@ -85,7 +113,8 @@ trait RespondsWithJson
     }
 
     /**
-     * Trả về lỗi validation (422).
+     * [1. MỤC ĐÍCH]
+     * Trả về lỗi kiểm tra dữ liệu đầu vào (Validation Error 422).
      */
     protected function validationError(ValidationException $exception): JsonResponse
     {
@@ -98,7 +127,8 @@ trait RespondsWithJson
     }
 
     /**
-     * Trả về lỗi chưa xác thực (401).
+     * [1. MỤC ĐÍCH]
+     * Trả về lỗi chưa đăng nhập hoặc hết hạn phiên làm việc (Unauthorized 401).
      */
     protected function unauthorized(?string $message = null): JsonResponse
     {
@@ -111,7 +141,8 @@ trait RespondsWithJson
     }
 
     /**
-     * Trả về lỗi không có quyền (403).
+     * [1. MỤC ĐÍCH]
+     * Trả về lỗi không đủ quyền thực hiện hành động (Forbidden 403).
      */
     protected function forbidden(?string $message = null): JsonResponse
     {
@@ -124,7 +155,8 @@ trait RespondsWithJson
     }
 
     /**
-     * Trả về không tìm thấy (404).
+     * [1. MỤC ĐÍCH]
+     * Trả về lỗi không tìm thấy tài nguyên (Not Found 404).
      */
     protected function notFound(?string $message = null): JsonResponse
     {
@@ -137,7 +169,8 @@ trait RespondsWithJson
     }
 
     /**
-     * Trả về xung đột dữ liệu (409).
+     * [1. MỤC ĐÍCH]
+     * Trả về lỗi xung đột dữ liệu (Conflict 409).
      */
     protected function conflict(?string $message = null): JsonResponse
     {
@@ -150,8 +183,8 @@ trait RespondsWithJson
     }
 
     /**
-     * Trả về thành công không nội dung (204) – dùng cho DELETE đơn giản.
-     * Một số frontend thích 200 + message, nên giữ success() với message.
+     * [1. MỤC ĐÍCH]
+     * Trả về phản hồi thành công không có nội dung (204 No Content).
      */
     protected function noContent(): JsonResponse
     {
