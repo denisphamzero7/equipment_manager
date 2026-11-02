@@ -1305,6 +1305,7 @@ function getStatusBadge(status) {
     <ManageStructureModal
       v-model="structureModalOpen"
       :existing-blocks="existingBlocks"
+      :room-types="roomTypes"
       @updated="fetchRooms"
     />
 
