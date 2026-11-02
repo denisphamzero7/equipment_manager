@@ -16,7 +16,23 @@
 
 ---
 
-## 🔒 2. Quy tắc An toàn & Bảo mật
+## 🐳 2. Quy tắc Bắt buộc: Tự động Build & Cập nhật Docker sau mỗi lần sửa code thành công
+- **Mục tiêu:** Đảm bảo container Docker (`equipment_manager-app-1`) luôn chạy mã nguồn và bản build Frontend/Backend mới nhất, người dùng chỉ cần F5 là thấy ngay kết quả.
+- **Quy trình thực hiện bắt buộc cho Agent:**
+  1. **Khi có thay đổi Frontend (Vue/JS/CSS):**
+     - Chạy `npm run build` tại thư mục `Frontend` để tạo bản build mới (`Frontend/dist`).
+     - Đồng bộ bản build vào container: `docker cp Frontend/dist/. equipment_manager-app-1:/var/www/html/public/`.
+  2. **Khi có thay đổi Backend (PHP/Config/Migrations):**
+     - Kiểm tra cú pháp PHP: `php -l <file>`.
+     - Đồng bộ mã nguồn vào container: `docker cp Backend/<path> equipment_manager-app-1:/var/www/html/<path>`.
+     - Xóa cache Laravel trong container: `docker exec equipment_manager-app-1 php artisan optimize:clear`.
+  3. **Reload dịch vụ Web:**
+     - Chạy `docker exec equipment_manager-app-1 nginx -s reload` để Nginx phục vụ ngay assets và mã nguồn mới.
+  4. Báo cáo trạng thái đồng bộ Docker cho người dùng sau mỗi lượt sửa code.
+
+---
+
+## 🔒 3. Quy tắc An toàn & Bảo mật
 - Luôn kiểm tra `.gitignore` để đảm bảo các file nhạy cảm (`.env`, `storage/`, `vendor/`, `node_modules/`, tokens) không bị lộ.
 - Giữ vững tính toàn vẹn của code và các tài liệu liên quan trong dự án.
 
