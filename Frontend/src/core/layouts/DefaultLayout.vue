@@ -322,14 +322,15 @@ function handleNavClick() {
       <!-- Top Navbar -->
       <header class="h-16 bg-white border-b border-slate-200/80 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30">
         <div class="flex items-center gap-2.5 sm:gap-4 min-w-0">
-          <!-- Toggle Button for Sidebar (Màn hình <= 16in luôn là icon 3 gạch mdi-menu như Hình 2) -->
+          <!-- Toggle Button for Sidebar (CHỈ hiển thị trên màn hình laptop <= 16in / Mobile để mở menu Drawer; màn hình Desktop lớn đã có nút thu gọn trong sidebar) -->
           <button
+            v-if="isCompactScreen"
             type="button"
             class="w-9 h-9 rounded-xl hover:bg-slate-100 text-slate-600 hover:text-slate-900 flex items-center justify-center transition cursor-pointer flex-shrink-0 border border-slate-200/70 shadow-2xs"
-            :title="isCompactScreen ? (drawer ? 'Đóng menu' : 'Mở danh mục') : (rail ? 'Mở rộng menu' : 'Thu gọn menu')"
-            @click="isCompactScreen ? (drawer = !drawer) : (rail = !rail)"
+            :title="drawer ? 'Đóng menu' : 'Mở danh mục'"
+            @click="drawer = !drawer"
           >
-            <v-icon :icon="isCompactScreen ? 'mdi-menu' : (rail ? 'mdi-menu-open' : 'mdi-menu')" size="20" />
+            <v-icon icon="mdi-menu" size="20" />
           </button>
 
           <!-- Organization Switcher Dropdown in Navbar -->
