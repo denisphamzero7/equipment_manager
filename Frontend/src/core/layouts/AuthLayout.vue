@@ -1,5 +1,14 @@
+<script setup>
+import AppThemeToggle from '@/core/components/AppThemeToggle.vue'
+</script>
+
 <template>
-  <div class="min-h-screen w-full flex bg-slate-50">
+  <div class="min-h-screen w-full flex bg-slate-50 dark:bg-slate-950 transition-colors duration-200 relative">
+    <!-- Top Right Theme Toggle -->
+    <div class="absolute top-4 right-4 z-20">
+      <AppThemeToggle variant="dropdown" />
+    </div>
+
     <!-- Left Hero Banner (Hidden on mobile) -->
     <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-700 via-indigo-800 to-slate-900 p-12 flex-col justify-between text-white relative overflow-hidden">
       <!-- Background subtle decorative shapes -->
@@ -58,7 +67,7 @@
     </div>
 
     <!-- Right Form Section -->
-    <div class="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8 md:p-12">
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8 md:p-12 bg-slate-50 dark:bg-slate-950 transition-colors duration-200">
       <div class="w-full max-w-md">
         <slot />
       </div>

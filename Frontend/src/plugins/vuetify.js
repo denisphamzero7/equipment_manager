@@ -2,7 +2,7 @@ import 'vuetify/styles'
 import '@mdi/font/css/materialdesignicons.css'
 import { createVuetify } from 'vuetify'
 
-export default createVuetify({
+export const vuetify = createVuetify({
   theme: {
     defaultTheme: 'light',
     themes: {
@@ -21,6 +21,23 @@ export default createVuetify({
           surface: '#ffffff',
           'surface-variant': '#f1f5f9',
           'on-surface-variant': '#64748b',
+        },
+      },
+      dark: {
+        dark: true,
+        colors: {
+          primary: '#3b82f6', // Blue-500 cho độ tương phản tốt trên nền tối
+          'primary-darken-1': '#2563eb',
+          secondary: '#94a3b8', // Slate-400
+          accent: '#a78bfa', // Violet-400
+          success: '#10b981', // Emerald-500
+          warning: '#f59e0b', // Amber-500
+          error: '#ef4444', // Red-500
+          info: '#38bdf8', // Sky-400
+          background: '#0b1120', // Slate-950 / Dark Navy sâu
+          surface: '#1e293b', // Slate-800
+          'surface-variant': '#334155', // Slate-700
+          'on-surface-variant': '#94a3b8',
         },
       },
     },
@@ -64,3 +81,5 @@ export default createVuetify({
     },
   },
 })
+
+export default vuetify

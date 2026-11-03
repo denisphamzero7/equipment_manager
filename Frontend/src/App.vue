@@ -1,5 +1,13 @@
 <script setup>
+import { onMounted } from 'vue'
 import { toastState } from '@/core/helpers/toast'
+import { useThemeStore } from '@/core/stores/themeStore'
+
+const themeStore = useThemeStore()
+
+onMounted(() => {
+  themeStore.initTheme()
+})
 </script>
 
 <template>

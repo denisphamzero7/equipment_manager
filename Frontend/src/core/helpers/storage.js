@@ -6,6 +6,7 @@ export const StorageKeys = Object.freeze({
   USER: 'eq_user_profile',
   ORGANIZATION_ID: 'eq_active_org_id',
   PERMISSIONS: 'eq_permissions',
+  THEME_MODE: 'eq_theme_mode',
 })
 
 export const storage = {
