@@ -173,8 +173,8 @@ function toggleSelectItem(item) {
       class="px-3.5 sm:px-5 py-3 bg-slate-50/50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3 text-xs text-slate-500 dark:text-slate-400"
     >
       <div class="text-center sm:text-left">
-        Hiển thị <strong>{{ (page - 1) * itemsPerPage + (items.length ? 1 : 0) }}</strong>
-        đến <strong>{{ Math.min(page * itemsPerPage, totalItems) }}</strong> trong tổng số <strong>{{ totalItems }}</strong> bản ghi
+        Hiển thị <strong class="text-slate-700 dark:text-slate-200">{{ (page - 1) * itemsPerPage + (items.length ? 1 : 0) }}</strong>
+        đến <strong class="text-slate-700 dark:text-slate-200">{{ Math.min(page * itemsPerPage, totalItems) }}</strong> trong tổng số <strong class="text-slate-700 dark:text-slate-200">{{ totalItems }}</strong> bản ghi
       </div>
 
       <div class="flex items-center gap-1">

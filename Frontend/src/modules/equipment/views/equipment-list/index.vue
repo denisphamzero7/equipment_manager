@@ -678,17 +678,17 @@ watch(
     >
       <!-- Custom item: ID -->
       <template #item.id="{ item }">
-        <span v-if="item.isOptimistic" class="text-[11px] font-semibold text-slate-400">
+        <span v-if="item.isOptimistic" class="text-[11px] font-semibold text-slate-400 dark:text-slate-400">
           Đang lưu
         </span>
-        <span v-else class="font-mono text-xs font-bold text-slate-500">#{{ item.id }}</span>
+        <span v-else class="font-mono text-xs font-bold text-slate-500 dark:text-slate-300">#{{ item.id }}</span>
       </template>
 
       <!-- Custom item: Serial & Name -->
       <template #item.equipment_info="{ item }">
         <div class="flex items-center gap-3">
           <div
-            class="relative w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-slate-200/80 bg-white flex items-center justify-center shadow-2xs group cursor-pointer"
+            class="relative w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-slate-200/80 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center shadow-2xs group cursor-pointer"
             :title="(item.photo_url || item.photos?.[0]?.url) ? 'Xem ảnh lớn' : (item.model?.name || 'Thiết bị')"
             @click="openLightbox(item, $event)"
           >
@@ -703,7 +703,7 @@ watch(
               v-else
               :icon="item.model?.category?.icon || item.category?.icon || 'mdi-devices'"
               size="20"
-              class="text-slate-400"
+              class="text-slate-400 dark:text-slate-300"
             />
             <div
               v-if="item.photo_url || item.photos?.[0]?.url"
@@ -713,10 +713,10 @@ watch(
             </div>
           </div>
           <div class="min-w-0">
-            <p class="font-bold text-slate-800 text-xs truncate">
+            <p class="font-bold text-slate-800 dark:text-slate-100 text-xs truncate">
               {{ item.model?.name || item.modelName || item.name || 'Thiết bị không tên' }}
             </p>
-            <p class="text-[11px] font-mono text-blue-600 font-semibold mt-0.5 truncate">
+            <p class="text-[11px] font-mono text-blue-600 dark:text-blue-400 font-semibold mt-0.5 truncate">
               {{ item.serial_number || '— Chưa gắn Serial —' }}
             </p>
           </div>
@@ -725,7 +725,7 @@ watch(
 
       <!-- Custom item: Category -->
       <template #item.category="{ item }">
-        <span class="text-xs text-slate-600 font-medium">
+        <span class="text-xs text-slate-600 dark:text-slate-200 font-medium">
           {{ item.category?.name || item.model?.category?.name || 'Khác' }}
         </span>
       </template>
@@ -737,7 +737,7 @@ watch(
             <!-- Block Pill -->
             <span
               v-if="item.room?.block"
-              class="inline-flex items-center gap-1 text-[11px] font-bold text-primary bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200"
+              class="inline-flex items-center gap-1 text-[11px] font-bold text-primary dark:text-blue-300 bg-blue-50 dark:bg-blue-950/70 px-2 py-0.5 rounded-md border border-blue-200 dark:border-blue-800/80"
             >
               <v-icon icon="mdi-domain" size="12" />
               <span>{{ item.room.block }}</span>
@@ -746,14 +746,14 @@ watch(
             <!-- Floor Pill -->
             <span
               v-if="item.room?.floor !== undefined && item.room?.floor !== null"
-              class="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded-md"
+              class="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md border border-transparent dark:border-slate-700"
             >
               <v-icon icon="mdi-stairs" size="12" />
               <span>Tầng {{ item.room.floor }}</span>
             </span>
 
             <!-- Room Pill -->
-            <span class="inline-flex items-center gap-1 font-black text-slate-900 text-xs">
+            <span class="inline-flex items-center gap-1 font-black text-slate-900 dark:text-slate-100 text-xs">
               <v-icon icon="mdi-door" size="13" color="primary" />
               <span>P.{{ item.room?.room_number || item.room_id }}</span>
             </span>
@@ -761,7 +761,7 @@ watch(
 
           <p
             v-if="item.position_note"
-            class="text-[11px] text-slate-500 font-medium truncate max-w-[220px]"
+            class="text-[11px] text-slate-500 dark:text-slate-300 font-medium truncate max-w-[220px]"
             :title="item.position_note"
           >
             {{ item.position_note }}
@@ -770,13 +770,13 @@ watch(
 
         <!-- In Stock -->
         <div v-else class="space-y-1">
-          <span class="inline-flex items-center gap-1 text-[11px] font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-md border border-sky-200">
+          <span class="inline-flex items-center gap-1 text-[11px] font-bold text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/70 px-2 py-0.5 rounded-md border border-sky-200 dark:border-sky-800/80">
             <v-icon icon="mdi-package-variant-closed" size="13" />
             <span>Trong kho</span>
           </span>
           <p
             v-if="item.position_note"
-            class="text-[11px] text-slate-400 truncate max-w-[220px]"
+            class="text-[11px] text-slate-400 dark:text-slate-400 truncate max-w-[220px]"
             :title="item.position_note"
           >
             {{ item.position_note }}
@@ -799,7 +799,7 @@ watch(
 
       <!-- Custom item: Installed At -->
       <template #item.installed_at="{ item }">
-        <span class="text-xs text-slate-500">{{ formatDate(item.installed_at) }}</span>
+        <span class="text-xs text-slate-500 dark:text-slate-300 font-medium">{{ formatDate(item.installed_at) }}</span>
       </template>
 
       <!-- Custom item: Actions -->
@@ -835,7 +835,7 @@ watch(
                 variant="text"
                 density="comfortable"
                 size="small"
-                color="secondary"
+                class="text-slate-400 dark:text-slate-300 hover:text-slate-700 dark:hover:text-white"
               />
             </template>
 

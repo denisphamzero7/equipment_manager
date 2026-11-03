@@ -118,17 +118,69 @@ html.dark .v-sheet {
   color: #f1f5f9 !important;
 }
 
+/* Dark Mode Table & Typography Overrides */
 html.dark table {
+  color: #f1f5f9 !important;
+}
+
+html.dark table th {
+  color: #94a3b8 !important;
+  background-color: #0f172a !important;
+}
+
+html.dark table td {
+  color: #e2e8f0 !important;
+  border-color: #1e293b !important;
+}
+
+/* Ép toàn bộ các thẻ text thông dụng trong ô bảng hiển thị sáng rõ */
+html.dark table td .text-slate-900,
+html.dark table td .text-slate-800 {
+  color: #f8fafc !important;
+}
+
+html.dark table td .text-slate-700,
+html.dark table td .text-slate-600 {
   color: #e2e8f0 !important;
 }
 
-html.dark th {
+html.dark table td .text-slate-500 {
+  color: #cbd5e1 !important;
+}
+
+html.dark table td .text-slate-400 {
   color: #94a3b8 !important;
 }
 
-html.dark td {
-  color: #e2e8f0 !important;
-  border-color: #1e293b !important;
+html.dark table td .text-blue-600 {
+  color: #60a5fa !important;
+}
+
+/* Các badge / pill phụ trong bảng */
+html.dark table td .bg-slate-100 {
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
+  border: 1px solid #334155 !important;
+}
+
+html.dark table td .bg-blue-50 {
+  background-color: rgba(30, 58, 138, 0.35) !important;
+  color: #93c5fd !important;
+  border-color: rgba(96, 165, 250, 0.4) !important;
+}
+
+html.dark table td .bg-sky-50 {
+  background-color: rgba(14, 116, 144, 0.35) !important;
+  color: #7dd3fc !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+}
+
+html.dark table td .v-btn {
+  color: #cbd5e1 !important;
+}
+
+html.dark table td .v-btn:hover {
+  color: #ffffff !important;
 }
 
 html.dark .v-divider {
