@@ -48,25 +48,25 @@ function confirm() {
 
 <template>
   <v-dialog :model-value="modelValue" max-width="480" persistent @update:model-value="val => emit('update:modelValue', val)">
-    <div class="bg-white rounded-2xl p-6 shadow-xl border border-slate-100">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-xl border border-slate-100 dark:border-slate-800 transition-colors">
       <div class="flex items-start gap-4">
         <div
           class="w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center"
-          :class="confirmColor === 'error' ? 'bg-rose-50 text-rose-600' : 'bg-amber-50 text-amber-600'"
+          :class="confirmColor === 'error' ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400' : 'bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400'"
         >
           <v-icon :icon="confirmIcon" size="28" />
         </div>
         <div class="flex-1">
-          <h3 class="text-lg font-bold text-slate-800 mb-1">
+          <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-1">
             {{ title }}
           </h3>
-          <p class="text-sm text-slate-500 leading-relaxed">
+          <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
             {{ message }}
           </p>
         </div>
       </div>
 
-      <div class="mt-6 flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+      <div class="mt-6 flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
         <v-btn
           variant="tonal"
           color="secondary"

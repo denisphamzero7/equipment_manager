@@ -153,21 +153,21 @@ function confirmDelete() {
     <!-- 1. Thanh công cụ luôn hiển thị trên Desktop & Tablet (hoặc luôn hiển thị khi alwaysShow=true) -->
     <div
       v-if="alwaysShow || count > 0"
-      class="bg-white border border-slate-200/90 rounded-2xl p-3 sm:px-4 sm:py-3 shadow-xs mb-4 flex items-center justify-between gap-3 flex-wrap transition-all duration-200"
-      :class="count > 0 ? 'bg-primary/5 border-primary/30 ring-1 ring-primary/20' : ''"
+      class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-3 sm:px-4 sm:py-3 shadow-xs mb-4 flex items-center justify-between gap-3 flex-wrap transition-all duration-200"
+      :class="count > 0 ? 'bg-primary/5 dark:bg-primary/10 border-primary/30 ring-1 ring-primary/20' : ''"
     >
       <!-- Bên trái: Checkbox chọn tất cả (nếu có allIds) + Đếm số lượng + Nút Bỏ chọn -->
       <div class="flex items-center gap-3 flex-wrap">
         <!-- Nút Checkbox Chọn tất cả -->
         <label
           v-if="allIds.length > 0"
-          class="inline-flex items-center gap-2 cursor-pointer select-none text-xs font-semibold text-slate-700 hover:text-slate-900 mr-1"
+          class="inline-flex items-center gap-2 cursor-pointer select-none text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white mr-1"
         >
           <input
             type="checkbox"
             :checked="isAllSelected"
             :indeterminate.prop="isIndeterminate"
-            class="rounded border-slate-300 text-primary focus:ring-primary w-4 h-4 cursor-pointer"
+            class="rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-primary focus:ring-primary w-4 h-4 cursor-pointer"
             @change="toggleSelectAll"
           />
           <span>Chọn tất cả ({{ allIds.length }})</span>
@@ -178,20 +178,20 @@ function confirmDelete() {
           <div class="flex items-center justify-center min-w-6 h-6 px-1.5 rounded-full bg-primary text-white font-bold text-xs">
             {{ count }}
           </div>
-          <span class="text-xs sm:text-sm font-semibold text-slate-800">
-            Đã chọn <strong class="text-primary font-bold">{{ count }}</strong> {{ itemLabel }}
+          <span class="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100">
+            Đã chọn <strong class="text-primary dark:text-blue-400 font-bold">{{ count }}</strong> {{ itemLabel }}
           </span>
           <button
             type="button"
-            class="text-xs font-medium text-slate-500 hover:text-rose-600 underline cursor-pointer ml-1 transition-colors"
+            class="text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 underline cursor-pointer ml-1 transition-colors"
             @click="handleClear"
           >
             Bỏ chọn
           </button>
         </div>
 
-        <div v-else-if="allIds.length === 0" class="text-xs text-slate-400 flex items-center gap-1.5">
-          <v-icon icon="mdi-checkbox-multiple-marked-outline" size="16" class="text-slate-400" />
+        <div v-else-if="allIds.length === 0" class="text-xs text-slate-400 dark:text-slate-500 flex items-center gap-1.5">
+          <v-icon icon="mdi-checkbox-multiple-marked-outline" size="16" class="text-slate-400 dark:text-slate-500" />
           <span>Tích chọn các ô để kích hoạt thao tác hàng loạt</span>
         </div>
       </div>

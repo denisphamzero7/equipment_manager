@@ -70,3 +70,45 @@ html.dark .glass-panel {
   background: rgba(15, 23, 42, 0.85);
   border-color: rgba(51, 65, 85, 0.8);
 }
+
+/* Vuetify Controls in Dark Mode */
+html.dark .v-field--variant-outlined .v-field__outline {
+  --v-field-border-opacity: 0.35;
+  color: #475569 !important;
+}
+
+html.dark .v-field--variant-outlined.v-field--focused .v-field__outline {
+  --v-field-border-opacity: 1;
+  color: #3b82f6 !important;
+}
+
+html.dark .v-field__input {
+  color: #f1f5f9 !important;
+}
+
+html.dark .v-field {
+  background-color: #0f172a !important;
+  border-radius: 0.75rem !important;
+}
+
+html.dark .v-select .v-field,
+html.dark .v-combobox .v-field,
+html.dark .v-autocomplete .v-field {
+  background-color: #0f172a !important;
+}
+
+html.dark .v-overlay__content .v-list {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+html.dark .v-list-item-title {
+  color: #e2e8f0 !important;
+}
+
+html.dark .v-card {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f1f5f9 !important;
+}

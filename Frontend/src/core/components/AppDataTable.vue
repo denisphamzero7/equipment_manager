@@ -90,18 +90,18 @@ function toggleSelectItem(item) {
 </script>
 
 <template>
-  <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden flex flex-col">
+  <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden flex flex-col transition-colors">
     <!-- Table Content (Horizontal scroll wrapper for mobile) -->
     <div class="overflow-x-auto touch-pan-x">
-      <table class="w-full text-left text-sm text-slate-700 min-w-[620px] sm:min-w-full">
-        <thead class="bg-slate-50/80 text-xs uppercase font-semibold text-slate-500 border-b border-slate-200">
+      <table class="w-full text-left text-sm text-slate-700 dark:text-slate-200 min-w-[620px] sm:min-w-full">
+        <thead class="bg-slate-50/80 dark:bg-slate-800/80 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
           <tr>
             <th v-if="showSelect" class="w-10 px-3.5 sm:px-5 py-3 text-center">
               <input
                 type="checkbox"
                 :checked="isAllSelected"
                 :indeterminate.prop="isIndeterminate"
-                class="rounded border-slate-300 text-primary focus:ring-primary w-4 h-4 cursor-pointer"
+                class="rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-primary focus:ring-primary w-4 h-4 cursor-pointer"
                 @change="toggleSelectAll"
               />
             </th>
@@ -117,29 +117,29 @@ function toggleSelectItem(item) {
           </tr>
         </thead>
 
-        <tbody v-if="loading" class="divide-y divide-slate-100">
+        <tbody v-if="loading" class="divide-y divide-slate-100 dark:divide-slate-800">
           <tr v-for="n in 5" :key="n" class="animate-pulse">
             <td v-if="showSelect" class="px-3.5 sm:px-5 py-3.5 text-center">
-              <div class="h-4 w-4 bg-slate-200 rounded mx-auto" />
+              <div class="h-4 w-4 bg-slate-200 dark:bg-slate-700 rounded mx-auto" />
             </td>
             <td v-for="head in headers" :key="head.key" class="px-3.5 sm:px-5 py-3.5">
-              <div class="h-4 bg-slate-200 rounded w-3/4" />
+              <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4" />
             </td>
           </tr>
         </tbody>
 
-        <tbody v-else-if="items.length > 0" class="divide-y divide-slate-100">
+        <tbody v-else-if="items.length > 0" class="divide-y divide-slate-100 dark:divide-slate-800">
           <tr
             v-for="(item, idx) in items"
             :key="item.id || idx"
-            class="hover:bg-slate-50/70 transition-colors cursor-pointer"
+            class="hover:bg-slate-50/70 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
             @click="emit('click:row', item)"
           >
             <td v-if="showSelect" class="px-3.5 sm:px-5 py-3 text-center" @click.stop>
               <input
                 type="checkbox"
                 :checked="isSelected(item)"
-                class="rounded border-slate-300 text-primary focus:ring-primary w-4 h-4 cursor-pointer"
+                class="rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-primary focus:ring-primary w-4 h-4 cursor-pointer"
                 @change="toggleSelectItem(item)"
               />
             </td>
@@ -158,8 +158,8 @@ function toggleSelectItem(item) {
 
         <tbody v-else>
           <tr>
-            <td :colspan="headers.length + (showSelect ? 1 : 0)" class="text-center py-12 text-slate-400">
-              <v-icon icon="mdi-database-off-outline" size="44" class="text-slate-300 mb-2 block mx-auto" />
+            <td :colspan="headers.length + (showSelect ? 1 : 0)" class="text-center py-12 text-slate-400 dark:text-slate-500">
+              <v-icon icon="mdi-database-off-outline" size="44" class="text-slate-300 dark:text-slate-600 mb-2 block mx-auto" />
               <p class="text-sm font-medium">{{ emptyText }}</p>
             </td>
           </tr>
@@ -170,7 +170,7 @@ function toggleSelectItem(item) {
     <!-- Table Pagination Footer -->
     <div
       v-if="totalItems > 0"
-      class="px-3.5 sm:px-5 py-3 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3 text-xs text-slate-500"
+      class="px-3.5 sm:px-5 py-3 bg-slate-50/50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3 text-xs text-slate-500 dark:text-slate-400"
     >
       <div class="text-center sm:text-left">
         Hiển thị <strong>{{ (page - 1) * itemsPerPage + (items.length ? 1 : 0) }}</strong>
@@ -186,7 +186,7 @@ function toggleSelectItem(item) {
           :disabled="page <= 1"
           @click="emit('update:page', page - 1)"
         />
-        <span class="px-2.5 py-1 font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg text-xs">
+        <span class="px-2.5 py-1 font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs">
           Trang {{ page }} / {{ Math.ceil(totalItems / itemsPerPage) || 1 }}
         </span>
         <v-btn

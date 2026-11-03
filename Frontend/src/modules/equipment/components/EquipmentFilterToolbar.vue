@@ -34,16 +34,16 @@ defineEmits(['select-block', 'reset-filters', 'search-change', 'filter-change'])
 <template>
   <div>
     <!-- 1. Modern Block Quick-Filter Pills Bar -->
-    <div class="bg-white border border-slate-200/80 rounded-2xl shadow-xs overflow-hidden mb-4">
-      <div class="px-4 py-2.5 bg-slate-50/60 border-b border-slate-100 flex items-center justify-between gap-2">
-        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-xs overflow-hidden mb-4 transition-colors">
+      <div class="px-4 py-2.5 bg-slate-50/60 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+        <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
           <v-icon icon="mdi-domain" size="15" color="primary" />
           <span>Phân khu & Vị trí (Block):</span>
         </span>
         <button
           v-if="filters.block"
           type="button"
-          class="text-xs text-primary font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+          class="text-xs text-primary dark:text-blue-400 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
           @click="$emit('select-block', '')"
         >
           <v-icon icon="mdi-eye-outline" size="14" />
@@ -58,13 +58,13 @@ defineEmits(['select-block', 'reset-filters', 'search-change', 'filter-change'])
           class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-2 border cursor-pointer"
           :class="!filters.block
             ? 'bg-primary text-white border-primary shadow-xs'
-            : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'"
+            : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600'"
           @click="$emit('select-block', '')"
         >
           <span>Tất cả vị trí</span>
           <span
             class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold"
-            :class="!filters.block ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'"
+            :class="!filters.block ? 'bg-white/25 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'"
           >
             {{ blockCounts.total || 0 }}
           </span>
@@ -77,14 +77,14 @@ defineEmits(['select-block', 'reset-filters', 'search-change', 'filter-change'])
           class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-2 border cursor-pointer"
           :class="filters.block === b
             ? 'bg-primary text-white border-primary shadow-xs'
-            : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'"
+            : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600'"
           @click="$emit('select-block', b)"
         >
           <v-icon icon="mdi-domain" size="13" />
           <span>{{ b }}</span>
           <span
             class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold"
-            :class="filters.block === b ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'"
+            :class="filters.block === b ? 'bg-white/25 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'"
           >
             {{ blockCounts[b] || 0 }}
           </span>
@@ -96,14 +96,14 @@ defineEmits(['select-block', 'reset-filters', 'search-change', 'filter-change'])
           class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-2 border cursor-pointer ml-auto"
           :class="filters.block === '__stock__'
             ? 'bg-sky-600 text-white border-sky-600 shadow-xs'
-            : 'bg-sky-50 text-sky-700 border-sky-200 hover:bg-sky-100'"
+            : 'bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800 hover:bg-sky-100 dark:hover:bg-sky-900/60'"
           @click="$emit('select-block', '__stock__')"
         >
           <v-icon icon="mdi-package-variant-closed" size="14" />
           <span>Trong kho</span>
           <span
             class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold"
-            :class="filters.block === '__stock__' ? 'bg-white/25 text-white' : 'bg-sky-100 text-sky-800'"
+            :class="filters.block === '__stock__' ? 'bg-white/25 text-white' : 'bg-sky-100 dark:bg-sky-900/80 text-sky-800 dark:text-sky-200'"
           >
             {{ blockCounts.__stock__ || 0 }}
           </span>
@@ -112,7 +112,7 @@ defineEmits(['select-block', 'reset-filters', 'search-change', 'filter-change'])
     </div>
 
     <!-- 2. Detailed Filter Row (Search, Status, Floor, Room Number, Category) -->
-    <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs mb-6">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-xs mb-6 transition-colors">
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 items-center">
         <!-- 1. Search input -->
         <div class="lg:col-span-2">
