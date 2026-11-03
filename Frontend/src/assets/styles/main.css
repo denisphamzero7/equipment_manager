@@ -108,7 +108,35 @@ html.dark .v-list-item-title {
 }
 
 html.dark .v-card {
-  background-color: #1e293b !important;
-  border-color: #334155 !important;
+  background-color: #0f172a !important;
+  border-color: #1e293b !important;
   color: #f1f5f9 !important;
+}
+
+html.dark .v-sheet {
+  background-color: #0f172a !important;
+  color: #f1f5f9 !important;
+}
+
+html.dark table {
+  color: #e2e8f0 !important;
+}
+
+html.dark th {
+  color: #94a3b8 !important;
+}
+
+html.dark td {
+  color: #e2e8f0 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .v-divider {
+  border-color: #1e293b !important;
+}
+
+html.dark input,
+html.dark select,
+html.dark textarea {
+  color: #f8fafc !important;
 }

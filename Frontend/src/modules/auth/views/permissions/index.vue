@@ -215,7 +215,7 @@ onMounted(loadPermissions)
       Mã quyền được dùng trong middleware/API (ví dụ <code>users.index</code>). Đổi hoặc xóa mã có thể làm thay đổi quyền truy cập; hãy rà soát role và cấu hình route trước khi áp dụng.
     </div>
 
-    <div class="bg-white rounded-2xl p-3 sm:p-4 border border-slate-200/80 mb-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 border border-slate-200/80 dark:border-slate-800 mb-4 transition-colors">
       <v-text-field
         v-model="search"
         label="Tìm quyền"

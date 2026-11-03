@@ -310,16 +310,16 @@ watch(
     </AppPageHeader>
 
     <!-- Modern Block Quick-Filter Pills (Đồng bộ với RoomListView & EquipmentMapView) -->
-    <div class="bg-white border border-slate-200/80 rounded-2xl shadow-xs overflow-hidden mb-5 sm:mb-6">
-      <div class="px-4 py-3 bg-slate-50/60 border-b border-slate-100 flex items-center justify-between gap-2">
-        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-xs overflow-hidden mb-5 sm:mb-6 transition-colors">
+      <div class="px-4 py-3 bg-slate-50/60 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+        <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
           <v-icon icon="mdi-domain" size="15" color="primary" />
           <span>Lọc Báo Cáo Theo Phân Khu & Tòa Nhà (Block):</span>
         </span>
         <button
           v-if="selectedBlock"
           type="button"
-          class="text-xs text-primary font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+          class="text-xs text-primary dark:text-blue-400 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
           @click="selectBlock('')"
         >
           <v-icon icon="mdi-eye-outline" size="14" />
@@ -334,13 +334,13 @@ watch(
           class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-2 border cursor-pointer"
           :class="!selectedBlock
             ? 'bg-primary text-white border-primary shadow-xs'
-            : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'"
+            : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600'"
           @click="selectBlock('')"
         >
           <span>Tất cả Block</span>
           <span
             class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold"
-            :class="!selectedBlock ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'"
+            :class="!selectedBlock ? 'bg-white/25 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'"
           >
             {{ blockCounts.total || 0 }}
           </span>
@@ -353,13 +353,13 @@ watch(
           class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-2 border cursor-pointer"
           :class="selectedBlock === b
             ? 'bg-primary text-white border-primary shadow-xs'
-            : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'"
+            : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600'"
           @click="selectBlock(b)"
         >
           <span>{{ b }}</span>
           <span
             class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold"
-            :class="selectedBlock === b ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'"
+            :class="selectedBlock === b ? 'bg-white/25 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'"
           >
             {{ blockCounts[b] || 0 }}
           </span>
@@ -443,10 +443,10 @@ watch(
     <div v-if="stats.by_category && stats.by_category.length" class="mt-6 sm:mt-8">
       <div class="flex items-center justify-between mb-3 sm:mb-4">
         <div>
-          <h3 class="text-sm sm:text-base font-bold text-slate-800">
+          <h3 class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100">
             Số lượng Thiết bị theo Nhóm Danh mục
           </h3>
-          <p class="text-[11px] sm:text-xs text-slate-400">
+          <p class="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500">
             Tivi, Điều khiển, TV Box, Wifi, Điều hòa, Tủ lạnh... (Nhấp vào nhóm để xem danh sách chi tiết)
           </p>
         </div>
@@ -456,28 +456,28 @@ watch(
         <div
           v-for="cat in stats.by_category"
           :key="cat.category_id || cat.name"
-          class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-xs hover:border-primary/60 hover:shadow-sm transition-all text-center cursor-pointer group"
+          class="bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-primary/60 dark:hover:border-primary/60 hover:shadow-sm transition-all text-center cursor-pointer group"
           :title="`Xem chi tiết nhóm ${cat.category_name || cat.name}`"
           @click="router.push({ path: '/equipments', query: { category_id: cat.category_id, ...(selectedBlock ? { block: selectedBlock } : {}) } })"
         >
-          <div class="w-10 h-10 rounded-xl bg-slate-50 text-slate-700 flex items-center justify-center mx-auto mb-2 font-bold text-xs border border-slate-100 group-hover:bg-blue-50 group-hover:text-primary transition-colors">
+          <div class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mx-auto mb-2 font-bold text-xs border border-slate-100 dark:border-slate-700 group-hover:bg-blue-50 dark:group-hover:bg-blue-950/70 group-hover:text-primary transition-colors">
             <v-icon :icon="cat.icon || getCategoryIcon(cat.category_code)" size="20" color="primary" />
           </div>
 
-          <p class="text-xs font-bold text-slate-700 truncate mb-1 group-hover:text-primary transition-colors" :title="cat.category_name || cat.name">
+          <p class="text-xs font-bold text-slate-700 dark:text-slate-300 truncate mb-1 group-hover:text-primary dark:group-hover:text-blue-400 transition-colors" :title="cat.category_name || cat.name">
             {{ cat.category_name || cat.name }}
           </p>
 
-          <p class="text-lg font-extrabold text-slate-800 tracking-tight">
+          <p class="text-lg font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">
             {{ cat.total ?? (cat.count || 0) }}
           </p>
 
           <!-- Mini Status badges for each category -->
-          <div v-if="cat.broken > 0 || cat.in_stock > 0" class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-center gap-1.5 text-[10px]">
-            <span v-if="cat.broken > 0" class="px-1.5 py-0.2 rounded font-bold bg-rose-50 text-rose-600">
+          <div v-if="cat.broken > 0 || cat.in_stock > 0" class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-center gap-1.5 text-[10px]">
+            <span v-if="cat.broken > 0" class="px-1.5 py-0.2 rounded font-bold bg-rose-50 dark:bg-rose-950/70 text-rose-600 dark:text-rose-400">
               {{ cat.broken }} hỏng
             </span>
-            <span v-if="cat.in_stock > 0" class="px-1.5 py-0.2 rounded font-medium bg-sky-50 text-sky-600">
+            <span v-if="cat.in_stock > 0" class="px-1.5 py-0.2 rounded font-medium bg-sky-50 dark:bg-sky-950/70 text-sky-600 dark:text-sky-400">
               {{ cat.in_stock }} kho
             </span>
           </div>

@@ -406,7 +406,7 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
       <AppStatCard title="Ngưng / bị khóa" :value="stats.inactive" icon="mdi-account-cancel-outline" color="warning" />
     </div>
 
-    <div class="bg-white rounded-2xl p-3 sm:p-4 border border-slate-200/80 mb-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 border border-slate-200/80 dark:border-slate-800 mb-4 transition-colors">
       <div class="grid grid-cols-1 sm:grid-cols-[1fr_240px] gap-3">
         <v-text-field
           :model-value="search"
@@ -474,15 +474,15 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
     >
       <template #item.user="{ item }">
         <div class="min-w-[180px]">
-          <p class="font-semibold text-slate-800">{{ item.name }}</p>
-          <p class="text-xs text-slate-500">{{ item.email }}</p>
-          <p v-if="item.user_name" class="text-[11px] text-slate-400">@{{ item.user_name }}</p>
+          <p class="font-semibold text-slate-800 dark:text-slate-100">{{ item.name }}</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400">{{ item.email }}</p>
+          <p v-if="item.user_name" class="text-[11px] text-slate-400 dark:text-slate-500">@{{ item.user_name }}</p>
         </div>
       </template>
       <template #item.status="{ item }">
         <span
           class="inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold"
-          :class="item.status === 'active' ? 'bg-emerald-50 text-emerald-700' : item.status === 'banned' ? 'bg-rose-50 text-rose-700' : 'bg-slate-100 text-slate-600'"
+          :class="item.status === 'active' ? 'bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300' : item.status === 'banned' ? 'bg-rose-50 dark:bg-rose-950/70 text-rose-700 dark:text-rose-300' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
         >
           {{ statusLabel(item.status) }}
         </span>
@@ -490,11 +490,11 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
       <template #item.assignments="{ item }">
         <div v-if="formatAssignments(item.assignments).length" class="space-y-1.5 min-w-[180px]">
           <div v-for="(assignment, index) in formatAssignments(item.assignments)" :key="`${assignment.role}-${index}`">
-            <span class="text-xs font-semibold text-blue-700">{{ assignment.role }}</span>
-            <span class="text-[11px] text-slate-500"> · {{ assignment.organizations || 'Chưa có tổ chức' }}</span>
+            <span class="text-xs font-semibold text-blue-700 dark:text-blue-400">{{ assignment.role }}</span>
+            <span class="text-[11px] text-slate-500 dark:text-slate-400"> · {{ assignment.organizations || 'Chưa có tổ chức' }}</span>
           </div>
         </div>
-        <span v-else class="text-xs text-slate-400">Chưa gán vai trò</span>
+        <span v-else class="text-xs text-slate-400 dark:text-slate-500">Chưa gán vai trò</span>
       </template>
       <template #item.actions="{ item }">
         <div class="flex justify-end gap-1" @click.stop>

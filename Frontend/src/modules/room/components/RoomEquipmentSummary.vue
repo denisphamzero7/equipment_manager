@@ -42,8 +42,8 @@ const items = computed(() => {
       :key="`${item.name}-${item.shared ? 'shared' : 'assigned'}`"
       class="inline-flex max-w-full items-center gap-1 rounded-md border px-1.5 py-0.5 text-[10px] leading-4"
       :class="item.shared
-        ? 'border-purple-200 bg-purple-50 text-purple-700'
-        : 'border-slate-200 bg-white text-slate-700'"
+        ? 'border-purple-200 dark:border-purple-800/60 bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300'
+        : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200'"
       :title="`${item.name}: ${item.quantity}`"
     >
       <span class="truncate">{{ item.name }}</span>
@@ -52,7 +52,7 @@ const items = computed(() => {
   </div>
   <span
     v-else
-    class="mt-1 block text-[10px] text-slate-400"
+    class="mt-1 block text-[10px] text-slate-400 dark:text-slate-500"
   >
     Chưa có thiết bị được gán
   </span>

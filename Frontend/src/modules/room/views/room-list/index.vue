@@ -623,96 +623,91 @@ function getStatusBadge(status) {
         </AppButton>
       </div>
 
-      <!-- Stat Badges Cards (Tô viền màu xanh dương nổi bật theo yêu cầu - Hiển thị thuần túy) -->
+      <!-- Stat Badges Cards (Đồng bộ Dark Mode & Viền nhận diện) -->
       <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
         <!-- 1. Tổng phòng -->
         <div
-          class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs"
-          style="border: 2px solid #2563eb !important;"
+          class="bg-white dark:bg-slate-900 rounded-2xl p-3.5 flex items-center gap-3 shadow-xs border border-blue-600/30 dark:border-blue-500/30 transition-colors"
         >
-          <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/70 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
             <v-icon icon="mdi-door" size="22" />
           </div>
           <div>
-            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Tổng phòng</div>
-            <div v-if="loading" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
-            <div v-else class="text-xl font-bold text-slate-800">{{ stats.total }}</div>
+            <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tổng phòng</div>
+            <div v-if="loading" class="h-6 w-12 bg-slate-200 dark:bg-slate-700 rounded animate-pulse my-0.5" />
+            <div v-else class="text-xl font-bold text-slate-800 dark:text-slate-100">{{ stats.total }}</div>
           </div>
         </div>
 
         <!-- 2. Sẵn sàng -->
         <div
-          class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs"
-          style="border: 2px solid #2563eb !important;"
+          class="bg-white dark:bg-slate-900 rounded-2xl p-3.5 flex items-center gap-3 shadow-xs border border-emerald-600/30 dark:border-emerald-500/30 transition-colors"
         >
-          <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/70 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
             <v-icon icon="mdi-door-open" size="22" />
           </div>
           <div>
-            <div class="text-xs font-semibold text-emerald-600 uppercase tracking-wider">Sẵn sàng</div>
-            <div v-if="loading" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
-            <div v-else class="text-xl font-bold text-emerald-700">{{ stats.ready }}</div>
+            <div class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Sẵn sàng</div>
+            <div v-if="loading" class="h-6 w-12 bg-slate-200 dark:bg-slate-700 rounded animate-pulse my-0.5" />
+            <div v-else class="text-xl font-bold text-emerald-700 dark:text-emerald-300">{{ stats.ready }}</div>
           </div>
         </div>
 
         <!-- 3. Đang có khách -->
         <div
-          class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs"
-          style="border: 2px solid #2563eb !important;"
+          class="bg-white dark:bg-slate-900 rounded-2xl p-3.5 flex items-center gap-3 shadow-xs border border-rose-600/30 dark:border-rose-500/30 transition-colors"
         >
-          <div class="w-10 h-10 rounded-lg bg-rose-50 flex items-center justify-center text-rose-600">
+          <div class="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950/70 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0">
             <v-icon icon="mdi-account-check" size="22" />
           </div>
           <div>
-            <div class="text-xs font-semibold text-rose-600 uppercase tracking-wider">Đang có khách</div>
-            <div v-if="loading" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
-            <div v-else class="text-xl font-bold text-rose-700">{{ stats.occupied }}</div>
+            <div class="text-xs font-semibold text-rose-600 dark:text-rose-400 uppercase tracking-wider">Đang có khách</div>
+            <div v-if="loading" class="h-6 w-12 bg-slate-200 dark:bg-slate-700 rounded animate-pulse my-0.5" />
+            <div v-else class="text-xl font-bold text-rose-700 dark:text-rose-300">{{ stats.occupied }}</div>
           </div>
         </div>
 
         <!-- 4. Chờ dọn -->
         <div
-          class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs"
-          style="border: 2px solid #2563eb !important;"
+          class="bg-white dark:bg-slate-900 rounded-2xl p-3.5 flex items-center gap-3 shadow-xs border border-amber-600/30 dark:border-amber-500/30 transition-colors"
         >
-          <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+          <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/70 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
             <v-icon icon="mdi-broom" size="22" />
           </div>
           <div>
-            <div class="text-xs font-semibold text-amber-600 uppercase tracking-wider">Chờ dọn</div>
-            <div v-if="loading" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
-            <div v-else class="text-xl font-bold text-amber-700">{{ stats.notReady }}</div>
+            <div class="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Chờ dọn</div>
+            <div v-if="loading" class="h-6 w-12 bg-slate-200 dark:bg-slate-700 rounded animate-pulse my-0.5" />
+            <div v-else class="text-xl font-bold text-amber-700 dark:text-amber-300">{{ stats.notReady }}</div>
           </div>
         </div>
 
         <!-- 5. Bảo trì -->
         <div
-          class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xs"
-          style="border: 2px solid #2563eb !important;"
+          class="bg-white dark:bg-slate-900 rounded-2xl p-3.5 flex items-center gap-3 shadow-xs border border-slate-300 dark:border-slate-700 transition-colors"
         >
-          <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600">
+          <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 shrink-0">
             <v-icon icon="mdi-hammer-wrench" size="22" />
           </div>
           <div>
-            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Bảo trì</div>
-            <div v-if="loading" class="h-6 w-12 bg-slate-200 rounded animate-pulse my-0.5" />
-            <div v-else class="text-xl font-bold text-slate-700">{{ stats.maintenance }}</div>
+            <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Bảo trì</div>
+            <div v-if="loading" class="h-6 w-12 bg-slate-200 dark:bg-slate-700 rounded animate-pulse my-0.5" />
+            <div v-else class="text-xl font-bold text-slate-700 dark:text-slate-200">{{ stats.maintenance }}</div>
           </div>
         </div>
       </div>
 
       <!-- Modern Filter & Navigation Control Card -->
-      <div class="bg-white border border-slate-200/80 rounded-2xl shadow-xs overflow-hidden">
+      <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
         <!-- Top Section: Block Quick-Filter Pills (Horizontal Scroll) -->
-        <div class="px-4 pt-3.5 pb-3 border-b border-slate-100 bg-slate-50/60">
+        <div class="px-4 pt-3.5 pb-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/50">
           <div class="flex items-center justify-between gap-2 mb-2">
-            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+            <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
               <v-icon icon="mdi-domain" size="15" color="primary" />
               <span>Phân khu & Tòa nhà (Block):</span>
             </span>
             <button
               v-if="filters.block"
-              class="text-xs text-primary font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+              class="text-xs text-primary dark:text-blue-400 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
               @click="selectBlock('')"
             >
               <v-icon icon="mdi-eye-outline" size="14" />
@@ -726,13 +721,13 @@ function getStatusBadge(status) {
               class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-2 border cursor-pointer"
               :class="!filters.block
                 ? 'bg-primary text-white border-primary shadow-xs'
-                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'"
+                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600'"
               @click="selectBlock('')"
             >
               <span>Tất cả Block</span>
               <span
                 class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold"
-                :class="!filters.block ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'"
+                :class="!filters.block ? 'bg-white/25 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'"
               >
                 {{ blockCounts.total || 0 }}
               </span>
@@ -744,13 +739,13 @@ function getStatusBadge(status) {
               class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-2 border cursor-pointer"
               :class="filters.block === b
                 ? 'bg-primary text-white border-primary shadow-xs'
-                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'"
+                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600'"
               @click="selectBlock(b)"
             >
               <span>{{ b }}</span>
               <span
                 class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold"
-                :class="filters.block === b ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'"
+                :class="filters.block === b ? 'bg-white/25 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'"
               >
                 {{ blockCounts[b] || 0 }}
               </span>
@@ -971,12 +966,12 @@ function getStatusBadge(status) {
         </div>
 
         <!-- Empty State -->
-        <div v-else-if="!roomsLoadError && groupedRooms.length === 0" class="py-16 text-center bg-white rounded-2xl border border-slate-200/80 p-8">
-          <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+        <div v-else-if="!roomsLoadError && groupedRooms.length === 0" class="py-16 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-8">
+          <div class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 flex items-center justify-center mx-auto mb-3">
             <v-icon icon="mdi-door-closed" size="32" />
           </div>
-          <h3 class="text-base font-bold text-slate-700">Chưa tìm thấy phòng nào</h3>
-          <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+          <h3 class="text-base font-bold text-slate-700 dark:text-slate-200">Chưa tìm thấy phòng nào</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
             Không có phòng nào phù hợp với bộ lọc hiện tại, hoặc hệ thống chưa có dữ liệu phòng.
           </p>
           <div class="mt-4 flex items-center justify-center gap-2">
@@ -991,11 +986,11 @@ function getStatusBadge(status) {
         <!-- Blocks Container -->
         <div v-for="blockGroup in groupedRooms" :key="blockGroup.name" class="space-y-4">
           <!-- Block Title -->
-          <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
             <div class="flex items-center gap-2">
               <span class="w-2.5 h-6 rounded-full bg-primary inline-block"></span>
-              <h2 class="text-lg font-bold text-slate-800">{{ blockGroup.name }}</h2>
-              <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
+              <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100">{{ blockGroup.name }}</h2>
+              <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                 {{ blockGroup.totalRooms }} phòng
               </span>
             </div>
@@ -1006,16 +1001,16 @@ function getStatusBadge(status) {
           </div>
 
           <!-- Floors in Block -->
-          <div v-for="floorGroup in blockGroup.floors" :key="floorGroup.floor" class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs space-y-3">
+          <div v-for="floorGroup in blockGroup.floors" :key="floorGroup.floor" class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-xs space-y-3 transition-colors">
             <!-- Floor Header -->
-            <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2.5">
               <div class="flex items-center gap-2">
                 <v-icon icon="mdi-stairs" color="primary" size="20" />
-                <span class="font-bold text-slate-800 text-sm">Tầng {{ floorGroup.floor }}</span>
-                <span class="text-xs text-slate-400">({{ floorGroup.rooms.length }} phòng)</span>
+                <span class="font-bold text-slate-800 dark:text-slate-100 text-sm">Tầng {{ floorGroup.floor }}</span>
+                <span class="text-xs text-slate-400 dark:text-slate-500">({{ floorGroup.rooms.length }} phòng)</span>
               </div>
               <button
-                class="text-xs font-semibold text-primary hover:text-primary-dark transition flex items-center gap-1"
+                class="text-xs font-semibold text-primary dark:text-blue-400 hover:text-primary-dark dark:hover:text-blue-300 transition flex items-center gap-1 cursor-pointer"
                 @click="openCreateModal(blockGroup.name, floorGroup.floor)"
               >
                 <v-icon icon="mdi-plus-circle-outline" size="16" />
@@ -1028,7 +1023,7 @@ function getStatusBadge(status) {
               <div
                 v-for="room in floorGroup.rooms"
                 :key="room.id"
-                class="group bg-slate-50/70 hover:bg-white border border-slate-200 rounded-xl p-3.5 transition-all duration-200 hover:shadow-md hover:border-slate-300 relative flex flex-col justify-between overflow-hidden"
+                class="group bg-white dark:bg-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3.5 transition-all duration-200 hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600 relative flex flex-col justify-between overflow-hidden"
               >
                 <!-- Top Row: Room Number & Status Badge -->
                 <div>
@@ -1037,11 +1032,11 @@ function getStatusBadge(status) {
                       <input
                         type="checkbox"
                         :checked="selectedRoomIds.includes(Number(room.id))"
-                        class="rounded border-slate-300 text-primary focus:ring-primary w-4 h-4 cursor-pointer"
+                        class="rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-primary focus:ring-primary w-4 h-4 cursor-pointer"
                         @click.stop
                         @change="toggleSelectRoom(room.id)"
                       />
-                      <span class="text-xl font-black text-slate-900 tracking-tight">
+                      <span class="text-xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
                         {{ room.room_number }}
                       </span>
                     </div>
@@ -1057,7 +1052,7 @@ function getStatusBadge(status) {
                   <!-- Room Name (only show if not default "Phòng <number>") -->
                   <div
                     v-if="room.name && room.name !== `Phòng ${room.room_number}`"
-                    class="text-xs text-slate-500 font-medium truncate mb-1"
+                    class="text-xs text-slate-500 dark:text-slate-400 font-medium truncate mb-1"
                     :title="room.name"
                   >
                     {{ room.name }}
@@ -1066,7 +1061,7 @@ function getStatusBadge(status) {
                   <!-- Room Layout & Wifi Mode Badges -->
                   <div class="flex items-center gap-1 flex-wrap my-1.5">
                     <span
-                      class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-50 border border-blue-200/80 text-blue-700 text-[10px] font-bold"
+                      class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-950/70 border border-blue-200/80 dark:border-blue-800/60 text-blue-700 dark:text-blue-300 text-[10px] font-bold"
                       :title="`${room.bedroom_count || 1} Phòng ngủ • ${room.living_room_count || 0} Phòng khách`"
                     >
                       <v-icon icon="mdi-bed" size="11" />
@@ -1078,7 +1073,7 @@ function getStatusBadge(status) {
 
                     <span
                       v-if="room.wifi_mode === 'shared'"
-                      class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-purple-50 border border-purple-200 text-purple-700 text-[10px] font-semibold"
+                      class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-purple-50 dark:bg-purple-950/70 border border-purple-200 dark:border-purple-800/60 text-purple-700 dark:text-purple-300 text-[10px] font-semibold"
                       :title="room.shared_wifi_note || (room.shared_wifi_room ? `Dùng ké Wifi P.${room.shared_wifi_room.room_number}` : 'Dùng ké Wifi phòng bên cạnh')"
                     >
                       <v-icon icon="mdi-wifi-arrow-left-right" size="11" />
@@ -1086,14 +1081,14 @@ function getStatusBadge(status) {
                     </span>
                     <span
                       v-else-if="room.wifi_mode === 'none'"
-                      class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-500 text-[10px]"
+                      class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-300 text-[10px]"
                       title="Không trang bị Wifi"
                     >
                       <v-icon icon="mdi-wifi-off" size="11" /> Không Wifi
                     </span>
                     <span
                       v-else-if="room.wifi_router_count && room.wifi_router_count > 1"
-                      class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-blue-50 border border-blue-200 text-blue-700 text-[10px] font-semibold"
+                      class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-950/70 border border-blue-200 dark:border-blue-800/60 text-blue-700 dark:text-blue-300 text-[10px] font-semibold"
                       :title="`${room.wifi_router_count} Router Wifi riêng`"
                     >
                       <v-icon icon="mdi-wifi" size="11" /> {{ room.wifi_router_count }} Wifi
@@ -1103,25 +1098,25 @@ function getStatusBadge(status) {
 
                 <!-- Middle Info: Type & Price -->
                 <div class="space-y-1 my-2 text-xs">
-                  <div class="flex items-center justify-between text-slate-600 gap-2">
-                    <span class="text-slate-400 shrink-0">Hạng:</span>
-                    <span class="font-semibold text-slate-700 truncate text-right">
+                  <div class="flex items-center justify-between text-slate-600 dark:text-slate-300 gap-2">
+                    <span class="text-slate-400 dark:text-slate-500 shrink-0">Hạng:</span>
+                    <span class="font-semibold text-slate-700 dark:text-slate-200 truncate text-right">
                       {{ room.roomType?.name || room.room_type?.name || 'Tiêu chuẩn' }}
                     </span>
                   </div>
-                  <div v-if="room.price" class="flex items-center justify-between text-slate-600 gap-2">
-                    <span class="text-slate-400 shrink-0">Giá:</span>
-                    <span class="font-bold text-emerald-600 truncate text-right">
+                  <div v-if="room.price" class="flex items-center justify-between text-slate-600 dark:text-slate-300 gap-2">
+                    <span class="text-slate-400 dark:text-slate-500 shrink-0">Giá:</span>
+                    <span class="font-bold text-emerald-600 dark:text-emerald-400 truncate text-right">
                       {{ formatCurrency(room.price) }}
                     </span>
                   </div>
                 </div>
 
                 <!-- Equipment Badge & Actions -->
-                <div class="pt-2 border-t border-slate-200/60 mt-2">
+                <div class="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 mt-2">
                   <div class="flex items-center justify-between gap-1">
                     <button
-                      class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-md bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 hover:text-primary transition shrink-0"
+                      class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-md bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-600 hover:text-primary transition shrink-0 cursor-pointer"
                       title="Xem thiết bị gắn trong phòng"
                       @click="goToRoomEquipments(room.id)"
                     >
@@ -1131,14 +1126,14 @@ function getStatusBadge(status) {
 
                     <div class="flex items-center gap-0.5 shrink-0">
                       <button
-                        class="p-1 rounded text-slate-400 hover:text-primary hover:bg-slate-100 transition"
+                        class="p-1 rounded text-slate-400 hover:text-primary dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer"
                         title="Chỉnh sửa"
                         @click="openEditModal(room)"
                       >
                         <v-icon icon="mdi-pencil-outline" size="16" />
                       </button>
                       <button
-                        class="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"
+                        class="p-1 rounded text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-slate-700 transition cursor-pointer"
                         title="Xóa phòng"
                         @click="confirmDeleteRoom(room)"
                       >
@@ -1155,7 +1150,7 @@ function getStatusBadge(status) {
       </div>
 
       <!-- VIEW 2: Dạng Bảng Dữ Liệu (Table View) -->
-      <div v-else-if="viewMode === 'table'" class="bg-white border border-slate-200/80 rounded-2xl shadow-xs overflow-hidden">
+      <div v-else-if="viewMode === 'table'" class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
         <AppDataTable
           v-model="selectedRoomIds"
           :headers="tableHeaders"
@@ -1171,21 +1166,21 @@ function getStatusBadge(status) {
         >
           <!-- Số phòng -->
           <template #item.room_number="{ item }">
-            <span class="font-extrabold text-slate-900 text-sm">
+            <span class="font-extrabold text-slate-900 dark:text-slate-100 text-sm">
               {{ item.room_number }}
             </span>
           </template>
 
           <!-- Tên phòng -->
           <template #item.name="{ item }">
-            <span class="font-medium text-slate-800">
+            <span class="font-medium text-slate-800 dark:text-slate-200">
               {{ item.name || `Phòng ${item.room_number}` }}
             </span>
           </template>
 
           <!-- Block -->
           <template #item.block="{ item }">
-            <span class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700">
+            <span class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
               <v-icon icon="mdi-domain" size="12" />
               {{ item.block || 'Mặc định' }}
             </span>
@@ -1193,14 +1188,14 @@ function getStatusBadge(status) {
 
           <!-- Floor -->
           <template #item.floor="{ item }">
-            <span class="text-xs font-bold text-slate-600">
+            <span class="text-xs font-bold text-slate-600 dark:text-slate-400">
               Tầng {{ item.floor }}
             </span>
           </template>
 
           <!-- Hạng phòng -->
           <template #item.room_type="{ item }">
-            <span class="text-xs font-medium text-slate-700">
+            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">
               {{ item.roomType?.name || item.room_type?.name || 'Tiêu chuẩn' }}
             </span>
           </template>
@@ -1208,21 +1203,21 @@ function getStatusBadge(status) {
           <!-- Cơ cấu phòng & Wifi -->
           <template #item.composition="{ item }">
             <div class="flex flex-col gap-0.5 text-xs">
-              <span class="inline-flex items-center gap-1 font-semibold text-slate-800">
-                <v-icon icon="mdi-bed" size="13" class="text-blue-600" />
+              <span class="inline-flex items-center gap-1 font-semibold text-slate-800 dark:text-slate-200">
+                <v-icon icon="mdi-bed" size="13" class="text-blue-600 dark:text-blue-400" />
                 {{ item.bedroom_count ?? 1 }} PN
                 <template v-if="(item.living_room_count ?? 0) > 0">
-                  • <v-icon icon="mdi-sofa" size="13" class="text-indigo-600" /> {{ item.living_room_count }} PK
+                  • <v-icon icon="mdi-sofa" size="13" class="text-indigo-600 dark:text-indigo-400" /> {{ item.living_room_count }} PK
                 </template>
               </span>
-              <span v-if="item.wifi_mode === 'shared'" class="text-[11px] text-purple-700 flex items-center gap-0.5">
+              <span v-if="item.wifi_mode === 'shared'" class="text-[11px] text-purple-700 dark:text-purple-300 flex items-center gap-0.5">
                 <v-icon icon="mdi-wifi-arrow-left-right" size="12" />
                 {{ item.shared_wifi_room ? `Ké P.${item.shared_wifi_room.room_number}` : 'Ké Wifi' }}
               </span>
-              <span v-else-if="item.wifi_mode === 'none'" class="text-[11px] text-slate-400 flex items-center gap-0.5">
+              <span v-else-if="item.wifi_mode === 'none'" class="text-[11px] text-slate-400 dark:text-slate-500 flex items-center gap-0.5">
                 <v-icon icon="mdi-wifi-off" size="12" /> Không Wifi
               </span>
-              <span v-else class="text-[11px] text-emerald-600 flex items-center gap-0.5">
+              <span v-else class="text-[11px] text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
                 <v-icon icon="mdi-wifi" size="12" /> {{ (item.wifi_router_count && item.wifi_router_count > 1) ? `${item.wifi_router_count} Router Wifi` : 'Router riêng' }}
               </span>
             </div>
@@ -1232,7 +1227,7 @@ function getStatusBadge(status) {
           <template #item.equipments_count="{ item }">
             <div class="min-w-40">
               <button
-                class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
+                class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition cursor-pointer"
                 @click="goToRoomEquipments(item.id)"
               >
                 <v-icon icon="mdi-package-variant-closed" size="14" />
@@ -1244,7 +1239,7 @@ function getStatusBadge(status) {
 
           <!-- Giá -->
           <template #item.price="{ item }">
-            <span class="text-xs font-semibold text-emerald-600">
+            <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
               {{ item.price ? formatCurrency(item.price) : '0 đ' }}
             </span>
           </template>

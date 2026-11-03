@@ -67,17 +67,17 @@ defineEmits([
 </script>
 
 <template>
-  <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs mb-6 overflow-hidden">
+  <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs mb-6 overflow-hidden transition-colors">
     <!-- Top Section: Block Quick-Filter Pills Bar -->
-    <div class="px-4 pt-3.5 pb-3 border-b border-slate-100 bg-slate-50/60">
+    <div class="px-4 pt-3.5 pb-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/50">
       <div class="flex items-center justify-between gap-2 mb-2">
-        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+        <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
           <v-icon icon="mdi-domain" size="15" color="primary" />
           <span>Phân khu & Tòa nhà (Block):</span>
         </span>
         <button
           v-if="selectedBlock"
-          class="text-xs text-primary font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+          class="text-xs text-primary dark:text-blue-400 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
           @click="$emit('select-block', '')"
         >
           <v-icon icon="mdi-eye-outline" size="14" />
@@ -92,13 +92,13 @@ defineEmits([
           class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-2 border cursor-pointer"
           :class="!selectedBlock
             ? 'bg-primary text-white border-primary shadow-xs'
-            : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'"
+            : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600'"
           @click="$emit('select-block', '')"
         >
           <span>Tất cả Block</span>
           <span
             class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold"
-            :class="!selectedBlock ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'"
+            :class="!selectedBlock ? 'bg-white/25 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'"
           >
             {{ blockCounts.total || 0 }}
           </span>
@@ -111,13 +111,13 @@ defineEmits([
           class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 flex items-center gap-2 border cursor-pointer"
           :class="selectedBlock === b
             ? 'bg-primary text-white border-primary shadow-xs'
-            : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'"
+            : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600'"
           @click="$emit('select-block', b)"
         >
           <span>{{ b }}</span>
           <span
             class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold"
-            :class="selectedBlock === b ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'"
+            :class="selectedBlock === b ? 'bg-white/25 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'"
           >
             {{ blockCounts[b] || 0 }}
           </span>
@@ -138,7 +138,6 @@ defineEmits([
             hide-details
             prepend-inner-icon="mdi-magnify"
             clearable
-            bg-color="slate-50"
             @update:model-value="val => $emit('update:searchQuery', val || '')"
           />
         </div>
@@ -163,7 +162,7 @@ defineEmits([
           <!-- Floor Sort Direction Toggle Button -->
           <button
             type="button"
-            class="px-2.5 py-2 text-xs font-semibold rounded-lg border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 transition flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs"
+            class="px-2.5 py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs"
             :title="floorSortOrder === 'asc' ? 'Đang sắp xếp Tầng 1 → 7 (Bấm để đảo 7 → 1)' : 'Đang sắp xếp Tầng 7 → 1 (Bấm để đảo 1 → 7)'"
             @click="$emit('update:floorSortOrder', floorSortOrder === 'asc' ? 'desc' : 'asc')"
           >
@@ -194,7 +193,7 @@ defineEmits([
           <button
             v-if="hasActiveFilters"
             type="button"
-            class="px-3 py-2 text-xs font-semibold rounded-lg border border-slate-200 text-slate-600 bg-slate-50 hover:bg-slate-100 hover:text-slate-900 transition flex items-center gap-1 shrink-0 cursor-pointer"
+            class="px-3 py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-1 shrink-0 cursor-pointer"
             title="Xóa tất cả bộ lọc đang áp dụng"
             @click="$emit('reset-filters')"
           >
@@ -204,22 +203,22 @@ defineEmits([
         </div>
 
         <!-- Counter badge -->
-        <div class="text-xs text-slate-500 font-medium whitespace-nowrap self-end lg:self-center">
-          Tìm thấy <strong class="text-slate-800 text-sm font-bold">{{ totalFilteredRooms }}</strong> / {{ totalRawRooms }} phòng
+        <div class="text-xs text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap self-end lg:self-center">
+          Tìm thấy <strong class="text-slate-800 dark:text-slate-100 text-sm font-bold">{{ totalFilteredRooms }}</strong> / {{ totalRawRooms }} phòng
         </div>
       </div>
 
       <!-- Interactive Color Legend Badges (Click to quick-filter!) -->
-      <div class="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-2 sm:gap-3 text-xs">
-        <span class="text-slate-400 font-semibold mr-1">Tình trạng:</span>
+      <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center gap-2 sm:gap-3 text-xs">
+        <span class="text-slate-400 dark:text-slate-500 font-semibold mr-1">Tình trạng:</span>
         <button
           v-for="leg in colorLegends"
           :key="leg.key"
           type="button"
           class="px-2.5 py-1 rounded-lg border text-xs font-medium transition-all duration-150 flex items-center gap-1.5 cursor-pointer"
           :class="selectedStatus === leg.key
-            ? `${leg.border} ${leg.text} bg-white ring-2 ring-primary shadow-xs font-bold`
-            : 'border-slate-200/80 bg-slate-50 text-slate-600 hover:bg-white hover:border-slate-300'"
+            ? `${leg.border} ${leg.text} bg-white dark:bg-slate-800 ring-2 ring-primary shadow-xs font-bold`
+            : 'border-slate-200/80 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700'"
           @click="$emit('select-status', leg.key)"
         >
           <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" :class="leg.color" />

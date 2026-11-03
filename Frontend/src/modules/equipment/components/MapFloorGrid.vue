@@ -23,18 +23,18 @@ defineEmits(['select-block', 'select-room'])
       class="space-y-4"
     >
       <!-- Block Header Title -->
-      <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
         <div class="flex items-center gap-2">
           <span class="w-2.5 h-6 rounded-full bg-primary inline-block"></span>
-          <h2 class="text-base sm:text-lg font-bold text-slate-800">{{ blockGroup.name }}</h2>
-          <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
+          <h2 class="text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100">{{ blockGroup.name }}</h2>
+          <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
             {{ blockGroup.totalRooms }} phòng
           </span>
         </div>
         <button
           v-if="selectedBlock !== blockGroup.name"
           type="button"
-          class="text-xs text-primary font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+          class="text-xs text-primary dark:text-blue-400 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
           @click="$emit('select-block', blockGroup.name)"
         >
           <span>Chỉ xem {{ blockGroup.name }}</span>
@@ -46,14 +46,14 @@ defineEmits(['select-block', 'select-room'])
       <div
         v-for="floorGroup in blockGroup.floors"
         :key="floorGroup.floor"
-        class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs space-y-3"
+        class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-xs space-y-3 transition-colors"
       >
         <!-- Floor Header -->
-        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
           <div class="flex items-center gap-2">
             <v-icon icon="mdi-stairs" color="primary" size="18" />
-            <span class="font-bold text-slate-800 text-xs sm:text-sm">Tầng {{ floorGroup.floor }}</span>
-            <span class="text-xs text-slate-400">({{ floorGroup.rooms.length }} phòng)</span>
+            <span class="font-bold text-slate-800 dark:text-slate-100 text-xs sm:text-sm">Tầng {{ floorGroup.floor }}</span>
+            <span class="text-xs text-slate-400 dark:text-slate-500">({{ floorGroup.rooms.length }} phòng)</span>
           </div>
         </div>
 

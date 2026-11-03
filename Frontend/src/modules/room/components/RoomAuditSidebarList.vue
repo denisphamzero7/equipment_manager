@@ -18,28 +18,6 @@ const props = defineProps({
 
 const emit = defineEmits(['select-room', 'reset-filters'])
 
-/**
- * [1. MỤC ĐÍCH]
- * Định dạng danh sách phòng thành mảng các lựa chọn { value, title } phục vụ cho dropdown `v-select`
- * giúp người quản lý tìm kiếm và nhảy nhanh đến phòng cần kiểm tra.
- *
- * [2. LUỒNG XỬ LÝ (FLOW)]
- * 1. Duyệt qua mảng `props.rooms`.
- * 2. Trả về cấu trúc gồm `value` (room id) và `title` (hiển thị số phòng cùng block).
- *
- * [3. NGUỒN GỌI (CALLERS / TRIGGERED FROM)]
- * - Prop `:items="quickSelectItems"` của `v-select` trong template sidebar.
- *
- * [4. THAM SỐ (PARAMETERS)]
- * Không có.
- *
- * [5. GIÁ TRỊ TRẢ VỀ & NGOẠI LỆ]
- * @return {import('vue').ComputedRef<Array<{value: number|string, title: string}>>}
- *
- * [6. VÍ DỤ SỬ DỤNG]
- * @example
- * <v-select :items="quickSelectItems" ... />
- */
 const quickSelectItems = computed(() => {
   return props.rooms.map(r => ({
     value: r.id,
@@ -49,15 +27,15 @@ const quickSelectItems = computed(() => {
 </script>
 
 <template>
-  <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs space-y-3.5 lg:sticky lg:top-20">
+  <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3.5 lg:sticky lg:top-20 transition-colors">
     <!-- Header -->
-    <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+    <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
       <div>
-        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+        <h3 class="text-xs font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider flex items-center gap-1.5">
           <v-icon icon="mdi-format-list-bulleted" size="16" class="text-primary" />
           <span>Danh sách phòng</span>
         </h3>
-        <p class="text-[11px] text-slate-400 mt-0.5">
+        <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
           {{ rooms.length }} phòng hiển thị
         </p>
       </div>
@@ -86,11 +64,11 @@ const quickSelectItems = computed(() => {
 
     <!-- Vertical Room Cards List -->
     <div class="space-y-1.5 max-h-[600px] overflow-y-auto pr-1 scrollbar-thin">
-      <div v-if="rooms.length === 0" class="py-8 text-center text-slate-400 text-xs">
-        <v-icon icon="mdi-filter-off-outline" size="32" class="text-slate-300 mb-1.5 block mx-auto" />
+      <div v-if="rooms.length === 0" class="py-8 text-center text-slate-400 dark:text-slate-500 text-xs">
+        <v-icon icon="mdi-filter-off-outline" size="32" class="text-slate-300 dark:text-slate-600 mb-1.5 block mx-auto" />
         Không tìm thấy phòng phù hợp.
         <button
-          class="text-primary block mx-auto mt-2 font-bold hover:underline cursor-pointer"
+          class="text-primary dark:text-blue-400 block mx-auto mt-2 font-bold hover:underline cursor-pointer"
           @click="emit('reset-filters')"
         >
           Đặt lại bộ lọc
@@ -103,8 +81,8 @@ const quickSelectItems = computed(() => {
         type="button"
         class="w-full text-left p-2.5 sm:p-3 rounded-lg text-xs transition-all duration-150 flex items-center justify-between border cursor-pointer group"
         :class="selectedRoomId === room.id
-          ? 'bg-blue-50/90 text-blue-900 border-primary shadow-xs ring-1 ring-primary/30 font-bold'
-          : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200/90 hover:border-slate-300'"
+          ? 'bg-blue-50/90 dark:bg-blue-950/70 text-blue-900 dark:text-blue-200 border-primary shadow-xs ring-1 ring-primary/30 font-bold'
+          : 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-200 border-slate-200/90 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'"
         @click="emit('select-room', room.id)"
       >
         <div class="min-w-0 pr-2">
@@ -112,18 +90,18 @@ const quickSelectItems = computed(() => {
             <v-icon
               icon="mdi-door"
               size="15"
-              :class="selectedRoomId === room.id ? 'text-primary' : 'text-slate-400'"
+              :class="selectedRoomId === room.id ? 'text-primary' : 'text-slate-400 dark:text-slate-500'"
             />
-            <span class="text-sm font-black truncate">Phòng {{ room.room_number }}</span>
+            <span class="text-sm font-black truncate text-slate-900 dark:text-slate-100">Phòng {{ room.room_number }}</span>
           </div>
-          <div class="text-[11px] text-slate-500 mt-0.5 truncate">
+          <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">
             {{ room.block || 'Block A' }} • Tầng {{ room.floor ?? 1 }}
           </div>
-          <div v-if="room.shared_wifi_issue" class="text-[10px] text-rose-600 font-bold mt-0.5 flex items-center gap-1 animate-pulse">
+          <div v-if="room.shared_wifi_issue" class="text-[10px] text-rose-600 dark:text-rose-400 font-bold mt-0.5 flex items-center gap-1 animate-pulse">
             <v-icon icon="mdi-wifi-alert" size="12" />
             <span>Mất Wifi ké (P.{{ room.shared_wifi_issue.source_room_number }} sự cố)</span>
           </div>
-          <div v-else-if="room.dependent_rooms && room.dependent_rooms.length" class="text-[10px] text-indigo-600 font-medium mt-0.5 flex items-center gap-1">
+          <div v-else-if="room.dependent_rooms && room.dependent_rooms.length" class="text-[10px] text-indigo-600 dark:text-indigo-400 font-medium mt-0.5 flex items-center gap-1">
             <v-icon icon="mdi-access-point-network" size="12" />
             <span>Phát Wifi: {{ room.dependent_rooms.length }} phòng</span>
           </div>
@@ -133,7 +111,7 @@ const quickSelectItems = computed(() => {
         <div class="shrink-0 text-right">
           <span
             v-if="room.shared_wifi_issue"
-            class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200 animate-pulse flex items-center gap-1"
+            class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 dark:bg-rose-950/70 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60 animate-pulse flex items-center gap-1"
             :title="room.shared_wifi_issue.message"
           >
             <v-icon icon="mdi-wifi-alert" size="11" />
@@ -141,25 +119,25 @@ const quickSelectItems = computed(() => {
           </span>
           <span
             v-else-if="room.badge_color === 'green'"
-            class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200"
+            class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60"
           >
             ✓ Đạt chuẩn
           </span>
           <span
             v-else-if="room.stats?.missing_count > 0"
-            class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200"
+            class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 dark:bg-rose-950/70 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60"
           >
             Thiếu {{ room.stats.missing_count }}
           </span>
           <span
             v-else-if="room.stats?.broken_count > 0"
-            class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200"
+            class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 dark:bg-rose-950/70 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60"
           >
             {{ room.stats.broken_count }} hỏng
           </span>
           <span
             v-else-if="room.stats?.maintenance_count > 0"
-            class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200"
+            class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60"
           >
             Bảo trì
           </span>

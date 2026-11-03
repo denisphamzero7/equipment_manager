@@ -42,17 +42,17 @@ defineEmits(['select-block', 'reset-filters'])
 </script>
 
 <template>
-  <div class="bg-white border border-slate-200/80 rounded-2xl shadow-xs overflow-hidden">
+  <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
     <!-- Top: Block Quick-Filter Pills Bar -->
-    <div class="px-4 pt-3.5 pb-3 border-b border-slate-100 bg-slate-50/60">
+    <div class="px-4 pt-3.5 pb-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/50">
       <div class="flex items-center justify-between gap-2 mb-2">
-        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+        <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
           <v-icon icon="mdi-domain" size="15" color="primary" />
           <span>Phân khu & Tòa nhà (Block):</span>
         </span>
         <button
           v-if="filters.block"
-          class="text-xs text-primary font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+          class="text-xs text-primary dark:text-blue-400 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
           @click="$emit('select-block', '')"
         >
           <v-icon icon="mdi-eye-outline" size="14" />
@@ -65,13 +65,13 @@ defineEmits(['select-block', 'reset-filters'])
         <button
           type="button"
           class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 cursor-pointer shrink-0"
-          :class="!filters.block ? 'bg-primary text-white shadow-xs' : 'bg-white text-slate-700 border border-slate-200 hover:border-slate-300 hover:bg-slate-50'"
+          :class="!filters.block ? 'bg-primary text-white shadow-xs' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700'"
           @click="$emit('select-block', '')"
         >
           <span>Tất cả vị trí</span>
           <span
             class="text-[11px] px-1.5 py-0.2 rounded-full font-bold"
-            :class="!filters.block ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'"
+            :class="!filters.block ? 'bg-white/25 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'"
           >
             {{ totalRooms }}
           </span>
@@ -81,14 +81,14 @@ defineEmits(['select-block', 'reset-filters'])
           :key="b"
           type="button"
           class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 cursor-pointer shrink-0"
-          :class="filters.block === b ? 'bg-primary text-white shadow-xs' : 'bg-white text-slate-700 border border-slate-200 hover:border-slate-300 hover:bg-slate-50'"
+          :class="filters.block === b ? 'bg-primary text-white shadow-xs' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700'"
           @click="$emit('select-block', b)"
         >
           <v-icon icon="mdi-office-building-outline" size="13" />
           <span>{{ b }}</span>
           <span
             class="text-[11px] px-1.5 py-0.2 rounded-full font-bold"
-            :class="filters.block === b ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'"
+            :class="filters.block === b ? 'bg-white/25 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'"
           >
             {{ blockCounts[b] || 0 }}
           </span>
@@ -161,13 +161,13 @@ defineEmits(['select-block', 'reset-filters'])
     </div>
 
     <!-- Filter Count & Reset Bar -->
-    <div v-if="hasActiveFilters" class="px-4 py-2.5 bg-blue-50/40 border-t border-slate-100 flex items-center justify-between text-xs">
-      <span class="text-slate-600">
-        Đang lọc: Tìm thấy <strong>{{ filteredRoomsCount }}</strong> trên tổng số <strong>{{ totalRooms }}</strong> phòng
+    <div v-if="hasActiveFilters" class="px-4 py-2.5 bg-blue-50/40 dark:bg-blue-950/40 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+      <span class="text-slate-600 dark:text-slate-300">
+        Đang lọc: Tìm thấy <strong class="text-slate-800 dark:text-slate-100">{{ filteredRoomsCount }}</strong> trên tổng số <strong class="text-slate-800 dark:text-slate-100">{{ totalRooms }}</strong> phòng
       </span>
       <button
         type="button"
-        class="text-primary font-bold hover:underline flex items-center gap-1 cursor-pointer"
+        class="text-primary dark:text-blue-400 font-bold hover:underline flex items-center gap-1 cursor-pointer"
         @click="$emit('reset-filters')"
       >
         <v-icon icon="mdi-filter-remove-outline" size="14" />

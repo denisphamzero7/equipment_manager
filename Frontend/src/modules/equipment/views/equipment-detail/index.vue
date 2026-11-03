@@ -386,44 +386,44 @@ async function handleDelete() {
         <!-- Left 2 Cols: Main Info -->
         <div class="lg:col-span-2 space-y-6">
           <!-- General Specs Card -->
-          <div class="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200/80 shadow-xs">
-            <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
-              <h3 class="text-base font-bold text-slate-800">Thông tin Thông số & Định danh</h3>
+          <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs transition-colors">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 mb-5">
+              <h3 class="text-base font-bold text-slate-800 dark:text-slate-100">Thông tin Thông số & Định danh</h3>
               <AppStatusBadge :status="equipment.status" />
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 text-xs">
               <div>
-                <span class="text-slate-400 block mb-1">Mã Serial / QR:</span>
-                <span class="font-mono text-sm font-bold text-slate-800">{{ equipment.serial_number || '—' }}</span>
+                <span class="text-slate-400 dark:text-slate-500 block mb-1">Mã Serial / QR:</span>
+                <span class="font-mono text-sm font-bold text-slate-800 dark:text-slate-100">{{ equipment.serial_number || '—' }}</span>
               </div>
 
               <div>
-                <span class="text-slate-400 block mb-1">Danh mục thiết bị:</span>
-                <span class="font-semibold text-slate-800">{{ equipment.model?.category?.name || equipment.category?.name || '—' }}</span>
+                <span class="text-slate-400 dark:text-slate-500 block mb-1">Danh mục thiết bị:</span>
+                <span class="font-semibold text-slate-800 dark:text-slate-200">{{ equipment.model?.category?.name || equipment.category?.name || '—' }}</span>
               </div>
 
               <div>
-                <span class="text-slate-400 block mb-1">Mẫu thiết bị (Model):</span>
-                <span class="font-semibold text-slate-800">{{ equipment.model?.name || '—' }}</span>
+                <span class="text-slate-400 dark:text-slate-500 block mb-1">Mẫu thiết bị (Model):</span>
+                <span class="font-semibold text-slate-800 dark:text-slate-200">{{ equipment.model?.name || '—' }}</span>
               </div>
 
               <div>
-                <span class="text-slate-400 block mb-1">Thương hiệu / Hãng SX:</span>
-                <span class="font-semibold text-slate-800">{{ equipment.model?.brand || '—' }}</span>
+                <span class="text-slate-400 dark:text-slate-500 block mb-1">Thương hiệu / Hãng SX:</span>
+                <span class="font-semibold text-slate-800 dark:text-slate-200">{{ equipment.model?.brand || '—' }}</span>
               </div>
 
               <!-- Location Detail Box: Block mấy, Tầng mấy, Phòng mấy -->
-              <div v-if="equipment.room" class="sm:col-span-2 p-4 bg-gradient-to-r from-blue-50/80 to-indigo-50/60 border border-blue-200/90 rounded-2xl">
+              <div v-if="equipment.room" class="sm:col-span-2 p-4 bg-gradient-to-r from-blue-50/80 to-indigo-50/60 dark:from-blue-950/40 dark:to-indigo-950/30 border border-blue-200/90 dark:border-blue-800/60 rounded-2xl">
                 <div class="flex items-center justify-between gap-2 mb-2.5">
-                  <span class="text-xs font-bold text-primary uppercase tracking-wider flex items-center gap-1.5">
+                  <span class="text-xs font-bold text-primary dark:text-blue-400 uppercase tracking-wider flex items-center gap-1.5">
                     <v-icon icon="mdi-map-marker-radius" size="18" />
                     <span>Vị Trí Lắp Đặt Chi Tiết (Phân Khu & Phòng)</span>
                   </span>
                   <router-link
                     v-if="equipment.room.block && equipment.room.floor"
                     :to="{ path: '/equipments/map-view', query: { block: equipment.room.block, floor: equipment.room.floor } }"
-                    class="text-xs font-bold text-primary hover:underline flex items-center gap-1"
+                    class="text-xs font-bold text-primary dark:text-blue-400 hover:underline flex items-center gap-1"
                   >
                     <span>Xem trên Sơ đồ Map</span>
                     <v-icon icon="mdi-arrow-right" size="14" />
@@ -432,36 +432,36 @@ async function handleDelete() {
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                   <!-- Block -->
-                  <div class="bg-white p-3 rounded-xl border border-blue-100 shadow-2xs">
-                    <span class="text-[10px] font-bold text-slate-400 block uppercase">1. Tòa nhà / Block</span>
-                    <span class="text-base font-extrabold text-primary flex items-center gap-1.5 mt-0.5">
+                  <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-blue-100 dark:border-blue-900/40 shadow-2xs">
+                    <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 block uppercase">1. Tòa nhà / Block</span>
+                    <span class="text-base font-extrabold text-primary dark:text-blue-400 flex items-center gap-1.5 mt-0.5">
                       <v-icon icon="mdi-domain" size="18" />
                       <span>{{ equipment.room.block || 'Khu chính' }}</span>
                     </span>
                   </div>
 
                   <!-- Floor -->
-                  <div class="bg-white p-3 rounded-xl border border-blue-100 shadow-2xs">
-                    <span class="text-[10px] font-bold text-slate-400 block uppercase">2. Tầng</span>
-                    <span class="text-base font-extrabold text-slate-800 flex items-center gap-1.5 mt-0.5">
+                  <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-blue-100 dark:border-blue-900/40 shadow-2xs">
+                    <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 block uppercase">2. Tầng</span>
+                    <span class="text-base font-extrabold text-slate-800 dark:text-slate-100 flex items-center gap-1.5 mt-0.5">
                       <v-icon icon="mdi-stairs" size="18" />
                       <span>Tầng {{ equipment.room.floor ?? '—' }}</span>
                     </span>
                   </div>
 
                   <!-- Room -->
-                  <div class="bg-white p-3 rounded-xl border border-blue-100 shadow-2xs">
-                    <span class="text-[10px] font-bold text-slate-400 block uppercase">3. Số phòng</span>
-                    <span class="text-base font-black text-blue-700 flex items-center gap-1.5 mt-0.5">
+                  <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-blue-100 dark:border-blue-900/40 shadow-2xs">
+                    <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 block uppercase">3. Số phòng</span>
+                    <span class="text-base font-black text-blue-700 dark:text-blue-300 flex items-center gap-1.5 mt-0.5">
                       <v-icon icon="mdi-door" size="18" />
                       <span>Phòng {{ equipment.room.room_number }}</span>
                     </span>
                   </div>
                 </div>
 
-                <div v-if="equipment.position_note" class="mt-3 pt-2.5 border-t border-blue-100 flex items-center gap-2 text-xs text-slate-600">
-                  <span class="font-bold text-slate-500">Vị trí cụ thể trong phòng:</span>
-                  <span class="font-bold text-slate-800">{{ equipment.position_note }}</span>
+                <div v-if="equipment.position_note" class="mt-3 pt-2.5 border-t border-blue-100 dark:border-blue-900/40 flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+                  <span class="font-bold text-slate-500 dark:text-slate-400">Vị trí cụ thể trong phòng:</span>
+                  <span class="font-bold text-slate-800 dark:text-slate-100">{{ equipment.position_note }}</span>
                 </div>
               </div>
 
@@ -500,35 +500,35 @@ async function handleDelete() {
 
               <div>
                 <span class="text-slate-400 block mb-1">Ngày tạo trên hệ thống:</span>
-                <span class="font-medium text-slate-800">{{ formatDate(equipment.created_at) }}</span>
+                <span class="font-medium text-slate-800 dark:text-slate-200">{{ formatDate(equipment.created_at) }}</span>
               </div>
             </div>
 
-            <div v-if="equipment.note" class="mt-5 pt-4 border-t border-slate-100 text-xs">
+            <div v-if="equipment.note" class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs">
               <span class="text-slate-400 block mb-1 font-medium">Ghi chú vận hành:</span>
-              <p class="text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-100 leading-relaxed">
+              <p class="text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-100 dark:border-slate-700/60 leading-relaxed">
                 {{ equipment.note }}
               </p>
             </div>
           </div>
 
           <!-- Maintenance Logs History Card with Timeline -->
-          <div class="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200/80 shadow-xs">
-            <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-100">
+          <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs">
+            <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-100 dark:border-slate-800">
               <div class="flex items-center gap-2.5">
                 <div class="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
                   <v-icon icon="mdi-timeline-clock-outline" size="20" />
                 </div>
                 <div>
-                  <h3 class="text-base font-bold text-slate-800">
+                  <h3 class="text-base font-bold text-slate-800 dark:text-slate-100">
                     Lịch sử Bảo trì & Tiến trình Xử lý
                   </h3>
-                  <p class="text-[11px] text-slate-400">
+                  <p class="text-[11px] text-slate-400 dark:text-slate-500">
                     Theo dõi toàn bộ chu trình xử lý sự cố từ lúc báo hỏng đến khi nghiệm thu
                   </p>
                 </div>
               </div>
-              <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
+              <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                 {{ equipment.maintenance_logs?.length || 0 }} đợt xử lý
               </span>
             </div>
@@ -537,15 +537,15 @@ async function handleDelete() {
               <div
                 v-for="(log, idx) in equipment.maintenance_logs"
                 :key="log.id"
-                class="rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-slate-50/50 p-4 sm:p-5 shadow-xs"
+                class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-gradient-to-b from-white to-slate-50/50 dark:from-slate-900 dark:to-slate-900/80 p-4 sm:p-5 shadow-xs"
               >
                 <!-- Log Header -->
-                <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-4 border-b border-slate-100">
+                <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-4 border-b border-slate-100 dark:border-slate-800">
                   <div class="flex items-center gap-2">
-                    <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-200 text-slate-700">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200">
                       #{{ equipment.maintenance_logs.length - idx }}
                     </span>
-                    <span class="font-bold text-slate-800 text-sm">
+                    <span class="font-bold text-slate-800 dark:text-slate-100 text-sm">
                       {{ log.issue_description || 'Ghi nhận báo hỏng / bảo trì' }}
                     </span>
                   </div>
@@ -555,10 +555,10 @@ async function handleDelete() {
                     <span
                       class="px-2.5 py-1 rounded-lg text-xs font-bold inline-flex items-center gap-1.5"
                       :class="{
-                        'bg-emerald-100 text-emerald-800 border border-emerald-200': log.status === 'completed',
-                        'bg-blue-100 text-blue-800 border border-blue-200': log.status === 'in_progress',
-                        'bg-amber-100 text-amber-800 border border-amber-200': log.status === 'pending',
-                        'bg-rose-100 text-rose-800 border border-rose-200': log.status === 'unfixable',
+                        'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60': log.status === 'completed',
+                        'bg-blue-100 dark:bg-blue-950/70 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60': log.status === 'in_progress',
+                        'bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60': log.status === 'pending',
+                        'bg-rose-100 dark:bg-rose-950/70 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60': log.status === 'unfixable',
                       }"
                     >
                       <v-icon
@@ -580,7 +580,7 @@ async function handleDelete() {
                     <button
                       v-if="$can('update', 'Equipment')"
                       type="button"
-                      class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white hover:bg-primary/10 text-slate-700 hover:text-primary border border-slate-300 transition-colors flex items-center gap-1 shadow-2xs"
+                      class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 hover:bg-primary/10 text-slate-700 dark:text-slate-200 hover:text-primary border border-slate-300 dark:border-slate-700 transition-colors flex items-center gap-1 shadow-2xs"
                       title="Cập nhật tiến độ xử lý hoặc chi phí"
                       @click="openUpdateLogModal(log)"
                     >
@@ -591,28 +591,28 @@ async function handleDelete() {
                 </div>
 
                 <!-- Visual Step Timeline -->
-                <div class="relative pl-6 sm:pl-8 space-y-6 before:absolute before:left-3 sm:before:left-4 before:top-2 before:bottom-3 before:w-0.5 before:bg-slate-200">
+                <div class="relative pl-6 sm:pl-8 space-y-6 before:absolute before:left-3 sm:before:left-4 before:top-2 before:bottom-3 before:w-0.5 before:bg-slate-200 dark:before:bg-slate-700">
                   <!-- Step 1: Báo hỏng / Tiếp nhận -->
                   <div class="relative">
                     <!-- Dot 1 -->
-                    <div class="absolute -left-6 sm:-left-8 top-0.5 w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center ring-4 ring-white shadow-xs">
+                    <div class="absolute -left-6 sm:-left-8 top-0.5 w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center ring-4 ring-white dark:ring-slate-900 shadow-xs">
                       <v-icon icon="mdi-flag" size="13" />
                     </div>
                     <div class="space-y-1">
                       <div class="flex flex-wrap items-center justify-between gap-1">
-                        <span class="text-xs font-bold text-slate-800 uppercase tracking-wide">
+                        <span class="text-xs font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wide">
                           1. Tiếp nhận sự cố & Báo hỏng
                         </span>
-                        <span class="text-[11px] font-medium text-slate-400">
+                        <span class="text-[11px] font-medium text-slate-400 dark:text-slate-500">
                           {{ formatDate(log.created_at, 'DD/MM/YYYY HH:mm') }}
                         </span>
                       </div>
-                      <div class="text-xs text-slate-600 bg-white p-2.5 rounded-xl border border-slate-100 shadow-2xs">
-                        <div class="flex items-center gap-2 text-slate-500">
-                          <v-icon icon="mdi-account" size="14" class="text-slate-400" />
-                          <span>Người ghi nhận: <strong class="text-slate-700">{{ log.reported_by_name || 'Hệ thống / Quản lý' }}</strong></span>
+                      <div class="text-xs text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700/70 shadow-2xs">
+                        <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+                          <v-icon icon="mdi-account" size="14" class="text-slate-400 dark:text-slate-500" />
+                          <span>Người ghi nhận: <strong class="text-slate-700 dark:text-slate-200">{{ log.reported_by_name || 'Hệ thống / Quản lý' }}</strong></span>
                         </div>
-                        <div v-if="log.issue_description" class="mt-1.5 pt-1.5 border-t border-slate-50 text-slate-700 font-medium">
+                        <div v-if="log.issue_description" class="mt-1.5 pt-1.5 border-t border-slate-50 dark:border-slate-700/60 text-slate-700 dark:text-slate-200 font-medium">
                           "{{ log.issue_description }}"
                         </div>
                       </div>
@@ -623,12 +623,12 @@ async function handleDelete() {
                   <div class="relative">
                     <!-- Dot 2 -->
                     <div
-                      class="absolute -left-6 sm:-left-8 top-0.5 w-6 h-6 rounded-full flex items-center justify-center ring-4 ring-white shadow-xs"
+                      class="absolute -left-6 sm:-left-8 top-0.5 w-6 h-6 rounded-full flex items-center justify-center ring-4 ring-white dark:ring-slate-900 shadow-xs"
                       :class="{
                         'bg-blue-600 text-white animate-pulse': log.status === 'in_progress',
                         'bg-emerald-600 text-white': log.status === 'completed',
                         'bg-slate-400 text-white': log.status === 'unfixable',
-                        'bg-slate-200 text-slate-500': log.status === 'pending',
+                        'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300': log.status === 'pending',
                       }"
                     >
                       <v-icon
@@ -641,32 +641,32 @@ async function handleDelete() {
                         <span
                           class="text-xs font-bold uppercase tracking-wide"
                           :class="{
-                            'text-blue-700': log.status === 'in_progress',
-                            'text-slate-800': log.status === 'completed' || log.status === 'unfixable',
-                            'text-slate-400': log.status === 'pending',
+                            'text-blue-700 dark:text-blue-400': log.status === 'in_progress',
+                            'text-slate-800 dark:text-slate-200': log.status === 'completed' || log.status === 'unfixable',
+                            'text-slate-400 dark:text-slate-500': log.status === 'pending',
                           }"
                         >
                           2. Xử lý kỹ thuật & Sửa chữa
                         </span>
-                        <span v-if="log.status !== 'pending' && log.updated_at" class="text-[11px] font-medium text-slate-400">
+                        <span v-if="log.status !== 'pending' && log.updated_at" class="text-[11px] font-medium text-slate-400 dark:text-slate-500">
                           {{ formatDate(log.updated_at, 'DD/MM/YYYY HH:mm') }}
                         </span>
                       </div>
                       <div
                         class="text-xs p-2.5 rounded-xl border shadow-2xs"
                         :class="{
-                          'bg-blue-50/70 border-blue-200 text-blue-900': log.status === 'in_progress',
-                          'bg-white border-slate-100 text-slate-600': log.status !== 'in_progress',
+                          'bg-blue-50/70 dark:bg-blue-950/60 border-blue-200 dark:border-blue-800/60 text-blue-900 dark:text-blue-300': log.status === 'in_progress',
+                          'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300': log.status !== 'in_progress',
                         }"
                       >
-                        <p v-if="log.status === 'pending'" class="text-slate-400 italic">
+                        <p v-if="log.status === 'pending'" class="text-slate-400 dark:text-slate-500 italic">
                           Chờ kỹ thuật viên tiếp nhận và khảo sát linh kiện...
                         </p>
-                        <p v-else-if="log.status === 'in_progress'" class="font-semibold text-blue-800 flex items-center gap-1.5">
-                          <v-icon icon="mdi-progress-wrench" size="15" class="animate-spin text-blue-600" />
+                        <p v-else-if="log.status === 'in_progress'" class="font-semibold text-blue-800 dark:text-blue-300 flex items-center gap-1.5">
+                          <v-icon icon="mdi-progress-wrench" size="15" class="animate-spin text-blue-600 dark:text-blue-400" />
                           <span>Kỹ thuật viên đang tiến hành kiểm tra, sửa chữa và thay thế linh kiện.</span>
                         </p>
-                        <p v-else class="text-slate-600">
+                        <p v-else class="text-slate-600 dark:text-slate-300">
                           Đã hoàn thành khâu sửa chữa, chuyển sang bước nghiệm thu kết quả.
                         </p>
                       </div>
@@ -677,11 +677,11 @@ async function handleDelete() {
                   <div class="relative">
                     <!-- Dot 3 -->
                     <div
-                      class="absolute -left-6 sm:-left-8 top-0.5 w-6 h-6 rounded-full flex items-center justify-center ring-4 ring-white shadow-xs"
+                      class="absolute -left-6 sm:-left-8 top-0.5 w-6 h-6 rounded-full flex items-center justify-center ring-4 ring-white dark:ring-slate-900 shadow-xs"
                       :class="{
                         'bg-emerald-600 text-white': log.status === 'completed',
                         'bg-rose-600 text-white': log.status === 'unfixable',
-                        'bg-slate-200 text-slate-400': log.status === 'pending' || log.status === 'in_progress',
+                        'bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-400': log.status === 'pending' || log.status === 'in_progress',
                       }"
                     >
                       <v-icon
@@ -700,14 +700,14 @@ async function handleDelete() {
                         <span
                           class="text-xs font-bold uppercase tracking-wide"
                           :class="{
-                            'text-emerald-700': log.status === 'completed',
-                            'text-rose-700': log.status === 'unfixable',
-                            'text-slate-400': log.status === 'pending' || log.status === 'in_progress',
+                            'text-emerald-700 dark:text-emerald-400': log.status === 'completed',
+                            'text-rose-700 dark:text-rose-400': log.status === 'unfixable',
+                            'text-slate-400 dark:text-slate-500': log.status === 'pending' || log.status === 'in_progress',
                           }"
                         >
                           3. Nghiệm thu & Hoàn tất
                         </span>
-                        <span v-if="log.resolved_at || (log.status === 'completed' && log.updated_at)" class="text-[11px] font-medium text-slate-400">
+                        <span v-if="log.resolved_at || (log.status === 'completed' && log.updated_at)" class="text-[11px] font-medium text-slate-400 dark:text-slate-500">
                           {{ formatDate(log.resolved_at || log.updated_at, 'DD/MM/YYYY HH:mm') }}
                         </span>
                       </div>
@@ -715,47 +715,47 @@ async function handleDelete() {
                       <!-- Step 3 Content by status -->
                       <div
                         v-if="log.status === 'completed'"
-                        class="p-3 bg-emerald-50/70 border border-emerald-200 rounded-xl text-xs space-y-1.5"
+                        class="p-3 bg-emerald-50/70 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 rounded-xl text-xs space-y-1.5"
                       >
-                        <div class="flex items-center gap-1.5 font-bold text-emerald-800">
-                          <v-icon icon="mdi-check-circle-outline" size="16" class="text-emerald-600" />
+                        <div class="flex items-center gap-1.5 font-bold text-emerald-800 dark:text-emerald-300">
+                          <v-icon icon="mdi-check-circle-outline" size="16" class="text-emerald-600 dark:text-emerald-400" />
                           <span>Đã khắc phục hoàn toàn — Thiết bị sẵn sàng vận hành</span>
                         </div>
-                        <div class="flex flex-wrap items-center justify-between gap-2 text-slate-600 pt-1 border-t border-emerald-100">
+                        <div class="flex flex-wrap items-center justify-between gap-2 text-slate-600 dark:text-slate-300 pt-1 border-t border-emerald-100 dark:border-emerald-800/60">
                           <span v-if="log.resolved_by_name">
-                            Người nghiệm thu: <strong class="text-slate-800">{{ log.resolved_by_name }}</strong>
+                            Người nghiệm thu: <strong class="text-slate-800 dark:text-slate-100">{{ log.resolved_by_name }}</strong>
                           </span>
                           <span>
-                            Chi phí sửa chữa: <strong class="text-emerald-700 text-sm font-black">{{ formatCurrencyVND(log.cost) }}</strong>
+                            Chi phí sửa chữa: <strong class="text-emerald-700 dark:text-emerald-400 text-sm font-black">{{ formatCurrencyVND(log.cost) }}</strong>
                           </span>
                         </div>
                       </div>
 
                       <div
                         v-else-if="log.status === 'unfixable'"
-                        class="p-3 bg-rose-50/70 border border-rose-200 rounded-xl text-xs space-y-1.5"
+                        class="p-3 bg-rose-50/70 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800/60 rounded-xl text-xs space-y-1.5"
                       >
-                        <div class="flex items-center gap-1.5 font-bold text-rose-800">
-                          <v-icon icon="mdi-alert-octagon-outline" size="16" class="text-rose-600" />
+                        <div class="flex items-center gap-1.5 font-bold text-rose-800 dark:text-rose-300">
+                          <v-icon icon="mdi-alert-octagon-outline" size="16" class="text-rose-600 dark:text-rose-400" />
                           <span>Không thể sửa chữa — Đề xuất thanh lý / thay thế mới</span>
                         </div>
-                        <div class="flex flex-wrap items-center justify-between gap-2 text-slate-600 pt-1 border-t border-rose-100">
+                        <div class="flex flex-wrap items-center justify-between gap-2 text-slate-600 dark:text-slate-300 pt-1 border-t border-rose-100 dark:border-rose-800/60">
                           <span v-if="log.resolved_by_name">
-                            Người kết luận: <strong class="text-slate-800">{{ log.resolved_by_name }}</strong>
+                            Người kết luận: <strong class="text-slate-800 dark:text-slate-100">{{ log.resolved_by_name }}</strong>
                           </span>
                           <span v-if="log.cost > 0">
-                            Chi phí phát sinh: <strong class="text-rose-700 font-bold">{{ formatCurrencyVND(log.cost) }}</strong>
+                            Chi phí phát sinh: <strong class="text-rose-700 dark:text-rose-400 font-bold">{{ formatCurrencyVND(log.cost) }}</strong>
                           </span>
                         </div>
                       </div>
 
                       <div
                         v-else
-                        class="p-2.5 bg-slate-50 border border-dashed border-slate-200 rounded-xl text-xs text-slate-400 italic flex items-center justify-between"
+                        class="p-2.5 bg-slate-50 dark:bg-slate-800/60 border border-dashed border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-400 dark:text-slate-500 italic flex items-center justify-between"
                       >
                         <span>Đang chờ hoàn tất xử lý để tiến hành nghiệm thu...</span>
-                        <span v-if="log.cost > 0" class="not-italic text-slate-600">
-                          Dự toán chi phí: <strong class="text-slate-700">{{ formatCurrencyVND(log.cost) }}</strong>
+                        <span v-if="log.cost > 0" class="not-italic text-slate-600 dark:text-slate-300">
+                          Dự toán chi phí: <strong class="text-slate-700 dark:text-slate-200">{{ formatCurrencyVND(log.cost) }}</strong>
                         </span>
                       </div>
                     </div>
@@ -764,7 +764,7 @@ async function handleDelete() {
               </div>
             </div>
 
-            <div v-else class="text-center py-8 text-slate-400 text-xs">
+            <div v-else class="text-center py-8 text-slate-400 dark:text-slate-500 text-xs">
               <v-icon icon="mdi-shield-check-outline" size="36" class="text-emerald-500 mb-1 block mx-auto" />
               Thiết bị chưa có ghi nhận sự cố hỏng hóc nào. Hoạt động ổn định.
             </div>
@@ -774,16 +774,16 @@ async function handleDelete() {
         <!-- Right 1 Col: Media & Quick Actions -->
         <div class="space-y-6">
           <!-- Photo Card -->
-          <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs">
+          <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-xs">
             <!-- Header -->
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-2">
                 <v-icon icon="mdi-camera" size="18" class="text-primary" />
-                <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider">
                   Hình ảnh Thiết bị
                 </h4>
               </div>
-              <span v-if="equipmentPhotos.length" class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+              <span v-if="equipmentPhotos.length" class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                 {{ equipmentPhotos.length }} ảnh
               </span>
             </div>
@@ -802,7 +802,7 @@ async function handleDelete() {
               <!-- When photos exist -->
               <div v-if="equipmentPhotos.length > 0" class="space-y-3">
                 <!-- Main Preview Container -->
-                <div class="relative group rounded-xl overflow-hidden border border-slate-200 bg-slate-900/5 aspect-4/3 flex items-center justify-center">
+                <div class="relative group rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-900/5 dark:bg-slate-950 aspect-4/3 flex items-center justify-center">
                   <img
                     v-if="!imageLoadError"
                     :src="currentPhoto.url"
@@ -813,9 +813,9 @@ async function handleDelete() {
                   />
 
                   <!-- Error Fallback -->
-                  <div v-else class="text-center p-6 text-slate-400">
-                    <v-icon icon="mdi-image-broken-variant" size="44" class="text-slate-300 mb-2" />
-                    <p class="text-xs font-medium text-slate-600">Không thể tải hiển thị hình ảnh</p>
+                  <div v-else class="text-center p-6 text-slate-400 dark:text-slate-500">
+                    <v-icon icon="mdi-image-broken-variant" size="44" class="text-slate-300 dark:text-slate-600 mb-2" />
+                    <p class="text-xs font-medium text-slate-600 dark:text-slate-400">Không thể tải hiển thị hình ảnh</p>
                     <button
                       type="button"
                       class="mt-2 text-xs text-primary font-semibold hover:underline"
@@ -828,10 +828,10 @@ async function handleDelete() {
                   <!-- Loading Overlay -->
                   <div
                     v-if="uploadingPhoto || deletingPhoto"
-                    class="absolute inset-0 bg-white/80 backdrop-blur-xs flex flex-col items-center justify-center gap-2 z-20"
+                    class="absolute inset-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xs flex flex-col items-center justify-center gap-2 z-20"
                   >
                     <v-progress-circular indeterminate color="primary" size="32" />
-                    <span class="text-xs font-medium text-slate-700">
+                    <span class="text-xs font-medium text-slate-700 dark:text-slate-200">
                       {{ uploadingPhoto ? 'Đang tải ảnh lên...' : 'Đang xóa ảnh...' }}
                     </span>
                   </div>
@@ -840,7 +840,7 @@ async function handleDelete() {
                   <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2 z-10">
                     <button
                       type="button"
-                      class="px-3 py-1.5 rounded-lg bg-white/90 hover:bg-white text-slate-800 text-xs font-semibold shadow-md flex items-center gap-1.5 transition-transform active:scale-95"
+                      class="px-3 py-1.5 rounded-lg bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs font-semibold shadow-md flex items-center gap-1.5 transition-transform active:scale-95"
                       title="Xem phóng to"
                       @click="openPreview(currentPhoto.url)"
                     >
@@ -881,7 +881,7 @@ async function handleDelete() {
                     <button
                       type="button"
                       class="w-full h-full rounded-lg overflow-hidden border-2 transition-all"
-                      :class="selectedPhotoIndex === idx ? 'border-primary ring-2 ring-primary/20 shadow-xs' : 'border-slate-200 opacity-70 hover:opacity-100'"
+                      :class="selectedPhotoIndex === idx ? 'border-primary ring-2 ring-primary/20 shadow-xs' : 'border-slate-200 dark:border-slate-700 opacity-70 hover:opacity-100'"
                       :aria-label="`Chọn ảnh ${idx + 1}`"
                       @click="selectedPhotoIndex = idx; imageLoadError = false"
                     >
@@ -890,7 +890,7 @@ async function handleDelete() {
                     <button
                       v-if="$can('update', 'Equipment') && p.id && p.id !== 'main'"
                       type="button"
-                      class="absolute -top-1.5 -right-1.5 z-10 w-5 h-5 rounded-full bg-rose-600 text-white border-2 border-white shadow-sm flex items-center justify-center hover:bg-rose-700 transition-colors"
+                      class="absolute -top-1.5 -right-1.5 z-10 w-5 h-5 rounded-full bg-rose-600 text-white border-2 border-white dark:border-slate-800 shadow-sm flex items-center justify-center hover:bg-rose-700 transition-colors"
                       :aria-label="`Xóa ảnh ${idx + 1}`"
                       title="Xóa ảnh"
                       @click.stop="confirmDeletePhoto(p)"
@@ -903,7 +903,7 @@ async function handleDelete() {
                   <button
                     v-if="$can('update', 'Equipment')"
                     type="button"
-                    class="w-14 h-14 shrink-0 rounded-lg border-2 border-dashed border-slate-300 hover:border-primary hover:bg-primary/5 text-slate-400 hover:text-primary flex flex-col items-center justify-center transition-colors"
+                    class="w-14 h-14 shrink-0 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-primary hover:bg-primary/5 text-slate-400 dark:text-slate-500 hover:text-primary flex flex-col items-center justify-center transition-colors"
                     title="Tải thêm ảnh mới"
                     @click="triggerPhotoUpload"
                   >
@@ -912,8 +912,8 @@ async function handleDelete() {
                 </div>
 
                 <!-- Quick Action Bar under photo -->
-                <div v-if="$can('update', 'Equipment')" class="pt-2 flex items-center justify-between border-t border-slate-100">
-                  <span class="text-[11px] text-slate-400 truncate max-w-[150px]">
+                <div v-if="$can('update', 'Equipment')" class="pt-2 flex items-center justify-between border-t border-slate-100 dark:border-slate-800">
+                  <span class="text-[11px] text-slate-400 dark:text-slate-500 truncate max-w-[150px]">
                     {{ currentPhoto.file_name || 'Ảnh thiết bị' }}
                   </span>
                   <div class="flex items-center gap-2">
