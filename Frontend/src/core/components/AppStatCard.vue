@@ -36,39 +36,57 @@ defineProps({
 
 const colorMap = {
   primary: {
-    bg: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400',
-    border: 'border-blue-100 dark:border-blue-900/40',
+    cardBorder: 'border-blue-600/30 dark:border-blue-500/30',
+    iconBg: 'bg-blue-50 dark:bg-blue-950/70 text-blue-600 dark:text-blue-400 border-blue-200/60 dark:border-blue-800/60',
+    valueColor: 'text-slate-800 dark:text-slate-100',
+    titleColor: 'text-slate-500 dark:text-slate-400',
   },
   success: {
-    bg: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400',
-    border: 'border-emerald-100 dark:border-emerald-900/40',
+    cardBorder: 'border-emerald-600/30 dark:border-emerald-500/30',
+    iconBg: 'bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 border-emerald-200/60 dark:border-emerald-800/60',
+    valueColor: 'text-emerald-700 dark:text-emerald-400',
+    titleColor: 'text-emerald-600 dark:text-emerald-400',
   },
   warning: {
-    bg: 'bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400',
-    border: 'border-amber-100 dark:border-amber-900/40',
+    cardBorder: 'border-amber-600/30 dark:border-amber-500/30',
+    iconBg: 'bg-amber-50 dark:bg-amber-950/70 text-amber-600 dark:text-amber-400 border-amber-200/60 dark:border-amber-800/60',
+    valueColor: 'text-amber-700 dark:text-amber-400',
+    titleColor: 'text-amber-600 dark:text-amber-400',
   },
   error: {
-    bg: 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400',
-    border: 'border-rose-100 dark:border-rose-900/40',
+    cardBorder: 'border-rose-600/30 dark:border-rose-500/30',
+    iconBg: 'bg-rose-50 dark:bg-rose-950/70 text-rose-600 dark:text-rose-400 border-rose-200/60 dark:border-rose-800/60',
+    valueColor: 'text-rose-700 dark:text-rose-400',
+    titleColor: 'text-rose-600 dark:text-rose-400',
   },
   info: {
-    bg: 'bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400',
-    border: 'border-sky-100 dark:border-sky-900/40',
+    cardBorder: 'border-sky-600/30 dark:border-sky-500/30',
+    iconBg: 'bg-sky-50 dark:bg-sky-950/70 text-sky-600 dark:text-sky-400 border-sky-200/60 dark:border-sky-800/60',
+    valueColor: 'text-sky-700 dark:text-sky-400',
+    titleColor: 'text-sky-600 dark:text-sky-400',
   },
 }
 </script>
 
 <template>
   <div
-    class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 relative overflow-hidden border border-blue-600/30 dark:border-blue-500/30"
+    class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 relative overflow-hidden border"
+    :class="colorMap[color]?.cardBorder || colorMap.primary.cardBorder"
   >
     <div class="flex items-start justify-between gap-3">
       <div class="min-w-0 flex-1">
-        <p class="text-[11px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 truncate">
+        <p
+          class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-1 truncate"
+          :class="colorMap[color]?.titleColor || 'text-slate-500 dark:text-slate-400'"
+        >
           {{ title }}
         </p>
         <div class="flex items-baseline gap-2">
-          <h3 v-if="!loading" class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">
+          <h3
+            v-if="!loading"
+            class="text-xl sm:text-2xl font-black tracking-tight"
+            :class="colorMap[color]?.valueColor || 'text-slate-800 dark:text-slate-100'"
+          >
             {{ value }}
           </h3>
           <div
@@ -76,14 +94,14 @@ const colorMap = {
             class="h-7 w-16 bg-slate-200 dark:bg-slate-700 rounded-md animate-pulse my-1"
           />
         </div>
-        <p v-if="subtitle" class="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 mt-0.5 truncate">
+        <p v-if="subtitle" class="text-[11px] sm:text-xs text-slate-400 dark:text-slate-400 mt-0.5 truncate">
           {{ subtitle }}
         </p>
       </div>
 
       <div
         class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center border flex-shrink-0"
-        :class="[colorMap[color]?.bg || colorMap.primary.bg, colorMap[color]?.border || colorMap.primary.border]"
+        :class="colorMap[color]?.iconBg || colorMap.primary.iconBg"
       >
         <v-icon :icon="icon" size="20" class="sm:scale-110" />
       </div>

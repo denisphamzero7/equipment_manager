@@ -147,8 +147,8 @@ function goToRoomEquipments(roomId, e) {
           :key="room.id"
           class="flex items-center justify-between gap-2.5 p-2.5 sm:p-3 rounded-xl border transition-all duration-150 cursor-pointer group hover:shadow-xs"
           :class="room.stats?.broken_count > 0 || room.equipment_status === 'broken'
-            ? 'bg-rose-50/50 dark:bg-rose-950/40 hover:bg-rose-50 dark:hover:bg-rose-950/60 border-rose-100 dark:border-rose-900/60 hover:border-rose-200 dark:hover:border-rose-800'
-            : 'bg-amber-50/40 dark:bg-amber-950/40 hover:bg-amber-50/80 dark:hover:bg-amber-950/60 border-amber-100 dark:border-amber-900/60 hover:border-amber-200 dark:hover:border-amber-800'"
+            ? 'bg-rose-50/50 dark:bg-slate-800/90 hover:bg-rose-50 dark:hover:bg-slate-800 border-rose-100 dark:border-rose-900/60 hover:border-rose-200 dark:hover:border-rose-700/60'
+            : 'bg-amber-50/40 dark:bg-slate-800/90 hover:bg-amber-50/80 dark:hover:bg-slate-800 border-amber-100 dark:border-amber-900/60 hover:border-amber-200 dark:hover:border-amber-700/60'"
           @click="onRoomClick(room)"
         >
           <!-- Left: Room number badge & info -->
