@@ -253,9 +253,12 @@ function handleNavClick() {
       </div>
 
       <!-- Navigation Links phân nhóm tinh tế, chuẩn tông màu Royal Blue -->
-      <div class="py-3 px-3 space-y-4 overflow-y-auto max-h-[calc(100vh-8rem)]">
+      <div
+        class="py-3 overflow-y-auto max-h-[calc(100vh-8rem)]"
+        :class="!isCompactScreen && rail ? 'px-1.5 space-y-2' : 'px-3 space-y-4'"
+      >
         <template v-for="(section, sIndex) in navSections" :key="sIndex">
-          <div class="space-y-1">
+          <div :class="!isCompactScreen && rail ? 'space-y-2' : 'space-y-1'">
             <!-- Heading nhóm -->
             <div
               v-if="isCompactScreen || !rail"
@@ -263,37 +266,59 @@ function handleNavClick() {
             >
               {{ section.heading }}
             </div>
-            <div v-else class="h-2"></div>
+            <div v-else-if="sIndex > 0" class="my-2 mx-auto w-6 border-t border-slate-200/80"></div>
 
             <!-- Items trong nhóm -->
             <template v-for="item in section.items" :key="item.to">
               <router-link
                 v-if="$can(item.action, item.subject)"
                 :to="item.to"
-                class="group flex items-center px-3 py-2 rounded-xl text-sm font-medium transition-all no-underline"
+                class="group flex items-center transition-all no-underline"
                 style="text-decoration: none !important;"
-                :class="isItemActive(item)
-                  ? 'bg-blue-50 text-blue-600 font-semibold' 
-                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
+                :class="[
+                  !isCompactScreen && rail
+                    ? 'justify-center w-11 h-11 mx-auto rounded-xl'
+                    : 'px-3 py-2 rounded-xl text-sm font-medium',
+                  !isCompactScreen && rail
+                    ? (isItemActive(item)
+                        ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/25'
+                        : 'text-slate-500 hover:bg-slate-100 hover:text-blue-600')
+                    : (isItemActive(item)
+                        ? 'bg-blue-50 text-blue-600 font-semibold'
+                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900')
+                ]"
+                :title="!isCompactScreen && rail ? item.title : undefined"
                 @click="handleNavClick"
               >
-                <div class="flex items-center gap-2.5 overflow-hidden min-w-0">
-                  <div
-                    class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
-                    :class="isItemActive(item)
-                      ? 'bg-blue-600 text-white shadow-xs' 
-                      : 'text-slate-500 group-hover:text-blue-600'"
-                  >
-                    <v-icon
-                      :icon="item.icon"
-                      size="18"
-                      :color="isItemActive(item) ? 'white' : 'secondary'"
-                    />
+                <!-- Trạng thái thu gọn Rail: Icon vuông vắn 44x44, căn giữa hoàn hảo, không bị cắt xén -->
+                <template v-if="!isCompactScreen && rail">
+                  <v-icon
+                    :icon="item.icon"
+                    size="20"
+                    :color="isItemActive(item) ? 'white' : 'secondary'"
+                  />
+                </template>
+
+                <!-- Trạng thái mở rộng (Desktop đầy đủ hoặc Drawer Mobile/Laptop): Đầy đủ icon badge và text tiêu đề -->
+                <template v-else>
+                  <div class="flex items-center gap-2.5 overflow-hidden min-w-0">
+                    <div
+                      class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
+                      :class="isItemActive(item)
+                        ? 'bg-blue-600 text-white shadow-xs' 
+                        : 'text-slate-500 group-hover:text-blue-600'"
+                    >
+                      <v-icon
+                        :icon="item.icon"
+                        size="18"
+                        :color="isItemActive(item) ? 'white' : 'secondary'"
+                      />
+                    </div>
+                    <span class="truncate text-[13px] no-underline">
+                      {{ item.title }}
+                    </span>
                   </div>
-                  <span v-if="isCompactScreen || !rail" class="truncate text-[13px] no-underline">
-                    {{ item.title }}
-                  </span>
-                </div>
+                </template>
               </router-link>
             </template>
           </div>
@@ -313,6 +338,15 @@ function handleNavClick() {
             <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
             <p class="text-xs font-bold text-slate-700 truncate">{{ currentOrg.name }}</p>
           </div>
+        </div>
+        <div
+          v-else
+          class="p-2.5 border-t border-slate-100 flex justify-center bg-slate-50/60"
+          :title="`Tổ chức: ${currentOrg.name} (#${organizationId})`"
+        >
+          <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 text-[11px] font-bold flex items-center justify-center">
+            #{{ organizationId }}
+          </span>
         </div>
       </template>
     </v-navigation-drawer>
@@ -531,3 +565,12 @@ function handleNavClick() {
     </v-main>
   </v-layout>
 </template>
+
+<style scoped>
+:deep(.v-navigation-drawer--rail) {
+  width: 72px !important;
+}
+:deep(.v-navigation-drawer--rail .v-navigation-drawer__content) {
+  overflow-x: hidden !important;
+}
+</style>
