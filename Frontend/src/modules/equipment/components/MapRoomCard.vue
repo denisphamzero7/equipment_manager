@@ -76,22 +76,22 @@ function getBadgeIndicatorClass(room) {
     </div>
 
     <!-- Bottom Devices Stats -->
-    <div class="pt-1.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[10px] sm:text-[11px]">
-      <span class="text-slate-500 dark:text-slate-400 font-medium">
+    <div class="pt-2 mt-auto border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] sm:text-xs">
+      <span class="text-slate-500 dark:text-slate-400 font-semibold">
         {{ room.stats?.total_equipments || 0 }} TB
       </span>
 
-      <div class="flex items-center gap-1">
+      <div class="flex items-center gap-1.5">
         <span
           v-if="room.stats?.broken_count > 0"
-          class="px-1.5 py-0.2 rounded bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 font-bold"
+          class="inline-flex items-center justify-center min-w-[24px] px-2 py-0.5 rounded-md bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 font-bold text-xs tracking-wider shadow-2xs border border-rose-200/60 dark:border-rose-900/50"
           title="Thiết bị hỏng"
         >
           {{ room.stats.broken_count }}!
         </span>
         <span
           v-if="room.stats?.missing_count > 0"
-          class="px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 font-bold"
+          class="inline-flex items-center justify-center min-w-[24px] px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 font-bold text-xs shadow-2xs border border-amber-200/60 dark:border-amber-900/50"
           title="Thiết bị thiếu định mức"
         >
           -{{ room.stats.missing_count }}
