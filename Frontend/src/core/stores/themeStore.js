@@ -107,11 +107,7 @@ export const useThemeStore = defineStore('theme', () => {
       !window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     if (!isAppearanceTransition) {
-      document.documentElement.classList.add('theme-transitioning')
       updateFn()
-      setTimeout(() => {
-        document.documentElement.classList.remove('theme-transitioning')
-      }, 400)
       return
     }
 
@@ -136,8 +132,8 @@ export const useThemeStore = defineStore('theme', () => {
           clipPath: clipPath,
         },
         {
-          duration: 450,
-          easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+          duration: 220,
+          easing: 'ease-out',
           pseudoElement: '::view-transition-new(root)',
         }
       )

@@ -10,7 +10,6 @@ body {
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 html.dark body {
@@ -240,12 +239,13 @@ html.dark [class*="dark:border-slate-700"] {
 }
 
 /* ==========================================================================
-   SMOOTH THEME TRANSITION & VIEW TRANSITIONS API
+   SMOOTH THEME TRANSITION & VIEW TRANSITIONS API (GPU ACCELERATED, ZERO LAG)
    ========================================================================== */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
+  will-change: clip-path;
 }
 
 ::view-transition-old(root) {
@@ -254,17 +254,5 @@ html.dark [class*="dark:border-slate-700"] {
 
 ::view-transition-new(root) {
   z-index: 9999;
-}
-
-/* Fallback mượt cho toàn bộ DOM khi đổi giao diện (tránh chớp/giật cục bộ) */
-.theme-transitioning,
-.theme-transitioning *,
-.theme-transitioning *::before,
-.theme-transitioning *::after {
-  transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  transition-delay: 0s !important;
 }
 
