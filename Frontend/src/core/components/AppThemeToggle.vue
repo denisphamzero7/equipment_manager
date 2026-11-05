@@ -70,15 +70,19 @@ const currentTooltip = computed(() => {
     <template v-if="variant === 'icon'">
       <button
         type="button"
-        class="w-9 h-9 rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-700/70 flex items-center justify-center transition shadow-2xs cursor-pointer"
+        class="w-9 h-9 rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-700/70 hover:border-amber-300/60 dark:hover:border-indigo-500/50 hover:shadow-md dark:hover:shadow-indigo-500/10 active:scale-90 flex items-center justify-center transition-all duration-200 cursor-pointer overflow-hidden group"
         :title="showTooltip ? currentTooltip : undefined"
-        @click="themeStore.toggleTheme"
+        @click="themeStore.toggleTheme($event)"
       >
-        <v-icon
-          :icon="themeStore.isDark ? 'mdi-weather-night' : 'mdi-weather-sunny'"
-          size="18"
-          :class="themeStore.isDark ? 'text-indigo-400' : 'text-amber-500'"
-        />
+        <transition name="theme-icon" mode="out-in">
+          <v-icon
+            :key="themeStore.isDark ? 'dark' : 'light'"
+            :icon="themeStore.isDark ? 'mdi-weather-night' : 'mdi-weather-sunny'"
+            size="18"
+            :class="themeStore.isDark ? 'text-indigo-400' : 'text-amber-500'"
+            class="transition-transform group-hover:scale-110"
+          />
+        </transition>
       </button>
     </template>
 
@@ -89,14 +93,18 @@ const currentTooltip = computed(() => {
           <button
             v-bind="menuProps"
             type="button"
-            class="w-9 h-9 rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-700/70 flex items-center justify-center transition shadow-2xs cursor-pointer"
+            class="w-9 h-9 rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-700/70 hover:border-amber-300/60 dark:hover:border-indigo-500/50 hover:shadow-md dark:hover:shadow-indigo-500/10 active:scale-90 flex items-center justify-center transition-all duration-200 cursor-pointer overflow-hidden group"
             :title="showTooltip ? currentTooltip : undefined"
           >
-            <v-icon
-              :icon="themeStore.themeIcon"
-              size="18"
-              :class="themeStore.mode === 'dark' ? 'text-indigo-400' : (themeStore.mode === 'light' ? 'text-amber-500' : 'text-slate-500 dark:text-slate-400')"
-            />
+            <transition name="theme-icon" mode="out-in">
+              <v-icon
+                :key="themeStore.mode"
+                :icon="themeStore.themeIcon"
+                size="18"
+                :class="themeStore.mode === 'dark' ? 'text-indigo-400' : (themeStore.mode === 'light' ? 'text-amber-500' : 'text-slate-500 dark:text-slate-400')"
+                class="transition-transform group-hover:scale-110"
+              />
+            </transition>
           </button>
         </template>
 
@@ -114,7 +122,7 @@ const currentTooltip = computed(() => {
               :class="themeStore.mode === opt.key
                 ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-semibold'
                 : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100/70 dark:hover:bg-slate-700/50'"
-              @click="themeStore.setMode(opt.key)"
+              @click="themeStore.setMode(opt.key, $event)"
             >
               <div class="flex items-center gap-2.5 min-w-0">
                 <div
@@ -149,3 +157,21 @@ const currentTooltip = computed(() => {
     </template>
   </div>
 </template>
+
+<style scoped>
+/* Micro-interaction xoay và nảy nhẹ (spring bounce) cho biểu tượng theme */
+.theme-icon-enter-active,
+.theme-icon-leave-active {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+}
+
+.theme-icon-enter-from {
+  transform: rotate(-90deg) scale(0.5);
+  opacity: 0;
+}
+
+.theme-icon-leave-to {
+  transform: rotate(90deg) scale(0.5);
+  opacity: 0;
+}
+</style>

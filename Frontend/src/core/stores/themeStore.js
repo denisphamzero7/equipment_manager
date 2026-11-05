@@ -90,25 +90,89 @@ export const useThemeStore = defineStore('theme', () => {
   }
 
   /**
+   * Kích hoạt hiệu ứng chuyển đổi mượt mà (Circular Ripple via View Transitions API)
+   * hoặc Fallback mượt cho trình duyệt không hỗ trợ / người dùng tắt chuyển động.
+   * @param {Function} updateFn Hàm thực thi thay đổi theme
+   * @param {MouseEvent|null} event Sự kiện chuột để lấy tọa độ tâm sóng tròn
+   */
+  function runThemeTransition(updateFn, event = null) {
+    if (typeof document === 'undefined') {
+      updateFn()
+      return
+    }
+
+    const isAppearanceTransition =
+      'startViewTransition' in document &&
+      window.matchMedia &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (!isAppearanceTransition) {
+      document.documentElement.classList.add('theme-transitioning')
+      updateFn()
+      setTimeout(() => {
+        document.documentElement.classList.remove('theme-transitioning')
+      }, 400)
+      return
+    }
+
+    const x = event?.clientX ?? window.innerWidth / 2
+    const y = event?.clientY ?? window.innerHeight / 2
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    )
+
+    const transition = document.startViewTransition(() => {
+      updateFn()
+    })
+
+    transition.ready.then(() => {
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`,
+      ]
+      document.documentElement.animate(
+        {
+          clipPath: clipPath,
+        },
+        {
+          duration: 450,
+          easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+          pseudoElement: '::view-transition-new(root)',
+        }
+      )
+    })
+  }
+
+  /**
    * Đặt chế độ theme cụ thể ('light' | 'dark' | 'system')
    * @param {'light'|'dark'|'system'} newMode
+   * @param {MouseEvent|null} event
    */
-  function setMode(newMode) {
+  function setMode(newMode, event = null) {
     if (!['light', 'dark', 'system'].includes(newMode)) return
-    mode.value = newMode
-    storage.set(StorageKeys.THEME_MODE, newMode)
-    applyTheme()
+    if (mode.value === newMode) return
+
+    const executeChange = () => {
+      mode.value = newMode
+      storage.set(StorageKeys.THEME_MODE, newMode)
+      applyTheme()
+    }
+
+    if (event) {
+      runThemeTransition(executeChange, event)
+    } else {
+      executeChange()
+    }
   }
 
   /**
    * Chuyển đổi nhanh qua lại giữa Sáng và Tối (Light <-> Dark)
+   * @param {MouseEvent|null} event
    */
-  function toggleTheme() {
-    if (isDark.value) {
-      setMode('light')
-    } else {
-      setMode('dark')
-    }
+  function toggleTheme(event = null) {
+    const nextMode = isDark.value ? 'light' : 'dark'
+    setMode(nextMode, event)
   }
 
   /**
