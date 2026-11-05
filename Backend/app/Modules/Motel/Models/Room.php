@@ -112,6 +112,20 @@ class Room extends Model implements HasMedia
                 $room->name = 'Phòng ' . $room->room_number;
             }
         });
+        static::saved(function ($room) {
+            try {
+                app(\App\Modules\Equipment\Services\EquipmentService::class)->invalidateCache($room->organization_id);
+            } catch (\Throwable $e) {
+                // Ignore if service not bound
+            }
+        });
+        static::deleted(function ($room) {
+            try {
+                app(\App\Modules\Equipment\Services\EquipmentService::class)->invalidateCache($room->organization_id);
+            } catch (\Throwable $e) {
+                // Ignore if service not bound
+            }
+        });
         static::updating(function ($room) {
             if (auth()->check()) {
                 $room->updated_by = auth()->id();

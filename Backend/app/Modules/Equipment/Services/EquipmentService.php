@@ -1353,6 +1353,23 @@ class EquipmentService
                 ->pluck('count', 'block')
                 ->all();
 
+            // Đảm bảo tất cả các Block thực tế đang có trong bảng rooms (kể cả chưa có thiết bị = 0)
+            // đều được liệt kê đầy đủ để Frontend hiển thị đồng bộ các nút filter block.
+            $allRoomBlocks = DB::table('rooms')
+                ->whereNull('deleted_at')
+                ->whereNotNull('block')
+                ->where('block', '!=', '')
+                ->when($organizationId, fn($q) => $q->where('organization_id', $organizationId))
+                ->distinct()
+                ->pluck('block')
+                ->all();
+
+            foreach ($allRoomBlocks as $rb) {
+                if (!isset($blockCounts[$rb])) {
+                    $blockCounts[$rb] = 0;
+                }
+            }
+
             $inStockTotal = (int) DB::table('room_equipments')
                 ->whereNull('deleted_at')
                 ->whereNull('room_id')

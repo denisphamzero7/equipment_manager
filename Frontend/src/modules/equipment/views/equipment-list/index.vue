@@ -91,7 +91,30 @@ const lightboxSubtitle = ref('')
 // Danh mục thiết bị cho dropdown bộ lọc
 const categoryOptions = ref([])
 
-const hotelBlockOrder = HotelBlockOrder
+const dynamicHotelBlockOrder = computed(() => {
+  const set = new Set()
+  // 1. Thêm tất cả block trả về từ backend API by_block (kể cả block mới tạo có 0 thiết bị)
+  Object.keys(blockCounts.value).forEach(k => {
+    if (k && k !== 'total' && k !== '__stock__') {
+      set.add(k)
+    }
+  })
+  // 2. Thêm các block từ danh sách thiết bị đang có trên bảng nếu có
+  equipmentStore.items.forEach(eq => {
+    if (eq?.room?.block) set.add(eq.room.block)
+  })
+  // 3. Đảm bảo các block chuẩn hệ thống luôn có mặt
+  HotelBlockOrder.forEach(b => set.add(b))
+
+  return Array.from(set).sort((a, b) => {
+    const idxA = HotelBlockOrder.indexOf(a)
+    const idxB = HotelBlockOrder.indexOf(b)
+    if (idxA !== -1 && idxB !== -1) return idxA - idxB
+    if (idxA !== -1) return -1
+    if (idxB !== -1) return 1
+    return a.localeCompare(b, 'vi', { numeric: true })
+  })
+})
 
 const hasActiveFilters = computed(() => {
   const f = equipmentStore.filters
@@ -636,7 +659,7 @@ watch(
     <EquipmentFilterToolbar
       :filters="equipmentStore.filters"
       :block-counts="blockCounts"
-      :hotel-block-order="hotelBlockOrder"
+      :hotel-block-order="dynamicHotelBlockOrder"
       :status-options="EquipmentStatusOptions"
       :category-options="categoryOptions"
       :has-active-filters="hasActiveFilters"
