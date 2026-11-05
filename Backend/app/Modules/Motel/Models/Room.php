@@ -112,18 +112,20 @@ class Room extends Model implements HasMedia
                 $room->name = 'Phòng ' . $room->room_number;
             }
         });
+        // Tự động xóa cache thống kê thiết bị & sơ đồ phòng khi có bất kỳ thay đổi nào về phòng (thêm/sửa phòng, đổi block...)
         static::saved(function ($room) {
             try {
                 app(\App\Modules\Equipment\Services\EquipmentService::class)->invalidateCache($room->organization_id);
             } catch (\Throwable $e) {
-                // Ignore if service not bound
+                // Bỏ qua nếu EquipmentService chưa được bind trong container
             }
         });
+        // Tự động xóa cache thống kê khi phòng bị xóa
         static::deleted(function ($room) {
             try {
                 app(\App\Modules\Equipment\Services\EquipmentService::class)->invalidateCache($room->organization_id);
             } catch (\Throwable $e) {
-                // Ignore if service not bound
+                // Bỏ qua nếu EquipmentService chưa được bind trong container
             }
         });
         static::updating(function ($room) {

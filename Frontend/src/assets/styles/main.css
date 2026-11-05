@@ -240,6 +240,16 @@ html.dark [class*="dark:border-slate-700"] {
 
 /* ==========================================================================
    SMOOTH THEME TRANSITION & VIEW TRANSITIONS API (GPU ACCELERATED, ZERO LAG)
+   
+   Ghi chú kiến trúc:
+   1. animation: none - Tắt cross-fade mặc định của trình duyệt để nhường chỗ
+      cho animation clip-path hình tròn mở rộng do JavaScript điều khiển.
+   2. mix-blend-mode: normal - Ngăn chặn trình duyệt tự động blend màu làm sai
+      lệch độ tương phản hoặc xuất hiện bóng mờ khi chuyển layer.
+   3. will-change: clip-path - Báo cho trình duyệt đưa layer vào luồng xử lý
+      phần cứng GPU (GPU Compositor layer), ngăn ngừa drop khung hình (giật/lag).
+   4. z-index: Layer mới (::view-transition-new) luôn nằm trên cùng (z-index: 9999)
+      để vòng tròn mở rộng nuốt trọn giao diện cũ nằm ở dưới (z-index: 1).
    ========================================================================== */
 ::view-transition-old(root),
 ::view-transition-new(root) {

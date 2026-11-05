@@ -90,10 +90,23 @@ export const useThemeStore = defineStore('theme', () => {
   }
 
   /**
-   * Kích hoạt hiệu ứng chuyển đổi mượt mà (Circular Ripple via View Transitions API)
-   * hoặc Fallback mượt cho trình duyệt không hỗ trợ / người dùng tắt chuyển động.
-   * @param {Function} updateFn Hàm thực thi thay đổi theme
-   * @param {MouseEvent|null} event Sự kiện chuột để lấy tọa độ tâm sóng tròn
+   * [CƠ CHẾ HOẠT HỌA THEME CHUYỂN ĐỔI SIÊU MƯỢT]
+   * Sử dụng Web View Transitions API (tiêu chuẩn W3C hiện đại trên Chrome/Edge/Safari).
+   * 
+   * 1. Luồng hoạt động:
+   *    - Xác định tọa độ con trỏ chuột (x, y) từ click event để làm tâm của vòng tròn lan tỏa.
+   *    - Tính bán kính cực đại (endRadius) từ tâm (x, y) tới góc xa nhất của màn hình bằng định lý Pytago.
+   *    - Gọi document.startViewTransition(): Trình duyệt chụp ảnh chụp tĩnh (snapshot) giao diện cũ.
+   *    - Thực thi hàm updateFn(): DOM cập nhật theme mới (thêm/xóa class .dark, đổi màu Vuetify).
+   *    - Áp dụng hoạt ảnh clip-path hình tròn mở rộng từ 0px đến endRadius trên pseudo-element ::view-transition-new(root).
+   * 
+   * 2. Tối ưu hiệu năng (Zero Lag / 60-120 FPS):
+   *    - Thời lượng (duration) chuẩn là 220ms với đường cong 'ease-out': tạo cảm giác tức thì (snappy), không bị trễ.
+   *    - Không can thiệp transition CSS lên toàn bộ DOM (*) để tránh ép GPU/CPU tính toán lại layout.
+   *    - Tôn trọng thuộc tính accessibility prefers-reduced-motion của hệ điều hành.
+   * 
+   * @param {Function} updateFn Hàm thực thi thay đổi trạng thái theme (DOM mutation)
+   * @param {MouseEvent|null} event Sự kiện click chuột để định vị tọa độ tâm sóng tròn
    */
   function runThemeTransition(updateFn, event = null) {
     if (typeof document === 'undefined') {
@@ -101,27 +114,34 @@ export const useThemeStore = defineStore('theme', () => {
       return
     }
 
+    // Kiểm tra trình duyệt có hỗ trợ View Transitions API và người dùng không bật chế độ giảm chuyển động
     const isAppearanceTransition =
       'startViewTransition' in document &&
       window.matchMedia &&
       !window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
+    // Nếu không hỗ trợ hoặc người dùng bật giảm chuyển động: đổi theme ngay lập tức (không chạy animation clip-path)
     if (!isAppearanceTransition) {
       updateFn()
       return
     }
 
+    // Tọa độ tâm lan tỏa (mặc định ở giữa màn hình nếu không có sự kiện chuột)
     const x = event?.clientX ?? window.innerWidth / 2
     const y = event?.clientY ?? window.innerHeight / 2
+
+    // Bán kính xa nhất từ tâm chuột tới 4 góc màn hình để vòng tròn bao phủ trọn vẹn màn hình
     const endRadius = Math.hypot(
       Math.max(x, window.innerWidth - x),
       Math.max(y, window.innerHeight - y)
     )
 
+    // Khởi tạo tiến trình chụp snapshot giao diện và chuyển đổi
     const transition = document.startViewTransition(() => {
       updateFn()
     })
 
+    // Khi snapshot đã sẵn sàng trên GPU, chạy animation mở rộng vòng tròn clip-path
     transition.ready.then(() => {
       const clipPath = [
         `circle(0px at ${x}px ${y}px)`,
@@ -132,7 +152,7 @@ export const useThemeStore = defineStore('theme', () => {
           clipPath: clipPath,
         },
         {
-          duration: 220,
+          duration: 220, // 220ms: Tốc độ vàng phản hồi giao diện, đảm bảo mượt mà và dứt khoát
           easing: 'ease-out',
           pseudoElement: '::view-transition-new(root)',
         }

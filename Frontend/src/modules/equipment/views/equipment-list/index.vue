@@ -91,6 +91,17 @@ const lightboxSubtitle = ref('')
 // Danh mục thiết bị cho dropdown bộ lọc
 const categoryOptions = ref([])
 
+/**
+ * [DANH SÁCH BLOCK ĐỘNG CHO THANH BỘ LỌC VỊ TRÍ]
+ * Giải quyết vấn đề: Khi người dùng tạo một khu vực mới (vd: "Bếp", "Kho", "Khu VIP")
+ * trong module Quản lý phòng, thanh lọc thiết bị phải tự động hiển thị nút của Block đó.
+ * 
+ * Luồng tổng hợp:
+ * 1. Lấy tất cả block có trong `blockCounts` (được Backend trả về từ API `getStats`, bao gồm cả block có 0 thiết bị).
+ * 2. Lấy thêm block từ danh sách thiết bị đang có trên bảng (đề phòng backend phản hồi trễ).
+ * 3. Hợp nhất với danh sách block tiêu chuẩn hệ thống (`HotelBlockOrder`).
+ * 4. Sắp xếp thông minh: Các block chuẩn giữ nguyên thứ tự ưu tiên, các block tự tạo xếp theo bảng chữ cái tiếng Việt.
+ */
 const dynamicHotelBlockOrder = computed(() => {
   const set = new Set()
   // 1. Thêm tất cả block trả về từ backend API by_block (kể cả block mới tạo có 0 thiết bị)
@@ -487,7 +498,8 @@ async function persistCreation(pending) {
       equipmentStore.addEquipment(created)
       if (!pending.acknowledgedByEvent) rememberLocalCreation(pending.clientRequestId)
 
-      // Cập nhật ngay lập tức các con số badge trên giao diện (Optimistic update)
+      // [CƠ CHẾ OPTIMISTIC UI]: Cập nhật tức thì (0ms) các huy hiệu số đếm trên giao diện
+      // Giúp người dùng thấy ngay số lượng trong nút Block và thẻ KPI nhảy số mà không cần chờ API getStats phản hồi
       const targetBlock = created.room?.block || pending.formValues?.block
       if (targetBlock) {
         blockCounts.value[targetBlock] = (blockCounts.value[targetBlock] || 0) + 1
@@ -508,7 +520,7 @@ async function persistCreation(pending) {
     if (!created && !pending.acknowledgedByEvent) {
       await refreshAfterCreation(pending)
     }
-    // Đồng bộ lại thống kê đầy đủ từ server
+    // [ĐỒNG BỘ NGUỒN CHUẨN BACKEND]: Gọi fetchStats() ngầm để đảm bảo dữ liệu toàn hệ thống khớp 100% với server
     await fetchStats()
   } catch (error) {
     if (pending.acknowledgedByEvent || pending.acknowledgedByResponse) {

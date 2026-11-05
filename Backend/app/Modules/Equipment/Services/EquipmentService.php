@@ -82,10 +82,25 @@ class EquipmentService
      * $this->invalidateCache($equipment->organization_id);
      * ```
      */
+    /**
+     * [1. MỤC ĐÍCH]
+     * Xóa sạch các tầng cache dữ liệu (thống kê phòng, map view) khi có bất kỳ thay đổi nào về thiết bị hoặc cơ cấu phòng.
+     *
+     * [2. LUỒNG XỬ LÝ (FLOW)]
+     * 1. Xác định tổ chức (`organization_id`) áp dụng.
+     * 2. Tăng phiên bản `hotel_stats_version`:
+     *    - Do driver File Cache không hỗ trợ xóa theo tiền tố (wildcard prefix), kỹ thuật Cache Versioning
+     *      giúp vô hiệu hóa ngay lập tức mọi key cache con (như hotel_stats_1_Bếp, hotel_stats_1_all...)
+     *      khi phiên bản nhảy lên v+1, đảm bảo số lượng thiết bị trong từng block luôn tươi mới 100%.
+     * 3. Tăng phiên bản cache sơ đồ Map View (`equipment_map_view_version_{orgId}`).
+     *
+     * @param int|null $orgId ID tổ chức cần xóa cache
+     */
     public function invalidateCache(?int $orgId = null): void
     {
         $orgId = $orgId ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : (\App\Modules\Core\Models\Organization::value('id') ?? 1));
 
+        // Tăng phiên bản cache thống kê khách sạn -> vô hiệu hóa tức thì toàn bộ cache block con
         $vStats = (int) cache()->get('hotel_stats_version_' . $orgId, 1);
         cache()->put('hotel_stats_version_' . $orgId, $vStats + 1, 86400 * 30);
         $vStatsAll = (int) cache()->get('hotel_stats_version_all', 1);
