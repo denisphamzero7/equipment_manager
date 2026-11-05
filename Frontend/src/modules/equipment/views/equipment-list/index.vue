@@ -408,6 +408,7 @@ async function handleFormSubmit({ isEdit, id, data, modelDraft, continueAdding, 
       }
       await equipmentStore.updateEquipment(id, payload)
       formModalOpen.value = false
+      await fetchStats()
     } finally {
       actionLoading.value = false
     }
@@ -485,6 +486,19 @@ async function persistCreation(pending) {
     if (created) {
       equipmentStore.addEquipment(created)
       if (!pending.acknowledgedByEvent) rememberLocalCreation(pending.clientRequestId)
+
+      // Cập nhật ngay lập tức các con số badge trên giao diện (Optimistic update)
+      const targetBlock = created.room?.block || pending.formValues?.block
+      if (targetBlock) {
+        blockCounts.value[targetBlock] = (blockCounts.value[targetBlock] || 0) + 1
+      } else {
+        blockCounts.value.__stock__ = (blockCounts.value.__stock__ || 0) + 1
+      }
+      blockCounts.value.total = (blockCounts.value.total || 0) + 1
+      stats.value.total = (stats.value.total || 0) + 1
+      if (created.status === 'good' || !created.status) {
+        stats.value.good = (stats.value.good || 0) + 1
+      }
     }
     pendingCreations.value = pendingCreations.value.filter(item => item !== pending)
     pending.acknowledgedByResponse = true
@@ -494,6 +508,8 @@ async function persistCreation(pending) {
     if (!created && !pending.acknowledgedByEvent) {
       await refreshAfterCreation(pending)
     }
+    // Đồng bộ lại thống kê đầy đủ từ server
+    await fetchStats()
   } catch (error) {
     if (pending.acknowledgedByEvent || pending.acknowledgedByResponse) {
       await refreshAfterCreation(pending)
@@ -538,6 +554,7 @@ async function handleAssignSubmit(payload) {
   try {
     await equipmentStore.assignRoom(payload)
     assignModalOpen.value = false
+    await fetchStats()
   } finally {
     actionLoading.value = false
   }
@@ -548,6 +565,7 @@ async function handleReportBrokenSubmit({ id, formData }) {
   try {
     await equipmentStore.reportBroken(id, formData)
     reportBrokenModalOpen.value = false
+    await fetchStats()
   } finally {
     actionLoading.value = false
   }
@@ -557,8 +575,13 @@ async function confirmDelete() {
   if (!equipmentToDelete.value) return
   actionLoading.value = true
   try {
+    const blk = equipmentToDelete.value.room?.block
     await equipmentStore.deleteEquipment(equipmentToDelete.value.id)
     deleteDialogOpen.value = false
+    if (blk && blockCounts.value[blk]) {
+      blockCounts.value[blk] = Math.max(0, blockCounts.value[blk] - 1)
+    }
+    await fetchStats()
   } finally {
     actionLoading.value = false
   }
@@ -566,6 +589,7 @@ async function confirmDelete() {
 
 async function handleQuickStatusChange(item, newStatus) {
   await equipmentStore.changeStatus(item.id, newStatus)
+  await fetchStats()
 }
 
 // Bulk Actions State & Handlers

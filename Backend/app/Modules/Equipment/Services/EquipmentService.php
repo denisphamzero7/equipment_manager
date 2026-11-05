@@ -86,6 +86,11 @@ class EquipmentService
     {
         $orgId = $orgId ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : (\App\Modules\Core\Models\Organization::value('id') ?? 1));
 
+        $vStats = (int) cache()->get('hotel_stats_version_' . $orgId, 1);
+        cache()->put('hotel_stats_version_' . $orgId, $vStats + 1, 86400 * 30);
+        $vStatsAll = (int) cache()->get('hotel_stats_version_all', 1);
+        cache()->put('hotel_stats_version_all', $vStatsAll + 1, 86400 * 30);
+
         cache()->forget('hotel_stats_' . $orgId . '_all');
         cache()->forget('hotel_stats_all_all');
 
@@ -1241,7 +1246,8 @@ class EquipmentService
      */
     public function getHotelStats(?int $organizationId = null, ?string $block = null): array
     {
-        $cacheKey = 'hotel_stats_' . ($organizationId ?? 'all') . '_' . ($block ?? 'all');
+        $version = (int) cache()->get('hotel_stats_version_' . ($organizationId ?? 'all'), 1);
+        $cacheKey = 'hotel_stats_v' . $version . '_' . ($organizationId ?? 'all') . '_' . ($block ?? 'all');
 
         return cache()->remember($cacheKey, 60, function () use ($organizationId, $block) {
             $baseQuery = DB::table('room_equipments')
