@@ -1,6 +1,7 @@
 services:
   # 1. Ứng dụng chính (Nginx + Vue 3 Frontend + Laravel API + Reverb + Worker)
   app:
+    container_name: equipment_manager-app-1
     build:
       context: .
       dockerfile: Dockerfile

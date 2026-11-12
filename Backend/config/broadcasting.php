@@ -36,7 +36,7 @@ return [
             'secret' => env('REVERB_APP_SECRET'),
             'app_id' => env('REVERB_APP_ID'),
             'options' => [
-                'host' => (file_exists('/.dockerenv') || env('LARAVEL_SAIL')) && in_array(env('REVERB_HOST'), ['127.0.0.1', 'localhost', ''])
+                'host' => env('LARAVEL_SAIL') && in_array(env('REVERB_HOST'), ['127.0.0.1', 'localhost', ''])
                     ? 'reverb'
                     : env('REVERB_HOST', '127.0.0.1'),
                 'port' => env('REVERB_PORT', 8090),

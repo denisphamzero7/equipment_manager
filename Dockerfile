@@ -28,6 +28,7 @@ RUN apk add --no-cache \
     supervisor \
     curl \
     git \
+    netcat-openbsd \
     libpng-dev \
     libjpeg-turbo-dev \
     freetype-dev \
@@ -79,7 +80,10 @@ RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
 COPY deploy/docker/nginx.conf /etc/nginx/nginx.conf
 COPY deploy/docker/supervisord.conf /etc/supervisord.conf
 COPY deploy/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+RUN sed -i 's/\r$//' /usr/local/bin/entrypoint.sh && \
+    sed -i 's/\r$//' /etc/nginx/nginx.conf && \
+    sed -i 's/\r$//' /etc/supervisord.conf && \
+    chmod +x /usr/local/bin/entrypoint.sh
 
 # Cấp quyền thư mục storage và bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
