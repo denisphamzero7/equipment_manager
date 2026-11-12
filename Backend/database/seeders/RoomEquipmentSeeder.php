@@ -14,14 +14,14 @@ class RoomEquipmentSeeder extends Seeder
 {
     public function run(): void
     {
-        $orgId = 22;
+        $orgId = Room::value('organization_id') ?: 1;
         $rooms = Room::where('organization_id', $orgId)->get();
         $models = EquipmentModel::all()->keyBy('id');
         $serialCounter = 1000;
 
         foreach ($rooms as $room) {
-            // Trường hợp 1: Phòng B304 là phòng mới cải tạo chưa lắp thiết bị -> badge slate
-            if ($room->block === 'Block B' && $room->room_number === 304) {
+            // Trường hợp 1: Phòng B-139 là phòng mới cải tạo chưa lắp thiết bị -> badge slate
+            if ($room->block === 'Block B' && (string) $room->room_number === '139') {
                 continue;
             }
 
@@ -34,15 +34,16 @@ class RoomEquipmentSeeder extends Seeder
 
                 $qty = $std->standard_quantity;
 
-                // Trường hợp 2: Phòng A-302 thiếu 1 thiết bị minibar so với định mức
-                if ($room->block === 'Block A' && $room->room_number === 302 && $model->model_code === 'LCG-50') {
+                // Trường hợp 2: Phòng A-321 thiếu 1 thiết bị minibar so với định mức
+                if ($room->block === 'Block A' && (string) $room->room_number === '321' && $model->model_code === 'LCG-50') {
                     continue; // Bỏ qua không tạo để mô phỏng thiếu định mức
                 }
 
                 for ($i = 1; $i <= $qty; $i++) {
                     $serialCounter++;
                     $serialPrefix = strtoupper(substr($model->model_code ?? 'EQ', 0, 4));
-                    $serial = "SN-{$serialPrefix}-{$room->block[6]}{$room->room_number}-{$i}";
+                    $blockInitial = substr($room->block, 0, 1) === 'B' && strlen($room->block) > 6 ? $room->block[6] : 'R';
+                    $serial = "SN-{$serialPrefix}-{$blockInitial}{$room->room_number}-{$i}";
 
                     // Xác định trạng thái thiết bị
                     $status = EquipmentStatusEnum::Good->value;
@@ -51,22 +52,28 @@ class RoomEquipmentSeeder extends Seeder
 
                     $nameLower = mb_strtolower($model->name, 'UTF-8');
 
-                    // Trường hợp 3: Phòng A-104 có TV bị vỡ màn hình -> badge red
-                    if ($room->block === 'Block A' && $room->room_number === 104 && str_contains($nameLower, 'tv')) {
+                    // Trường hợp 3: Phòng A-122 có TV bị hỏng -> badge red
+                    if ($room->block === 'Block A' && (string) $room->room_number === '122' && str_contains($nameLower, 'tv')) {
                         $status = EquipmentStatusEnum::Broken->value;
                         $note = 'Khách lưu trú làm va đập dẫn tới nứt màn hình bên phải, không hiển thị.';
                     }
 
-                    // Trường hợp 4: Phòng A-204 có điều hòa đang bảo trì -> badge yellow
-                    if ($room->block === 'Block A' && $room->room_number === 204 && (str_contains($nameLower, 'điều hòa') || str_contains($nameLower, 'máy lạnh'))) {
+                    // Trường hợp 4: Phòng A-224 có điều hòa đang bảo trì -> badge yellow
+                    if ($room->block === 'Block A' && (string) $room->room_number === '224' && (str_contains($nameLower, 'điều hòa') || str_contains($nameLower, 'máy lạnh'))) {
                         $status = EquipmentStatusEnum::Maintenance->value;
                         $note = 'Điều hòa yếu lạnh, đang chờ kỹ thuật nạp thêm gas R32.';
                     }
 
-                    // Trường hợp 5: Phòng B-202 có remote bị hỏng nút bấm
-                    if ($room->block === 'Block B' && $room->room_number === 202 && str_contains($nameLower, 'remote')) {
+                    // Trường hợp 5: Phòng B-227 có remote bị hỏng nút bấm -> badge red
+                    if ($room->block === 'Block B' && (string) $room->room_number === '227' && str_contains($nameLower, 'remote')) {
                         $status = EquipmentStatusEnum::Broken->value;
                         $note = 'Liệt nút phím nguồn và tăng giảm âm lượng.';
+                    }
+
+                    // Trường hợp 6: Phòng C-341 có bình nóng lạnh đang bảo trì -> badge yellow
+                    if ($room->block === 'Block C' && (string) $room->room_number === '341' && str_contains($nameLower, 'bình')) {
+                        $status = EquipmentStatusEnum::Maintenance->value;
+                        $note = 'Đang kiểm tra rơ-le nhiệt và vệ sinh thanh đốt.';
                     }
 
                     $position = ($qty > 1) ? "Vị trí {$i}" : 'Vị trí chính';
