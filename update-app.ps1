@@ -7,10 +7,28 @@ Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host "[*] BAT DAU DONG GOI VA CAP NHAT UNG DUNG" -ForegroundColor Cyan
 Write-Host "==========================================" -ForegroundColor Cyan
 
+# Kiem tra va bo sung PATH Node.js neu chua co
+if (-not (Get-Command "node" -ErrorAction SilentlyContinue)) {
+    if (Test-Path "C:\Program Files\nodejs") {
+        $env:PATH = "C:\Program Files\nodejs;$env:PATH"
+    }
+}
+
 # 1. Build Frontend (Vue 3 + Vite)
 Write-Host ""
 Write-Host "[1/4] Dang dong goi Frontend (npm run build)..." -ForegroundColor Yellow
 Set-Location -Path "$PSScriptRoot\Frontend"
+
+if (-not (Test-Path "node_modules")) {
+    Write-Host "[*] Thu muc node_modules chua ton tai. Dang tu dong chay npm install..." -ForegroundColor Cyan
+    npm install
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[!] Cai dat dependencies that bai! Vui long kiem tra lai ket noi mang." -ForegroundColor Red
+        Set-Location -Path $PSScriptRoot
+        exit 1
+    }
+}
+
 npm run build
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[!] Build Frontend that bai! Vui long kiem tra lai loi code." -ForegroundColor Red
