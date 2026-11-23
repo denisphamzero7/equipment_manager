@@ -38,18 +38,23 @@ class DatabaseSeeder extends Seeder
     protected function seedUsers(): void
     {
         // Tạo tài khoản cố định để bạn dễ test đăng nhập
-        User::factory()->create([
-            'email' => 'pnhau2001@gmail.com',
-            'user_name' => 'pnhau2001',
-            'password' => \Illuminate\Support\Facades\Hash::make('12345'),
-            'status' => 'active',
-        ]);
+        $admin = User::firstOrCreate(
+            ['email' => 'pnhau2001@gmail.com'],
+            [
+                'name' => 'Administrator',
+                'user_name' => 'pnhau2001',
+                'password' => \Illuminate\Support\Facades\Hash::make('12345'),
+                'status' => 'active',
+                'email_verified_at' => now(),
+            ]
+        );
 
-        User::factory(10)->create();
+        $admin->update(['created_by' => $admin->id, 'updated_by' => $admin->id]);
 
-        // Gán created_by, updated_by (user 1 tự tham chiếu; các user khác tham chiếu user 1)
-        User::where('id', 1)->update(['created_by' => 1, 'updated_by' => 1]);
-        User::where('id', '>', 1)->update(['created_by' => 1, 'updated_by' => 1]);
+        if (function_exists('fake')) {
+            User::factory(5)->create();
+            User::where('id', '>', 1)->update(['created_by' => $admin->id, 'updated_by' => $admin->id]);
+        }
     }
 
     /**
@@ -57,6 +62,10 @@ class DatabaseSeeder extends Seeder
      */
     protected function seedPostCategories(): void
     {
+        if (! function_exists('fake')) {
+            return;
+        }
+
         $user = User::first();
         if (! $user) {
             return;
@@ -98,6 +107,10 @@ class DatabaseSeeder extends Seeder
      */
     protected function seedPosts(): void
     {
+        if (! function_exists('fake')) {
+            return;
+        }
+
         $users = User::all();
         $categories = PostCategory::all();
 
