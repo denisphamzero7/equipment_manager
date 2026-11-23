@@ -1,0 +1,13 @@
+.env
+.env.docker
+.env.*
+!.env.example
+!.env.docker.example
+Frontend/node_modules/
+Frontend/dist/
+Backend/vendor/
+Backend/storage/*.key
+Backend/storage/logs/
+Backend/storage/framework/cache/
+Backend/storage/framework/sessions/
+Backend/storage/framework/views/

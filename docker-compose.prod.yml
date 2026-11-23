@@ -91,6 +91,20 @@ services:
     depends_on:
       - app
 
+  # 5. Ngrok Tunnel (Truy cập qua Tên miền cố định miễn phí vĩnh viễn)
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: equipment_manager-ngrok-1
+    restart: unless-stopped
+    command:
+      - "http"
+      - "app:80"
+      - "--domain=${NGROK_DOMAIN:-vesta-preornamental-bothersomely.ngrok-free.dev}"
+    environment:
+      NGROK_AUTHTOKEN: "${NGROK_AUTHTOKEN}"
+    depends_on:
+      - app
+
 volumes:
   app-storage:
   db-data:
