@@ -48,16 +48,28 @@ if [ -n "$DB_HOST" ]; then
     echo "Tiếp tục quy trình khởi động..."
 fi
 
-# Chạy migration nếu cờ RUN_MIGRATIONS=true
-if [ "$RUN_MIGRATIONS" = "true" ]; then
-    echo "Đang thực thi database migrations..."
-    php /var/www/html/artisan migrate --force
-fi
+# Tự động thực thi migration và seed dữ liệu nếu có Database
+if [ -n "$DB_HOST" ]; then
+    echo "Đang tự động thực thi database migrations..."
+    php /var/www/html/artisan migrate --force || true
 
-# Chạy seed dữ liệu mẫu nếu cờ RUN_SEEDERS=true
-if [ "$RUN_SEEDERS" = "true" ]; then
-    echo "Đang thực thi database seeders..."
-    php /var/www/html/artisan db:seed --force || true
+    echo "Đang kiểm tra và khởi tạo dữ liệu mẫu..."
+    php -r "
+        require '/var/www/html/vendor/autoload.php';
+        \$app = require_once '/var/www/html/bootstrap/app.php';
+        \$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('users') && \App\Modules\Core\Models\User::count() === 0) {
+                echo 'Bảng users đang trống. Đang nạp tài khoản admin và dữ liệu mẫu...' . PHP_EOL;
+                \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+                echo \Illuminate\Support\Facades\Artisan::output();
+            } else {
+                echo 'Dữ liệu người dùng đã tồn tại, không cần seed lại.' . PHP_EOL;
+            }
+        } catch (Throwable \$e) {
+            echo 'Thông báo: ' . \$e->getMessage() . PHP_EOL;
+        }
+    " || true
 fi
 
 # Khám phá packages và cache Laravel
