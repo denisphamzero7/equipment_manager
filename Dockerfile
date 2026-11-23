@@ -36,6 +36,7 @@ RUN apk add --no-cache \
     icu-dev \
     oniguruma-dev \
     linux-headers \
+    postgresql-dev \
     $PHPIZE_DEPS \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
@@ -48,6 +49,7 @@ RUN apk add --no-cache \
         zip \
         intl \
         opcache \
+        pdo_pgsql \
     && pecl install redis \
     && docker-php-ext-enable redis \
     && apk del --purge $PHPIZE_DEPS

@@ -39,4 +39,5 @@ php /var/www/html/artisan route:cache || true
 php /var/www/html/artisan view:cache || true
 
 echo "Khởi động Supervisor quản lý Nginx, PHP-FPM, Reverb, Workers..."
+sed -i "s/listen 80;/listen ${PORT:-80};/g" /etc/nginx/nginx.conf
 exec /usr/bin/supervisord -c /etc/supervisord.conf
