@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: equipment-manager
+    env: docker
+    plan: free
+    region: singapore
+    buildCommand: ""
+    startCommand: ""
+    healthCheckPath: /dashboard
+    envVars:
+      - key: APP_NAME
+        value: "Equipment Manager"
+      - key: APP_ENV
+        value: "production"
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        value: "base64:XG8y8v7u8VzCdfk1z3V0Y9hL9tQ4b0OqUq+v5c7c2bM="
+      - key: APP_URL
+        value: "https://equipment-manager.onrender.com"
+      - key: RUN_MIGRATIONS
+        value: "true"
+      - key: CACHE_STORE
+        value: "file"
+      - key: SESSION_DRIVER
+        value: "file"
+      - key: QUEUE_CONNECTION
+        value: "database"
+      - key: DB_CONNECTION
+        value: "mysql"
+      - key: DB_HOST
+        value: "gateway01.ap-northeast-1.prod.aws.tidbcloud.com"
+      - key: DB_PORT
+        value: "4000"
+      - key: DB_DATABASE
+        value: "sys"
+      - key: DB_USERNAME
+        value: "Dq4E2JZpYiKgrhV.root"
+      - key: DB_PASSWORD
+        value: "wZXK56W0ZMBqf2T9"
+      - key: MYSQL_ATTR_SSL_CA
+        value: "/etc/ssl/certs/ca-certificates.crt"

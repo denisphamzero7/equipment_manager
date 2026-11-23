@@ -19,11 +19,33 @@ chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache || true
 # Chờ Database sẵn sàng nếu có cấu hình DB
 if [ -n "$DB_HOST" ]; then
     echo "Đang kiểm tra kết nối Database tại $DB_HOST:${DB_PORT:-3306}..."
-    until php -r "try { new PDO('mysql:host='.getenv('DB_HOST').';port='.(getenv('DB_PORT') ?: 3306), getenv('DB_USERNAME'), getenv('DB_PASSWORD')); exit(0); } catch (Throwable \$e) { exit(1); }" 2>/dev/null || [ "$DB_CONNECTION" = "sqlite" ]; do
-        echo "Database chưa sẵn sàng, chờ 2 giây..."
+    RETRY_COUNT=0
+    until php -r "
+        \$host = getenv('DB_HOST');
+        \$port = getenv('DB_PORT') ?: 3306;
+        \$user = getenv('DB_USERNAME');
+        \$pass = getenv('DB_PASSWORD');
+        \$opts = [];
+        if (file_exists('/etc/ssl/certs/ca-certificates.crt')) {
+            \$opts[PDO::MYSQL_ATTR_SSL_CA] = '/etc/ssl/certs/ca-certificates.crt';
+        }
+        try {
+            new PDO(\"mysql:host=\$host;port=\$port\", \$user, \$pass, \$opts);
+            exit(0);
+        } catch (Throwable \$e) {
+            echo 'Thông báo kết nối: ' . \$e->getMessage() . PHP_EOL;
+            exit(1);
+        }
+    " || [ "$DB_CONNECTION" = "sqlite" ]; do
+        RETRY_COUNT=$((RETRY_COUNT+1))
+        if [ $RETRY_COUNT -gt 15 ]; then
+            echo "Cảnh báo: Không thể kết nối Database sau 30 giây. Bỏ qua để khởi động tiếp..."
+            break
+        fi
+        echo "Database chưa sẵn sàng, chờ 2 giây... (Lần $RETRY_COUNT/15)"
         sleep 2
     done
-    echo "Database đã sẵn sàng!"
+    echo "Tiếp tục quy trình khởi động..."
 fi
 
 # Chạy migration nếu cờ RUN_MIGRATIONS=true

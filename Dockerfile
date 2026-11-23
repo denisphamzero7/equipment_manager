@@ -28,6 +28,7 @@ RUN apk add --no-cache \
     supervisor \
     curl \
     git \
+    ca-certificates \
     netcat-openbsd \
     libpng-dev \
     libjpeg-turbo-dev \
