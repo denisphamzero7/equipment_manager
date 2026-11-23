@@ -43,5 +43,8 @@ echo.
 echo (Cửa sổ này đang duy trì kết nối Internet. Để dừng lại, bấm Ctrl + C)
 echo.
 
-ngrok start equipment-manager
+set "NGROK_BIN=%LOCALAPPDATA%\ngrok\bin\ngrok.exe"
+if not exist "%NGROK_BIN%" set "NGROK_BIN=ngrok"
+
+"%NGROK_BIN%" start equipment-manager
 pause

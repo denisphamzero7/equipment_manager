@@ -48,4 +48,7 @@ Write-Host ""
 Write-Host "(Cửa sổ này đang duy trì kết nối Internet. Để dừng lại, bấm Ctrl + C)" -ForegroundColor Gray
 Write-Host ""
 
-ngrok start equipment-manager
+$ngrokBin = "$env:LOCALAPPDATA\ngrok\bin\ngrok.exe"
+if (-not (Test-Path $ngrokBin)) { $ngrokBin = "ngrok" }
+
+& $ngrokBin start equipment-manager
