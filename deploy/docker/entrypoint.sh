@@ -54,6 +54,12 @@ if [ "$RUN_MIGRATIONS" = "true" ]; then
     php /var/www/html/artisan migrate --force
 fi
 
+# Chạy seed dữ liệu mẫu nếu cờ RUN_SEEDERS=true
+if [ "$RUN_SEEDERS" = "true" ]; then
+    echo "Đang thực thi database seeders..."
+    php /var/www/html/artisan db:seed --force || true
+fi
+
 # Khám phá packages và cache Laravel
 php /var/www/html/artisan package:discover --ansi || true
 php /var/www/html/artisan config:cache || true
