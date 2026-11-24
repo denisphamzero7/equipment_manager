@@ -5,16 +5,26 @@ echo "=== KHỞI ĐỘNG EQUIPMENT MANAGER CONTAINER ==="
 
 # Tạo thư mục log nếu chưa có
 mkdir -p /var/www/html/storage/logs
-mkdir -p /var/www/html/storage/framework/cache
+mkdir -p /var/www/html/storage/framework/cache/data
 mkdir -p /var/www/html/storage/framework/sessions
 mkdir -p /var/www/html/storage/framework/views
+mkdir -p /var/www/html/storage/app/public
+
+# Tạo sẵn các file log để tránh permission denied
+touch /var/www/html/storage/logs/laravel.log
+touch /var/www/html/storage/logs/reverb.log
+touch /var/www/html/storage/logs/worker.log
+touch /var/www/html/storage/logs/scheduler.log
 
 # Liên kết storage nếu chưa liên kết
 php /var/www/html/artisan storage:link --force || true
 
-# Đảm bảo quyền ghi cho www-data trên thư mục storage và cache
+# Xóa cache cũ trước (đảm bảo không dùng config từ lần build trước)
+php /var/www/html/artisan optimize:clear || true
+
+# Đảm bảo quyền ghi cho TẤT CẢ user trên storage và cache (fix Render permission)
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache || true
-chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache || true
+chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache || true
 
 # Chờ Database sẵn sàng nếu có cấu hình DB
 if [ -n "$DB_HOST" ]; then
@@ -72,9 +82,8 @@ if [ -n "$DB_HOST" ]; then
     " || true
 fi
 
-# Khám phá packages và cache Laravel
+# Khám phá packages và cache route/view (KHÔNG cache config để SSL runtime luôn đúng)
 php /var/www/html/artisan package:discover --ansi || true
-php /var/www/html/artisan config:cache || true
 php /var/www/html/artisan route:cache || true
 php /var/www/html/artisan view:cache || true
 
