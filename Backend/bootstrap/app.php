@@ -49,4 +49,17 @@ return Application::configure(basePath: dirname(__DIR__))
                 'code' => 'UNAUTHENTICATED',
             ], 401);
         });
+
+        // Bắt mọi lỗi Exception khác trên API để trả về nguyên nhân cụ thể
+        $exceptions->renderable(function (\Throwable $e, $request) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                error_log('[API_ERROR] ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                    'file' => basename($e->getFile()) . ':' . $e->getLine(),
+                    'code' => 'SERVER_ERROR',
+                ], 500);
+            }
+        });
     })->create();
