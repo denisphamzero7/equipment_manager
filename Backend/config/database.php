@@ -58,11 +58,11 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_merge(
-                [PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false],
-                file_exists('/etc/ssl/certs/ca-certificates.crt')
+            'options' => extension_loaded('pdo_mysql') ? (
+                [PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false]
+                + (file_exists('/etc/ssl/certs/ca-certificates.crt')
                     ? [PDO::MYSQL_ATTR_SSL_CA => '/etc/ssl/certs/ca-certificates.crt']
-                    : (env('MYSQL_ATTR_SSL_CA') ? [PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA')] : [])
+                    : (env('MYSQL_ATTR_SSL_CA') ? [PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA')] : []))
             ) : [],
         ],
 
@@ -81,11 +81,11 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_merge(
-                [PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false],
-                file_exists('/etc/ssl/certs/ca-certificates.crt')
+            'options' => extension_loaded('pdo_mysql') ? (
+                [PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false]
+                + (file_exists('/etc/ssl/certs/ca-certificates.crt')
                     ? [PDO::MYSQL_ATTR_SSL_CA => '/etc/ssl/certs/ca-certificates.crt']
-                    : (env('MYSQL_ATTR_SSL_CA') ? [PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA')] : [])
+                    : (env('MYSQL_ATTR_SSL_CA') ? [PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA')] : []))
             ) : [],
         ],
 
