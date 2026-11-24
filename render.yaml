@@ -39,6 +39,6 @@ services:
       - key: DB_USERNAME
         value: "Dq4E2JZpYiKgrhV.root"
       - key: DB_PASSWORD
-        value: "wZXK56W0ZMBqf2T9"
+        sync: false
       - key: MYSQL_ATTR_SSL_CA
         value: "/etc/ssl/certs/ca-certificates.crt"

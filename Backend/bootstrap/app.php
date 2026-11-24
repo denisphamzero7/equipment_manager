@@ -50,14 +50,13 @@ return Application::configure(basePath: dirname(__DIR__))
             ], 401);
         });
 
-        // Bắt mọi lỗi Exception khác trên API để trả về nguyên nhân cụ thể
+        // Xử lý các lỗi ngoại lệ chung trên API
         $exceptions->renderable(function (\Throwable $e, $request) {
             if ($request->expectsJson() || $request->is('api/*')) {
                 error_log('[API_ERROR] ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
                 return response()->json([
                     'success' => false,
-                    'message' => $e->getMessage(),
-                    'file' => basename($e->getFile()) . ':' . $e->getLine(),
+                    'message' => config('app.debug') ? $e->getMessage() : 'Đã có lỗi xảy ra từ máy chủ nội bộ. Vui lòng thử lại sau.',
                     'code' => 'SERVER_ERROR',
                 ], 500);
             }
