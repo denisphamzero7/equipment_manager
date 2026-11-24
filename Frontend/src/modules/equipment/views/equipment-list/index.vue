@@ -493,13 +493,13 @@ async function persistCreation(pending) {
     }
 
     const response = await equipmentService.createEquipment(payload)
+    pendingCreations.value = pendingCreations.value.filter(item => item !== pending)
     const created = extractCreatedEquipment(response)
     if (created) {
       equipmentStore.addEquipment(created)
       if (!pending.acknowledgedByEvent) rememberLocalCreation(pending.clientRequestId)
 
-      // [CƠ CHẾ OPTIMISTIC UI]: Cập nhật tức thì (0ms) các huy hiệu số đếm trên giao diện
-      // Giúp người dùng thấy ngay số lượng trong nút Block và thẻ KPI nhảy số mà không cần chờ API getStats phản hồi
+      // Cập nhật huy hiệu số đếm
       const targetBlock = created.room?.block || pending.formValues?.block
       if (targetBlock) {
         blockCounts.value[targetBlock] = (blockCounts.value[targetBlock] || 0) + 1
@@ -512,24 +512,17 @@ async function persistCreation(pending) {
         stats.value.good = (stats.value.good || 0) + 1
       }
     }
-    pendingCreations.value = pendingCreations.value.filter(item => item !== pending)
     pending.acknowledgedByResponse = true
     if (!pending.successNotified) {
       toast.success(`Đã tạo thiết bị "${pending.modelName}" thành công!`)
     }
-    if (!created && !pending.acknowledgedByEvent) {
-      await refreshAfterCreation(pending)
-    }
-    // [ĐỒNG BỘ NGUỒN CHUẨN BACKEND]: Gọi fetchStats() ngầm để đảm bảo dữ liệu toàn hệ thống khớp 100% với server
+    await refreshAfterCreation(pending)
     await fetchStats()
   } catch (error) {
-    if (pending.acknowledgedByEvent || pending.acknowledgedByResponse) {
-      await refreshAfterCreation(pending)
-      return
-    }
-    pending.state = 'failed'
-    pending.error = error.response?.data?.message || error.message || 'Không thể lưu thiết bị.'
-    toast.error(`Tạo thiết bị thất bại: ${pending.error}`)
+    pendingCreations.value = pendingCreations.value.filter(item => item !== pending)
+    await refreshAfterCreation(pending)
+    const errMsg = error.response?.data?.message || error.message || 'Không thể lưu thiết bị.'
+    toast.error(`Tạo thiết bị thất bại: ${errMsg}`)
   }
 }
 

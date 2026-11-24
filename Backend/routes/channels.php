@@ -16,8 +16,12 @@ Broadcast::channel('organization.{orgId}', function ($user, $orgId) {
         return false;
     }
 
-    // Super Admin có quyền truy cập tất cả tổ chức
-    if (method_exists($user, 'hasRole') && $user->hasRole('Super Admin')) {
+    // Super Admin hoặc Admin có quyền truy cập tất cả tổ chức
+    if (method_exists($user, 'hasRole') && ($user->hasRole('Super Admin') || $user->hasRole('Admin') || $user->hasRole('Super Admin', 'api') || $user->hasRole('Admin', 'api'))) {
+        return true;
+    }
+
+    if ($user->roles()->whereIn('name', ['Super Admin', 'Admin', 'Quản trị viên'])->exists()) {
         return true;
     }
 
@@ -28,7 +32,10 @@ Broadcast::channel('organization.{orgId}', function ($user, $orgId) {
     return DB::table($tableNames['model_has_roles'])
         ->where('model_id', $user->id)
         ->where('model_type', get_class($user))
-        ->where($teamForeignKey, (int) $orgId)
+        ->where(function ($q) use ($teamForeignKey, $orgId) {
+            $q->where($teamForeignKey, (int) $orgId)
+              ->orWhereNull($teamForeignKey);
+        })
         ->exists();
 });
 
