@@ -31,11 +31,13 @@ if [ -n "$DB_HOST" ]; then
     echo "Đang kiểm tra kết nối Database tại $DB_HOST:${DB_PORT:-3306}..."
     RETRY_COUNT=0
     until php -r "
-        \$host = getenv('DB_HOST');
-        \$port = getenv('DB_PORT') ?: 3306;
-        \$user = getenv('DB_USERNAME');
-        \$pass = getenv('DB_PASSWORD');
-        \$opts = [];
+        \$host = trim(getenv('DB_HOST'), \"'\\\"\");
+        \$port = trim(getenv('DB_PORT') ?: '3306', \"'\\\"\");
+        \$user = trim(getenv('DB_USERNAME'), \"'\\\"\");
+        \$pass = trim(getenv('DB_PASSWORD'), \"'\\\"\");
+        \$opts = [
+            PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
+        ];
         if (file_exists('/etc/ssl/certs/ca-certificates.crt')) {
             \$opts[PDO::MYSQL_ATTR_SSL_CA] = '/etc/ssl/certs/ca-certificates.crt';
         }
