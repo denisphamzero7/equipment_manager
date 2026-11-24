@@ -42,3 +42,17 @@ services:
         sync: false
       - key: MYSQL_ATTR_SSL_CA
         value: "/etc/ssl/certs/ca-certificates.crt"
+      - key: BROADCAST_CONNECTION
+        value: "reverb"
+      - key: REVERB_APP_ID
+        value: "856214"
+      - key: REVERB_APP_KEY
+        value: "pnhau_core_reverb_key"
+      - key: REVERB_APP_SECRET
+        value: "reverb_app_secret_production"
+      - key: REVERB_HOST
+        value: "127.0.0.1"
+      - key: REVERB_PORT
+        value: "8090"
+      - key: REVERB_SCHEME
+        value: "http"

@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('BROADCAST_CONNECTION', 'null'),
+    'default' => env('BROADCAST_CONNECTION', 'reverb'),
 
     /*
     |--------------------------------------------------------------------------
@@ -32,14 +32,12 @@ return [
 
         'reverb' => [
             'driver' => 'reverb',
-            'key' => env('REVERB_APP_KEY'),
-            'secret' => env('REVERB_APP_SECRET'),
-            'app_id' => env('REVERB_APP_ID'),
+            'key' => env('REVERB_APP_KEY', 'pnhau_core_reverb_key'),
+            'secret' => env('REVERB_APP_SECRET', 'reverb_app_secret_production'),
+            'app_id' => env('REVERB_APP_ID', '856214'),
             'options' => [
-                'host' => env('LARAVEL_SAIL') && in_array(env('REVERB_HOST'), ['127.0.0.1', 'localhost', ''])
-                    ? 'reverb'
-                    : env('REVERB_HOST', '127.0.0.1'),
-                'port' => env('REVERB_PORT', 8090),
+                'host' => env('REVERB_HOST', '127.0.0.1'),
+                'port' => (int) env('REVERB_PORT', 8090),
                 'scheme' => env('REVERB_SCHEME', 'http'),
                 'useTLS' => env('REVERB_SCHEME', 'http') === 'https',
             ],
