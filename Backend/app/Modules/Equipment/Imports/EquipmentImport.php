@@ -7,8 +7,8 @@ use App\Modules\Equipment\Enums\EquipmentStatusEnum;
 use App\Modules\Equipment\Models\EquipmentModel;
 use App\Modules\Equipment\Models\RoomEquipment;
 use App\Modules\Motel\Models\Room;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
@@ -79,34 +79,58 @@ class EquipmentImport implements SkipsEmptyRows, ToCollection, WithEvents, WithH
             return;
         }
 
+        $modelsByName = $this->preloadModelsByName();
+        $roomsByNumber = $this->preloadRoomsByNumber();
+        $existingSerials = $this->preloadExistingSerials($nonEmptyRows);
+
+        $rowsToInsert = [];
+        $now = now();
+        $userId = auth()->id();
+
+        foreach ($nonEmptyRows as $index => $row) {
+            $prepared = $this->buildValidatedRow(
+                (int) $index + 2,
+                $row,
+                $modelsByName,
+                $roomsByNumber,
+                $existingSerials,
+                $now,
+                $userId
+            );
+
+            if ($prepared !== null) {
+                $rowsToInsert[] = $prepared;
+                $this->successCount++;
+            }
+        }
+
+        $this->insertInChunks(RoomEquipment::class, $rowsToInsert);
+    }
+
+    protected function preloadModelsByName(): array
+    {
         $models = EquipmentModel::query()
             ->when($this->organizationId, fn ($query) => $query->where(function ($query) {
                 $query->where('organization_id', $this->organizationId)->orWhereNull('organization_id');
             }))
             ->orderByRaw('organization_id IS NULL')
-            ->get(['id', 'name']);
+            ->pluck('id', 'name');
 
-        $modelsByName = [];
-        foreach ($models as $model) {
-            $key = mb_strtolower(trim((string) $model->name));
-            if ($key !== '' && ! isset($modelsByName[$key])) {
-                $modelsByName[$key] = (int) $model->id;
-            }
-        }
+        return $this->buildLowercaseIdMap($models);
+    }
 
+    protected function preloadRoomsByNumber(): array
+    {
         $rooms = Room::query()
             ->when($this->organizationId, fn ($query) => $query->where('organization_id', $this->organizationId))
             ->pluck('id', 'room_number');
 
-        $roomsByNumber = [];
-        foreach ($rooms as $number => $id) {
-            $key = mb_strtolower(trim((string) $number));
-            if ($key !== '') {
-                $roomsByNumber[$key] = (int) $id;
-            }
-        }
+        return $this->buildLowercaseIdMap($rooms);
+    }
 
-        $candidateSerials = $nonEmptyRows
+    protected function preloadExistingSerials(Collection $rows): array
+    {
+        $candidateSerials = $rows
             ->map(fn ($row) => trim((string) ($row['ma_serial'] ?? $row['serial_number'] ?? '')))
             ->filter(fn (string $serial) => $serial !== '')
             ->unique()
@@ -114,109 +138,109 @@ class EquipmentImport implements SkipsEmptyRows, ToCollection, WithEvents, WithH
             ->all();
 
         $existingSerials = [];
-        if (! empty($candidateSerials)) {
-            foreach (array_chunk($candidateSerials, 500) as $serialChunk) {
-                $matched = RoomEquipment::withTrashed()
-                    ->whereIn('serial_number', $serialChunk)
-                    ->pluck('serial_number');
-                foreach ($matched as $serial) {
-                    $existingSerials[mb_strtolower(trim((string) $serial))] = true;
-                }
+        foreach (array_chunk($candidateSerials, 500) as $serialChunk) {
+            $matched = RoomEquipment::withTrashed()
+                ->whereIn('serial_number', $serialChunk)
+                ->pluck('serial_number');
+            foreach ($matched as $serial) {
+                $existingSerials[mb_strtolower(trim((string) $serial))] = true;
             }
         }
 
-        $rowsToInsert = [];
-        $now = now();
-        $userId = auth()->id();
+        return $existingSerials;
+    }
 
-        foreach ($nonEmptyRows as $index => $row) {
-            $rowNum = (int) $index + 2;
+    protected function buildValidatedRow(
+        int $rowNum,
+        mixed $row,
+        array $modelsByName,
+        array $roomsByNumber,
+        array $existingSerials,
+        Carbon $now,
+        ?int $userId
+    ): ?array {
+        $modelName = trim((string) ($row['mau_thiet_bi'] ?? $row['model_name'] ?? ''));
+        $serialNumber = trim((string) ($row['ma_serial'] ?? $row['serial_number'] ?? ''));
+        $roomNumber = trim((string) ($row['so_phong'] ?? $row['room_number'] ?? ''));
+        $rawStatus = $this->nullableValue($row['trang_thai'] ?? $row['status'] ?? null);
+        $status = $rawStatus !== null ? trim((string) $rawStatus) : EquipmentStatusEnum::Good->value;
+        $positionNote = trim((string) ($row['vi_tri_trong_phong'] ?? $row['position_note'] ?? ''));
+        $note = trim((string) ($row['ghi_chu'] ?? $row['ghi_chu_tinh_trang'] ?? $row['note'] ?? ''));
 
-            $modelName = trim((string) ($row['mau_thiet_bi'] ?? $row['model_name'] ?? ''));
-            $serialNumber = trim((string) ($row['ma_serial'] ?? $row['serial_number'] ?? ''));
-            $roomNumber = trim((string) ($row['so_phong'] ?? $row['room_number'] ?? ''));
-            $rawStatus = $this->nullableValue($row['trang_thai'] ?? $row['status'] ?? null);
-            $status = $rawStatus !== null ? trim((string) $rawStatus) : EquipmentStatusEnum::Good->value;
-            $positionNote = trim((string) ($row['vi_tri_trong_phong'] ?? $row['position_note'] ?? ''));
-            $note = trim((string) ($row['ghi_chu'] ?? $row['ghi_chu_tinh_trang'] ?? $row['note'] ?? ''));
+        if ($modelName === '') {
+            $this->fail($rowNum, 'Tên mẫu thiết bị (model) không được để trống.');
 
-            if ($modelName === '') {
-                $this->fail($rowNum, 'Tên mẫu thiết bị (model) không được để trống.');
-                continue;
-            }
-
-            $modelId = $modelsByName[mb_strtolower($modelName)] ?? null;
-            if ($modelId === null) {
-                $this->fail($rowNum, "Không tìm thấy mẫu thiết bị '{$modelName}' trong hệ thống.");
-                continue;
-            }
-
-            $roomId = null;
-            if ($roomNumber !== '') {
-                $roomId = $roomsByNumber[mb_strtolower($roomNumber)] ?? null;
-                if ($roomId === null) {
-                    $this->fail($rowNum, "Không tìm thấy phòng '{$roomNumber}' trong tổ chức hiện tại.");
-                    continue;
-                }
-            }
-
-            $statusEnum = $this->resolveStatus($status);
-            if (! $statusEnum) {
-                $this->fail($rowNum, "Trạng thái '{$status}' không hợp lệ.");
-                continue;
-            }
-
-            if ($serialNumber !== '' && mb_strlen($serialNumber) > 100) {
-                $this->fail($rowNum, 'Mã Serial không được vượt quá 100 ký tự.');
-                continue;
-            }
-
-            if (mb_strlen($positionNote) > 255) {
-                $this->fail($rowNum, 'Vị trí trong phòng không được vượt quá 255 ký tự.');
-                continue;
-            }
-
-            if (mb_strlen($note) > 1000) {
-                $this->fail($rowNum, 'Ghi chú không được vượt quá 1000 ký tự.');
-                continue;
-            }
-
-            if ($serialNumber === '') {
-                $serialNumber = 'EQ-'.strtoupper(Str::uuid()->toString());
-            }
-
-            $serialKey = mb_strtolower($serialNumber);
-            if (isset($this->seenSerials[$serialKey]) || isset($existingSerials[$serialKey])) {
-                $this->fail($rowNum, "Mã Serial '{$serialNumber}' đã tồn tại; bỏ qua, không ghi đè.");
-                continue;
-            }
-            $this->seenSerials[$serialKey] = true;
-
-            $rowsToInsert[] = [
-                'serial_number' => $serialNumber,
-                'equipment_model_id' => $modelId,
-                'room_id' => $roomId,
-                'status' => $statusEnum->value,
-                'position_note' => $positionNote !== '' ? $positionNote : null,
-                'note' => $note !== '' ? $note : null,
-                'installed_at' => $roomId ? $now : null,
-                'organization_id' => $this->organizationId,
-                'created_by' => $userId,
-                'updated_by' => $userId,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ];
-
-            $this->successCount++;
+            return null;
         }
 
-        if (! empty($rowsToInsert)) {
-            DB::transaction(function () use ($rowsToInsert): void {
-                foreach (array_chunk($rowsToInsert, 200) as $chunk) {
-                    RoomEquipment::insert($chunk);
-                }
-            });
+        $modelId = $modelsByName[mb_strtolower($modelName)] ?? null;
+        if ($modelId === null) {
+            $this->fail($rowNum, "Không tìm thấy mẫu thiết bị '{$modelName}' trong hệ thống.");
+
+            return null;
         }
+
+        $roomId = null;
+        if ($roomNumber !== '') {
+            $roomId = $roomsByNumber[mb_strtolower($roomNumber)] ?? null;
+            if ($roomId === null) {
+                $this->fail($rowNum, "Không tìm thấy phòng '{$roomNumber}' trong tổ chức hiện tại.");
+
+                return null;
+            }
+        }
+
+        $statusEnum = $this->resolveStatus($status);
+        if (! $statusEnum) {
+            $this->fail($rowNum, "Trạng thái '{$status}' không hợp lệ.");
+
+            return null;
+        }
+
+        if ($serialNumber !== '' && mb_strlen($serialNumber) > 100) {
+            $this->fail($rowNum, 'Mã Serial không được vượt quá 100 ký tự.');
+
+            return null;
+        }
+
+        if (mb_strlen($positionNote) > 255) {
+            $this->fail($rowNum, 'Vị trí trong phòng không được vượt quá 255 ký tự.');
+
+            return null;
+        }
+
+        if (mb_strlen($note) > 1000) {
+            $this->fail($rowNum, 'Ghi chú không được vượt quá 1000 ký tự.');
+
+            return null;
+        }
+
+        if ($serialNumber === '') {
+            $serialNumber = 'EQ-'.strtoupper(Str::uuid()->toString());
+        }
+
+        $serialKey = mb_strtolower($serialNumber);
+        if (isset($this->seenSerials[$serialKey]) || isset($existingSerials[$serialKey])) {
+            $this->fail($rowNum, "Mã Serial '{$serialNumber}' đã tồn tại; bỏ qua, không ghi đè.");
+
+            return null;
+        }
+        $this->seenSerials[$serialKey] = true;
+
+        return [
+            'serial_number' => $serialNumber,
+            'equipment_model_id' => $modelId,
+            'room_id' => $roomId,
+            'status' => $statusEnum->value,
+            'position_note' => $positionNote !== '' ? $positionNote : null,
+            'note' => $note !== '' ? $note : null,
+            'installed_at' => $roomId ? $now : null,
+            'organization_id' => $this->organizationId,
+            'created_by' => $userId,
+            'updated_by' => $userId,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ];
     }
 
     protected function resolveStatus(string $status): ?EquipmentStatusEnum

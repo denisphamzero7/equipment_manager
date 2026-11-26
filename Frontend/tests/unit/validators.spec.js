@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { rules } from '@/core/helpers/validators'
+import { extractFirstValidationError, rules } from '@/core/helpers/validators'
 
 describe('Validators Helper', () => {
   it('validates required fields', () => {
@@ -30,5 +30,11 @@ describe('Validators Helper', () => {
     expect(rules.serialNumber('TV-LG-43_001')).toBe(true)
     expect(rules.serialNumber('SERIAL123')).toBe(true)
     expect(rules.serialNumber('TV@LG#43')).toContain('Số Serial chỉ chứa')
+  })
+
+  it('extracts first validation error from object or array shapes', () => {
+    expect(extractFirstValidationError({ file: ['Lỗi tệp'] })).toBe('Lỗi tệp')
+    expect(extractFirstValidationError(['Lỗi chuỗi'])).toBe('Lỗi chuỗi')
+    expect(extractFirstValidationError(null)).toBe('')
   })
 })

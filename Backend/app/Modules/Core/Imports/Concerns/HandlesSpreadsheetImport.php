@@ -4,11 +4,15 @@ namespace App\Modules\Core\Imports\Concerns;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Exceptions\LaravelExcelException;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Exception as SpreadsheetException;
 
+/**
+ * Chuẩn hóa việc thực thi import Excel, xử lý lỗi tệp hỏng/toàn dòng lỗi và phát broadcast an toàn ở tầng Controller.
+ */
 trait HandlesSpreadsheetImport
 {
     protected function executeSpreadsheetImport(object $import, UploadedFile $file): array
@@ -43,5 +47,14 @@ trait HandlesSpreadsheetImport
             'data' => $result,
             'code' => 'IMPORT_VALIDATION_ERROR',
         ], 422);
+    }
+
+    protected function safeBroadcastImportEvent(object $event, string $context): void
+    {
+        try {
+            event($event);
+        } catch (\Throwable $e) {
+            Log::warning("{$context} import broadcast failed safely: ".$e->getMessage());
+        }
     }
 }

@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue'
 import AppButton from './AppButton.vue'
 import AppModal from './AppModal.vue'
 import { toast } from '@/core/helpers/toast'
+import { extractFirstValidationError } from '@/core/helpers/validators'
 
 const ALLOWED_EXTENSIONS = ['.xlsx', '.xls', '.csv']
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024
@@ -67,12 +68,16 @@ const resultBoxClass = computed(() => {
 
 watch(open, isOpen => {
   if (!isOpen) {
-    selectedFile.value = null
+    resetSelection()
     result.value = null
     importError.value = ''
-    if (fileInput.value) fileInput.value.value = ''
   }
 })
+
+function resetSelection() {
+  selectedFile.value = null
+  if (fileInput.value) fileInput.value.value = ''
+}
 
 function validateSelectedFile(file) {
   if (!file) {
@@ -108,9 +113,8 @@ function handleFileChange(event) {
 
   const validationMessage = validateSelectedFile(file)
   if (validationMessage) {
-    selectedFile.value = null
+    resetSelection()
     importError.value = validationMessage
-    if (fileInput.value) fileInput.value.value = ''
     toast.error(validationMessage)
     return
   }
@@ -143,9 +147,8 @@ async function getRequestErrorMessage(error) {
       console.error('Could not read Excel request error response:', parseError)
     }
   }
-  if (!responseData?.data?.errors?.length && responseData?.errors && typeof responseData.errors === 'object' && !Array.isArray(responseData.errors)) {
-    const firstEntry = Object.values(responseData.errors)[0]
-    const firstError = Array.isArray(firstEntry) ? firstEntry[0] : firstEntry
+  if (!responseData?.data?.errors?.length) {
+    const firstError = extractFirstValidationError(responseData?.errors)
     if (firstError) return firstError
   }
   if (error.code === 'ECONNABORTED') {
@@ -171,6 +174,48 @@ async function downloadExport(template = false) {
   }
 }
 
+function applyImportResult(payload) {
+  const data = payload?.data || payload || {}
+  const importedSuccessCount = Number(data.success_count ?? 0)
+  const importedFailedCount = Number(data.failed_count ?? 0)
+
+  if (importedSuccessCount === 0 && importedFailedCount > 0) {
+    result.value = payload
+    importError.value = payload?.message || `Nhập dữ liệu thất bại (${importedFailedCount} dòng lỗi / bỏ qua).`
+    toast.error(importError.value)
+    return
+  }
+
+  if (importedSuccessCount === 0 && importedFailedCount === 0) {
+    importError.value = 'Tệp Excel không có dữ liệu hợp lệ để nhập.'
+    toast.error(importError.value)
+    return
+  }
+
+  result.value = payload
+  emit('imported', data)
+  resetSelection()
+
+  if (importedFailedCount > 0) {
+    toast.warning(payload?.message || 'Đã nhập dữ liệu (có một số dòng bị bỏ qua/lỗi).')
+    return
+  }
+
+  toast.success(payload?.message || 'Đã hoàn tất nhập dữ liệu.')
+}
+
+async function applyImportFailure(error) {
+  console.error('Excel import failed:', error)
+  const responseData = error.response?.data
+  if (responseData?.data) {
+    result.value = responseData
+  }
+  importError.value = await getRequestErrorMessage(error)
+  if (!error.response) {
+    toast.error(importError.value)
+  }
+}
+
 async function importFile() {
   const validationMessage = validateSelectedFile(selectedFile.value)
   if (validationMessage) {
@@ -184,43 +229,9 @@ async function importFile() {
   result.value = null
   try {
     const payload = await props.importer(selectedFile.value)
-    const data = payload?.data || payload || {}
-    const importedSuccessCount = Number(data.success_count ?? 0)
-    const importedFailedCount = Number(data.failed_count ?? 0)
-
-    if (importedSuccessCount === 0 && importedFailedCount > 0) {
-      result.value = payload
-      importError.value = payload?.message || `Nhập dữ liệu thất bại (${importedFailedCount} dòng lỗi / bỏ qua).`
-      toast.error(importError.value)
-      return
-    }
-
-    if (importedSuccessCount === 0 && importedFailedCount === 0) {
-      importError.value = 'Tệp Excel không có dữ liệu hợp lệ để nhập.'
-      toast.error(importError.value)
-      return
-    }
-
-    result.value = payload
-    emit('imported', data)
-    selectedFile.value = null
-    if (fileInput.value) fileInput.value.value = ''
-
-    if (importedFailedCount > 0) {
-      toast.warning(payload?.message || 'Đã nhập dữ liệu (có một số dòng bị bỏ qua/lỗi).')
-    } else {
-      toast.success(payload?.message || 'Đã hoàn tất nhập dữ liệu.')
-    }
+    applyImportResult(payload)
   } catch (error) {
-    console.error('Excel import failed:', error)
-    const responseData = error.response?.data
-    if (responseData?.data) {
-      result.value = responseData
-    }
-    importError.value = await getRequestErrorMessage(error)
-    if (!error.response) {
-      toast.error(importError.value)
-    }
+    await applyImportFailure(error)
   } finally {
     importing.value = false
   }

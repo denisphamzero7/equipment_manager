@@ -21,7 +21,6 @@ use App\Modules\Equipment\Services\EquipmentService;
 use App\Modules\Motel\Models\Room;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 /**
@@ -592,11 +591,10 @@ class EquipmentController extends Controller
         if ($result['success_count'] > 0) {
             $this->service->invalidateCache($organizationId ?: null);
             if ($organizationId) {
-                try {
-                    event(new EquipmentImported($organizationId, $result['success_count']));
-                } catch (\Throwable $e) {
-                    Log::warning('Equipment import broadcast failed safely: '.$e->getMessage());
-                }
+                $this->safeBroadcastImportEvent(
+                    new EquipmentImported($organizationId, $result['success_count']),
+                    'Equipment'
+                );
             }
         }
 

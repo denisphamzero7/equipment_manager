@@ -14,7 +14,6 @@ use App\Modules\Motel\Requests\UpdateRoomRequest;
 use App\Modules\Motel\Services\RoomService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class RoomController extends Controller
@@ -180,16 +179,15 @@ class RoomController extends Controller
         if ($result['success_count'] > 0) {
             $this->roomService->invalidateMapCache($organizationId);
             app(EquipmentService::class)->invalidateCache($organizationId);
-            try {
-                event(new RoomChanged(
+            $this->safeBroadcastImportEvent(
+                new RoomChanged(
                     'room_imported',
                     ['imported_count' => $result['success_count']],
                     "Đã nhập {$result['success_count']} phòng từ Excel.",
                     $organizationId
-                ));
-            } catch (\Throwable $e) {
-                Log::warning('Room import broadcast failed safely: '.$e->getMessage());
-            }
+                ),
+                'Room'
+            );
         }
 
         if ($result['success_count'] === 0 && $result['failed_count'] > 0) {
