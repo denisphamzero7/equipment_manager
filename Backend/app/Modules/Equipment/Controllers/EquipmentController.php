@@ -3,6 +3,7 @@
 namespace App\Modules\Equipment\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Core\Imports\Concerns\HandlesSpreadsheetImport;
 use App\Modules\Equipment\Events\EquipmentImported;
 use App\Modules\Equipment\Exports\EquipmentExport;
 use App\Modules\Equipment\Imports\EquipmentImport;
@@ -20,6 +21,7 @@ use App\Modules\Equipment\Services\EquipmentService;
 use App\Modules\Motel\Models\Room;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 /**
@@ -29,6 +31,8 @@ use Maatwebsite\Excel\Facades\Excel;
  */
 class EquipmentController extends Controller
 {
+    use HandlesSpreadsheetImport;
+
     public function __construct(
         protected EquipmentService $service
     ) {}
@@ -583,13 +587,23 @@ class EquipmentController extends Controller
         $organizationId = (int) ($request->header('X-Organization-Id')
             ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 0));
         $import = new EquipmentImport($organizationId ?: null);
-        Excel::import($import, $request->file('file'));
+        $result = $this->executeSpreadsheetImport($import, $request->file('file'));
 
-        $result = $import->getResult();
-        $this->service->invalidateCache($organizationId ?: null);
-        if ($result['success_count'] > 0 && $organizationId) {
-            event(new EquipmentImported($organizationId, $result['success_count']));
+        if ($result['success_count'] > 0) {
+            $this->service->invalidateCache($organizationId ?: null);
+            if ($organizationId) {
+                try {
+                    event(new EquipmentImported($organizationId, $result['success_count']));
+                } catch (\Throwable $e) {
+                    Log::warning('Equipment import broadcast failed safely: '.$e->getMessage());
+                }
+            }
         }
+
+        if ($result['success_count'] === 0 && $result['failed_count'] > 0) {
+            return $this->failedSpreadsheetImportResponse($result);
+        }
+
         return $this->success($result, "Nhập dữ liệu hoàn tất: Thành công {$result['success_count']}, Thất bại {$result['failed_count']}");
     }
 

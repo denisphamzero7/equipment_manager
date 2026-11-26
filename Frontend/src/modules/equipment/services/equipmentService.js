@@ -544,6 +544,8 @@ export const equipmentService = {
       payload.append('file', formData)
       const response = await axiosClient.post(Endpoints.EQUIPMENT.IMPORT, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
+        _skipRetry: true,
+        timeout: 60000,
       })
       return response.data
     })

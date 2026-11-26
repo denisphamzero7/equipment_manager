@@ -225,6 +225,8 @@ export const roomService = {
       payload.append('file', file)
       const response = await axiosClient.post(Endpoints.ROOM.IMPORT, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
+        _skipRetry: true,
+        timeout: 60000,
       })
       return response.data
     })

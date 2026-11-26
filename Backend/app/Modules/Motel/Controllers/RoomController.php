@@ -3,6 +3,8 @@
 namespace App\Modules\Motel\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Core\Imports\Concerns\HandlesSpreadsheetImport;
+use App\Modules\Equipment\Services\EquipmentService;
 use App\Modules\Motel\Events\RoomChanged;
 use App\Modules\Motel\Exports\RoomExport;
 use App\Modules\Motel\Imports\RoomImport;
@@ -12,10 +14,13 @@ use App\Modules\Motel\Requests\UpdateRoomRequest;
 use App\Modules\Motel\Services\RoomService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class RoomController extends Controller
 {
+    use HandlesSpreadsheetImport;
+
     public function __construct(private RoomService $roomService)
     {
     }
@@ -158,26 +163,37 @@ class RoomController extends Controller
             'file' => 'required|file|mimes:xlsx,xls,csv|max:10240',
         ], [
             'file.required' => 'Vui lòng chọn tệp Excel để nhập danh sách phòng.',
+            'file.file' => 'Tệp tải lên không hợp lệ.',
             'file.mimes' => 'Hệ thống chỉ hỗ trợ định dạng Excel (.xlsx, .xls) hoặc .csv.',
             'file.max' => 'Dung lượng tệp không được vượt quá 10MB.',
         ]);
 
         $organizationId = (int) ($request->header('X-Organization-Id')
             ?: (function_exists('getPermissionsTeamId') ? getPermissionsTeamId() : 0));
-        abort_if(!$organizationId, 422, 'Không xác định được tổ chức để nhập dữ liệu.');
+        if (! $organizationId) {
+            return $this->error('Không xác định được tổ chức để nhập dữ liệu.', 422, null, 'ORGANIZATION_REQUIRED');
+        }
 
         $import = new RoomImport($organizationId);
-        Excel::import($import, $validated['file']);
-        $result = $import->getResult();
+        $result = $this->executeSpreadsheetImport($import, $validated['file']);
 
         if ($result['success_count'] > 0) {
             $this->roomService->invalidateMapCache($organizationId);
-            event(new RoomChanged(
-                'room_imported',
-                ['imported_count' => $result['success_count']],
-                "Đã nhập {$result['success_count']} phòng từ Excel.",
-                $organizationId
-            ));
+            app(EquipmentService::class)->invalidateCache($organizationId);
+            try {
+                event(new RoomChanged(
+                    'room_imported',
+                    ['imported_count' => $result['success_count']],
+                    "Đã nhập {$result['success_count']} phòng từ Excel.",
+                    $organizationId
+                ));
+            } catch (\Throwable $e) {
+                Log::warning('Room import broadcast failed safely: '.$e->getMessage());
+            }
+        }
+
+        if ($result['success_count'] === 0 && $result['failed_count'] > 0) {
+            return $this->failedSpreadsheetImportResponse($result);
         }
 
         return response()->json([

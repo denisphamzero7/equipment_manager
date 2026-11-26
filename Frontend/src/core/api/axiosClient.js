@@ -102,7 +102,8 @@ axiosClient.interceptors.response.use(
         // Validation errors
         const errors = response.data?.errors
         if (errors) {
-          const firstError = Object.values(errors)[0]?.[0]
+          const firstEntry = Object.values(errors)[0]
+          const firstError = Array.isArray(firstEntry) ? firstEntry[0] : firstEntry
           toast.error(firstError || message)
         } else {
           toast.error(message)
