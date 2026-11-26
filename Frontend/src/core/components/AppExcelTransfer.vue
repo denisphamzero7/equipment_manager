@@ -154,7 +154,25 @@ async function getRequestErrorMessage(error) {
   if (error.code === 'ECONNABORTED') {
     return 'Quá thời gian xử lý tệp Excel. Vui lòng kiểm tra lại dữ liệu tệp.'
   }
+  if (!error.response && error.message === 'Network Error') {
+    return 'Không thể tải tệp lên máy chủ (lỗi kết nối hoặc tệp vừa được lưu lại trên máy sau khi chọn). Vui lòng bấm "Chọn tệp" để chọn lại rồi thử lại.'
+  }
   return responseData?.message || error.message || 'Không thể hoàn tất thao tác Excel.'
+}
+
+async function ensureFileReadable(file) {
+  if (!file || typeof file.slice !== 'function') return ''
+
+  try {
+    const chunk = file.slice(0, 1)
+    if (typeof chunk.arrayBuffer === 'function') {
+      await chunk.arrayBuffer()
+    }
+    return ''
+  } catch (error) {
+    console.warn('Selected file is no longer readable:', error)
+    return 'Tệp vừa bị thay đổi hoặc lưu lại trên máy sau khi chọn. Vui lòng bấm "Chọn tệp" để chọn lại phiên bản mới nhất.'
+  }
 }
 
 async function downloadExport(template = false) {
@@ -210,6 +228,9 @@ async function applyImportFailure(error) {
   if (responseData?.data) {
     result.value = responseData
   }
+  if (!error.response && error.message === 'Network Error') {
+    resetSelection()
+  }
   importError.value = await getRequestErrorMessage(error)
   if (!error.response) {
     toast.error(importError.value)
@@ -221,6 +242,14 @@ async function importFile() {
   if (validationMessage) {
     importError.value = validationMessage
     toast.error(validationMessage)
+    return
+  }
+
+  const readabilityMessage = await ensureFileReadable(selectedFile.value)
+  if (readabilityMessage) {
+    resetSelection()
+    importError.value = readabilityMessage
+    toast.error(readabilityMessage)
     return
   }
 

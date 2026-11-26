@@ -187,4 +187,38 @@ describe('AppExcelTransfer', () => {
     expect(cleanSetup.wrapper.emitted('imported')).toHaveLength(1)
     expect(toast.success).toHaveBeenCalledOnce()
   })
+
+  it('detects a stale file modified on disk before uploading and resets selection', async () => {
+    const { wrapper, importer } = mountTransfer()
+    await openModal(wrapper)
+
+    const staleFile = {
+      name: 'thiet-bi-dien-thoai-ban.xlsx',
+      size: 128,
+      slice: () => ({
+        arrayBuffer: () => Promise.reject(new DOMException('File changed on disk', 'NotReadableError')),
+      }),
+    }
+    await selectFile(wrapper, staleFile)
+
+    await wrapper.findAll('button').find(btn => btn.text().includes('Nhập tệp')).trigger('click')
+    await flushPromises()
+
+    expect(importer).not.toHaveBeenCalled()
+    expect(wrapper.find('[role="alert"]').text()).toContain('chọn lại phiên bản mới nhất')
+    expect(toast.error).toHaveBeenCalledOnce()
+  })
+
+  it('translates Axios Network Error into clear Vietnamese re-select guidance', async () => {
+    const importer = vi.fn().mockRejectedValue(new Error('Network Error'))
+    const { wrapper } = mountTransfer({ importer })
+    await openModal(wrapper)
+    await selectFile(wrapper, new File(['content'], 'thiet-bi-dien-thoai-ban.xlsx'))
+
+    await wrapper.findAll('button').find(btn => btn.text().includes('Nhập tệp')).trigger('click')
+    await flushPromises()
+
+    expect(wrapper.find('[role="alert"]').text()).toContain('lỗi kết nối hoặc tệp vừa được lưu lại')
+    expect(toast.error).toHaveBeenCalledOnce()
+  })
 })
