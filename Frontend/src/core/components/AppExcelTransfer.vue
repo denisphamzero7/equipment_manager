@@ -215,11 +215,18 @@ function applyImportResult(payload) {
   resetSelection()
 
   if (importedFailedCount > 0) {
-    toast.warning(payload?.message || 'Đã nhập dữ liệu (có một số dòng bị bỏ qua/lỗi).')
+    toast.warning(
+      payload?.message || `Đã nhập ${importedSuccessCount}, bỏ qua / lỗi ${importedFailedCount} dòng.`,
+      5000
+    )
     return
   }
 
-  toast.success(payload?.message || 'Đã hoàn tất nhập dữ liệu.')
+  open.value = false
+  toast.success(
+    payload?.message || `Đã nhập ${importedSuccessCount} ${props.title.toLocaleLowerCase('vi')} thành công!`,
+    4500
+  )
 }
 
 async function applyImportFailure(error) {
@@ -232,9 +239,7 @@ async function applyImportFailure(error) {
     resetSelection()
   }
   importError.value = await getRequestErrorMessage(error)
-  if (!error.response) {
-    toast.error(importError.value)
-  }
+  toast.error(importError.value)
 }
 
 async function importFile() {

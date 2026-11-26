@@ -385,6 +385,14 @@ function openEditModal(room) {
   formModalOpen.value = true
 }
 
+async function handleRoomsImported() {
+  roomSummaryLoaded.value = false
+  await Promise.allSettled([
+    fetchRooms(),
+    fetchRoomSummaryIfNeeded(),
+  ])
+}
+
 function handleRoomSaved(savedRoom) {
   if (!savedRoom?.id) {
     fetchRooms(false)
@@ -580,7 +588,7 @@ function getStatusBadge(status) {
               :filters="filters"
               :allow-import="$can('import', 'Room')"
               :allow-export="$can('export', 'Room')"
-              @imported="fetchRooms()"
+              @imported="handleRoomsImported"
             />
             <!-- Thêm phòng đơn -->
             <AppButton variant="primary" @click="openCreateModal()">

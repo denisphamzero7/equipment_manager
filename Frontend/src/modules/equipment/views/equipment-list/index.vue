@@ -565,6 +565,13 @@ async function handleAssignSubmit(payload) {
   }
 }
 
+async function handleEquipmentsImported() {
+  await Promise.allSettled([
+    equipmentStore.fetchEquipments(1),
+    fetchStats(),
+  ])
+}
+
 async function handleReportBrokenSubmit({ id, formData }) {
   actionLoading.value = true
   try {
@@ -656,7 +663,7 @@ watch(
           :filters="equipmentStore.filters"
           :allow-import="$can('import', 'Equipment')"
           :allow-export="$can('export', 'Equipment')"
-          @imported="equipmentStore.fetchEquipments(1)"
+          @imported="handleEquipmentsImported"
         />
         <AppButton
           v-if="$can('create', 'Equipment')"

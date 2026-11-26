@@ -136,6 +136,7 @@ describe('AppExcelTransfer', () => {
     expect(wrapper.find('[role="alert"]').text()).toContain('không có dòng nào hợp lệ')
     expect(wrapper.text()).toContain('Dòng 2: Số phòng không được để trống.')
     expect(wrapper.text()).toContain('Dòng 3: Trạng thái phòng không hợp lệ.')
+    expect(toast.error).toHaveBeenCalledOnce()
     expect(toast.success).not.toHaveBeenCalled()
   })
 
@@ -176,7 +177,7 @@ describe('AppExcelTransfer', () => {
     await flushPromises()
 
     expect(wrapper.emitted('imported')).toHaveLength(1)
-    expect(toast.warning).toHaveBeenCalledWith('Thành công 1, Thất bại 1')
+    expect(toast.warning).toHaveBeenCalledWith('Thành công 1, Thất bại 1', 5000)
 
     const cleanSetup = mountTransfer()
     await openModal(cleanSetup.wrapper)
@@ -186,6 +187,7 @@ describe('AppExcelTransfer', () => {
 
     expect(cleanSetup.wrapper.emitted('imported')).toHaveLength(1)
     expect(toast.success).toHaveBeenCalledOnce()
+    expect(cleanSetup.wrapper.find('input[type="file"]').exists()).toBe(false)
   })
 
   it('detects a stale file modified on disk before uploading and resets selection', async () => {

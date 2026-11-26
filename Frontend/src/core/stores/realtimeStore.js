@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { getEcho, disconnectEcho } from '../services/echoService'
 import { playNotificationSound } from '../services/audioNotification'
-import { toast } from '../helpers/toast'
+import { toast, toastState } from '../helpers/toast'
 import { storage, StorageKeys } from '../helpers/storage'
 import { invalidateRequestCache } from '../services/requestCache'
 
@@ -121,13 +121,17 @@ export const useRealtimeStore = defineStore('realtime', () => {
     })
 
     channel.listen('.equipment.imported', (event) => {
-      invalidateChangedData()
+      invalidateChangedData(false, true)
       lastEvent.value = { type: 'imported', ...event }
+      const msg = event.message || `Đã nhập ${event.imported_count || 0} thiết bị từ Excel.`
       addNotification({
         type: 'imported',
         title: 'Nhập thiết bị từ Excel',
-        message: event.message || `Đã nhập ${event.imported_count || 0} thiết bị.`,
+        message: msg,
       })
+      if (!toastState.show || toastState.color === 'info') {
+        toast.info(msg)
+      }
     })
 
     // 2. Thiết bị được cập nhật
@@ -244,11 +248,13 @@ export const useRealtimeStore = defineStore('realtime', () => {
       lastEvent.value = { ...event, type: 'room_' + (event.type || event.action) }
       addNotification({
         type: 'room_changed',
-        title: 'Cập nhật phòng',
+        title: event.action === 'room_imported' ? 'Nhập phòng từ Excel' : 'Cập nhật phòng',
         message: event.message || 'Dữ liệu phòng vừa được cập nhật',
         room: event.room,
       })
-      toast.info(event.message || 'Dữ liệu phòng vừa được cập nhật.')
+      if (event.action !== 'room_imported' || !toastState.show || toastState.color === 'info') {
+        toast.info(event.message || 'Dữ liệu phòng vừa được cập nhật.')
+      }
     })
 
       isListening.value = true
