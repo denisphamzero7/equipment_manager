@@ -746,7 +746,7 @@ class EquipmentService
         $category = $equipment->model?->category;
         $catCode = $category?->code ?? '';
         $catId = $category?->id;
-        $isDynamicCategory = in_array($catCode, ['tv', 'box', 'remote', 'wifi', 'phone']);
+        $isDynamicCategory = in_array($catCode, RoomStandardEquipment::DYNAMIC_STANDARD_CATEGORIES, true);
         $sameCatModelIds = ($isDynamicCategory && $catId)
             ? EquipmentModel::where('equipment_category_id', $catId)->pluck('id')
             : collect([$equipment->equipment_model_id]);
@@ -1478,7 +1478,7 @@ class EquipmentService
             return 1;
         }
 
-        if (in_array($catCode, ['ac', 'fridge', 'appliance'])) {
+        if (in_array($catCode, RoomStandardEquipment::NON_MANDATORY_STANDARD_CATEGORIES, true)) {
             return 0;
         }
 

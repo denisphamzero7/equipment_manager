@@ -346,9 +346,8 @@ async function handleRoomSaved(savedRoom) {
     rooms.value = rooms.value.map(room =>
       Number(room.id) === Number(savedRoom.id) ? { ...room, ...savedRoom } : room
     )
-  } else {
-    await loadRooms({ silent: true })
   }
+  await loadRooms({ silent: true, forceRefresh: true })
   if (selectedRoomId.value) {
     await loadRoomDetail(selectedRoomId.value, { silent: true })
   }
@@ -362,7 +361,7 @@ watch(
     if (selectedRoomId.value) {
       await loadRoomDetail(selectedRoomId.value, { silent: true })
     }
-    void loadRooms({ silent: true })
+    void loadRooms({ silent: true, forceRefresh: true })
   }
 )
 
@@ -397,9 +396,9 @@ watch(
  * await loadRooms()
  * await loadRooms({ silent: true })
  */
-async function loadRooms({ silent = false } = {}) {
+async function loadRooms({ silent = false, forceRefresh = false } = {}) {
   try {
-    const data = await equipmentService.getMapView()
+    const data = await equipmentService.getMapView({}, forceRefresh)
     rooms.value = data || []
     
     // Nếu có query param room_id từ URL thì ưu tiên chọn phòng đó

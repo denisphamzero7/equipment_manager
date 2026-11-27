@@ -79,10 +79,10 @@ class EquipmentMapViewResource extends JsonResource
             }
         }
 
-        // 6. Kiểm tra các thiết bị khác ngoài TV, Box, Remote, Wifi, Phone (bỏ qua ac, fridge, appliance theo nghiệp vụ khách sạn)
+        // 6. Kiểm tra các thiết bị khác ngoài TV, Box, Remote, Wifi, Phone (bỏ qua ac, fridge, appliance, security theo nghiệp vụ khách sạn)
         foreach ($standardAllocations as $std) {
             $catCode = $std->model?->category?->code ?? '';
-            if (in_array($catCode, ['tv', 'box', 'remote', 'wifi', 'phone', 'ac', 'fridge', 'appliance'])) {
+            if (\App\Modules\Equipment\Models\RoomStandardEquipment::isStaticStandardExcluded($catCode)) {
                 continue; // Đã kiểm tra theo định mức động ở trên hoặc đã bỏ định mức
             }
             $actual = $modelCounts[$std->equipment_model_id] ?? 0;

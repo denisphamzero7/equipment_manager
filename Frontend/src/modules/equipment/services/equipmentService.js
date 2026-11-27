@@ -474,11 +474,11 @@ export const equipmentService = {
    * @param {Object} [params={}] Chứa `block`, `floor`
    * @returns {Promise<Array<Object>>} Danh sách phòng sắp xếp theo tọa độ hàng/cột
    */
-  async getMapView(params = {}) {
+  async getMapView(params = {}, forceRefresh = false) {
     return getCachedRequest('equipment-map', stableParams(params), async () => {
       const response = await axiosClient.get(Endpoints.EQUIPMENT.MAP_VIEW, { params })
       return response.data?.data || []
-    }, { ttl: 30000 })
+    }, { ttl: 30000, force: forceRefresh })
   },
 
   /**
@@ -492,11 +492,11 @@ export const equipmentService = {
    * @param {number|string} roomId ID phòng
    * @returns {Promise<Object>} Model phòng kèm quan hệ thiết bị và định mức
    */
-  async getRoomDetail(roomId) {
+  async getRoomDetail(roomId, forceRefresh = false) {
     return getCachedRequest('equipment-room-detail', String(roomId), async () => {
       const response = await axiosClient.get(Endpoints.EQUIPMENT.ROOM_DETAIL(roomId))
       return response.data?.data || response.data
-    }, { ttl: 30000 })
+    }, { ttl: 30000, force: forceRefresh })
   },
 
   /**

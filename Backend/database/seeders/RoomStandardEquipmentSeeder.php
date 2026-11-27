@@ -34,8 +34,6 @@ class RoomStandardEquipmentSeeder extends Seeder
                 'FTKB35WAVMV' => 1,     // Điều hòa Daikin 1.5HP
                 'LCG-50' => 1,          // Minibar 50L
                 'RG-RAP1200(F)' => 1,   // Wifi Ruijie ốp trần
-                'ADEL-200N' => 1,       // Két sắt điện tử
-                'YDM-7116' => 1,        // Khóa thẻ từ Yale
                 'EH-ND11' => 1,         // Máy sấy tóc
                 'HD9306' => 1,          // Ấm siêu tốc
             ],
@@ -47,8 +45,6 @@ class RoomStandardEquipmentSeeder extends Seeder
                 'FTKB35WAVMV' => 2,     // 2 Điều hòa Daikin 1.5HP
                 'EUM0930BD-VN' => 1,    // Tủ lạnh 92L
                 'RG-RAP1200(F)' => 1,   // Wifi Ruijie
-                'ADEL-200N' => 1,       // Két sắt điện tử
-                'YDM-7116' => 1,        // Khóa thẻ từ Yale
                 'EH-ND11' => 1,         // Máy sấy tóc
                 'HD9306' => 1,          // Ấm siêu tốc
             ],
@@ -60,7 +56,6 @@ class RoomStandardEquipmentSeeder extends Seeder
                 'CU/CS-PU9AKH-8' => 2,  // 2 Điều hòa 1.0HP
                 'EUM0930BD-VN' => 1,    // Tủ lạnh 92L
                 'RG-RAP1200(F)' => 1,   // Wifi Ruijie
-                'YDM-7116' => 1,        // Khóa thẻ từ Yale
                 'EH-ND11' => 2,         // 2 Máy sấy tóc
                 'HD9306' => 1,          // Ấm siêu tốc
             ],

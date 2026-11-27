@@ -213,10 +213,10 @@ class RoomEquipmentDetailResource extends JsonResource
             }
         }
 
-        // 6. Kiểm tra các danh mục khác (bỏ qua ac, fridge, appliance theo yêu cầu nghiệp vụ)
+        // 6. Kiểm tra các danh mục khác (bỏ qua ac, fridge, appliance, security theo yêu cầu nghiệp vụ)
         foreach ($standardAllocations as $std) {
             $catCode = $std->model?->category?->code ?? '';
-            if (in_array($catCode, ['tv', 'box', 'remote', 'wifi', 'phone', 'ac', 'fridge', 'appliance'])) {
+            if (\App\Modules\Equipment\Models\RoomStandardEquipment::isStaticStandardExcluded($catCode)) {
                 continue; // Đã đối soát theo định mức động ở trên hoặc đã bỏ định mức
             }
 

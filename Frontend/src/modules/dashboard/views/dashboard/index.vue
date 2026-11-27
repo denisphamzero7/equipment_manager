@@ -49,15 +49,17 @@ const lightboxOpen = ref(false)
 const lightboxImage = ref('')
 const lightboxTitle = ref('')
 
-async function loadDashboardData(silent = false) {
+async function loadDashboardData(silent = false, forceMapRefresh = false) {
   if (!silent) {
     loading.value = true
   }
   const requestId = ++dashboardRequestId
   try {
     const [statsResult, roomsResult] = await Promise.allSettled([
-      dashboardService.getStats(selectedBlock.value),
-      mapRooms.value.length > 0 ? Promise.resolve(mapRooms.value) : dashboardService.getMapOverview(),
+      dashboardService.getStats(selectedBlock.value, forceMapRefresh),
+      (mapRooms.value.length > 0 && !forceMapRefresh)
+        ? Promise.resolve(mapRooms.value)
+        : dashboardService.getMapOverview(forceMapRefresh),
     ])
 
     if (requestId === dashboardRequestId) {
@@ -151,14 +153,15 @@ function navigateToEquipments(statusFilter = '') {
 }
 
 // Mở modal xem chi tiết thiết bị của phòng
-async function openRoomDetail(room) {
+async function openRoomDetail(room, forceRefresh = false) {
+  if (!room?.id) return
   roomDetailModalOpen.value = true
   selectedRoomSummary.value = room
   selectedRoomDetail.value = null
   roomDetailLoading.value = true
   const requestId = ++roomDetailRequestId
   try {
-    const detail = await equipmentService.getRoomDetail(room.id)
+    const detail = await equipmentService.getRoomDetail(room.id, forceRefresh)
     if (requestId === roomDetailRequestId) {
       selectedRoomDetail.value = detail
     }
@@ -203,10 +206,13 @@ async function openEditRoomModal() {
 
 async function handleRoomSaved(savedRoom) {
   editRoomModalOpen.value = false
-  if (selectedRoomSummary.value?.id) {
-    await openRoomDetail({ ...selectedRoomSummary.value, ...savedRoom })
+  await loadDashboardData(true, true)
+  if (roomDetailModalOpen.value && (selectedRoomSummary.value?.id || savedRoom?.id)) {
+    const targetId = selectedRoomSummary.value?.id || savedRoom?.id
+    const refreshed = mapRooms.value.find(r => Number(r.id) === Number(targetId))
+      || { ...selectedRoomSummary.value, ...savedRoom }
+    await openRoomDetail(refreshed, true)
   }
-  await loadDashboardData(true)
 }
 
 const categoryIconMap = {
@@ -502,7 +508,7 @@ watch(
       v-model="editRoomModalOpen"
       :room="roomForEdit"
       :room-types="roomTypesList"
-      @submit="handleRoomSaved"
+      @saved="handleRoomSaved"
     />
 
     <!-- Image Preview Lightbox Dialog -->

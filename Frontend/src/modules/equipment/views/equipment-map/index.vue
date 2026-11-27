@@ -163,25 +163,35 @@ async function openEditRoomModal() {
  * await handleRoomSaved(updatedRoomData)
  */
 async function handleRoomSaved(savedRoom) {
-  if (!savedRoom?.id) {
-    await loadMapViewData(true)
-    return
+  if (savedRoom?.id) {
+    rawRooms.value = rawRooms.value.map(room =>
+      Number(room.id) === Number(savedRoom.id) ? { ...room, ...savedRoom } : room
+    )
   }
 
-  rawRooms.value = rawRooms.value.map(room =>
-    Number(room.id) === Number(savedRoom.id) ? { ...room, ...savedRoom } : room
-  )
-  if (selectedRoomDetail.value?.id) {
-    await openRoomDetail(rawRooms.value.find(room => Number(room.id) === Number(savedRoom.id)) || savedRoom)
+  await loadMapViewData(true, true)
+
+  const targetRoomId = selectedRoomDetail.value?.id || selectedRoomSummary.value?.id || savedRoom?.id
+  if (roomDetailModalOpen.value && targetRoomId) {
+    const refreshedRoom = rawRooms.value.find(room => Number(room.id) === Number(targetRoomId))
+      || selectedRoomSummary.value
+      || savedRoom
+    await openRoomDetail(refreshedRoom, true)
   }
 }
 
 // Tự động cập nhật sơ đồ phòng Real-time khi có sự kiện từ WebSocket
 watch(
   () => realtimeStore.lastEvent,
-  (event) => {
+  async (event) => {
     if (!event) return
-    loadMapViewData(true)
+    await loadMapViewData(true, true)
+    const targetRoomId = selectedRoomDetail.value?.id || selectedRoomSummary.value?.id
+    if (roomDetailModalOpen.value && targetRoomId) {
+      const refreshedRoom = rawRooms.value.find(room => Number(room.id) === Number(targetRoomId))
+        || selectedRoomSummary.value
+      await openRoomDetail(refreshedRoom, true)
+    }
   }
 )
 
@@ -213,12 +223,12 @@ watch(
  * await loadMapViewData()
  * await loadMapViewData(true)
  */
-async function loadMapViewData(silent = false) {
+async function loadMapViewData(silent = false, forceRefresh = false) {
   if (!silent) {
     loading.value = true
   }
   try {
-    const data = await equipmentService.getMapView({})
+    const data = await equipmentService.getMapView({}, forceRefresh)
     rawRooms.value = Array.isArray(data) ? data : []
   } catch (e) {
     console.error('Failed to load map view rooms:', e)
@@ -499,14 +509,14 @@ const activeBlockRooms = computed(() => {
  * @example
  * await openRoomDetail(clickedRoom)
  */
-async function openRoomDetail(room) {
+async function openRoomDetail(room, forceRefresh = false) {
   roomDetailModalOpen.value = true
   selectedRoomSummary.value = room
   selectedRoomDetail.value = null
   roomDetailLoading.value = true
   const requestId = ++roomDetailRequestId
   try {
-    const detail = await equipmentService.getRoomDetail(room.id)
+    const detail = await equipmentService.getRoomDetail(room.id, forceRefresh)
     if (requestId === roomDetailRequestId) {
       selectedRoomDetail.value = detail
     }
@@ -551,7 +561,7 @@ async function openRoomDetail(room) {
         <AppButton
           icon="mdi-refresh"
           color="primary"
-          @click="loadMapViewData(false)"
+          @click="loadMapViewData(false, true)"
         >
           Tải lại sơ đồ
         </AppButton>
